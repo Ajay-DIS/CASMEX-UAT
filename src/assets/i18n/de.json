@@ -1,0 +1,22 @@
+{"Home": {
+    "h3":"Hauptverwaltung Admin",
+    "Dashboard":"Armaturenbrett" ,
+    "Rate Setup":"Tarif einrichten",
+    "Customer Details":"Kundendetailss",
+    "Beneficiary Details":"Angaben zum Begünstigten",
+    "Remittance":"Überweisung",
+    "Forex":"Devisen",
+    "Incoming":"Eingehend",
+    "Transaction Search":"Transaktionssuche",
+    "Accounts":"Konten",
+    "Reports":"Berichte",
+    "Settings":"Einstellungen",
+    "Module Settings":"Moduleinstellungen",
+    "home":"Heim",
+    "Payment Mode Settings":"Zahlungsmodus-Einstellungen",
+    "Payment mode description":"Beschreibung des Zahlungsmodus",
+    "Criteria":"Kriterien",
+    "Applicable on":"Anwendbar auf",
+    "Status":"Status",
+    "Add New":"Neue hinzufügen"
+ }}

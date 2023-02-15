@@ -1,0 +1,213 @@
+<header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="../assets/icon/casmex logo.svg" alt="">
+      </a>
+      <img src="../assets/icon/expand icon on navbar.svg" class="toggle-sidebar-btn" >
+      <div class="header-nav">
+        <h3>
+          <!-- Head Office Admin -->
+          {{ 'Home.h3' | translate }}
+        </h3>
+      </div>
+    </div><!-- End Logo -->
+  
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <img src="../assets/icon/notification icon top navbar.svg" alt="">
+            <span class="badge bg-danger badge-number">4</span>
+          </a><!-- End Notification Icon -->
+  
+        </li><!-- End Notification Nav -->
+  
+        <li class="nav-item dropdown pe-3">
+  
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Suresh H</span>
+          </a><!-- End Profile Iamge Icon -->
+  
+  
+        </li><!-- End Profile Nav -->
+        <li class="nav-item dropdown">
+            <select #langSelect (change)="translate.use(langSelect.value)">
+                <option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option>
+              </select> 
+        </li>
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  
+  </header><!-- End Header -->
+  <aside id="sidebar" class="sidebar" style="width:295px;">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <img src="../assets/icon/Dashboard Icon.svg" alt="">
+          <span class="">{{'Home.Dashboard' | translate}}</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Rate Setup icon.svg" alt="">
+          <span>{{'Home.Rate Setup' | translate }}</span>
+        </a>
+  
+      </li><!-- End rate Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Customer Details icon.svg" alt="">
+          <span>{{ 'Home.Customer Details' | translate }}</span>
+        </a>
+  
+      </li><!-- End customer Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Beneficiary Details icon.svg" alt="">
+          <span>{{'Home.Beneficiary Details' | translate }}</span>
+        </a>
+  
+      </li><!-- End beneficiary Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Remittance icon.svg" alt="">
+          <span>{{'Home.Remittance' | translate }}</span>
+        </a>
+  
+      </li><!-- End remittance Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Forex icon.svg" alt="">
+          <span>{{ 'Home.Forex' | translate }}</span>
+        </a>
+  
+      </li><!-- End Icons Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+  
+          <img src="../assets/icon/Incoming icon.svg" alt="">
+          <span>{{ 'Home.Incoming' | translate }}</span>
+        </a>
+      </li><!-- End incoming Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Transaction Search icon.svg" alt="">
+  
+          <span>{{ 'Home.Transaction Search' | translate }}</span>
+        </a>
+      </li><!-- End transaction Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Accounts icon.svg" alt="">
+          <span>{{ 'Home.Accounts' | translate }}</span>
+        </a>
+      </li><!-- End accounts Nav -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Reports icon.svg" alt="">
+          <span>{{ 'Home.Reports' | translate }}</span>
+        </a>
+      </li><!-- End Reports Nav -->
+  
+      <li class="nav-item" id="accordionExample">
+        <a class="nav-link collapsed">
+          <img src="../assets/icon/Settings icon.svg" alt="">
+          <span class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+            aria-expanded="false" aria-controls="collapseThree">{{ 'Home.Settings' | translate }}</span>
+        </a>
+        <ul>
+          <li class="nav-item" id="collapseThree" class="accordion-collapse collapse"
+            data-bs-parent="#accordionExample">
+            <a class="nav-link collapsed">
+              <!-- <img src="../assets/icon/Settings icon.svg" alt=""> -->
+              <span>Module Settings</span>
+            </a>
+            <ul>
+              <li class="nav-item">
+                <a class="nav-link collapsed" href="#">
+                  <!-- <img src="../assets/icon/Settings icon.svg" alt=""> -->
+                  <span>Payment Mode Settings</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li><!-- End Settings Nav --->
+  
+     
+      <!-- <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-journal-text"></i><span>Forms</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="forms-elements.html">
+                  <i class="bi bi-circle"></i><span>Form Elements</span>
+                </a>
+              </li>
+              <li>
+                <a href="forms-layouts.html">
+                  <i class="bi bi-circle"></i><span>Form Layouts</span>
+                </a>
+              </li>
+              <li>
+                <a href="forms-editors.html">
+                  <i class="bi bi-circle"></i><span>Form Editors</span>
+                </a>
+              </li>
+              <li>
+                <a href="forms-validation.html">
+                  <i class="bi bi-circle"></i><span>Form Validation</span>
+                </a>
+              </li>
+            </ul>
+          </li> -->
+  
+    </ul>
+    <footer style="margin-top: 60px; margin-left: 28px;">
+      <img src="../assets/icon/Help Center icon.svg" alt="" style="padding-right: 20px;">
+      <span>
+        Help Center
+      </span>
+    </footer>
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <!-- <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Home</li>
+          <li class="breadcrumb-item">Settings</li>
+          <li class="breadcrumb-item">Module Settings</li>
+          <li class="breadcrumb-item active" style="color: #2455cf;">Payment Mode
+            Settings</li>
+        </ol>
+      </nav> -->
+      <!-- <div *ngIf="ispaymentMode">
+        <app-payment-mode></app-payment-mode>
+      </div>
+      <div *ngIf="isviewPaymentMode">
+        <app-view-payment-mode></app-view-payment-mode>
+      </div> -->
+      <!-- <router-outlet></router-outlet> -->
+   
+    </div><!-- End Page Title -->
+  
+  
+   
+  
+    
+  
+  </main><!-- End #main -->

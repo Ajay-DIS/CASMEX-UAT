@@ -1,0 +1,202 @@
+<header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <img src="../assets/icon/casmex logo.svg" alt="">
+      </a>
+      <img #toggleSidebar src="../assets/icon/expand icon on navbar.svg" class="toggle-sidebar-btn" >
+      <div class="header-nav">
+        <h3>
+          <!-- Head Office Admin -->
+          {{ 'Home.h3' | translate }}
+        </h3>
+      </div>
+    </div><!-- End Logo -->
+  
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown">
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <img src="../assets/icon/notification icon top navbar.svg" alt="">
+            <span class="badge bg-danger badge-number">4</span>
+          </a><!-- End Notification Icon -->
+  
+        </li><!-- End Notification Nav -->
+        <li class="nav-item dropdown">
+          <select #langSelect (change)="translate.use(langSelect.value)">
+              <option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">{{ lang }}</option>
+            </select> 
+      </li>
+        <li class="nav-item dropdown pe-3">
+  
+          <!-- <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">Yogesh M</span>
+          </a> -->
+          <!-- End Profile Iamge Icon -->
+          <p-dropdown #profileOpt class="profile-dropdown"
+            [options]="profileOptions"
+            placeholder="Profile Yogesh M"
+            optionLabel="name" (onClick)="selectProfileOption(profileOpt.value)"
+            [showClear]="false">
+          </p-dropdown>
+  
+        </li><!-- End Profile Nav -->
+  
+      </ul>
+    </nav><!-- End Icons Navigation -->
+  
+  </header><!-- End Header -->
+  <aside #sidebarDiv id="sidebar" class="sidebar" style="width: 295px;">
+    <p-panelMenu styleClass="dynamic-menu" [model]="menuItems"></p-panelMenu>
+    <!-- <ul class="sidebar-nav" id="sidebar-nav">
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <img src="../assets/icon/Dashboard Icon.svg" alt="">
+          <span class="">Dashboard</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Rate Setup icon.svg" alt="">
+          <span>Rate Setup</span>
+        </a>
+  
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Customer Details icon.svg" alt="">
+          <span>Customer Details</span>
+        </a>
+  
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Beneficiary Details icon.svg" alt="">
+          <span>Beneficiary Details</span>
+        </a>
+  
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Remittance icon.svg" alt="">
+          <span>Remittance</span>
+        </a>
+  
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+          <img src="../assets/icon/Forex icon.svg" alt="">
+          <span>Forex</span>
+        </a>
+  
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+  
+          <img src="../assets/icon/Incoming icon.svg" alt="">
+          <span>Incoming</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Transaction Search icon.svg" alt="">
+  
+          <span>Transaction Search</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Accounts icon.svg" alt="">
+          <span>Accounts</span>
+        </a>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Reports icon.svg" alt="">
+          <span>Reports</span>
+        </a>
+      </li>
+  
+      <li class="nav-item" id="accordionExample">
+        <a class="nav-link collapsed">
+          <img src="../assets/icon/Settings icon.svg" alt="">
+          <span class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapseThree"
+            aria-expanded="false" aria-controls="collapseThree">Settings</span>
+        </a>
+        <ul>
+          <li class="nav-item" id="collapseThree" class="accordion-collapse collapse"
+            data-bs-parent="#accordionExample">
+            <a class="nav-link collapsed">
+              <img src="../assets/icon/Settings icon.svg" alt="">
+              <span>Module Settings</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <img src="../assets/icon/Settings icon.svg" alt="">
+          <span>Payment Mode Settings</span>
+        </a>
+      </li>
+    </ul> -->
+    <footer style="margin-top: 60px; margin-left: 28px;">
+      <img src="../assets/icon/Help Center icon.svg" alt="" style="padding-right: 20px;">
+      <span>
+        Help Center
+      </span>
+    </footer>
+  </aside>
+
+  <div class="pagetitle">
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">{{'Home.home' | translate}}</li>
+        <li class="breadcrumb-item">{{ 'Home.Settings' | translate }}</li>
+        <li class="breadcrumb-item">{{'Home.Module Settings' | translate}}</li>
+        <li class="breadcrumb-item active" style="color: #2455cf;">{{'Home.Payment Mode Settings' | translate}}</li>
+      </ol>
+    </nav>
+    <div class="addnew">
+        <button pButton pRipple type="button" label="{{'Home.Add New' | translate}}" class="p-button-raised"></button>
+    </div>
+</div>
+
+  <main id="main" class="main">
+    <!-- <div class="pagetitle"> -->
+      <!-- <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">Home</li>
+          <li class="breadcrumb-item">Settings</li>
+          <li class="breadcrumb-item">Module Settings</li>
+          <li class="breadcrumb-item active" style="color: #2455cf;">Payment Mode
+            Settings</li>
+        </ol>
+      </nav> -->
+      <!-- <div *ngIf="ispaymentMode">
+        <app-payment-mode></app-payment-mode>
+      </div>
+      <div *ngIf="isviewPaymentMode">
+        <app-view-payment-mode></app-view-payment-mode>
+      </div> -->
+      <router-outlet></router-outlet>
+   
+    <!-- </div>End Page Title -->
+  
+  
+   
+  
+    
+  
+  </main><!-- End #main -->
