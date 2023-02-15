@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-  <g id="add_icon_on_form_page" data-name="add icon on form page" transform="translate(-863 -1161)">
-    <g id="Group_792" data-name="Group 792" transform="translate(-11)">
-      <rect id="Rectangle_905" data-name="Rectangle 905" width="40" height="40" rx="5" transform="translate(874 1161)" fill="#2455cf"/>
-    </g>
-    <path id="Icon_ionic-ios-add" data-name="Icon ionic-ios-add" d="M22.093,15.093H16.836V9.836a.872.872,0,0,0-1.743,0v5.257H9.836a.872.872,0,0,0,0,1.743h5.257v5.257a.872.872,0,0,0,1.743,0V16.836h5.257a.872.872,0,0,0,0-1.743Z" transform="translate(867.535 1165.535)" fill="#fff" stroke="#fff" stroke-width="1"/>
-  </g>
-</svg>
