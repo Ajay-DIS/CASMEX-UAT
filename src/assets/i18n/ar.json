@@ -1,0 +1,35 @@
+{"Home": {
+   "h3":"مسؤول المكتب الرئيسي",
+   "Dashboard":"لوحة القيادة" ,
+   "Rate Setup":"معدل الإعداد",
+   "Customer Details":"تفاصيل العميل",
+   "Beneficiary Details":"تفاصيل المستفيد",
+   "Remittance":"الحوالات المالية",
+   "Forex":"فوركس",
+   "Incoming":"واردة",
+   "Transaction Search":"البحث عن المعاملات",
+   "Accounts":"حسابات",
+   "Reports":"التقارير",
+   "Settings":"إعدادات",
+   "Module Settings":"إعدادات الوحدة",
+   "home":"بيت",
+   "Payment Mode Settings":"إعدادات وضع الدفع",
+   "Payment mode description":"وصف وضع الدفع",
+   "Criteria":"معايير",
+   "Applicable on":"ينطبق على",
+   "Status":"حالة",
+   "Add New":"اضف جديد"
+},
+"Bank-Routing":{
+   "Bank Routing": "توجيه البنك",
+   "Add New Route": "أضف مسارًا جديدًا",
+   "Route Code": "كود الطريق",
+   "Country": "دولة",
+   "Route Bank Name": "اسم بنك الطريق",
+   "Service Category": "فئة الخدمة",
+   "Service Type": "نوع الخدمة",
+   "Is Correspondent": "مراسل",
+   "Route To": "الطريق إلى",
+   "Status": "حالة"
+}
+}

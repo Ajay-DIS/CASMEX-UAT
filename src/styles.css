@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("~primeicons/primeicons.css");
+@import url("~primeng/resources/primeng.min.css");
+@import url("~primeng/resources/themes/saga-blue/theme.css");
+@import url('~ngx-toastr/toastr.css');
+
+body{
+    background-color: #f4f6fa;
+}
+
+
+body.minified-sidebar aside#sidebar{
+    left: -300px !important;
+}
+
+body.minified-sidebar main{
+    margin-left: 50px !important;
+    transition: 300ms;
+}
+
+.ptable {
+    background-color: #fff;
+  }
+  
+  .pagetitle{
+    margin-top: 85px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 300ms;
+  }
+
+  .addnew{
+    margin: 15px 0;
+  }

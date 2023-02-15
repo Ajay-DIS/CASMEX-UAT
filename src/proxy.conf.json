@@ -1,0 +1,6 @@
+{
+    "/remittance": {
+        "target": "http://172.26.1.25:8889",
+        "secure": false
+        }
+}
