@@ -6,7 +6,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class PaymentModeServiceService {
+export class PaymentModeService {
   private token = localStorage.token;
   constructor(private http: HttpClient) { }
 
@@ -20,19 +20,19 @@ export class PaymentModeServiceService {
   // getPaymentModeByCriteriaId(id: string) {
   //   return this.http.get(`${environment.baseUrl}/remittance/paymentModeSettings/getPaymentModeCriteriaById/${id}`);
   // }
-
+  // getFiles() {
+  //   return this.http.get<any>('assets/files.json')
+  //     .toPromise()
+  //     .then(res => <TreeNode[]>res.data);
+  // }
+  // getPaymentModeDescription() {
+  //   return this.http.get(`/remittance/paymentModeSettings/getPaymentModeCriteriaById/23`)
+  // }
+  
   getData() {
     return this.http.get(`/remittance/paymentModeSettings/getPaymentModeSettings`)
   }
-  getPaymentModeDescription() {
-    return this.http.get(`/remittance/paymentModeSettings/getPaymentModeCriteriaById/23`)
-  }
   getPaymentModeByCriteriaId(id: string) {
     return this.http.get(`/remittance/paymentModeSettings/getPaymentModeCriteriaById/${id}`);
-  }
-  getFiles() {
-    return this.http.get<any>('assets/files.json')
-      .toPromise()
-      .then(res => <TreeNode[]>res.data);
   }
 }
