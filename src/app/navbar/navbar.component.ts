@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 import { environment } from 'src/environments/environment';
-import { PaymentModeServiceService } from '../payment-mode-service.service';
+import { PaymentModeService } from '../payment-mode-settings/payment-mode-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -76,7 +76,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ]
   
   constructor(
-    private payment: PaymentModeServiceService,
+    private payment: PaymentModeService,
     public translate: TranslateService,
     private httpClient: HttpClient,
     private el: ElementRef,
@@ -124,15 +124,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   isTokenExpired(token: string) {
-    //console.log("token in navbar", token);
-    let expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
-    if (new Date(expiry * 1000).getTime() < Date.now()) {
-      return true;
-    } else {return false}
+    if(token){
+      let expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
+      if (new Date(expiry * 1000).getTime() < Date.now()) {
+        return true;
+      } else {return false}
+    }
   }
 
   ngAfterViewInit() {
-    const sidebar = this.sidebarDiv.nativeElement;
     const bodyTag = this.el.nativeElement.closest('body')
     this.toggleSidebarBtn.nativeElement.addEventListener('click', ()=>{
       if(bodyTag.classList.contains('minified-sidebar')){
@@ -145,7 +145,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    const sidebar = this.sidebarDiv.nativeElement;
     const bodyTag = this.el.nativeElement.closest('body')
     let widerThan1200 = window.matchMedia("(min-width: 1200px)")
     let thinThan1200 = window.matchMedia("(max-width: 1199px)")
