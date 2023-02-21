@@ -25,13 +25,13 @@
                 </tr>
                 <tr>
                     <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($event.target.value, 'paymentModeName', 'contains')" placeholder="Search.." class="p-column-filter" >
+                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'paymentModeName', 'contains')" placeholder="Search.." class="p-column-filter" >
                     </th>
                     <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($event.target.value, 'criteriaMap', 'contains')" placeholder="Search.." class="p-column-filter" >
+                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'criteriaMap', 'contains')" placeholder="Search.." class="p-column-filter" >
                     </th>
                     <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($event.target.value, 'cmPaymentApplicableString', 'contains')" placeholder="Search.." class="p-column-filter" >
+                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'cmPaymentApplicableString', 'contains')" placeholder="Search.." class="p-column-filter" >
                     </th>
                     <th  style="padding: 8px;">
                         <input pInputText [classList]="'table-search'" placeholder="Search.." type="text" (input)="dt.filter($any($event.target).value, 'status', 'contains')">

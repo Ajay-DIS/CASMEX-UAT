@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { PaymentModeServiceService } from '../payment-mode-service.service';
+import { PaymentModeService } from '../payment-mode-settings/payment-mode-service.service';
 
 
 @Component({
@@ -20,7 +20,7 @@ export class AddnewrouteComponent implements OnInit {
   criteriaDdlOptions:any = [];
   
   constructor(
-    private paymentModeService: PaymentModeServiceService,
+    private paymentModeService: PaymentModeService,
     private activatedRoute: ActivatedRoute,private ngxToaster: ToastrService,
   ) { }
 
