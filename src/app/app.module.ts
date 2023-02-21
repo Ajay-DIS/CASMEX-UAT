@@ -14,7 +14,7 @@ import {PanelMenuModule} from 'primeng/panelmenu';
 import {InputTextModule} from 'primeng/inputtext';
 import {DropdownModule} from 'primeng/dropdown';
 import {ContextMenuModule} from 'primeng/contextmenu';
-
+import { DialogModule } from "primeng/dialog";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,6 +26,7 @@ import { LoginComponent } from './login/login.component';
 // import { SidebarComponent } from './sidebar/sidebar.component';
 import { HttpInterceptorInterceptor } from './http-interceptor.interceptor';
 import { BankRoutingComponent } from './bank-routing/bank-routing.component';
+import { AddnewrouteComponent } from './addnewroute/addnewroute.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -41,6 +42,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     // NewNavComponent,
     LoginComponent,
     BankRoutingComponent,
+    AddnewrouteComponent,
     // SidebarComponent
   ],
   imports: [
@@ -65,7 +67,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
           deps: [HttpClient]
       }
   }),
-  PanelMenuModule
+  PanelMenuModule,
+  DialogModule,
   ],
   providers: [
     { 

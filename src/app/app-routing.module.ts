@@ -1,5 +1,6 @@
 import { Component, NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AddnewrouteComponent } from './addnewroute/addnewroute.component';
 import { AuthGuard } from './auth/auth.guard';
 import { BankRoutingComponent } from './bank-routing/bank-routing.component';
 import { LoginComponent } from './login/login.component';
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'payment-mode', component: PaymentModeComponent, canActivate: [AuthGuard] },
       { path: 'view-payment-mode/:id', component: ViewPaymentModeComponent, canActivate: [AuthGuard] },
       { path: 'bank-routing', component: BankRoutingComponent, canActivate: [AuthGuard] },
+      { path: 'addnewroute', component: AddnewrouteComponent, canActivate:[AuthGuard] }
     ]
   }
 ];
