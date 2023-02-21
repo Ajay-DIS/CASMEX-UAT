@@ -10,6 +10,8 @@ import { FormsModule, NgModel, ReactiveFormsModule } from "@angular/forms";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
 import { TableModule } from "primeng/table";
+import { DialogModule } from "primeng/dialog";
+
 import { SidebarModule } from "primeng/sidebar";
 import { ButtonModule } from "primeng/button";
 import { TreeModule } from "primeng/tree";
@@ -30,6 +32,7 @@ import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-m
 import { LoginComponent } from "./login/login.component";
 import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
 import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
+import { AddnewrouteComponent } from './addnewroute/addnewroute.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -45,6 +48,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     // NewNavComponent,
     LoginComponent,
     BankRoutingComponent,
+    AddnewrouteComponent,
     // SidebarComponent
   ],
   imports: [
@@ -67,12 +71,13 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
-    PanelMenuModule,
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  }),
+  PanelMenuModule,
+  DialogModule,
   ],
   providers: [
     {
