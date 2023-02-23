@@ -24,6 +24,8 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { CardModule } from "primeng/card";
 import { BlockUIModule } from "primeng/blockui";
 import { BreadcrumbModule } from "primeng/breadcrumb";
+import { DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
+import { InputNumberModule } from "primeng/inputnumber";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -33,7 +35,8 @@ import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-m
 import { LoginComponent } from "./login/login.component";
 import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
 import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
-import { AddnewrouteComponent } from "./addnewroute/addnewroute.component";
+import { AddnewrouteComponent } from "./banks-routing/addnewroute/addnewroute.component";
+import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-modal/transaction-criteria-modal";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -50,6 +53,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoginComponent,
     BankRoutingComponent,
     AddnewrouteComponent,
+    TransactionCriteriaModal,
     // SidebarComponent
   ],
   imports: [
@@ -70,6 +74,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CardModule,
     BlockUIModule,
     BreadcrumbModule,
+    DynamicDialogModule,
+    InputNumberModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

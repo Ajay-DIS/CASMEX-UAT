@@ -30,39 +30,34 @@
   </nav>
 </div>
 <div style="background-color: #ffffff">
-  <h6 style="padding: 10px;">Description</h6>
-  <p style="background-color: #e9ecef;width: 440px;margin-left: 10px;color: #8a9099; font-size: 12px;padding: 10px;">
+  <h6 style="padding: 10px">Description</h6>
+  <p
+    style="
+      background-color: #e9ecef;
+      width: 440px;
+      margin-left: 10px;
+      color: #8a9099;
+      font-size: 12px;
+      padding: 10px;
+    "
+  >
     Based on the critetria selected banks will be routed to preferred routing
     bank...
   </p>
   <div>
-    <div
-      style="
-        border: 0.5px solid#eaedf4;
-        width: 100%;
-        margin-bottom: 20px;
-        padding: 20px;
-        background-color: #ffffff;
-      "
-    >
-      <h6
-        style="
-          color: blue;
-          margin-left: 20px;
-          -top: 10px;
-          font-weight: bold;
-          font-size: 16px;
-        "
-      >
-        Set Criteria
-        <h6 class="clickcriteria">
+    <div class="criteria-bar">
+      <p class="setCriteria">Set Criteria</p>
+      <div class="openCriteria">
+        <p>
+          <a (click)="showTransCriteriaModal()">LCY Amount Slab</a>
+        </p>
+        <p class="clickcriteria">
           <a (click)="openClickForSave()"
             >Click to save this Criteria as a template</a
           >
-        </h6>
-      </h6>
+        </p>
+      </div>
       <br /><br />
-
       <p-dialog [(visible)]="clickforsave" [style]="{ width: '30vw' }">
         <ng-template pTemplate="header"> Save Template </ng-template>
         <p>Name</p>
@@ -79,26 +74,42 @@
         </ng-template>
       </p-dialog>
 
-      <div style="display: flex; margin-bottom: 50px; ">
-        
-        <p-dropdown [options]="criteriaMapDdlOptions" optionLabel="name" optionValue="code" placeholder="Select a Criteria" 
-        
-         [(ngModel)]="criteriaMap.criteria" (onChange)="onChange('criteria',$event.value)" ></p-dropdown>
-        
-        <p-dropdown [options]="criteriaEqualsDdlOptions" optionLabel="name" optionValue="code"placeholder="Select a Operation"  
-         [(ngModel)]="criteriaMap.condition" (onChange)="onChange('condition',$event.value)"></p-dropdown>
+      <div style="display: flex; margin-bottom: 50px">
+        <p-dropdown
+          [options]="criteriaMapDdlOptions"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select a Criteria"
+          [(ngModel)]="criteriaMap.criteria"
+          (onChange)="onChange('criteria', $event.value)"
+        ></p-dropdown>
 
-        <p-dropdown [options]="correspondentDdlOptions" optionLabel="name" optionValue="code"  placeholder="Select a Value"
-         [(ngModel)]="criteriaMap.val" (onChange)="onChange('val',$event.value)"></p-dropdown>
+        <p-dropdown
+          [options]="criteriaEqualsDdlOptions"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select a Operation"
+          [(ngModel)]="criteriaMap.condition"
+          (onChange)="onChange('condition', $event.value)"
+        ></p-dropdown>
+
+        <p-dropdown
+          [options]="correspondentDdlOptions"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Select a Value"
+          [(ngModel)]="criteriaMap.val"
+          (onChange)="onChange('val', $event.value)"
+        ></p-dropdown>
         <button
-        pButton
-        pRipple
-        style="width: 38px;height: 38px;"
-        type="button"
-        label="+"
-        class="p-button-primary"
-        (click)="addCriteriaMap()"
-      ></button>
+          pButton
+          pRipple
+          style="width: 38px; height: 38px"
+          type="button"
+          label="+"
+          class="p-button-primary"
+          (click)="addCriteriaMap()"
+        ></button>
         <select
           #template
           class="form-select"
