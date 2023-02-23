@@ -48,27 +48,25 @@ export class LoginComponent implements OnInit {
         ...this.loginForm.value,
       };
 
-      this.loginService
-        .loginUser(formData)
-        .subscribe(
-          (data: any) => {
-            if (data && data.jwt) {
-              console.log("::user", data);
-              this.loginService.saveLoggedUserInfo(data);
-              this.router.navigate(["/navbar"]);
-              this.ngxToaster.success("Login is successfull");
-            } else {
-              localStorage.removeItem("token");
-              this.ngxToaster.error(data.msg);
-            }
-          },
-          (err) => {
-            console.log(err);
+      this.loginService.loginUser(formData).subscribe(
+        (data: any) => {
+          if (data && data.jwt) {
+            console.log("::user", data);
+            this.loginService.saveLoggedUserInfo(data);
+            this.router.navigate(["/navbar"]);
+            this.ngxToaster.success("Login is successfull");
+          } else {
+            localStorage.removeItem("token");
+            this.ngxToaster.error(data.msg);
           }
-        )
-        .add(() => {
+        },
+        (err) => {
+          console.log(err);
+        },
+        () => {
           this.coreService.removeLoadingScreen();
-        });
+        }
+      );
     } else {
       this.isFormInvalid = true;
     }

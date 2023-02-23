@@ -295,70 +295,68 @@ export class BankRoutingComponent implements OnInit {
   }
 
   getBanksRoutingData(id: string) {
-    this.bankRoutingService
-      .getBankRoutingData(id)
-      .subscribe(
-        (res) => {
-          console.log("::bankRoutingDataApi", res);
-          if (res["data"]) {
-            this.bankRoutingApiData = res as BankRoutingApiData;
-            this.bankRoutingApiData.data.forEach((route) => {
-              route.createdDate = new Date(route.createdDate);
-            });
+    this.bankRoutingService.getBankRoutingData(id).subscribe(
+      (res) => {
+        console.log("::bankRoutingDataApi", res);
+        if (res["data"]) {
+          this.bankRoutingApiData = res as BankRoutingApiData;
+          this.bankRoutingApiData.data.forEach((route) => {
+            route.createdDate = new Date(route.createdDate);
+          });
 
-            this.bankRoutingData = this.bankRoutingApiData.data.sort(
-              (a, b) => b.createdDate - a.createdDate
-            );
+          this.bankRoutingData = this.bankRoutingApiData.data.sort(
+            (a, b) => b.createdDate - a.createdDate
+          );
 
-            this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
+          this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
+            return { label: code, value: code };
+          });
+          this.countries = this.bankRoutingApiData.country.map((code) => {
+            return { label: code, value: code };
+          });
+          this.routeBankNames = this.bankRoutingApiData.routeBankName.map(
+            (code) => {
+              return { label: code, value: code };
+            }
+          );
+          this.routeServiceTypes = this.bankRoutingApiData.routeServiceType.map(
+            (code) => {
+              return { label: code, value: code };
+            }
+          );
+          this.routeServiceCategories =
+            this.bankRoutingApiData.routeServiceCategory.map((code) => {
               return { label: code, value: code };
             });
-            this.countries = this.bankRoutingApiData.country.map((code) => {
+          this.routeToBankNames = this.bankRoutingApiData.routeToBankName.map(
+            (code) => {
+              return { label: code, value: code };
+            }
+          );
+          this.routeToServiceTypes =
+            this.bankRoutingApiData.routeToServiceType.map((code) => {
               return { label: code, value: code };
             });
-            this.routeBankNames = this.bankRoutingApiData.routeBankName.map(
-              (code) => {
-                return { label: code, value: code };
-              }
-            );
-            this.routeServiceTypes =
-              this.bankRoutingApiData.routeServiceType.map((code) => {
-                return { label: code, value: code };
-              });
-            this.routeServiceCategories =
-              this.bankRoutingApiData.routeServiceCategory.map((code) => {
-                return { label: code, value: code };
-              });
-            this.routeToBankNames = this.bankRoutingApiData.routeToBankName.map(
-              (code) => {
-                return { label: code, value: code };
-              }
-            );
-            this.routeToServiceTypes =
-              this.bankRoutingApiData.routeToServiceType.map((code) => {
-                return { label: code, value: code };
-              });
-            this.routeToServiceCategories =
-              this.bankRoutingApiData.routeToServiceCategory.map((code) => {
-                return { label: code, value: code };
-              });
-            this.iSCorrespondents = this.bankRoutingApiData.iSCorrespondent.map(
-              (code) => {
-                return { label: code, value: code };
-              }
-            );
-            this.statuses = this.bankRoutingApiData.status.map((code) => {
+          this.routeToServiceCategories =
+            this.bankRoutingApiData.routeToServiceCategory.map((code) => {
               return { label: code, value: code };
             });
-          } else {
-            this.noDataMsg = res["msg"];
-          }
-        },
-        (err) => {
-          console.log(err);
+          this.iSCorrespondents = this.bankRoutingApiData.iSCorrespondent.map(
+            (code) => {
+              return { label: code, value: code };
+            }
+          );
+          this.statuses = this.bankRoutingApiData.status.map((code) => {
+            return { label: code, value: code };
+          });
+        } else {
+          this.noDataMsg = res["msg"];
         }
-      )
-      .add(() => {
+      },
+      (err) => {
+        console.log(err);
+      },
+      () => {
         this.coreService.removeLoadingScreen();
       });
   }
