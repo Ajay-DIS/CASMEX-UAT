@@ -1,0 +1,14 @@
+.rangeOverlapErr {
+  transition: all 0.5ms;
+}
+
+button {
+  border-radius: 5px !important;
+  background-color: rgb(36 85 207);
+  height: 40px;
+}
+
+:host ::ng-deep .addTxnBtn span {
+  font-size: 30px;
+  font-weight: 600;
+}

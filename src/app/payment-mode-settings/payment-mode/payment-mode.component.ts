@@ -158,25 +158,27 @@ export class PaymentModeComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
-    this.paymentModeService.getData().subscribe(
-      (response: any) => {
-        if (response && response.data && response.data.length > 0) {
-          response.data.map((item) => {
-            item["cmPaymentApplicableString"] = this.getApplicableString(
-              item.cmPaymentApplicable as cmPaymentApplicable[]
-            );
-          });
-          this.paymentData = response.data;
-          console.log(":: Payment data from API : ", this.paymentData);
+    this.paymentModeService
+      .getData()
+      .subscribe(
+        (response: any) => {
+          if (response && response.data && response.data.length > 0) {
+            response.data.map((item) => {
+              item["cmPaymentApplicableString"] = this.getApplicableString(
+                item.cmPaymentApplicable as cmPaymentApplicable[]
+              );
+            });
+            this.paymentData = response.data;
+            console.log(":: Payment data from API : ", this.paymentData);
+          }
+        },
+        (err) => {
+          console.log("Error", err.message);
         }
-      },
-      (err) => {
-        console.log("Error", err.message);
-      },
-      () => {
+      )
+      .add(() => {
         this.coreService.removeLoadingScreen();
-      }
-    );
+      });
   }
   navigateToViewPayment(data: any) {
     // localStorage.setItem('clickedPaymetData',JSON.stringify(data));

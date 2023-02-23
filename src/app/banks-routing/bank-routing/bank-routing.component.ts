@@ -1,28 +1,38 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { Table } from "primeng/table";
+import { ToastrService } from "ngx-toastr";
 
 import {
-  UpdateBankRouteStatusApiRequest,
   BankRouting,
   BankRoutingApiData,
   UserData,
 } from "../banks-routing.model";
 import { BankRoutingService } from "../bank-routing.service";
-import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
+import { DialogService } from "primeng/dynamicdialog";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-bank-routing",
   templateUrl: "./bank-routing.component.html",
   styleUrls: ["./bank-routing.component.css"],
+  providers: [DialogService, MessageService],
 })
 export class BankRoutingComponent implements OnInit {
   constructor(
     private router: Router,
     private bankRoutingService: BankRoutingService,
     private ngxToaster: ToastrService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    public dialogService: DialogService,
+    public messageService: MessageService
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
@@ -362,4 +372,5 @@ export class BankRoutingComponent implements OnInit {
         this.coreService.removeLoadingScreen();
       });
   }
+
 }
