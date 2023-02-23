@@ -17,7 +17,35 @@ export class AddnewrouteComponent implements OnInit {
   clickforsave = false;
   userId = "";
   criteriaName = "";
-  criteriaDdlOptions:any = [];
+  criteriaTemplatesDdlOptions:any = [];
+  criteriaMapDdlOptions = [{
+    name: "Select Criteria", code: ""
+  },{
+    name: "Correspodent", code: "Correspodent"
+  }, {
+    name: "Country", code: "Country"
+  }, {
+    name: "Service Type", code: "ServiceType"
+  }, {
+    name: "Service Category", code: "ServiceCategory"
+  }, {
+    name: "LCY Amount", code: "LCYAmount"
+  }, {
+    name: "Orginations", code: "Orginations"
+  }]
+  criteriaEqualsDdlOptions = [{
+    name: "Select Codition", code: ""
+  },{
+    name: "Any", code: ""
+  }, {
+    name: "Equal To", code: "="
+  }, {
+    name: "Not Equal To", code: "!="
+  }]
+  correspondentDdlOptions = [{name: "Select Value", code:""}];
+  criteriaMap = {
+    criteria: "", condition: "", val: ""
+  }
   
   constructor(
     private paymentModeService: PaymentModeService,
@@ -40,6 +68,78 @@ export class AddnewrouteComponent implements OnInit {
     }
 
   }
+
+  addCriteriaMap() {
+    console.log("criteria", this.criteriaMap)
+    this.criteriaText.push(this.criteriaMap.criteria+this.criteriaMap.condition+this.criteriaMap.val)
+  }
+
+  onChange(controlId, event) {
+     console.log("event", event)
+    this.criteriaMap[controlId] = event.code;
+    switch (controlId) {
+      case 'criteria': 
+      //this.criteriaMap.criteria = event.code
+      if(event.code == "Correspodent") {
+        this.correspondentDdlOptions = [{
+          name: "Select Value", code: ""
+        },{
+          name: "HDFC", code: "HDFC"
+        }, {
+          name: "SBI", code: "SBI"
+        }, {
+          name: "ICICI", code: "ICICI"
+        }]
+      } else if(event.code == "Country") {
+        this.correspondentDdlOptions = [{
+          name: "Select Value", code: ""
+        },{
+          name: "INDIA", code: "INDIA"
+        }, {
+          name: "US", code: "US"
+        }, {
+          name: "UK", code: "UK"
+        }]
+      } else if(event.code == "ServiceType") {
+        this.correspondentDdlOptions = [{
+          name: "Select Value", code: ""
+        },{
+          name: "Bank", code: "Bank"
+        }, {
+          name: "Utility", code: "Utility"
+        }]
+      } else if(event.code == "ServiceCategory") {
+        this.correspondentDdlOptions = [{
+          name: "Select Value", code: ""
+        },{
+          name: "Cash", code: "Cash"
+        }, {
+          name: "Onlinee", code: "Online"
+        }, {
+          name: "NEFT", code: "NEFT"
+        }]
+      } else if(event.code == "Orginations") {
+        this.correspondentDdlOptions = [{
+          name: "Select Value", code: ""
+        },{
+          name: "HDFC", code: "HDFC"
+        }, {
+          name: "SBI", code: "SBI"
+        }, {
+          name: "ICICI", code: "ICICI"
+        }]
+      }
+      break;
+      // case 'condition': 
+      // this.criteriaMap.condition = event.code
+      // break;
+      // case 'val':
+      //   this.criteriaMap.val = event.code
+      //   break;
+      default: break;
+    }
+  }
+
   changeCriteriaFields(criteriaName: any){
     const criteria = this.testData.find(item => item.displayName ===criteriaName)
     this.criteriaOperations = criteria.operations.split(',');
@@ -50,7 +150,13 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   openClickForSave() {
-    this.clickforsave = true;
+    if(this.criteriaText.length) {
+      this.clickforsave = true;
+    } else {
+      this.ngxToaster.warning("Please add criteria.")
+    }
+    
+
   }
 
   saveCriteriaAsTemplate(){
@@ -62,15 +168,16 @@ export class AddnewrouteComponent implements OnInit {
     const formData = new FormData();
     formData.append("userId", this.userId);
     formData.append("criteriaName", this.criteriaName);
-    formData.append("criteriaMap", "Correspodent=sbi;Country=Any;Currency=INR");
+    formData.append("criteriaMap", this.criteriaText.join(";"));
     this.paymentModeService.currentCriteriaSaveAsTemplate(formData).subscribe(response=> {
       console.log("respomse", response)
-      //this.criteriaDdlOptions.push(payload);//need  to be remove  after sit working
+      //this.criteriaTemplatesDdlOptions.push(payload);//need  to be remove  after sit working
       if(response.msg == "Duplicate criteria, please modify existing criteria") {
         this.ngxToaster.warning(response.msg)
         
       } else {
         this.ngxToaster.success(response.msg)
+        this.clickforsave = false;
         this.getAllTemplates();
       }
     })
@@ -80,7 +187,7 @@ export class AddnewrouteComponent implements OnInit {
     this.paymentModeService.getAllCriteriaTemplates().subscribe(response=> {
       console.log("response", response)
       if(response.data && response.data.length) {
-        this.criteriaDdlOptions = response.data;
+        this.criteriaTemplatesDdlOptions = response.data;
       } else {
         this.ngxToaster.warning(response.msg)
       }
@@ -90,7 +197,7 @@ export class AddnewrouteComponent implements OnInit {
 
   selectCriteriaTemplate(item) {
     console.log("event", item)
-    let selectedData = this.criteriaDdlOptions.filter(x=> x.criteriaName == item)[0]
+    let selectedData = this.criteriaTemplatesDdlOptions.filter(x=> x.criteriaName == item)[0]
     this.criteriaText = selectedData.criteriaMap.split(';')
     console.log("test", this.criteriaText)
   }

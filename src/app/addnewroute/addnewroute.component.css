@@ -1,15 +1,15 @@
 .addnew1{
-    margin-left: 550px;
-    margin-top: 0px;
-  }
-  button{
-   padding: 5px;
-     margin-left: 8px;
-  }
-  .clickcriteria{
-     display: flex;
-     float: right;
-  }
-  .pagetitle{
-    margin-top: 10px;
-  }
+  margin-left: 550px;
+}
+button{
+ padding: 3px;
+   margin-left: 8px;
+}
+.clickcriteria{
+   display: flex;
+   float: right;
+}
+
+p-dropdown .p-dropdown {
+  width: 100%;
+}
