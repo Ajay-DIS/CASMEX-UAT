@@ -22,59 +22,108 @@ export class AddnewrouteComponent implements OnInit {
   criteriaName = "";
   criteriaTemplatesDdlOptions: any = [];
   criteriaMapDdlOptions = [
-    {
-      name: "Select Criteria",
-      code: "",
-    },
-    {
-      name: "Correspodent",
-      code: "Correspodent",
-    },
-    {
-      name: "Country",
-      code: "Country",
-    },
-    {
-      name: "Service Type",
-      code: "ServiceType",
-    },
-    {
-      name: "Service Category",
-      code: "ServiceCategory",
-    },
-    {
-      name: "LCY Amount",
-      code: "LCYAmount",
-    },
-    {
-      name: "Orginations",
-      code: "Orginations",
-    },
+    // {
+    //   name: "Select Criteria",
+    //   code: "",
+    // },
+    // {
+    //   name: "Correspodent",
+    //   code: "Correspodent",
+    // },
+    // {
+    //   name: "Country",
+    //   code: "Country",
+    // },
+    // {
+    //   name: "Service Type",
+    //   code: "ServiceType",
+    // },
+    // {
+    //   name: "Service Category",
+    //   code: "ServiceCategory",
+    // },
+    // {
+    //   name: "LCY Amount",
+    //   code: "LCYAmount",
+    // },
+    // {
+    //   name: "Orginations",
+    //   code: "Orginations",
+    // },
   ];
   criteriaEqualsDdlOptions = [
-    {
-      name: "Select Codition",
-      code: "",
-    },
-    {
-      name: "Any",
-      code: "",
-    },
-    {
-      name: "Equal To",
-      code: "=",
-    },
-    {
-      name: "Not Equal To",
-      code: "!=",
-    },
+    // {
+    //   name: "Any",
+    //   code: "",
+    // },
+    // {
+    //   name: "Equal To",
+    //   code: "=",
+    // },
+    // {
+    //   name: "Not Equal To",
+    //   code: "!=",
+    // }
   ];
-  correspondentDdlOptions = [{ name: "Select Value", code: "" }];
-  criteriaMap = {
+  correspondentDdlOptions = [];
+  criteriaMap: any = {
     criteria: "",
     condition: "",
     val: "",
   };
+  //data from API
+  cmCriteriaDataDetails: any = [
+    {
+      id: 153,
+      fieldName: "Organization",
+      displayName: "Organization",
+      fieldType: "Dropdown",
+      operations: "equal,not-equal",
+      orderID: 3,
+      iSMandatory: "yes",
+      values: ["HDFC", "SBI", "ICICI", "any"],
+    },
+    {
+      id: 154,
+      fieldName: "Country",
+      displayName: "Country",
+      fieldType: "Dropdown",
+      operations: "equal,not-equal",
+      orderID: 2,
+      iSMandatory: "yes",
+      values: ["India", "US", "UK"],
+    },
+    {
+      id: 152,
+      fieldName: "Service Category",
+      displayName: "Service Category",
+      fieldType: "Dropdown",
+      operations: "equal,not-equal",
+      orderID: 5,
+      iSMandatory: "yes",
+      values: ["Cash", "Online", "NEFT"],
+    },
+    {
+      id: 151,
+      fieldName: "Correspondent",
+      displayName: "Correspondent",
+      fieldType: "Dropdown",
+      operations: "equal,not-equal",
+      orderID: 1,
+      iSMandatory: "yes",
+      values: ["HDFC", "SBI", "ICICI"],
+    },
+    {
+      id: 155,
+      fieldName: "Service Type",
+      displayName: "Service Type",
+      fieldType: "Dropdown",
+      operations: "equal,not-equal",
+      orderID: 4,
+      iSMandatory: "yes",
+      values: ["Bank", "Utility"],
+    },
+  ];
 
   ref: DynamicDialogRef;
   txnCriteriaRangeFormData: any;
@@ -106,115 +155,90 @@ export class AddnewrouteComponent implements OnInit {
           });
         });
     }
+
+    this.cmCriteriaDataDetails.forEach((element) => {
+      this.criteriaMapDdlOptions.push({
+        name: element.displayName,
+        code: element.fieldName,
+      });
+
+      // operations.forEach(x:any=> {
+      //   this.criteriaEqualsDdlOptions.push({name: x, })
+      // })
+    });
   }
 
   addCriteriaMap() {
-    console.log("criteria", this.criteriaMap);
-    this.criteriaText.push(
-      this.criteriaMap.criteria +
-        this.criteriaMap.condition +
-        this.criteriaMap.val
-    );
+    let criteria =
+      this.criteriaMap.criteria.name +
+      this.criteriaMap.condition.code +
+      this.criteriaMap.val.code;
+    //console.log("criteria", criteria, )
+    let index = this.criteriaText.indexOf(criteria);
+    //validation 1
+    if (this.criteriaText.length && index != -1) {
+      this.ngxToaster.warning(
+        criteria + " already added, please add different case"
+      );
+    } else if (this.criteriaText.length) {
+      if (criteria.includes("=")) {
+        let splitdata = criteria.replace(/[= !=]/g, "");
+        //console.log("splitData", splitdata)
+
+        this.criteriaText.forEach((element) => {
+          let splitText = element.replace(/[= !=]/g, "");
+          if (splitText == splitdata) {
+            this.ngxToaster.warning(
+              " Please select different criteria for Correspondent"
+            );
+          } else {
+            let lhs = criteria.substring(0, criteria.indexOf("=") + 1);
+            //let rhs = criteria.substring(criteria.indexOf("=") + 1);
+            // console.log("lshhh", lhs, element);
+            let elementLhs = element.substring(0, element.indexOf("=") + 1);
+            //let elementRhs = element.substring(element.indexOf("=") + 1);
+            if (lhs == elementLhs) {
+              this.ngxToaster.warning(
+                "Please delete existing criteria " +
+                  element +
+                  ", then add" +
+                  criteria
+              );
+            } else {
+              this.criteriaText.push(criteria);
+            }
+          }
+        });
+      }
+    } else {
+      this.criteriaText.push(criteria);
+    }
+
+    //validation 2
   }
 
   onChange(controlId, event) {
     console.log("event", event);
-    this.criteriaMap[controlId] = event.code;
+    //this.criteriaMap[controlId] = event.code;
     switch (controlId) {
       case "criteria":
-        //this.criteriaMap.criteria = event.code
-        if (event.code == "Correspodent") {
-          this.correspondentDdlOptions = [
-            {
-              name: "Select Value",
-              code: "",
-            },
-            {
-              name: "HDFC",
-              code: "HDFC",
-            },
-            {
-              name: "SBI",
-              code: "SBI",
-            },
-            {
-              name: "ICICI",
-              code: "ICICI",
-            },
-          ];
-        } else if (event.code == "Country") {
-          this.correspondentDdlOptions = [
-            {
-              name: "Select Value",
-              code: "",
-            },
-            {
-              name: "INDIA",
-              code: "INDIA",
-            },
-            {
-              name: "US",
-              code: "US",
-            },
-            {
-              name: "UK",
-              code: "UK",
-            },
-          ];
-        } else if (event.code == "ServiceType") {
-          this.correspondentDdlOptions = [
-            {
-              name: "Select Value",
-              code: "",
-            },
-            {
-              name: "Bank",
-              code: "Bank",
-            },
-            {
-              name: "Utility",
-              code: "Utility",
-            },
-          ];
-        } else if (event.code == "ServiceCategory") {
-          this.correspondentDdlOptions = [
-            {
-              name: "Select Value",
-              code: "",
-            },
-            {
-              name: "Cash",
-              code: "Cash",
-            },
-            {
-              name: "Onlinee",
-              code: "Online",
-            },
-            {
-              name: "NEFT",
-              code: "NEFT",
-            },
-          ];
-        } else if (event.code == "Orginations") {
-          this.correspondentDdlOptions = [
-            {
-              name: "Select Value",
-              code: "",
-            },
-            {
-              name: "HDFC",
-              code: "HDFC",
-            },
-            {
-              name: "SBI",
-              code: "SBI",
-            },
-            {
-              name: "ICICI",
-              code: "ICICI",
-            },
-          ];
-        }
+        let selectdCorrespondent = this.cmCriteriaDataDetails.filter(
+          (x) => event.code == x.fieldName
+        );
+        console.log("seleccted data", selectdCorrespondent);
+        let operations = selectdCorrespondent[0].operations.split(",");
+        this.criteriaEqualsDdlOptions = [];
+        operations.forEach((element) => {
+          this.criteriaEqualsDdlOptions.push({
+            name: element,
+            code: element == "equal" ? "=" : "!=",
+          });
+        });
+        let values = selectdCorrespondent[0].values;
+        this.correspondentDdlOptions = [];
+        values.forEach((element) => {
+          this.correspondentDdlOptions.push({ name: element, code: element });
+        });
         break;
       // case 'condition':
       // this.criteriaMap.condition = event.code
