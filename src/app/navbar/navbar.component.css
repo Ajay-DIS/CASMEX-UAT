@@ -24,18 +24,6 @@
   --------------------------------------------------------------*/
 .logo {
   line-height: 1;
-
-}
-
-@media (min-width: 1200px) {
-  .logo {
-    width: 280px;
-  }
-}
-
-.logo img {
-  max-height: 30px;
-  margin-left: 10px;
 }
 
 .logo span {
@@ -46,9 +34,11 @@
 }
 
 .header {
-  transition: all 0.5s;
-  z-index: 1000;
-  height: 80px;
+  width: calc(100% - 295px);
+  margin-left: 295px;
+  height: 91px;
+  transition: all 0.3s;
+  z-index: 102;
   box-shadow: 0px 3px 30px rgba(1, 41, 112, 0.1);
   background-color: #fff;
   padding-left: 20px;
@@ -56,11 +46,35 @@
   /* Search Bar */
 }
 
-.toggle-sidebar-btn {
-  cursor: pointer;
-  color: #012970;
+@media (max-width: 815px) {
+  .header {
+    width: 100%;
+    margin-left: 0px;
+    z-index: 98;
+  }
 }
 
+.toggle-sidebar {
+  position: absolute;
+  top: 110px;
+  left: 276px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.3rem;
+  width: 2.3rem;
+  background: #4759e4;
+  border-radius: 50%;
+  border: 1.5px solid white;
+  transition: 0.3ms;
+  z-index: 101;
+  transition: 0.3s;
+}
+
+.toggle-sidebar i {
+  cursor: pointer;
+  color: #fff !important;
+}
 
 .search-form input {
   border: 0;
@@ -71,7 +85,6 @@
   border-radius: 5px;
   transition: 0.3s;
   width: 100%;
-
 }
 
 .search-form input:focus,
@@ -99,7 +112,7 @@
   list-style: none;
 }
 
-.header-nav>ul {
+.header-nav > ul {
   margin: 0;
   padding: 0;
 }
@@ -107,7 +120,6 @@
 .header-nav .nav-icon {
   font-size: 22px;
   color: #012970;
-  margin-right: 25px;
   position: relative;
 }
 
@@ -195,46 +207,175 @@
   margin-left: 50px;
 }
 
-
 /*--------------------------------------------------------------
 # Sidebar
 --------------------------------------------------------------*/
 .sidebar {
   position: fixed;
-  top: 80px;
+  top: 0px;
   left: 0;
   bottom: 0;
   width: 95px;
-  z-index: 996;
+  z-index: 100;
   transition: all 0.3s;
-  padding: 20px;
+
+  box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+  background-color: rgba(71 89 228);
+}
+
+.sidebar .sidebar-content {
+  padding: 1.2rem;
+  max-height: calc(100vh - 91px);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: #aab7cf transparent;
-  box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+}
+.sidebar .sidebar-content::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
   background-color: #fff;
 }
+.sidebar .sidebar-content::-webkit-scrollbar-thumb {
+  background-color: #aab7cf;
+}
 
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a {
+  background: transparent;
+  color: #fff;
+}
 
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
+  margin-right: 0.7rem;
+}
+
+.menu-search {
+  width: 228px;
+  border-radius: 5px;
+}
+
+.p-input-icon-left > .menu-search.p-inputtext {
+  padding-left: 3rem;
+}
+
+.profile-dropdown::ng-deep .p-dropdown {
+  border: none;
+}
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon {
+  display: none;
+}
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-label {
+  padding-bottom: 0;
+  padding-top: 0;
+  font-weight: 600;
+  color: black;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+}
+.profile-content span {
+  font-size: 0.8rem;
+}
+
+.profile-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
+
+.menu-search::placeholder {
+  color: rgb(138 144 153);
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-header:not(.p-highlight):not(.p-disabled)
+  > a:hover,
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-header.p-highlight:not(.p-disabled)
+  > a:hover,
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-panel:has(.p-toggleable-content)
+  .p-panelmenu-header.p-highlight {
+  background: linear-gradient(
+    to right,
+    rgba(147, 159, 254),
+    rgba(99, 117, 252)
+  );
+  border-color: transparent;
+  color: #fff;
+  border-radius: 5px;
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a:focus {
+  box-shadow: none;
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-content {
+  background: linear-gradient(
+    to right,
+    rgba(147, 159, 254, 0.22),
+    rgba(99, 117, 252, 0.22)
+  );
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link
+  .p-menuitem-text {
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover {
+  background: linear-gradient(
+    to right,
+    rgba(147, 159, 254),
+    rgba(99, 117, 252)
+  );
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-panel .p-panelmenu-header > a {
+  border-radius: 5px;
+}
 
 /* @media (max-width: 1199px) {
   .sidebar {
     left: -300px;
   }
 } */
-
+/* 
 .sidebar::-webkit-scrollbar {
-  width: 5px;
-  height: 8px;
-  background-color: #fff;
+  
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background-color: #aab7cf;
+  
+} */
+
+.sidebar .sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 91px;
 }
 
 @media (min-width: 1200px) {
-
   #main,
   #footer {
     margin-left: 310px;
@@ -249,7 +390,6 @@
 }
 
 @media (min-width: 1200px) {
-
   .toggle-sidebar #main,
   .toggle-sidebar #footer {
     margin-left: 0;
@@ -331,7 +471,7 @@
   display: flex;
   align-items: center;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   color: #0c0c0c;
   transition: 0.3;
   padding: 10px 0 10px 40px;
@@ -370,8 +510,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -382,19 +522,19 @@
   left: 0px;
   bottom: 2px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
-input:checked+.slider {
+input:checked + .slider {
   background-color: #55c78a;
 }
 
-input:focus+.slider {
+input:focus + .slider {
   box-shadow: 0 0 1px #55c78a;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
@@ -448,66 +588,186 @@ nav ol li .breadcrumb-item active {
 
 ::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
   padding-left: 40px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+}
+::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-panelmenu-icon {
+  margin-left: 0;
+  font-size: 0.9rem;
+  color: white;
 }
 
-::ng-deep.p-panelmenu .p-panelmenu-header>a {
+::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:focus {
+  box-shadow: none;
+}
+
+::ng-deep.p-panelmenu .p-panelmenu-header > a {
   border: none;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+::ng-deep.p-panelmenu .p-panelmenu-icon {
+  font-size: 0.6rem;
+}
+
+.sidebar-content-footer {
+  background-color: #2455cf;
+  margin-top: 60px;
+  padding: 1.2rem 1.5rem;
+  border-radius: 5px;
+  background: linear-gradient(to right, rgba(21 83 241), rgba(22 69 184));
+}
+.sidebar-content-footer .help-content {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+}
+.sidebar-content-footer .copyright-version-content {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: white;
+}
+.sidebar-content-footer .help-icon-content {
+  display: flex;
+  align-items: center;
+}
+.sidebar-content-footer .help-icon-content img {
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
+}
+
+.header-bar::ng-deep .p-breadcrumb {
+  padding: 0;
+  border: none;
+}
+
+@media (max-width: 815px) {
+  .header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link .p-menuitem-text {
+    font-size: 0.8rem;
+  }
+  .profile-icon-name {
+    padding-right: 0 !important;
+  }
+}
+.header-bar::ng-deep .p-breadcrumb ul li .p-menuitem-text {
+  color: rgb(138 144 153);
+}
+
+.header-bar::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
+  color: rgba(99, 117, 252);
+  font-weight: 600;
+}
+.header-bar::ng-deep .p-breadcrumb ul li:nth-last-child(3) .p-menuitem-text {
+  font-weight: 600;
+}
+.header-bar::ng-deep .p-breadcrumb ul li.p-breadcrumb-chevron:before {
+  content: "\002F";
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.notification-alert {
+  border-right: 1.5px solid lightgrey;
+  margin-right: 15px;
+}
+.notification-alert .badge {
+  height: 15px;
+  width: 15px;
+  right: 9px;
+  top: 5px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247 68 64);
 }
 
 :host ::ng-deep .dashboard-icon {
   background-image: url("/assets/icon/Dashboard Icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .rateSetup-icon {
   background-image: url("/assets/icon/Rate Setup icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .customerDetails-icon {
   background-image: url("/assets/icon/Customer Details icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
 }
 :host ::ng-deep .forex-icon {
   background-image: url("/assets/icon/Forex icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .beneficiary-icon {
   background-image: url("/assets/icon/Beneficiary Details icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .remmitance-icon {
   background-image: url("/assets/icon/Remittance icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .settings-icon {
   background-image: url("/assets/icon/Settings icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .applicationsettings-icon {
   background-image: url("/assets/icon/Application Settings Icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .reports-icon {
   background-image: url("/assets/icon/Reports icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .Accounts-icon {
   background-image: url("/assets/icon/Accounts icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
 :host ::ng-deep .Incoming-icon {
   background-image: url("/assets/icon/Incoming icon.svg");
   width: 1rem;
   height: 1rem;
+  transform: scale(0.9);
+  filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
+    contrast(105%);
 }
-
-

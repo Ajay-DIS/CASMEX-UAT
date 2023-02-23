@@ -23,6 +23,7 @@ import { ContextMenuModule } from "primeng/contextmenu";
 import { MultiSelectModule } from "primeng/multiselect";
 import { CardModule } from "primeng/card";
 import { BlockUIModule } from "primeng/blockui";
+import { BreadcrumbModule } from "primeng/breadcrumb";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -32,7 +33,7 @@ import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-m
 import { LoginComponent } from "./login/login.component";
 import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
 import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
-import { AddnewrouteComponent } from './addnewroute/addnewroute.component';
+import { AddnewrouteComponent } from "./addnewroute/addnewroute.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -68,16 +69,17 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MultiSelectModule,
     CardModule,
     BlockUIModule,
+    BreadcrumbModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-      }
-  }),
-  PanelMenuModule,
-  DialogModule,
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient],
+      },
+    }),
+    PanelMenuModule,
+    DialogModule,
   ],
   providers: [
     {
