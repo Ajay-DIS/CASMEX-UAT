@@ -30,11 +30,11 @@
   </nav>
 </div>
 <div style="background-color: #ffffff">
-  <h6>Description</h6>
-  <h6>
+  <h6 style="padding: 10px;">Description</h6>
+  <p style="background-color: #e9ecef;width: 440px;margin-left: 10px;color: #8a9099; font-size: 12px;padding: 10px;">
     Based on the critetria selected banks will be routed to preferred routing
     bank...
-  </h6>
+  </p>
   <div>
     <div
       style="
@@ -48,7 +48,7 @@
       <h6
         style="
           color: blue;
-          margin-left: 30px;
+          margin-left: 20px;
           -top: 10px;
           font-weight: bold;
           font-size: 16px;
@@ -79,23 +79,21 @@
         </ng-template>
       </p-dialog>
 
-      <div style="display: flex; margin-bottom: 50px; margin-left: 30px">
+      <div style="display: flex; margin-bottom: 50px; ">
         
-        <p-dropdown [options]="criteriaMapDdlOptions" optionLabel="name" optionValue="code"  
+        <p-dropdown [options]="criteriaMapDdlOptions" optionLabel="name" optionValue="code" placeholder="Select a Criteria" 
         
-        style="margin-right: 10px" [(ngModel)]="criteriaMap.criteria" (onChange)="onChange('criteria',$event.value)" ></p-dropdown>
+         [(ngModel)]="criteriaMap.criteria" (onChange)="onChange('criteria',$event.value)" ></p-dropdown>
         
-        <p-dropdown [options]="criteriaEqualsDdlOptions" optionLabel="name" optionValue="code" 
-         [(ngModel)]="criteriaMap.condition" (onChange)="onChange('condition',$event.value)"
-        style="margin-right: 10px"></p-dropdown>
+        <p-dropdown [options]="criteriaEqualsDdlOptions" optionLabel="name" optionValue="code"placeholder="Select a Operation"  
+         [(ngModel)]="criteriaMap.condition" (onChange)="onChange('condition',$event.value)"></p-dropdown>
 
-        <p-dropdown [options]="correspondentDdlOptions" optionLabel="name" optionValue="code" 
-         [(ngModel)]="criteriaMap.val" (onChange)="onChange('val',$event.value)"
-        style="margin-right: 10px"></p-dropdown>
+        <p-dropdown [options]="correspondentDdlOptions" optionLabel="name" optionValue="code"  placeholder="Select a Value"
+         [(ngModel)]="criteriaMap.val" (onChange)="onChange('val',$event.value)"></p-dropdown>
         <button
         pButton
         pRipple
-        style="padding: 10px" 
+        style="width: 38px;height: 38px;"
         type="button"
         label="+"
         class="p-button-primary"
@@ -105,7 +103,7 @@
           #template
           class="form-select"
           aria-label="Default select example"
-          style="width: 200px; margin-left: 200px"
+          style="width: 200px; margin-left: 250px"
           (change)="selectCriteriaTemplate(template.value)"
         >
           <option *ngIf="!criteriaTemplatesDdlOptions.length" selected>

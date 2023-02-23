@@ -15,3 +15,12 @@ button {
 p-dropdown .p-dropdown {
   width: 100%;
 }
+::ng-deep .p-dropdown{
+  margin-right: 10px;
+  width: 200px;
+  height: 40px;
+}
+::ng-deep .p-button-primary plus {
+  width: 40px;
+  height: 25px;
+}
