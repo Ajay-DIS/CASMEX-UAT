@@ -1,31 +1,44 @@
-import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import { Router } from "@angular/router";
 import { Table } from "primeng/table";
+import { ToastrService } from "ngx-toastr";
 
 import {
-  UpdateBankRouteStatusApiRequest,
   BankRouting,
   BankRoutingApiData,
   UserData,
 } from "../banks-routing.model";
 import { BankRoutingService } from "../bank-routing.service";
-import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { MessageService } from "primeng/api";
+import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
 
 @Component({
   selector: "app-bank-routing",
   templateUrl: "./bank-routing.component.html",
   styleUrls: ["./bank-routing.component.css"],
+  providers: [DialogService, MessageService],
 })
-export class BankRoutingComponent implements OnInit {
+export class BankRoutingComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private bankRoutingService: BankRoutingService,
     private ngxToaster: ToastrService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    public dialogService: DialogService,
+    public messageService: MessageService
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
+
+  ref: DynamicDialogRef;
 
   showRouteCodesOptions: boolean = false;
   showCountriesOptions: boolean = false;
@@ -361,5 +374,30 @@ export class BankRoutingComponent implements OnInit {
       .add(() => {
         this.coreService.removeLoadingScreen();
       });
+  }
+
+  showTransCriteriaModal() {
+    this.ref = this.dialogService.open(TransactionCriteriaModal, {
+      // header: "Choose a Product",
+      width: "40%",
+      contentStyle: { "max-height": "500px", overflow: "auto" },
+      baseZIndex: 10000,
+      styleClass: "txn-criteria-modal",
+    });
+    this.ref.onClose.subscribe((product: any) => {
+      if (product) {
+        this.messageService.add({
+          severity: "info",
+          summary: "Product Selected",
+          detail: product.name,
+        });
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }
