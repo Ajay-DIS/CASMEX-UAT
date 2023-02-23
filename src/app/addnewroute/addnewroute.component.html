@@ -80,37 +80,27 @@
       </p-dialog>
 
       <div style="display: flex; margin-bottom: 50px; margin-left: 30px">
-        <select
-          class="form-select"
-          aria-label="Default select example"
-          (change)="changeCriteriaFields($event.target['value'])"
-          style="width: 200px; margin-right: 10px"
-        >
-          <!-- <option selected *ngFor="let name of testData">{{name.displayName}}</option> -->
-          <option>Correspodent</option>
-          <option value="1">Country</option>
-        </select>
-        <select
-          class="form-select"
-          aria-label="Default select example"
-          style="width: 200px; margin-right: 10px"
-        >
-          <!-- <option selected *ngFor="let operation of criteriaOperations">{{operation}}</option> -->
-          <option value="1">Equals to</option>
-          <!-- <option value="2">Two</option>
-        <option value="3">Three</option> -->
-        </select>
-        <select
-          class="form-select"
-          aria-label="Default select example"
-          style="width: 200px; margin-right: 10px"
-        >
-          <option selected>SBI</option>
-          <option value="1">One</option>
-          <option value="2">Two</option>
-          <option value="3">Three</option>
-        </select>
-        <button class="btn btn-primary" style="padding: 10px">+</button>
+        
+        <p-dropdown [options]="criteriaMapDdlOptions" optionLabel="name" optionValue="code"  
+        
+        style="margin-right: 10px" [(ngModel)]="criteriaMap.criteria" (onChange)="onChange('criteria',$event.value)" ></p-dropdown>
+        
+        <p-dropdown [options]="criteriaEqualsDdlOptions" optionLabel="name" optionValue="code" 
+         [(ngModel)]="criteriaMap.condition" (onChange)="onChange('condition',$event.value)"
+        style="margin-right: 10px"></p-dropdown>
+
+        <p-dropdown [options]="correspondentDdlOptions" optionLabel="name" optionValue="code" 
+         [(ngModel)]="criteriaMap.val" (onChange)="onChange('val',$event.value)"
+        style="margin-right: 10px"></p-dropdown>
+        <button
+        pButton
+        pRipple
+        style="padding: 10px" 
+        type="button"
+        label="+"
+        class="p-button-primary"
+        (click)="addCriteriaMap()"
+      ></button>
         <select
           #template
           class="form-select"
@@ -118,13 +108,13 @@
           style="width: 200px; margin-left: 200px"
           (change)="selectCriteriaTemplate(template.value)"
         >
-          <option *ngIf="!criteriaDdlOptions.length" selected>
+          <option *ngIf="!criteriaTemplatesDdlOptions.length" selected>
             No Saved Templates
           </option>
-          <option *ngIf="criteriaDdlOptions.length" selected>
+          <option *ngIf="criteriaTemplatesDdlOptions.length" selected>
             Select Template
           </option>
-          <option *ngFor="let name of criteriaDdlOptions">
+          <option *ngFor="let name of criteriaTemplatesDdlOptions">
             {{ name.criteriaName }}
           </option>
         </select>
