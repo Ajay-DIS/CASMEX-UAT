@@ -2,34 +2,42 @@
 @import url("~primeicons/primeicons.css");
 @import url("~primeng/resources/primeng.min.css");
 @import url("~primeng/resources/themes/saga-blue/theme.css");
-@import url('~ngx-toastr/toastr.css');
+@import url("~ngx-toastr/toastr.css");
 
-body{
-    background-color: #f4f6fa;
+body {
+  background-color: #f4f6fa;
 }
 
-
-body.minified-sidebar aside#sidebar{
-    left: -300px !important;
+body.minified-sidebar aside#sidebar {
+  left: -300px !important;
 }
 
-body.minified-sidebar main{
-    margin-left: 50px !important;
-    transition: 300ms;
+body.minified-sidebar #header {
+  width: 100%;
+  margin-left: 0;
+}
+
+body.minified-sidebar main {
+  margin-left: 50px !important;
+  transition: 300ms;
+}
+body.minified-sidebar .toggle-sidebar {
+  left: 10px;
 }
 
 .ptable {
-    background-color: #fff;
-  }
-  
-  .pagetitle{
-    margin-top: 85px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: 300ms;
-  }
+  background-color: #fff;
+}
 
-  .addnew{
-    margin: 15px 0;
-  }
+.pagetitle {
+  margin-top: 85px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  transition: 300ms;
+}
+
+.addnew button {
+  margin: 15px 0;
+  background-color: rgb(36 85 207);
+}

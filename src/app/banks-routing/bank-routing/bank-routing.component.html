@@ -1,17 +1,5 @@
 <div class="bank-routing-main">
   <div class="pagetitle">
-    <nav>
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">{{ "Home.home" | translate }}</li>
-        <li class="breadcrumb-item">{{ "Home.Settings" | translate }}</li>
-        <li class="breadcrumb-item">
-          {{ "Home.Module Settings" | translate }}
-        </li>
-        <li class="breadcrumb-item active" style="color: #2455cf">
-          {{ "Bank-Routing.Bank Routing" | translate }}
-        </li>
-      </ol>
-    </nav>
     <div class="addnew">
       <button
         pButton
@@ -35,7 +23,6 @@
       sortMode="multiple"
       dataKey="id"
       [rows]="3"
-      [rowsPerPageOptions]="[3, 5, 10]"
       [paginator]="true"
     >
       <ng-template pTemplate="header">
@@ -275,134 +262,158 @@
         </tr>
         <tr class="search-row">
           <th>
-            <input
-              pInputText
-              [classList]="'table-search'"
-              type="text"
-              (input)="
-                dt.filter($any($event.target).value, 'routeCode', 'contains')
-              "
-              placeholder="Search.."
-              class="p-column-filter"
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter($any($event.target).value, 'routeCode', 'contains')
+                "
+              />
+            </span>
           </th>
           <th>
-            <input
-              pInputText
-              [classList]="'table-search'"
-              type="text"
-              (input)="
-                dt.filter($any($event.target).value, 'country', 'contains')
-              "
-              placeholder="Search.."
-              class="p-column-filter"
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter($any($event.target).value, 'country', 'contains')
+                "
+              />
+            </span>
           </th>
           <th>
-            <input
-              pInputText
-              [classList]="'table-search'"
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeBankName',
-                  'contains'
-                )
-              "
-              placeholder="Search.."
-              class="p-column-filter"
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeBankName',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeServiceCategory',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeServiceCategory',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeServiceType',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeServiceType',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'iSCorrespondent',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'iSCorrespondent',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeToBankName',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeToBankName',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeToServiceCategory',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeToServiceCategory',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
           <th style="padding: 8px">
-            <input
-              pInputText
-              [classList]="'table-search'"
-              placeholder="Search.."
-              type="text"
-              (input)="
-                dt.filter(
-                  $any($event.target).value,
-                  'routeToServiceType',
-                  'contains'
-                )
-              "
-            />
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'routeToServiceType',
+                    'contains'
+                  )
+                "
+              />
+            </span>
           </th>
         </tr>
       </ng-template>
