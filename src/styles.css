@@ -8,6 +8,10 @@ body {
   background-color: #f4f6fa;
 }
 
+body.minified-sidebar aside#sidebar {
+  left: -300px !important;
+}
+
 body.minified-sidebar #header {
   width: 100%;
   margin-left: 0;
@@ -21,9 +25,8 @@ body.minified-sidebar .toggle-sidebar {
   left: 10px;
 }
 
-body.minified-sidebar main {
-  margin-left: 50px !important;
-  transition: 300ms;
+.ptable {
+  background-color: #fff;
 }
 
 .pagetitle {

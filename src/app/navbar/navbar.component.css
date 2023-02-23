@@ -250,6 +250,7 @@
 
 .menu-search {
   width: 228px;
+  border-radius: 5px;
 }
 
 .p-input-icon-left > .menu-search.p-inputtext {
