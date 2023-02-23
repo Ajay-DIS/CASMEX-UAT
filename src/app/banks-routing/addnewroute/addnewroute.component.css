@@ -24,15 +24,17 @@ p-dropdown .p-dropdown {
   width: 40px;
   height: 25px;
 }
-
-.criteria-bar {
-  display: flex;
-  padding: 0 1.5rem;
+.criteria-main-section {
   border: 0.5px solid#eaedf4;
   width: 100%;
   margin-bottom: 20px;
   padding: 20px;
   background-color: #ffffff;
+}
+
+.criteria-bar {
+  display: flex;
+  padding: 0 1.5rem;
 }
 
 .setCriteria {
@@ -55,4 +57,23 @@ p-dropdown .p-dropdown {
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+}
+
+.dropdowns-select-container {
+  display: flex;
+  margin-bottom: 50px;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+}
+
+.left-dropdowns {
+  width: 70%;
+  display: flex;
+  align-items: center;
+}
+
+.right-select {
+  width: 30%;
+  display: flex;
+  justify-content: flex-end;
 }
