@@ -1,32 +1,37 @@
-<!-- <div class="modal-body-content" [formGroup]="txnAmountRangesForm">
-  <div class="d-flex jc-between">
-    <div class="col-6">
-      <label for="amountFrom">LCY Amount From</label>
+<div>
+  <div class="modal-body-content" [formGroup]="txnCriteriaRangeForm">
+    <div class="d-flex jc-between">
+      <div class="col-6">
+        <label for="amountFrom">LCY Amount From</label>
+      </div>
+      <div class="col-6">
+        <label for="amountTo">LCY Amount To</label>
+      </div>
     </div>
-    <div class="col-6">
-      <label for="amountTo">LCY Amount To</label>
-    </div>
-  </div>
-  <ng-container formArrayName="txnAmountRanges">
     <ng-container
-      *ngFor="let rangeForm of txnAmountRanges.controls; let i = index"
+      formArrayName="txnCriteriaRange"
+      *ngFor="let item of txnCriteriaRangeForm.get('txnCriteriaRange')['controls']; let i = index;"
     >
-      <div class="d-flex jc-between">
+      <div [formGroupName]="i" class="d-flex jc-between">
         <div class="col-6">
           <p-inputNumber
+            #fromInp
             inputId="integeronly"
             [style]="{minWidth: '100%'}"
             [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
             [min]="0"
+            formControlName="from"
           >
           </p-inputNumber>
         </div>
         <div class="col-6">
           <p-inputNumber
+            #toInp
             inputId="integeronly"
             [style]="{minWidth: '100%'}"
             [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-            [min]="0"
+            [min]="fromInp.value"
+            formControlName="to"
           >
           </p-inputNumber>
         </div>
@@ -41,7 +46,7 @@
           label="+"
           [style]="{minWidth: '100%'}"
           class="p-button-raised"
-          (click)="addTxnRange()"
+          (click)="addTxnCriteriaRange()"
         ></button>
       </div>
     </div>
@@ -53,7 +58,7 @@
           type="button"
           label="Save"
           [style]="{minWidth: '100%'}"
-          (click)="saveTxnAmountRanges()"
+          (click)="saveTxnCriteriaRanges()"
           class="p-button-raised"
         ></button>
       </div>
@@ -63,6 +68,7 @@
           pRipple
           type="button"
           label="Save & Close"
+          (click)="closeModal()"
           [style]="{minWidth: '100%'}"
           class="p-button-raised"
         ></button>
@@ -79,99 +85,5 @@
         </span>
       </div>
     </div>
-  </ng-container>
-</div> -->
-
-<!--  -->
-
-<div>
-  <div class="modal-body-content" [formGroup]="orderForm">
-    <div class="d-flex jc-between">
-      <div class="col-6">
-        <label for="amountFrom">LCY Amount From</label>
-      </div>
-      <div class="col-6">
-        <label for="amountTo">LCY Amount To</label>
-      </div>
-    </div>
-    <ng-container
-      formArrayName="items"
-      *ngFor="let item of orderForm.get('items')['controls']; let i = index;"
-    >
-      <div [formGroupName]="i" class="d-flex jc-between">
-        <div class="col-6">
-          <p-inputNumber
-            inputId="integeronly"
-            [style]="{minWidth: '100%'}"
-            [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-            [min]="0"
-            formControlName="name"
-          >
-          </p-inputNumber>
-        </div>
-        <div class="col-6">
-          <p-inputNumber
-            inputId="integeronly"
-            [style]="{minWidth: '100%'}"
-            [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-            [min]="0"
-            formControlName="name"
-          >
-          </p-inputNumber>
-        </div>
-      </div>
-
-      <div class="d-flex jc-between">
-        <div class="col-12">
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="+"
-            [style]="{minWidth: '100%'}"
-            class="p-button-raised"
-            (click)="addItem()"
-          ></button>
-        </div>
-      </div>
-      <div class="d-flex justify-content-center">
-        <div class="col-6">
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="Save"
-            [style]="{minWidth: '100%'}"
-            (click)="save()"
-            class="p-button-raised"
-          ></button>
-        </div>
-        <div class="col-6">
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="Save & Close"
-            [style]="{minWidth: '100%'}"
-            class="p-button-raised"
-          ></button>
-        </div>
-      </div>
-      <div class="d-flex justify-content-center align-items-center">
-        <div
-          class="col-12 justify-content-end d-flex align-items-center"
-          style="font-size: 0.8em"
-        >
-          <span [ngClass]="{'highlightInfo': 'showError'}">
-            <i class="pi pi-info-circle mr-2" style="color: red"></i>Maximum 10
-            Transaction ranges can be added
-          </span>
-        </div>
-      </div>
-      Chosen name: {{
-      orderForm.controls.items['controls'][i].controls.name.value }}
-    </ng-container>
   </div>
-  <button (click)="addItem()">Add</button>
-  <button (click)="save()">Add</button>
 </div>
