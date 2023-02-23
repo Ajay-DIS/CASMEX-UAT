@@ -12,3 +12,6 @@ button {
 .pagetitle {
   margin-top: 95px;
 }
+p-dropdown .p-dropdown {
+  width: 100%;
+}
