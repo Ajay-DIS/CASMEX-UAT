@@ -41,9 +41,27 @@ body.minified-sidebar .toggle-sidebar {
   margin: 15px 0;
   background-color: rgb(36 85 207);
 }
+
+.p-dialog.txn-criteria-modal {
+  max-width: 483px;
+}
+
 .p-dialog.txn-criteria-modal .p-dialog-content {
   padding-bottom: 1rem;
   padding-top: 1rem;
+  max-height: 300px;
+  overflow-y: scroll;
+  border-radius: 15px;
+}
+
+.p-dialog.txn-criteria-modal .p-dialog-content::-webkit-scrollbar {
+  width: 3px;
+  height: 8px;
+  background-color: #fff;
+}
+
+.p-dialog.txn-criteria-modal .p-dialog-content::-webkit-scrollbar-thumb {
+  background-color: #aab7cf;
 }
 
 .p-dialog.txn-criteria-modal .p-dialog-header {
@@ -61,4 +79,14 @@ body.minified-sidebar .toggle-sidebar {
   color: #fff;
   border-color: transparent;
   background: #55c78a;
+}
+
+button.p-button {
+  border-radius: 5px !important;
+  background-color: rgb(36 85 207);
+  height: 40px;
+}
+
+input.p-inputnumber-input {
+  border-radius: 5px;
 }

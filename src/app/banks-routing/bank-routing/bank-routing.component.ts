@@ -16,9 +16,8 @@ import {
 } from "../banks-routing.model";
 import { BankRoutingService } from "../bank-routing.service";
 import { CoreService } from "src/app/core.service";
-import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { DialogService } from "primeng/dynamicdialog";
 import { MessageService } from "primeng/api";
-import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
 
 @Component({
   selector: "app-bank-routing",
@@ -26,7 +25,7 @@ import { TransactionCriteriaModal } from "../transaction-criteria-modal/transact
   styleUrls: ["./bank-routing.component.css"],
   providers: [DialogService, MessageService],
 })
-export class BankRoutingComponent implements OnInit, OnDestroy {
+export class BankRoutingComponent implements OnInit {
   constructor(
     private router: Router,
     private bankRoutingService: BankRoutingService,
@@ -37,8 +36,6 @@ export class BankRoutingComponent implements OnInit, OnDestroy {
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
-
-  ref: DynamicDialogRef;
 
   showRouteCodesOptions: boolean = false;
   showCountriesOptions: boolean = false;
@@ -376,28 +373,4 @@ export class BankRoutingComponent implements OnInit, OnDestroy {
       });
   }
 
-  showTransCriteriaModal() {
-    this.ref = this.dialogService.open(TransactionCriteriaModal, {
-      // header: "Choose a Product",
-      width: "40%",
-      contentStyle: { "max-height": "500px", overflow: "auto" },
-      baseZIndex: 10000,
-      styleClass: "txn-criteria-modal",
-    });
-    this.ref.onClose.subscribe((product: any) => {
-      if (product) {
-        this.messageService.add({
-          severity: "info",
-          summary: "Product Selected",
-          detail: product.name,
-        });
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.ref) {
-      this.ref.close();
-    }
-  }
 }

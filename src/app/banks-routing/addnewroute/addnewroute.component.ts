@@ -1,12 +1,16 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
+import { MessageService } from "primeng/api";
+import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { PaymentModeService } from "../../payment-mode-settings/payment-mode-service.service";
+import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
 
 @Component({
   selector: "app-addnewroute",
   templateUrl: "./addnewroute.component.html",
   styleUrls: ["./addnewroute.component.css"],
+  providers: [DialogService, MessageService],
 })
 export class AddnewrouteComponent implements OnInit {
   criteriaText: any[] = [];
@@ -72,10 +76,15 @@ export class AddnewrouteComponent implements OnInit {
     val: "",
   };
 
+  ref: DynamicDialogRef;
+  txnCriteriaRangeFormData: any;
+
   constructor(
     private paymentModeService: PaymentModeService,
     private activatedRoute: ActivatedRoute,
-    private ngxToaster: ToastrService
+    private ngxToaster: ToastrService,
+    public dialogService: DialogService,
+    public messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -283,5 +292,28 @@ export class AddnewrouteComponent implements OnInit {
     )[0];
     this.criteriaText = selectedData.criteriaMap.split(";");
     console.log("test", this.criteriaText);
+  }
+
+  showTransCriteriaModal() {
+    this.ref = this.dialogService.open(TransactionCriteriaModal, {
+      // header: "Choose a Product",
+      width: "40%",
+      contentStyle: { "max-height": "500px", overflow: "auto" },
+      baseZIndex: 10000,
+      styleClass: "txn-criteria-modal",
+      data: { txnCriteriaRange: this.txnCriteriaRangeFormData },
+    });
+    this.ref.onClose.subscribe((data: any) => {
+      if (data) {
+        this.txnCriteriaRangeFormData = data;
+        console.log("::addnewroute", data);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.ref) {
+      this.ref.close();
+    }
   }
 }

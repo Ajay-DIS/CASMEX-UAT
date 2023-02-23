@@ -15,3 +15,34 @@ button {
 p-dropdown .p-dropdown {
   width: 100%;
 }
+
+::ng-deep .p-dropdown{
+  margin-right: 10px;
+}
+
+.criteria-bar {
+  display: flex;
+  padding: 0 1.5rem;
+}
+
+.setCriteria {
+  color: rgb(36 85 207);
+  font-size: 14px;
+  font-weight: 600;
+  width: 60%;
+  cursor: pointer;
+}
+
+.openCriteria {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.openCriteria a {
+  color: rgb(36 85 207);
+  border-bottom: 1px solid rgb(36 85 207);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}

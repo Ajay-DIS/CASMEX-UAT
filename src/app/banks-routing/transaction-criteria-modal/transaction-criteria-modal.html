@@ -1,11 +1,11 @@
 <div>
   <div class="modal-body-content" [formGroup]="txnCriteriaRangeForm">
     <div class="d-flex jc-between">
-      <div class="col-6">
-        <label for="amountFrom">LCY Amount From</label>
+      <div class="col-6 pb-0">
+        <label style="font-weight: 500" for="amountFrom">LCY Amount From</label>
       </div>
-      <div class="col-6">
-        <label for="amountTo">LCY Amount To</label>
+      <div class="col-6 pb-0">
+        <label style="font-weight: 500" for="amountTo">LCY Amount To</label>
       </div>
     </div>
     <ng-container
@@ -20,6 +20,7 @@
             [style]="{minWidth: '100%'}"
             [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
             [min]="0"
+            (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)"
             formControlName="from"
           >
           </p-inputNumber>
@@ -37,6 +38,14 @@
         </div>
       </div>
     </ng-container>
+    <div
+      class="col-12 justify-content-end d-flex align-items-center rangeOverlapErr"
+      style="font-size: 0.8em"
+      *ngIf="isAnyRangeOverlappingErrMsg"
+    >
+      <i class="pi pi-info-circle mr-2" style="color: red"></i>
+      <span> {{isAnyRangeOverlappingErrMsg}} </span>
+    </div>
     <div class="d-flex jc-between">
       <div class="col-12">
         <button
@@ -45,7 +54,7 @@
           type="button"
           label="+"
           [style]="{minWidth: '100%'}"
-          class="p-button-raised"
+          class="p-button-raised addTxnBtn"
           (click)="addTxnCriteriaRange()"
         ></button>
       </div>
@@ -79,9 +88,9 @@
         class="col-12 justify-content-end d-flex align-items-center"
         style="font-size: 0.8em"
       >
-        <span [ngClass]="{'highlightInfo': showError}">
-          <i class="pi pi-info-circle mr-2" style="color: red"></i>Maximum 10
-          Transaction ranges can be added
+        <i class="pi pi-info-circle mr-2" style="color: red"></i>
+        <span [ngClass]="{'highlightInfo': showError}"
+          >Maximum 10 Transaction ranges can be added
         </span>
       </div>
     </div>
