@@ -16,14 +16,23 @@ export class BankRoutingService {
   // initialUser = { useRole: "", userGroup: "", userId: "", userName: "" };
 
   // $userData = new BehaviorSubject<UserData>(this.initialUser);
-  
+
   // setUserData(user: UserData) {
-    //   this.$userData.next(user);
-    // }
-    
-    // getUserData(user: UserData) {
-      //   return this.$userData;
-      // }
+  //   this.$userData.next(user);
+  // }
+
+  // getUserData(user: UserData) {
+  //   return this.$userData;
+  // }
+
+  $TransactionCriteriaRange = new BehaviorSubject<any>({});
+
+  setTransactionCriteriaRange(value: any) {
+    this.$TransactionCriteriaRange.next(value)
+  }
+  getTransactionCriteriaRange() {
+    return this.$TransactionCriteriaRange
+  }
 
   getBankRoutingData(id: string) {
     return this.http.get(

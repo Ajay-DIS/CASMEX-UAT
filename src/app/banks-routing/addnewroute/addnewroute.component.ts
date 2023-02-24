@@ -4,6 +4,7 @@ import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { PaymentModeService } from "../../payment-mode-settings/payment-mode-service.service";
+import { BankRoutingService } from "../bank-routing.service";
 import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
 
 @Component({
@@ -133,10 +134,15 @@ export class AddnewrouteComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private ngxToaster: ToastrService,
     public dialogService: DialogService,
-    public messageService: MessageService
+    public messageService: MessageService,
+    private bankRoutingService: BankRoutingService
   ) {}
 
   ngOnInit(): void {
+    this.bankRoutingService.getTransactionCriteriaRange().subscribe((res) => {
+      this.txnCriteriaRangeFormData = res;
+    });
+
     const params = this.activatedRoute.snapshot.params;
     this.userId = localStorage.getItem("loggedInUserId");
     this.getAllTemplates();
@@ -322,7 +328,7 @@ export class AddnewrouteComponent implements OnInit {
     this.ref = this.dialogService.open(TransactionCriteriaModal, {
       // header: "Choose a Product",
       width: "40%",
-      contentStyle: { "max-height": "500px", overflow: "auto" },
+      contentStyle: { "max-height": "300px", overflow: "auto" },
       baseZIndex: 10000,
       styleClass: "txn-criteria-modal",
       data: { txnCriteriaRange: this.txnCriteriaRangeFormData },

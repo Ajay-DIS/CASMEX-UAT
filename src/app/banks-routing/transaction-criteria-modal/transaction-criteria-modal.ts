@@ -8,6 +8,7 @@ import {
 } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
+import { BankRoutingService } from "../bank-routing.service";
 
 @Component({
   templateUrl: "./transaction-criteria-modal.html",
@@ -30,7 +31,8 @@ export class TransactionCriteriaModal {
     private formBuilder: FormBuilder,
     private ref: DynamicDialogRef,
     private ngxToaster: ToastrService,
-    public config: DynamicDialogConfig
+    public config: DynamicDialogConfig,
+    private bankRoutingService: BankRoutingService
   ) {}
 
   get allTxnCriteriaRange(): FormArray {
@@ -38,7 +40,8 @@ export class TransactionCriteriaModal {
   }
 
   ngOnInit() {
-    if (this.config.data.txnCriteriaRange) {
+    if (Object.keys(this.config.data.txnCriteriaRange).length) {
+      console.log(this.config.data.txnCriteriaRange);
       this.config.data.txnCriteriaRange.txnCriteriaRange.forEach((range) => {
         this.allTxnCriteriaRange.push(
           this.createTxnCriteriaRange(range.from, range.to)
@@ -142,15 +145,13 @@ export class TransactionCriteriaModal {
       }, 1500);
     } else {
       if (this.isRangeEmpty) {
-        this.TransactionCriteriaRange =
-          this.txnCriteriaRangeForm.value.txnCriteriaRange.slice(
-            0,
-            this.txnCriteriaRangeForm.value.txnCriteriaRange.length - 1
-          );
+        this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
       } else {
-        this.TransactionCriteriaRange =
-          this.txnCriteriaRangeForm.value.txnCriteriaRange;
+        this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
       }
+      this.bankRoutingService.setTransactionCriteriaRange(
+        this.TransactionCriteriaRange
+      );
       this.isTxnCriteriaRangesSaved = true;
     }
   }
@@ -159,12 +160,7 @@ export class TransactionCriteriaModal {
     this.saveTxnCriteriaRanges();
     if (this.isTxnCriteriaRangesSaved) {
       // this.ref.close(this.txnCriteriaRangeForm.value);
-      this.ref.close(this.txnCriteriaRangeForm.value);
+      this.ref.close(this.TransactionCriteriaRange);
     }
-  }
-
-  firstInp(e: any){
-    console.log("type", e);
-    // toInp.value >= fromInp.value ? toInp.value = toInp.value : toInp.value = fromInp.value
   }
 }
