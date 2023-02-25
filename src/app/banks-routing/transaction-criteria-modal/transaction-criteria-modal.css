@@ -12,3 +12,13 @@ button {
   font-size: 30px;
   font-weight: 600;
 }
+
+.all-range-groups {
+  position: relative;
+}
+
+.index-range {
+  position: absolute;
+  font-size: 13px;
+  top: 18px;
+}
