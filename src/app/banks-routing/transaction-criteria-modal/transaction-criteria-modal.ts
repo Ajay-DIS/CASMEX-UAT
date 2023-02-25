@@ -103,11 +103,20 @@ export class TransactionCriteriaModal {
     }
   }
 
+  change(e: any, i: any) {
+    console.log("changed", e);
+    (this.txnCriteriaRange.controls[i] as FormGroup).controls["to"].setValue(e);
+    console.log(
+      (this.txnCriteriaRange.controls[i] as FormGroup).controls["to"].value
+    );
+  }
+
   addTxnCriteriaRange(): void {
     if (this.txnCriteriaRange?.length >= 10) {
-      this.showError = true;
+      this.isAnyRangeOverlappingErrMsg =
+        "Maximum 10 Transaction ranges can be added";
       setTimeout(() => {
-        this.showError = false;
+        this.isAnyRangeOverlappingErrMsg = "";
       }, 1500);
     } else {
       this.checkConditions();

@@ -372,5 +372,4 @@ export class BankRoutingComponent implements OnInit {
         this.coreService.removeLoadingScreen();
       });
   }
-
 }

@@ -34,9 +34,9 @@
 }
 
 .header {
-  width: calc(100% - 295px);
-  margin-left: 295px;
-  height: 91px;
+  width: calc(100% - 270px);
+  margin-left: 270px;
+  height: 80px;
   transition: all 0.3s;
   z-index: 102;
   box-shadow: 0px 3px 30px rgba(1, 41, 112, 0.1);
@@ -56,8 +56,8 @@
 
 .toggle-sidebar {
   position: absolute;
-  top: 110px;
-  left: 276px;
+  top: 80px;
+  left: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,7 +249,7 @@
 }
 
 .menu-search {
-  width: 228px;
+  width: 220px;
   border-radius: 5px;
 }
 
@@ -378,7 +378,7 @@
 @media (min-width: 1200px) {
   #main,
   #footer {
-    margin-left: 310px;
+    margin-left: 290px;
     transition: 300ms;
   }
 }
@@ -565,7 +565,7 @@ input:checked + .slider:before {
 
 main {
   margin-top: 10px;
-  margin-right: 50px;
+  margin-right: 20px;
   margin-left: 50px;
   transition: 300ms;
 }

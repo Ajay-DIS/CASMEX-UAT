@@ -309,6 +309,11 @@ export class AddnewrouteComponent implements OnInit {
       console.log("response", response);
       if (response.data && response.data.length) {
         this.criteriaTemplatesDdlOptions = response.data;
+        this.criteriaTemplatesDdlOptions.forEach((val) => {
+          val["name"] = val["criteriaName"];
+          val["code"] = val["criteriaName"];
+        });
+        console.log(this.criteriaTemplatesDdlOptions);
       } else {
         this.ngxToaster.warning(response.msg);
       }
@@ -316,19 +321,16 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   selectCriteriaTemplate(item) {
-    console.log("event", item);
     let selectedData = this.criteriaTemplatesDdlOptions.filter(
-      (x) => x.criteriaName == item
+      (x) => x.criteriaName == item.criteriaName
     )[0];
     this.criteriaText = selectedData.criteriaMap.split(";");
-    console.log("test", this.criteriaText);
   }
 
   showTransCriteriaModal() {
     this.ref = this.dialogService.open(TransactionCriteriaModal, {
-      // header: "Choose a Product",
       width: "40%",
-      contentStyle: { "max-height": "300px", overflow: "auto" },
+      contentStyle: { overflow: "auto" },
       baseZIndex: 10000,
       styleClass: "txn-criteria-modal",
       data: { txnCriteriaRange: this.txnCriteriaRangeFormData },
