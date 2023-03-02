@@ -1,11 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
+import { element } from "protractor";
 import { PaymentModeService } from "../../payment-mode-settings/payment-mode-service.service";
 import { BankRoutingService } from "../bank-routing.service";
 import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
+import { Table } from "primeng/table";
 
 @Component({
   selector: "app-addnewroute",
@@ -14,6 +16,209 @@ import { TransactionCriteriaModal } from "../transaction-criteria-modal/transact
   providers: [DialogService, MessageService],
 })
 export class AddnewrouteComponent implements OnInit {
+  //suresh start
+  @ViewChild('table', {static: false}) table!: Table;
+  bankRoutesData:any = [];
+  bankRoutesColumns = [
+    { field: 'country', header: 'Country', editable: false, visible: true },
+    { field: 'routeBankName', header: 'Route Bank Name', editable: false, visible: true },
+    { field: 'routeServiceCategory', header: 'Service Category', editable: false, visible: true },
+    { field: 'routeServiceType', header: 'Service type', editable: false, visible: true },
+    { field: 'isCorrespondent', header: 'Is Correspondent', editable: false, visible: true },
+    { field: 'lcyAmountFrom', header: 'LCY Amount From', editable: false, visible: false },
+    { field: 'lcyAmountTo', header: 'LCY Amount To', editable: false, visible: false },
+    { field: 'routeToBankName', header: 'Route to', editable: true , visible: true},
+    { field: 'routeToServiceCategory', header: 'Service Category', editable: true , visible: true},
+    { field: 'routeToServiceType', header: 'Service type', editable: true , visible: true}
+
+  ];
+  isSelectedRouteToBankName  = false;
+  isSelectedRouteToServiceCategory = false;
+  apiResponse = {
+    "data":[
+       {
+          "id":"1",
+          "country":"India23442",
+          "routeBankName":"SBI",
+          "routeServiceCategory":"Bank",
+          "routeServiceType":"NEFT",
+          "isCorrespondent":"Yes21344",
+          "routeToBankName": "",
+          "routeToBankNameOption":[
+             {
+                "id":1,
+                "code":"SBI",
+                "codeName":"SBI",
+                "isCorrespondent":"Y",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"HDFC",
+                "codeName":"HDFC",
+                "isCorrespondent":"Y",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"ICICI",
+                "codeName":"ICICI",
+                "isCorrespondent":"N",
+                "status":"A"
+             }
+          ],
+          "routeToServiceCategory":"",
+          "routeToServiceCategoryOption":[
+             {
+                "id":1,
+                "code":"Bank",
+                "codeName":"Bank",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"Cash",
+                "codeName":"Cash",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"Utility",
+                "codeName":"Utility",
+                "status":"A"
+             }
+          ],
+          "routeToServiceType": "",
+          "routeToServiceTypeOption":[
+             {
+                "id":1,
+                "code":"NEFT",
+                "codeName":"NEFT",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"RTGS",
+                "codeName":"RTGS",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"IMPS",
+                "codeName":"IMPS",
+                "status":"A"
+             },
+             {
+                "id":4,
+                "code":"Cash pick up",
+                "codeName":"Cash pick up",
+                "status":"A"
+             },
+             {
+                "id":5,
+                "code":"A/C transfer",
+                "codeName":"A/C transfer",
+                "status":"A"
+             }
+          ],
+          "lcyAmountFrom":null,
+          "lcyAmountTo":null
+       },
+       {
+          "id":"2",
+          "country":"India2344",
+          "routeBankName":"HDFC",
+          "routeServiceCategory":"Cash",
+          "routeServiceType":"RTGS",
+          "isCorrespondent":"Yes21344",
+          "routeToBankName": "",
+          "routeToBankNameOption":[
+             {
+                "id":1,
+                "code":"SBI",
+                "codeName":"SBI",
+                "isCorrespondent":"Y",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"HDFC",
+                "codeName":"HDFC",
+                "isCorrespondent":"Y",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"ICICI",
+                "codeName":"ICICI",
+                "isCorrespondent":"N",
+                "status":"A"
+             }
+          ],
+          "routeToServiceCategory":"",
+          "routeToServiceCategoryOption":[
+             {
+                "id":1,
+                "code":"Bank",
+                "codeName":"Bank",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"Cash",
+                "codeName":"Cash",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"Utility",
+                "codeName":"Utility",
+                "status":"A"
+             }
+          ],
+          "routeToServiceType":"",
+          "routeToServiceTypeOption":[
+             {
+                "id":1,
+                "code":"NEFT",
+                "codeName":"NEFT",
+                "status":"A"
+             },
+             {
+                "id":2,
+                "code":"RTGS",
+                "codeName":"RTGS",
+                "status":"A"
+             },
+             {
+                "id":3,
+                "code":"IMPS",
+                "codeName":"IMPS",
+                "status":"A"
+             },
+             {
+                "id":4,
+                "code":"Cash pick up",
+                "codeName":"Cash pick up",
+                "status":"A"
+             },
+             {
+                "id":5,
+                "code":"A/C transfer",
+                "codeName":"A/C transfer",
+                "status":"A"
+             }
+          ],
+          "lcyAmountFrom":null,
+          "lcyAmountTo":null
+       }
+    ],
+    "userId": "yogeshm",
+    "routeDesc": "new g",
+    "criteriaMap": "",
+    "LCY":"No"
+ }
+ //suresh end
   criteriaText: any[] = [];
   testData: any[] = [];
   criteriaSetData: any[] = [];
@@ -128,6 +333,7 @@ export class AddnewrouteComponent implements OnInit {
 
   ref: DynamicDialogRef;
   txnCriteriaRangeFormData: any;
+  
 
   constructor(
     private paymentModeService: PaymentModeService,
@@ -135,7 +341,8 @@ export class AddnewrouteComponent implements OnInit {
     private ngxToaster: ToastrService,
     public dialogService: DialogService,
     public messageService: MessageService,
-    private bankRoutingService: BankRoutingService
+    private bankRoutingService: BankRoutingService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -146,6 +353,8 @@ export class AddnewrouteComponent implements OnInit {
     const params = this.activatedRoute.snapshot.params;
     this.userId = localStorage.getItem("loggedInUserId");
     this.getAllTemplates();
+    this.getBanksRoutingData(this.userId);
+    
     if (params && params.id) {
       this.paymentModeService
         .getPaymentModeByCriteriaId(params.id)
@@ -339,6 +548,82 @@ export class AddnewrouteComponent implements OnInit {
         console.log("::addnewroute", data);
       }
     });
+  }
+
+  selectedColumn(column, row) {
+    console.log("enterin select ", column, row);
+    (column == "routeToBankName") && (this.isSelectedRouteToBankName = true);
+    if(column == "routeToServiceCategory") {
+      if(!this.isSelectedRouteToBankName) {
+        this.ngxToaster.warning("Please select the route to bank first");
+      } else {this.isSelectedRouteToServiceCategory = true}
+    }
+    if(column == "routeToServiceType") {
+      let index = this.bankRoutesData.findIndex(x=> x.id == row.id );
+      console.log("this.bankRoutesData[index]",this.bankRoutesData[index]["routeToServiceType"])
+      // let cell = this.table.findCell(row.id, column)
+      if(!this.isSelectedRouteToServiceCategory) {
+        (this.ngxToaster.warning("Please select the service category first"));
+      }
+    }
+  }
+
+  getBanksRoutingData(id: string) {
+    this.bankRoutesData = this.apiResponse.data;
+    if(this.apiResponse.LCY == "Yes") {
+      this.bankRoutesColumns.forEach(x=> {
+        (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") && (x.visible = true);
+        (x.field == "isCorrespondent") && (x.visible = false)
+      })
+    }
+    // this.bankRoutingService
+    //   .getBankRoutingData(id)
+    //   .subscribe((result):any=> {
+    //     if(result) {
+    //       this.bankRoutesData = result["data"];
+    //       this.routeToDdlOption = result["routeToBankName"].concat(result["routeBankName"]);
+    //       this.serviceCategoryDdlOptions= result["routeServiceCategory"].concat(result["routeToServiceCategory"]);
+    //       this.serviceTypeDdlOptions = result["routeServiceType"].concat(result["routeToServiceType"])
+    //     }
+    //   })
+  }
+
+  saveAddNewRoute(action) {
+    let payload = {
+      data: this.bankRoutesData,
+      userId: this.userId,
+      routeDesc: this.apiResponse.routeDesc,
+      criteriaMap: this.criteriaText.join(";"),
+      LCY: this.apiResponse.LCY
+    }
+    console.log("payload JSON", payload)
+    //Api integration here
+    let isRequiredFields = false;
+    this.bankRoutesData.forEach(element=> {
+      if(element.routeToBankName == "" || element.routeToServiceCategory=="" || element.routeToServiceType == "") {
+        isRequiredFields = true;
+      }
+    })
+    setTimeout(() => {
+      if(isRequiredFields) {
+        this.ngxToaster.warning("Please Select required fields.");
+      } else {
+        this.ngxToaster.success("Add new Route updated successfully");
+        if(action == 'save') {
+          this.router.navigate([`navbar/bank-routing`]);
+        } else if(action == 'saveAndAddNew') {
+          window.location.reload();
+          //this.getBanksRoutingData(this.userId);
+        }
+        
+        
+      }
+    }, 1000)
+    
+  }
+
+  reset() {
+    window.location.reload();
   }
 
   ngOnDestroy() {
