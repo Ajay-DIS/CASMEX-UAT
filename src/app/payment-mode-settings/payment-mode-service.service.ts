@@ -45,17 +45,4 @@ export class PaymentModeService {
       .toPromise()
       .then((res) => <TreeNode[]>res.data);
   }
-
-  currentCriteriaSaveAsTemplate(data: any): Observable<any> {
-    return this.http.post(
-      `remittance/banksRoutingController/saveBanksRoutingCriteria`,
-      data
-    );
-  }
-
-  getAllCriteriaTemplates(): Observable<any> {
-    return this.http.get(
-      `remittance/banksRoutingController/getExistingCriteriaList/yogeshm-get`
-    );
-  }
 }

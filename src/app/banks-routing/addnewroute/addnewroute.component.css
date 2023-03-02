@@ -2,7 +2,6 @@
   display: flex;
 }
 button {
-  padding: 5px;
   margin-left: 8px;
 }
 .clickcriteria {
@@ -91,13 +90,14 @@ p-dropdown .p-dropdown {
 }
 
 .left-dropdowns {
-  width: 70%;
+  width: 80%;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .right-select {
-  width: 30%;
+  width: 20%;
   display: flex;
   justify-content: flex-end;
 }

@@ -39,7 +39,7 @@
     <div class="criteria-bar">
       <p class="setCriteria">Set Criteria</p>
       <div class="openCriteria">
-        <p>
+        <p *ngIf="savedLcySlabs">
           <a (click)="showTransCriteriaModal()">LCY Amount Slab</a>
         </p>
         <p class="clickcriteria">
@@ -66,15 +66,15 @@
     </p-dialog>
 
     <div class="dropdowns-select-container mb-3">
-      <div class="left-dropdowns">
+      <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
         <p-dropdown
           class="mr-3"
           [options]="criteriaMapDdlOptions"
           optionLabel="name"
           optionValue="code"
           placeholder="Select a Criteria"
-          [(ngModel)]="criteriaMap.criteria"
           (onChange)="onChange('criteria', $event.value)"
+          formControlName="criteria"
         ></p-dropdown>
 
         <p-dropdown
@@ -83,27 +83,40 @@
           optionLabel="name"
           optionValue="code"
           placeholder="Select a Operation"
-          [(ngModel)]="criteriaMap.condition"
           (onChange)="onChange('condition', $event.value)"
+          formControlName="operation"
         ></p-dropdown>
 
         <p-dropdown
+          *ngIf="!hideValuesDropdown"
           class="mr-1"
           [options]="correspondentDdlOptions"
           optionLabel="name"
           optionValue="code"
           placeholder="Select a Value"
-          [(ngModel)]="criteriaMap.val"
           (onChange)="onChange('val', $event.value)"
+          formControlName="value"
         ></p-dropdown>
         <button
+          #addCriteriaBtn
           pButton
           pRipple
-          style="width: 35px"
+          style="position: absolute; left: 515px; width: 35px"
           type="button"
           label="+"
           class="p-button-primary"
+          [disabled]="!selectCriteriaForm.valid"
           (click)="addCriteriaMap()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          style="position: absolute; left: 562px"
+          type="button"
+          label="Apply Criteria"
+          class="p-button-raised"
+          [disabled]="!criteriaText.length"
+          (click)="applyCriteria()"
         ></button>
       </div>
       <div class="right-select">
@@ -117,7 +130,7 @@
               ? 'Select Template'
               : 'No saved templates'
           }}"
-          [(ngModel)]="criteriaMap.val"
+          [disabled]="!criteriaTemplatesDdlOptions.length"
           (onChange)="selectCriteriaTemplate($event.value)"
         ></p-dropdown>
         <!-- <select
@@ -147,7 +160,7 @@
         <span
           role="button"
           style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
-          (click)="ondeletecriteria(i)"
+          (click)="ondeletecriteria(i, criteria)"
         >
           <svg
             style="margin-bottom: 4px"
@@ -235,33 +248,6 @@
           </tr>
         </ng-template>
       </p-table>
-    </div>
-  </div>
-
-  <div class="mt-5" style="text-align: center">
-    <div class="addnew2">
-      <button
-        pButton
-        pRipple
-        type="button"
-        label="Save & Close"
-        class="p-button-raised"
-      ></button>
-      <button
-        pButton
-        pRipple
-        type="button"
-        label="Save & Add New"
-        class="p-button-raised"
-      ></button>
-      <button
-        pButton
-        pRipple
-        type="button"
-        label="Reset"
-        class="p-button-warning"
-        style="background: rgb(250 165 52)"
-      ></button>
     </div>
   </div>
 </div>
