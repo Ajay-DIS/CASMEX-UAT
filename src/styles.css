@@ -94,7 +94,7 @@ button.p-button {
 }
 button.p-button {
   font-size: 14px;
-  font-weight: 500;
+  padding: 7px;
 }
 
 input.p-inputnumber-input {

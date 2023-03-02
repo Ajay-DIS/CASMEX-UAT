@@ -18,7 +18,7 @@ export class TransactionCriteriaModal {
   txnCriteriaRangeForm: FormGroup = new FormGroup({
     txnCriteriaRange: new FormArray([]),
   });
-  txnCriteriaRange: FormArray;
+  txnCriteriaRange: FormArray = new FormArray([]);
 
   showError: boolean = false;
   rangesOverlapping = false;
@@ -26,6 +26,7 @@ export class TransactionCriteriaModal {
   isAnyRangeOverlappingErrMsg = "";
   isRangeEmpty = false;
   TransactionCriteriaRange = [];
+  isFormDataChanged = true;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,9 +41,21 @@ export class TransactionCriteriaModal {
   }
 
   ngOnInit() {
+    this.txnCriteriaRangeForm.valueChanges.subscribe((x) => {
+      let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
+      let formData = JSON.stringify(x);
+      if (savedData == formData) {
+        this.isFormDataChanged = false;
+      } else {
+        this.isFormDataChanged = true;
+      }
+    });
     if (Object.keys(this.config.data.txnCriteriaRange).length) {
       console.log(this.config.data.txnCriteriaRange);
       this.config.data.txnCriteriaRange.txnCriteriaRange.forEach((range) => {
+        this.txnCriteriaRange.push(
+          this.createTxnCriteriaRange(range.from, range.to)
+        );
         this.allTxnCriteriaRange.push(
           this.createTxnCriteriaRange(range.from, range.to)
         );
@@ -55,7 +68,9 @@ export class TransactionCriteriaModal {
       if (this.isTxnCriteriaRangesSaved) {
         this.ngxToaster.success("Transaction ranges saved");
       } else {
-        this.ngxToaster.warning("Transaction ranges not saved properly");
+        if (this.isFormDataChanged) {
+          this.ngxToaster.warning("Transaction ranges not saved properly");
+        }
       }
     });
   }
@@ -105,10 +120,14 @@ export class TransactionCriteriaModal {
 
   change(e: any, i: any) {
     console.log("changed", e);
-    (this.txnCriteriaRange.controls[i] as FormGroup).controls["to"].setValue(e);
-    console.log(
-      (this.txnCriteriaRange.controls[i] as FormGroup).controls["to"].value
-    );
+    if (this.txnCriteriaRange.controls) {
+      (this.txnCriteriaRange.controls[i] as FormGroup)?.controls["to"].setValue(
+        e
+      );
+      console.log(
+        (this.txnCriteriaRange.controls[i] as FormGroup)?.controls["to"].value
+      );
+    }
   }
 
   addTxnCriteriaRange(): void {
@@ -137,7 +156,7 @@ export class TransactionCriteriaModal {
         this.txnCriteriaRange = this.txnCriteriaRangeForm.get(
           "txnCriteriaRange"
         ) as FormArray;
-        this.txnCriteriaRange.push(this.createTxnCriteriaRange(0, 0));
+        this.txnCriteriaRange.push(this.createTxnCriteriaRange(null, null));
       }
     }
   }

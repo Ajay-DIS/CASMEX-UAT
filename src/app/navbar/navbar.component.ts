@@ -1,3 +1,4 @@
+import { Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
 import {
   AfterViewInit,
@@ -7,11 +8,12 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { MenuItem } from "primeng/api";
 import { environment } from "src/environments/environment";
+import { CoreService } from "../core.service";
 import { PaymentModeService } from "../payment-mode-settings/payment-mode-service.service";
 
 @Component({
@@ -23,7 +25,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild("toggleSidebar") toggleSidebarBtn: ElementRef;
   @ViewChild("sidebarDiv") sidebarDiv: ElementRef;
 
-  breadcrumbsItems: MenuItem[];
+  breadcrumbsItems: MenuItem[] = [
+    { label: "Home", routerLink: "/navbar" },
+    { label: "Settings", routerLink: "/navbar" },
+    { label: "Bank Routing", routerLink: "bank-routing" },
+  ];
   getdata: any;
   cities1: any[];
   response: any;
@@ -32,62 +38,63 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   menuItems: MenuItem[] = [];
   $MenuItems: MenuItem[] = [];
   menuItemTree = {
-    // "Dashboard": [],
-    // "Customer Profile": [],
-    // "Rate Setup": [
-    //   "Rate & Margin Setup",
-    //   "Rate & Margin Settings",
-    //   "Rate Heirarchy Settings"
-    // ],
-    // "Forex": [],
-    // "Beneficiary Profile": [],
-    // "Remmitance": [
-    //   "Transaction ",
-    //   "Payment For Customer",
-    //   "Amendment",
-    //   "Cancellation",
-    //   "Payment to Customer"
-    // ],
-    // "Customer Service": [
-    //   "Transaction Enquiry ( Receipt Reprint)",
-    //   "Complaints",
-    //   "Rate View"
-    // ],
-    // "Approval & Authorization": [],
-    // "Settings": [
-    //   "Tax",
-    //   "Charge",
-    //   "Payment Mode",
-    //   "Discount",
-    //   "Block Transaction",
-    //   "Purpose",
-    //   "Document",
-    //   "Source",
-    //   "Form Rules"
-    // ],
-    // "Application Settings": [
-    //   "Custom Fields",
-    //   "Group Settings",
-    //   "Search Settings",
-    //   "Authorization Page Setting"
-    // ],
-    // "User Roles Management": [
-    //   "User Roles & Permissions"
-    // ],
-    // "Reports": [],
-    // "Accounts": [],
-    // "Incoming": [],
-    // "Alerts & Notification": []
+    Dashboard: [],
+    "Customer Profile": [],
+    "Rate Setup": [
+      "Rate & Margin Setup",
+      "Rate & Margin Settings",
+      "Rate Heirarchy Settings",
+    ],
+    Forex: [],
+    "Beneficiary Profile": [],
+    Remmitance: [
+      "Transaction ",
+      "Payment For Customer",
+      "Amendment",
+      "Cancellation",
+      "Payment to Customer",
+    ],
+    "Customer Service": [
+      "Transaction Enquiry ( Receipt Reprint)",
+      "Complaints",
+      "Rate View",
+    ],
+    "Approval & Authorization": [],
+    Settings: [
+      "Tax",
+      "Charge",
+      "Payment Mode",
+      "Discount",
+      "Block Transaction",
+      "Purpose",
+      "Document",
+      "Source",
+      "Form Rules",
+    ],
+    "Application Settings": [
+      "Custom Fields",
+      "Group Settings",
+      "Search Settings",
+      "Authorization Page Setting",
+    ],
+    "User Roles Management": ["User Roles & Permissions"],
+    Reports: [],
+    Accounts: [],
+    Incoming: [],
+    "Alerts & Notification": [],
   };
   profileOptions: any = [{ name: "Profile" }, { name: "Logout" }];
   toggleState = "left";
+
   constructor(
     private payment: PaymentModeService,
     public translate: TranslateService,
     private httpClient: HttpClient,
     private el: ElementRef,
     private router: Router,
-    private ngxToaster: ToastrService
+    private ngxToaster: ToastrService,
+    private coreService: CoreService,
+    private route: ActivatedRoute
   ) {
     this.cities1 = [
       { label: "English", value: "en" },
@@ -102,11 +109,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.breadcrumbsItems = [
-      { label: "Home" },
-      { label: "Settings" },
-      { label: "Bank Routing" },
-    ];
+    this.coreService.getBreadCrumbMenu().subscribe((menu) => {
+      this.breadcrumbsItems = menu;
+    });
+
     let token = localStorage.getItem("token");
     let isTokenExpired = this.isTokenExpired(token);
     console.log("isTokenExpired", isTokenExpired);
@@ -118,8 +124,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.router.navigate(["login"]);
     }
     if (!!localStorage.getItem("menuItems")) {
-      const menuItems = localStorage.getItem("menuItems");
-      this.menuItemTree = JSON.parse(menuItems);
+      // const menuItems = localStorage.getItem("menuItems");
+      // this.menuItemTree = JSON.parse(menuItems);
     }
     Object.keys(this.menuItemTree).map((menu) => {
       if (this.menuItemTree[menu].length > 0) {

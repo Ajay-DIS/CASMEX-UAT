@@ -40,38 +40,39 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     console.log("submit");
-    if (this.loginForm.valid) {
-      this.coreService.displayLoadingScreen();
-      this.isFormInvalid = false;
-      const formData: LoginFormData = {
-        application: "CASMEX_CORE",
-        ...this.loginForm.value,
-      };
+    this.router.navigate(["/navbar"]);
+    // if (this.loginForm.valid) {
+    //   this.coreService.displayLoadingScreen();
+    //   this.isFormInvalid = false;
+    //   const formData: LoginFormData = {
+    //     application: "CASMEX_CORE",
+    //     ...this.loginForm.value,
+    //   };
 
-      this.loginService
-        .loginUser(formData)
-        .subscribe(
-          (data: any) => {
-            if (data && data.jwt) {
-              console.log("::user", data);
-              this.loginService.saveLoggedUserInfo(data);
-              this.router.navigate(["/navbar"]);
-              this.ngxToaster.success("Login is successfull");
-            } else {
-              localStorage.removeItem("token");
-              this.ngxToaster.error(data.msg);
-            }
-          },
-          (err) => {
-            console.log(err);
-          }
-        )
-        .add(() => {
-          this.coreService.removeLoadingScreen();
-        });
-    } else {
-      this.isFormInvalid = true;
-    }
+    //   this.loginService
+    //     .loginUser(formData)
+    //     .subscribe(
+    //       (data: any) => {
+    //         if (data && data.jwt) {
+    //           console.log("::user", data);
+    //           this.loginService.saveLoggedUserInfo(data);
+    //           this.router.navigate(["/navbar"]);
+    //           this.ngxToaster.success("Login is successfull");
+    //         } else {
+    //           localStorage.removeItem("token");
+    //           this.ngxToaster.error(data.msg);
+    //         }
+    //       },
+    //       (err) => {
+    //         console.log(err);
+    //       }
+    //     )
+    //     .add(() => {
+    //       this.coreService.removeLoadingScreen();
+    //     });
+    // } else {
+    //   this.isFormInvalid = true;
+    // }
   }
 
   onReset() {
