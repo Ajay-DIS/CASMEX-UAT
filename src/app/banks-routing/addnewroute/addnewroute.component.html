@@ -182,70 +182,46 @@
       </span>
     </div>
     <div class="mt-3">
-      <p-table class="payment-mode-table" #dt [value]="" sortMode="multiple">
+      <p-table #table class="payment-mode-table" [value]="bankRoutesData" editMode="row" >
         <ng-template pTemplate="header">
-          <tr>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Country
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Route Bank Name
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Service Category
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Service type
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Is Correspodent
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Route to
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Service Category
-            </th>
-            <th
-              pSortableColumn=""
-              style="background-color: #eaedf4; font-size: 12px; color: #8a9099"
-            >
-              Service type
-            </th>
-          </tr>
+            <tr>
+              <ng-container *ngFor="let col of bankRoutesColumns">
+                <th *ngIf="col.visible">
+                  {{col.header}}
+                </th>
+              </ng-container>
+                
+            </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-payment>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
+        <ng-template pTemplate="body" let-row let-col="bankRoutesColumns">
+            <tr>
+              <ng-container *ngFor="let col of bankRoutesColumns">
+               
+                <td *ngIf="col.visible"  pEditable="true" >
+                    <span *ngIf="(col.field !='routeToBankName' && col.field != 'routeToServiceCategory' && col.field != 'routeToServiceType' ) ">{{row[col.field]}}</span>
+                            <select (change)="selectedColumn('routeToBankName', row)" class="form-select" *ngIf="col.field=='routeToBankName'"  [(ngModel)]="row[col.field]">
+                              <option value="" selected>Select</option>
+                              <option *ngFor="let name of row.routeToBankNameOption" >
+                                  {{ name.codeName }}
+                                </option>
+                              </select>
+                              <select (change)="selectedColumn('routeToServiceCategory', row)" class="form-select" *ngIf="col.field=='routeToServiceCategory'"[(ngModel)]="row[col.field]" >
+                                <option value="" selected>Select</option>
+                                <option *ngFor="let name of row.routeToServiceCategoryOption" >
+                                  {{ name.codeName }}
+                                </option>
+                              </select>
+                              <select (change)="selectedColumn('routeToServiceType', row)" class="form-select" *ngIf="col.field=='routeToServiceType'"[(ngModel)]="row[col.field]" >
+                                <option value="" selected>Select</option>
+                                <option *ngFor="let name of row.routeToServiceTypeOption" >
+                                  {{ name.codeName }}
+                                </option>
+                              </select>
+                         
+                </td>
+              </ng-container>
+                
+            </tr>
         </ng-template>
       </p-table>
     </div>

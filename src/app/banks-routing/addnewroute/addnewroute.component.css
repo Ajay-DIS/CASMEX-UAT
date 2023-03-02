@@ -101,3 +101,19 @@ p-dropdown .p-dropdown {
   display: flex;
   justify-content: flex-end;
 }
+
+:host ::ng-deep .p-datatable .p-datatable-thead tr th {
+background: rgb(234 237 244);
+color: #8a9099;
+font-size: 12px;
+}
+:host ::ng-deep .p-datatable .p-datatable-tbody tr td{
+  border: 0px !important;
+  border-width: 0px !important ;
+}
+::ng-deep .p-datatable.p-component{
+  font-size: 13px !important;
+}
+::ng-deep .p-datatable .form-select .ng-pristine .ng-valid .ng-star-inserted .ng-touched{
+  font-size: 13px !important;
+}
