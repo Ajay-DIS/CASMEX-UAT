@@ -44,23 +44,26 @@ body.minified-sidebar .toggle-sidebar {
 
 .p-dialog.txn-criteria-modal {
   max-width: 483px;
+  width: 483px;
+  border-radius: 15px;
+}
+.p-dialog.txn-criteria-modal .all-range-groups {
+  max-height: 280px;
+  overflow: auto;
 }
 
 .p-dialog.txn-criteria-modal .p-dialog-content {
-  padding-bottom: 1rem;
-  padding-top: 1rem;
-  max-height: 300px;
-  overflow-y: scroll;
   border-radius: 15px;
+  padding: 1rem;
 }
 
-.p-dialog.txn-criteria-modal .p-dialog-content::-webkit-scrollbar {
+.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar {
   width: 3px;
-  height: 8px;
+  height: 3px;
   background-color: #fff;
 }
 
-.p-dialog.txn-criteria-modal .p-dialog-content::-webkit-scrollbar-thumb {
+.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar-thumb {
   background-color: #aab7cf;
 }
 
@@ -84,9 +87,38 @@ body.minified-sidebar .toggle-sidebar {
 button.p-button {
   border-radius: 5px !important;
   background-color: rgb(36 85 207);
-  height: 40px;
+  height: 35px;
+  line-height: 1px;
+  padding: 5px 8px;
+  color: white !important;
+}
+button.p-button {
+  font-size: 14px;
+  padding: 7px;
 }
 
 input.p-inputnumber-input {
   border-radius: 5px;
+}
+
+.dropdowns-select-container .p-dropdown {
+  height: 35px;
+  background: rgb(244 246 250);
+  border: none;
+  width: 160px;
+  border-radius: 5px;
+}
+.dropdowns-select-container .p-dropdown .p-dropdown-trigger {
+  width: 2rem;
+}
+.dropdowns-select-container
+  .p-dropdown
+  .p-dropdown-trigger
+  .p-dropdown-trigger-icon {
+  font-size: 0.8rem;
+}
+.dropdowns-select-container .p-dropdown .p-dropdown-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: black;
 }

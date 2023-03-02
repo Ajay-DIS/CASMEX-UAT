@@ -1,8 +1,7 @@
-.addnew1 {
-  margin-left: 550px;
+.buttons-section {
+  display: flex;
 }
 button {
-  padding: 5px;
   margin-left: 8px;
 }
 .clickcriteria {
@@ -16,64 +15,89 @@ p-dropdown .p-dropdown {
   width: 100%;
 }
 
-::ng-deep .p-dropdown {
-  margin-right: 10px;
-}
-
 ::ng-deep .p-button-primary plus {
   width: 40px;
   height: 25px;
 }
 .criteria-main-section {
   border: 0.5px solid#eaedf4;
-  width: 100%;
   margin-bottom: 20px;
-  padding: 20px;
+  padding: 20px 0;
+  margin: 0 15px;
   background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.templates-dropdown::ng-deep .p-dropdown-label {
+  padding-right: 0;
 }
 
 .criteria-bar {
   display: flex;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
 }
 
 .setCriteria {
   color: rgb(36 85 207);
   font-size: 14px;
   font-weight: 600;
-  width: 60%;
+  width: 55%;
   cursor: pointer;
 }
 
 .openCriteria {
-  width: 40%;
+  width: 45%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 15px;
+  font-size: 14px;
 }
 
 .openCriteria a {
   color: rgb(36 85 207);
   border-bottom: 1px solid rgb(36 85 207);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
+}
+
+.description-text {
+  width: 440px;
+  margin-left: 15px;
+  color: #8a9099;
+  font-size: 12px;
+  padding: 9px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: #eaedf4;
 }
 
 .dropdowns-select-container {
   display: flex;
-  margin-bottom: 50px;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
+}
+
+.criteria-span {
+  color: black;
+  background-color: #eaedf4;
+  padding: 7px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-bottom: 8px;
 }
 
 .left-dropdowns {
-  width: 70%;
+  width: 80%;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .right-select {
-  width: 30%;
+  width: 20%;
   display: flex;
   justify-content: flex-end;
 }

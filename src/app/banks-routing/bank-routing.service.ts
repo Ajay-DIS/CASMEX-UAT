@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import {
   BankRoutingApiData,
   UpdateBankRouteStatusApiRequest,
@@ -43,6 +43,19 @@ export class BankRoutingService {
     return this.http.post(
       `/remittance/banksRoutingController/updateBanksRoutingStatus`,
       data
+    );
+  }
+
+  currentCriteriaSaveAsTemplate(data: any): Observable<any> {
+    return this.http.post(
+      `remittance/banksRoutingController/saveBanksRoutingCriteria`,
+      data
+    );
+  }
+
+  getAllCriteriaTemplates(): Observable<any> {
+    return this.http.get(
+      `remittance/banksRoutingController/getExistingCriteriaList/yogeshm-get`
     );
   }
 }

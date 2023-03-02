@@ -5,7 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { Table } from "primeng/table";
 import { ToastrService } from "ngx-toastr";
 
@@ -32,7 +32,8 @@ export class BankRoutingComponent implements OnInit {
     private ngxToaster: ToastrService,
     private coreService: CoreService,
     public dialogService: DialogService,
-    public messageService: MessageService
+    public messageService: MessageService,
+    private route: ActivatedRoute
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
@@ -48,202 +49,202 @@ export class BankRoutingComponent implements OnInit {
   showISCorrespondentsOptions: boolean = false;
   showStatusesOptions: boolean = false;
 
-  // dummyBankRoutingData = {
-  //   routeCode: ["R0006", "R0007", "R0001", "R0004", "R0005", "R0002", "R0003"],
-  //   country: ["India234", "India2", "India23", "India2344", "India"],
-  //   routeToBankName: ["SBI12344", "SBI1", "SBI", "SBI12", "SBI1234", "SBI123"],
-  // data: [
-  //     {
-  //       id: 7,
-  //       userID: "yogeshm",
-  //       routeCode: "R0001",
-  //       country: "India",
-  //       routeBankName: "ICICI10",
-  //       routeServiceCategory: "DF11",
-  //       routeServiceType: "Cash",
-  //       iSCorrespondent: "Yes",
-  //       routeToBankName: "SBI",
-  //         routeToServiceCategory: "NFT",
-  //       routeToServiceType: "NFT",
-  //       createdDate: "2023-02-15T08:44:15.987+00:00",
-  //       status: "A",
-  //       updatedBy: "Ajay",
-  //       updatedDate: "2023-02-15T12:28:48.559+00:00",
-  //       criteriaMap: "11",
-  //       routeDesc: "d1",
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 8,
-  //       userID: "yogeshm",
-  //       routeCode: "R0002",
-  //       country: "India",
-  //       routeBankName: "ICICI",
-  //       routeServiceCategory: "DF1",
-  //       routeServiceType: "Cash",
-  //       iSCorrespondent: "Yes",
-  //       routeToBankName: "SBI",
-  //       routeToServiceCategory: "NFT",
-  //       routeToServiceType: "NFT",
-  //       createdDate: "2023-02-15T08:44:18.596+00:00",
-  //       status: "A",
-  //       updatedBy: "Ajay",
-  //       updatedDate: "2023-02-15T12:28:48.568+00:00",
-  //       criteriaMap: "22",
-  //       routeDesc: "d2",
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 11,
-  //       userID: "yogeshm",
-  //       routeCode: "R0005",
-  //       country: "India23",
-  //       routeBankName: "ICICI1023",
-  //       routeServiceCategory: "DF1123",
-  //       routeServiceType: "Cash213",
-  //       iSCorrespondent: "Yes213",
-  //       routeToBankName: "SBI123",
-  //       routeToServiceCategory: "NFT123",
-  //       routeToServiceType: "NFT213",
-  //       createdDate: "2023-02-16T06:31:23.054+00:00",
-  //       status: "A",
-  //       updatedBy: null,
-  //       updatedDate: null,
-  //       criteriaMap: null,
-  //       routeDesc: null,
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 12,
-  //       userID: "yogeshm",
-  //       routeCode: "R0006",
-  //       country: "India234",
-  //       routeBankName: "ICICI10234",
-  //       routeServiceCategory: "DF11234",
-  //       routeServiceType: "Cash2134",
-  //       iSCorrespondent: "Yes2134",
-  //       routeToBankName: "SBI1234",
-  //       routeToServiceCategory: "NFT1234",
-  //       routeToServiceType: "NFT2134",
-  //       createdDate: "2023-02-16T06:31:36.623+00:00",
-  //       status: "D",
-  //       updatedBy: null,
-  //       updatedDate: null,
-  //       criteriaMap: null,
-  //       routeDesc: null,
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 13,
-  //       userID: "yogeshm",
-  //       routeCode: "R0007",
-  //       country: "India2344",
-  //       routeBankName: "ICICI102344",
-  //       routeServiceCategory: "DF112344",
-  //       routeServiceType: "Cash21344",
-  //       iSCorrespondent: "Yes21344",
-  //       routeToBankName: "SBI12344",
-  //       routeToServiceCategory: "NFT12344",
-  //       routeToServiceType: "NFT21344",
-  //       createdDate: "2023-02-16T06:31:49.309+00:00",
-  //       status: "D",
-  //       updatedBy: null,
-  //       updatedDate: null,
-  //       criteriaMap: null,
-  //       routeDesc: null,
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 9,
-  //       userID: "yogeshm",
-  //       routeCode: "R0003",
-  //       country: "India",
-  //       routeBankName: "ICICI10",
-  //       routeServiceCategory: "DF11",
-  //       routeServiceType: "Cash1",
-  //       iSCorrespondent: "Yes1",
-  //       routeToBankName: "SBI1",
-  //       routeToServiceCategory: "NFT1",
-  //       routeToServiceType: "NFT1",
-  //       createdDate: "2023-02-16T06:30:55.006+00:00",
-  //       status: "A",
-  //       updatedBy: null,
-  //       updatedDate: null,
-  //       criteriaMap: null,
-  //       routeDesc: null,
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //     {
-  //       id: 10,
-  //       userID: "yogeshm",
-  //       routeCode: "R0004",
-  //       country: "India2",
-  //       routeBankName: "ICICI102",
-  //       routeServiceCategory: "DF112",
-  //       routeServiceType: "Cash21",
-  //       iSCorrespondent: "Yes21",
-  //       routeToBankName: "SBI12",
-  //       routeToServiceCategory: "NFT12",
-  //       routeToServiceType: "NFT21",
-  //       createdDate: "2023-02-16T06:31:08.691+00:00",
-  //       status: "A",
-  //       updatedBy: null,
-  //       updatedDate: null,
-  //       criteriaMap: null,
-  //       routeDesc: null,
-  //       lcyAmountFrom: null,
-  //       lcyAmountTo: null,
-  //     },
-  //   ],
-  //   routeBankName: [
-  //     "ICICI",
-  //     "ICICI10234",
-  //     "ICICI102",
-  //     "ICICI102344",
-  //     "ICICI10",
-  //     "ICICI1023",
-  //   ],
-  //   routeServiceType: [
-  //     "Cash1",
-  //     "Cash21",
-  //     "Cash21344",
-  //     "Cash2134",
-  //     "Cash",
-  //     "Cash213",
-  //   ],
-  //   routeServiceCategory: [
-  //     "DF11234",
-  //     "DF112344",
-  //     "DF1123",
-  //     "DF11",
-  //     "DF1",
-  //     "DF112",
-  //   ],
-  //   routeToServiceType: [
-  //     "NFT1",
-  //     "NFT213",
-  //     "NFT21344",
-  //     "NFT21",
-  //     "NFT2134",
-  //     "NFT",
-  //   ],
-  //   routeToServiceCategory: [
-  //     "NFT1",
-  //     "NFT12",
-  //     "NFT12344",
-  //     "NFT",
-  //     "NFT123",
-  //     "NFT1234",
-  //   ],
-  //   iSCorrespondent: ["Yes1", "Yes21", "Yes", "Yes2134", "Yes213", "Yes21344"],
-  //   status: ["A", "D"],
-  // };
+  dummyBankRoutingData = {
+    routeCode: ["R0006", "R0007", "R0001", "R0004", "R0005", "R0002", "R0003"],
+    country: ["India234", "India2", "India23", "India2344", "India"],
+    routeToBankName: ["SBI12344", "SBI1", "SBI", "SBI12", "SBI1234", "SBI123"],
+    data: [
+      {
+        id: 7,
+        userID: "yogeshm",
+        routeCode: "R0001",
+        country: "India",
+        routeBankName: "ICICI10",
+        routeServiceCategory: "DF11",
+        routeServiceType: "Cash",
+        iSCorrespondent: "Yes",
+        routeToBankName: "SBI",
+        routeToServiceCategory: "NFT",
+        routeToServiceType: "NFT",
+        createdDate: "2023-02-15T08:44:15.987+00:00",
+        status: "Active",
+        updatedBy: "Ajay",
+        updatedDate: "2023-02-15T12:28:48.559+00:00",
+        criteriaMap: "11",
+        routeDesc: "d1",
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 8,
+        userID: "yogeshm",
+        routeCode: "R0002",
+        country: "India",
+        routeBankName: "ICICI",
+        routeServiceCategory: "DF1",
+        routeServiceType: "Cash",
+        iSCorrespondent: "Yes",
+        routeToBankName: "SBI",
+        routeToServiceCategory: "NFT",
+        routeToServiceType: "NFT",
+        createdDate: "2023-02-15T08:44:18.596+00:00",
+        status: "Active",
+        updatedBy: "Ajay",
+        updatedDate: "2023-02-15T12:28:48.568+00:00",
+        criteriaMap: "22",
+        routeDesc: "d2",
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 11,
+        userID: "yogeshm",
+        routeCode: "R0005",
+        country: "India23",
+        routeBankName: "ICICI1023",
+        routeServiceCategory: "DF1123",
+        routeServiceType: "Cash213",
+        iSCorrespondent: "Yes213",
+        routeToBankName: "SBI123",
+        routeToServiceCategory: "NFT123",
+        routeToServiceType: "NFT213",
+        createdDate: "2023-02-16T06:31:23.054+00:00",
+        status: "Active",
+        updatedBy: null,
+        updatedDate: null,
+        criteriaMap: null,
+        routeDesc: null,
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 12,
+        userID: "yogeshm",
+        routeCode: "R0006",
+        country: "India234",
+        routeBankName: "ICICI10234",
+        routeServiceCategory: "DF11234",
+        routeServiceType: "Cash2134",
+        iSCorrespondent: "Yes2134",
+        routeToBankName: "SBI1234",
+        routeToServiceCategory: "NFT1234",
+        routeToServiceType: "NFT2134",
+        createdDate: "2023-02-16T06:31:36.623+00:00",
+        status: "Inactive",
+        updatedBy: null,
+        updatedDate: null,
+        criteriaMap: null,
+        routeDesc: null,
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 13,
+        userID: "yogeshm",
+        routeCode: "R0007",
+        country: "India2344",
+        routeBankName: "ICICI102344",
+        routeServiceCategory: "DF112344",
+        routeServiceType: "Cash21344",
+        iSCorrespondent: "Yes21344",
+        routeToBankName: "SBI12344",
+        routeToServiceCategory: "NFT12344",
+        routeToServiceType: "NFT21344",
+        createdDate: "2023-02-16T06:31:49.309+00:00",
+        status: "Inactive",
+        updatedBy: null,
+        updatedDate: null,
+        criteriaMap: null,
+        routeDesc: null,
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 9,
+        userID: "yogeshm",
+        routeCode: "R0003",
+        country: "India",
+        routeBankName: "ICICI10",
+        routeServiceCategory: "DF11",
+        routeServiceType: "Cash1",
+        iSCorrespondent: "Yes1",
+        routeToBankName: "SBI1",
+        routeToServiceCategory: "NFT1",
+        routeToServiceType: "NFT1",
+        createdDate: "2023-02-16T06:30:55.006+00:00",
+        status: "Active",
+        updatedBy: null,
+        updatedDate: null,
+        criteriaMap: null,
+        routeDesc: null,
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+      {
+        id: 10,
+        userID: "yogeshm",
+        routeCode: "R0004",
+        country: "India2",
+        routeBankName: "ICICI102",
+        routeServiceCategory: "DF112",
+        routeServiceType: "Cash21",
+        iSCorrespondent: "Yes21",
+        routeToBankName: "SBI12",
+        routeToServiceCategory: "NFT12",
+        routeToServiceType: "NFT21",
+        createdDate: "2023-02-16T06:31:08.691+00:00",
+        status: "Active",
+        updatedBy: null,
+        updatedDate: null,
+        criteriaMap: null,
+        routeDesc: null,
+        lcyAmountFrom: null,
+        lcyAmountTo: null,
+      },
+    ],
+    routeBankName: [
+      "ICICI",
+      "ICICI10234",
+      "ICICI102",
+      "ICICI102344",
+      "ICICI10",
+      "ICICI1023",
+    ],
+    routeServiceType: [
+      "Cash1",
+      "Cash21",
+      "Cash21344",
+      "Cash2134",
+      "Cash",
+      "Cash213",
+    ],
+    routeServiceCategory: [
+      "DF11234",
+      "DF112344",
+      "DF1123",
+      "DF11",
+      "DF1",
+      "DF112",
+    ],
+    routeToServiceType: [
+      "NFT1",
+      "NFT213",
+      "NFT21344",
+      "NFT21",
+      "NFT2134",
+      "NFT",
+    ],
+    routeToServiceCategory: [
+      "NFT1",
+      "NFT12",
+      "NFT12344",
+      "NFT",
+      "NFT123",
+      "NFT1234",
+    ],
+    iSCorrespondent: ["Yes1", "Yes21", "Yes", "Yes2134", "Yes213", "Yes21344"],
+    status: ["Active", "Inactive"],
+  };
 
   bankRoutingApiData: BankRoutingApiData;
 
@@ -258,21 +259,32 @@ export class BankRoutingComponent implements OnInit {
   routeToServiceTypes: any[];
   routeToServiceCategories: any[];
   iSCorrespondents: any[];
-  statuses: any[];
+  statuses: any[] = ["Active", "Inactive"];
 
   userData: UserData;
 
   noDataMsg: string = "Banks Routing Data Not Available";
 
   ngOnInit(): void {
-    this.coreService.displayLoadingScreen();
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
+
+    // this.coreService.displayLoadingScreen();
     this.userData = JSON.parse(localStorage.getItem("userData"));
     console.log("userData", localStorage.getItem("userData"));
-    this.getBanksRoutingData(this.userData.userId);
+    this.bankRoutingData = this.dummyBankRoutingData.data;
+    // this.getBanksRoutingData(this.userData.userId);
   }
 
   viewBankRouting(data: any) {
-    this.router.navigate([`navbar/view-bank-routing/${data.id}`]);
+    if (data.status == "Active") {
+      this.router.navigate([`navbar/addnewroute`]);
+    } else {
+      this.ngxToaster.warning(
+        `This Route is currently in Inactive State, Please change the status to view details`
+      );
+    }
   }
 
   updateStatus(e: any, bankRoute: string) {
@@ -281,9 +293,9 @@ export class BankRoutingComponent implements OnInit {
 
     let reqStatus = "";
     if (e.target.checked) {
-      reqStatus = "A";
+      reqStatus = "Active";
     } else {
-      reqStatus = "D";
+      reqStatus = "Inactive";
     }
 
     const formData = new FormData();
@@ -373,4 +385,7 @@ export class BankRoutingComponent implements OnInit {
       });
   }
 
+  addNewRoutePage() {
+    this.router.navigateByUrl("/navbar/addnewroute");
+  }
 }

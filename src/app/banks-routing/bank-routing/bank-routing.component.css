@@ -133,7 +133,7 @@ input:checked + .slider:before {
 .bankRoutingFilterIcon {
   position: absolute;
   left: 85%;
-  top: 22%;
+  top: 24%;
   font-size: 11px;
   z-index: 99;
   color: rgb(138 144 153);

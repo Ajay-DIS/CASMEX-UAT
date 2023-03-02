@@ -8,36 +8,44 @@
         <label style="font-weight: 500" for="amountTo">LCY Amount To</label>
       </div>
     </div>
-    <ng-container
-      formArrayName="txnCriteriaRange"
-      *ngFor="let item of txnCriteriaRangeForm.get('txnCriteriaRange')['controls']; let i = index;"
-    >
-      <div [formGroupName]="i" class="d-flex jc-between">
-        <div class="col-6">
-          <p-inputNumber
-            #fromInp
-            inputId="integeronly"
-            [style]="{minWidth: '100%'}"
-            [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-            [min]="0"
-            (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)"
-            formControlName="from"
-          >
-          </p-inputNumber>
+    <div class="all-range-groups">
+      <ng-container
+        formArrayName="txnCriteriaRange"
+        *ngFor="let item of txnCriteriaRangeForm.get('txnCriteriaRange')['controls']; let i = index;"
+      >
+        <div
+          [formGroupName]="i"
+          class="d-flex jc-between"
+          style="position: relative"
+        >
+          <div class="index-range">{{i+1}}.</div>
+          <div class="col-6" style="text-align: right">
+            <p-inputNumber
+              #fromInp
+              inputId="integeronly"
+              [style]="{minWidth: '95%'}"
+              [inputStyle]="{minWidth: '95%', background: '#f4f6fa', border: 'none'}"
+              [min]="0"
+              (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)"
+              formControlName="from"
+            >
+            </p-inputNumber>
+          </div>
+          <div class="col-6">
+            <p-inputNumber
+              #toInp
+              inputId="integeronly"
+              [style]="{minWidth: '100%'}"
+              [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
+              [min]="fromInp.value"
+              formControlName="to"
+              (onFocus)="change(toInp.value, i)"
+            >
+            </p-inputNumber>
+          </div>
         </div>
-        <div class="col-6">
-          <p-inputNumber
-            #toInp
-            inputId="integeronly"
-            [style]="{minWidth: '100%'}"
-            [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-            [min]="fromInp.value"
-            formControlName="to"
-          >
-          </p-inputNumber>
-        </div>
-      </div>
-    </ng-container>
+      </ng-container>
+    </div>
     <div
       class="col-12 justify-content-end d-flex align-items-center rangeOverlapErr"
       style="font-size: 0.8em"

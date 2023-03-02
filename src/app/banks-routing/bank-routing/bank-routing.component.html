@@ -5,7 +5,7 @@
         pButton
         pRipple
         type="button"
-        routerLink="/navbar/addnewroute"
+        (click)="addNewRoutePage()"
         label="{{ 'Bank-Routing.Add New Route' | translate }}"
         class="p-button-raised"
         style="border-radius: 5px"
@@ -532,7 +532,7 @@
                 #statusInp
                 type="checkbox"
                 (click)="updateStatus($event, bankRouting.routeCode)"
-                [checked]="bankRouting.status == 'A' ? true : false"
+                [checked]="(bankRouting.status == 'Active' || bankRouting.status == 'A') ? true : false"
               />
               <span class="slider round"></span>
             </label>

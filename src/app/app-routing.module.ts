@@ -32,11 +32,22 @@ const routes: Routes = [
       {
         path: "bank-routing",
         component: BankRoutingComponent,
+        data: [
+          { label: "Home", routerLink: "/navbar" },
+          { label: "Settings", routerLink: "/navbar" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+        ],
         canActivate: [AuthGuard],
       },
       {
         path: "addnewroute",
         component: AddnewrouteComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar" },
+          { label: "Settings", routerLink: "../navbar" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Add New Route", routerLink: "addnewroute" },
+        ],
         canActivate: [AuthGuard],
       },
     ],
