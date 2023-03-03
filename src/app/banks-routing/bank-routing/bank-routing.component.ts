@@ -88,7 +88,7 @@ export class BankRoutingComponent implements OnInit {
         routeToServiceCategory: "NFT",
         routeToServiceType: "NFT",
         createdDate: "2023-02-15T08:44:18.596+00:00",
-        status: "Active",
+        status: "Inactive",
         updatedBy: "Ajay",
         updatedDate: "2023-02-15T12:28:48.568+00:00",
         criteriaMap: "22",
@@ -259,7 +259,7 @@ export class BankRoutingComponent implements OnInit {
   routeToServiceTypes: any[];
   routeToServiceCategories: any[];
   iSCorrespondents: any[];
-  statuses: any[] = ["Active", "Inactive"];
+  statuses: any[];
 
   userData: UserData;
 
@@ -278,13 +278,14 @@ export class BankRoutingComponent implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    if (data.status == "Active") {
-      this.router.navigate([`navbar/addnewroute`]);
-    } else {
-      this.ngxToaster.warning(
-        `This Route is currently in Inactive State, Please change the status to view details`
-      );
-    }
+    this.router.navigate([`navbar/addnewroute`]);
+    // if (data.status == "Active") {
+    //   this.router.navigate([`navbar/addnewroute`]);
+    // } else {
+    //   this.ngxToaster.warning(
+    //     `This Route is currently in Inactive State, Please change the status to view details`
+    //   );
+    // }
   }
 
   updateStatus(e: any, bankRoute: string) {

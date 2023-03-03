@@ -94,7 +94,7 @@ export class AddnewrouteComponent implements OnInit {
         routeBankName: "SBI",
         routeServiceCategory: "Bank",
         routeServiceType: "NEFT",
-        isCorrespondent: "Yes21344",
+        isCorrespondent: "Yes",
         routeToBankName: "",
         routeToBankNameOption: [
           {
@@ -182,7 +182,7 @@ export class AddnewrouteComponent implements OnInit {
         routeBankName: "HDFC",
         routeServiceCategory: "Cash",
         routeServiceType: "RTGS",
-        isCorrespondent: "Yes21344",
+        isCorrespondent: "No",
         routeToBankName: "",
         routeToBankNameOption: [
           {
@@ -1028,6 +1028,8 @@ export class AddnewrouteComponent implements OnInit {
         setTimeout(() => {
           this.getBanksRoutingData(this.userId);
         }, 500);
+      } else {
+        this.bankRoutesData = [];
       }
     }
   }
