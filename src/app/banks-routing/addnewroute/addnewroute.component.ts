@@ -170,7 +170,7 @@ export class AddnewrouteComponent implements OnInit {
                 "id":1,
                 "code":"Bank",
                 "codeName":"Bank",
-                "statimport { element } from "protractor";us":"A"
+                "status":"A"
              },
              {
                 "id":2,
@@ -556,7 +556,6 @@ export class AddnewrouteComponent implements OnInit {
     private ngxToaster: ToastrService,
     public dialogService: DialogService,
     public messageService: MessageService,
-    private bankRoutingService: BankRoutingService,
     private router: Router,
     private fb: FormBuilder,
     private renderer: Renderer2,
