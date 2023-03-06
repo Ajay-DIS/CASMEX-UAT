@@ -174,3 +174,17 @@ input:checked + .slider:before {
   padding: 0.5rem 1rem;
   background: rgb(234 237 244);
 }
+
+.filter-footer {
+  background-color: rgb(244 246 250) !important;
+}
+.filter-footer button {
+  background: none !important;
+  border-color: transparent !important;
+}
+.filter-footer button.filter-btn {
+  color: rgb(36 85 207) !important;
+}
+.filter-footer button.clear-btn {
+  color: rgb(138 144 153) !important;
+}
