@@ -38,50 +38,50 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   menuItems: MenuItem[] = [];
   $MenuItems: MenuItem[] = [];
   menuItemTree = {
-    Dashboard: [],
-    "Customer Profile": [],
-    "Rate Setup": [
-      "Rate & Margin Setup",
-      "Rate & Margin Settings",
-      "Rate Heirarchy Settings",
-    ],
-    Forex: [],
-    "Beneficiary Profile": [],
-    Remmitance: [
-      "Transaction ",
-      "Payment For Customer",
-      "Amendment",
-      "Cancellation",
-      "Payment to Customer",
-    ],
-    "Customer Service": [
-      "Transaction Enquiry ( Receipt Reprint)",
-      "Complaints",
-      "Rate View",
-    ],
-    "Approval & Authorization": [],
-    Settings: [
-      "Tax",
-      "Charge",
-      "Payment Mode",
-      "Discount",
-      "Block Transaction",
-      "Purpose",
-      "Document",
-      "Source",
-      "Form Rules",
-    ],
-    "Application Settings": [
-      "Custom Fields",
-      "Group Settings",
-      "Search Settings",
-      "Authorization Page Setting",
-    ],
-    "User Roles Management": ["User Roles & Permissions"],
-    Reports: [],
-    Accounts: [],
-    Incoming: [],
-    "Alerts & Notification": [],
+    // Dashboard: [],
+    // "Customer Profile": [],
+    // "Rate Setup": [
+    //   "Rate & Margin Setup",
+    //   "Rate & Margin Settings",
+    //   "Rate Heirarchy Settings",
+    // ],
+    // Forex: [],
+    // "Beneficiary Profile": [],
+    // Remmitance: [
+    //   "Transaction ",
+    //   "Payment For Customer",
+    //   "Amendment",
+    //   "Cancellation",
+    //   "Payment to Customer",
+    // ],
+    // "Customer Service": [
+    //   "Transaction Enquiry ( Receipt Reprint)",
+    //   "Complaints",
+    //   "Rate View",
+    // ],
+    // "Approval & Authorization": [],
+    // Settings: [
+    //   "Tax",
+    //   "Charge",
+    //   "Payment Mode",
+    //   "Discount",
+    //   "Block Transaction",
+    //   "Purpose",
+    //   "Document",
+    //   "Source",
+    //   "Form Rules",
+    // ],
+    // "Application Settings": [
+    //   "Custom Fields",
+    //   "Group Settings",
+    //   "Search Settings",
+    //   "Authorization Page Setting",
+    // ],
+    // "User Roles Management": ["User Roles & Permissions"],
+    // Reports: [],
+    // Accounts: [],
+    // Incoming: [],
+    // "Alerts & Notification": [],
   };
   profileOptions: any = [{ name: "Profile" }, { name: "Logout" }];
   toggleState = "left";
@@ -124,8 +124,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.router.navigate(["login"]);
     }
     if (!!localStorage.getItem("menuItems")) {
-      // const menuItems = localStorage.getItem("menuItems");
-      // this.menuItemTree = JSON.parse(menuItems);
+      const menuItems = localStorage.getItem("menuItems");
+      this.menuItemTree = JSON.parse(menuItems);
     }
     Object.keys(this.menuItemTree).map((menu) => {
       if (this.menuItemTree[menu].length > 0) {

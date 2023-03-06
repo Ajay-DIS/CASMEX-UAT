@@ -86,189 +86,189 @@ export class AddnewrouteComponent implements OnInit {
   ];
   isSelectedRouteToBankName = false;
   isSelectedRouteToServiceCategory = false;
-  apiResponse = {
-    data: [
-      {
-        id: "1",
-        country: "India23442",
-        routeBankName: "SBI",
-        routeServiceCategory: "Bank",
-        routeServiceType: "NEFT",
-        isCorrespondent: "Yes21344",
-        routeToBankName: "",
-        routeToBankNameOption: [
-          {
-            id: 1,
-            code: "SBI",
-            codeName: "SBI",
-            isCorrespondent: "Y",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "HDFC",
-            codeName: "HDFC",
-            isCorrespondent: "Y",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "ICICI",
-            codeName: "ICICI",
-            isCorrespondent: "N",
-            status: "A",
-          },
-        ],
-        routeToServiceCategory: "",
-        routeToServiceCategoryOption: [
-          {
-            id: 1,
-            code: "Bank",
-            codeName: "Bank",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "Cash",
-            codeName: "Cash",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "Utility",
-            codeName: "Utility",
-            status: "A",
-          },
-        ],
-        routeToServiceType: "",
-        routeToServiceTypeOption: [
-          {
-            id: 1,
-            code: "NEFT",
-            codeName: "NEFT",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "RTGS",
-            codeName: "RTGS",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "IMPS",
-            codeName: "IMPS",
-            status: "A",
-          },
-          {
-            id: 4,
-            code: "Cash pick up",
-            codeName: "Cash pick up",
-            status: "A",
-          },
-          {
-            id: 5,
-            code: "A/C transfer",
-            codeName: "A/C transfer",
-            status: "A",
-          },
-        ],
-        lcyAmountFrom: null,
-        lcyAmountTo: null,
-      },
-      {
-        id: "2",
-        country: "India2344",
-        routeBankName: "HDFC",
-        routeServiceCategory: "Cash",
-        routeServiceType: "RTGS",
-        isCorrespondent: "Yes21344",
-        routeToBankName: "",
-        routeToBankNameOption: [
-          {
-            id: 1,
-            code: "SBI",
-            codeName: "SBI",
-            isCorrespondent: "Y",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "HDFC",
-            codeName: "HDFC",
-            isCorrespondent: "Y",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "ICICI",
-            codeName: "ICICI",
-            isCorrespondent: "N",
-            status: "A",
-          },
-        ],
-        routeToServiceCategory: "",
-        routeToServiceCategoryOption: [
-          {
-            id: 1,
-            code: "Bank",
-            codeName: "Bank",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "Cash",
-            codeName: "Cash",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "Utility",
-            codeName: "Utility",
-            status: "A",
-          },
-        ],
-        routeToServiceType: "",
-        routeToServiceTypeOption: [
-          {
-            id: 1,
-            code: "NEFT",
-            codeName: "NEFT",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "RTGS",
-            codeName: "RTGS",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "IMPS",
-            codeName: "IMPS",
-            status: "A",
-          },
-          {
-            id: 4,
-            code: "Cash pick up",
-            codeName: "Cash pick up",
-            status: "A",
-          },
-          {
-            id: 5,
-            code: "A/C transfer",
-            codeName: "A/C transfer",
-            status: "A",
-          },
-        ],
-        lcyAmountFrom: null,
-        lcyAmountTo: null,
-      },
-    ],
-    userId: "yogeshm",
-    routeDesc: "new g",
-    criteriaMap: "",
-    LCY: "No",
+  apiResponse: any = {
+    // data: [
+    //   {
+    //     id: "1",
+    //     country: "India23442",
+    //     routeBankName: "SBI",
+    //     routeServiceCategory: "Bank",
+    //     routeServiceType: "NEFT",
+    //     isCorrespondent: "Yes",
+    //     routeToBankName: "",
+    //     routeToBankNameOption: [
+    //       {
+    //         id: 1,
+    //         code: "SBI",
+    //         codeName: "SBI",
+    //         isCorrespondent: "Y",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "HDFC",
+    //         codeName: "HDFC",
+    //         isCorrespondent: "Y",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "ICICI",
+    //         codeName: "ICICI",
+    //         isCorrespondent: "N",
+    //         status: "A",
+    //       },
+    //     ],
+    //     routeToServiceCategory: "",
+    //     routeToServiceCategoryOption: [
+    //       {
+    //         id: 1,
+    //         code: "Bank",
+    //         codeName: "Bank",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "Cash",
+    //         codeName: "Cash",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "Utility",
+    //         codeName: "Utility",
+    //         status: "A",
+    //       },
+    //     ],
+    //     routeToServiceType: "",
+    //     routeToServiceTypeOption: [
+    //       {
+    //         id: 1,
+    //         code: "NEFT",
+    //         codeName: "NEFT",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "RTGS",
+    //         codeName: "RTGS",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "IMPS",
+    //         codeName: "IMPS",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 4,
+    //         code: "Cash pick up",
+    //         codeName: "Cash pick up",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 5,
+    //         code: "A/C transfer",
+    //         codeName: "A/C transfer",
+    //         status: "A",
+    //       },
+    //     ],
+    //     lcyAmountFrom: null,
+    //     lcyAmountTo: null,
+    //   },
+    //   {
+    //     id: "2",
+    //     country: "India2344",
+    //     routeBankName: "HDFC",
+    //     routeServiceCategory: "Cash",
+    //     routeServiceType: "RTGS",
+    //     isCorrespondent: "No",
+    //     routeToBankName: "",
+    //     routeToBankNameOption: [
+    //       {
+    //         id: 1,
+    //         code: "SBI",
+    //         codeName: "SBI",
+    //         isCorrespondent: "Y",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "HDFC",
+    //         codeName: "HDFC",
+    //         isCorrespondent: "Y",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "ICICI",
+    //         codeName: "ICICI",
+    //         isCorrespondent: "N",
+    //         status: "A",
+    //       },
+    //     ],
+    //     routeToServiceCategory: "",
+    //     routeToServiceCategoryOption: [
+    //       {
+    //         id: 1,
+    //         code: "Bank",
+    //         codeName: "Bank",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "Cash",
+    //         codeName: "Cash",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "Utility",
+    //         codeName: "Utility",
+    //         status: "A",
+    //       },
+    //     ],
+    //     routeToServiceType: "",
+    //     routeToServiceTypeOption: [
+    //       {
+    //         id: 1,
+    //         code: "NEFT",
+    //         codeName: "NEFT",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 2,
+    //         code: "RTGS",
+    //         codeName: "RTGS",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 3,
+    //         code: "IMPS",
+    //         codeName: "IMPS",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 4,
+    //         code: "Cash pick up",
+    //         codeName: "Cash pick up",
+    //         status: "A",
+    //       },
+    //       {
+    //         id: 5,
+    //         code: "A/C transfer",
+    //         codeName: "A/C transfer",
+    //         status: "A",
+    //       },
+    //     ],
+    //     lcyAmountFrom: null,
+    //     lcyAmountTo: null,
+    //   },
+    // ],
+    // userId: "yogeshm",
+    // routeDesc: "new g",
+    // criteriaMap: "",
+    // LCY: "No",
   };
   hideValuesDropdown = false;
   criteriaText: any[] = [];
@@ -279,36 +279,7 @@ export class AddnewrouteComponent implements OnInit {
   userId = "";
   criteriaName = "";
   criteriaTemplatesDdlOptions: any = [];
-  criteriaMapDdlOptions = [
-    // {
-    //   name: "Select Criteria",
-    //   code: "",
-    // },
-    // {
-    //   name: "Correspodent",
-    //   code: "Correspodent",
-    // },
-    // {
-    //   name: "Country",
-    //   code: "Country",
-    // },
-    // {
-    //   name: "Service Type",
-    //   code: "ServiceType",
-    // },
-    // {
-    //   name: "Service Category",
-    //   code: "ServiceCategory",
-    // },
-    // {
-    //   name: "LCY Amount",
-    //   code: "LCYAmount",
-    // },
-    // {
-    //   name: "Orginations",
-    //   code: "Orginations",
-    // },
-  ];
+  criteriaMapDdlOptions = [];
   criteriaEqualsDdlOptions = [
     // {
     //   name: "Any",
@@ -331,189 +302,189 @@ export class AddnewrouteComponent implements OnInit {
   // };
   //data from API
 
-  criteriaDataDetailsJson = {
-    data: {
-      Organization: [
-        {
-          id: 1,
-          code: "SBI",
-          codeName: "SBI",
-          isCorrespondent: "Y",
-          status: "A",
-        },
-        {
-          id: 2,
-          code: "HDFC",
-          codeName: "HDFC",
-          isCorrespondent: "Y",
-          status: "A",
-        },
-        {
-          id: 3,
-          code: "ICICI",
-          codeName: "ICICI",
-          isCorrespondent: "N",
-          status: "A",
-        },
-      ],
-      dependance: {
-        // Organization: "Country",
-        "Service Type": "Service Category",
-      },
-      viewCriteria: {
-        id: 83,
-        applications: "Web Application",
-        form: "Bank Routings",
-        totalCriteraiField: 5,
-        status: "A",
-        createdBy: "Yogesh",
-        createdByID: "yogeshm",
-        createdDate: "2023-02-22T12:31:45.905+00:00",
-        cmCriteriaDataDetails: [
-          {
-            id: 151,
-            fieldName: "LCY Amount",
-            displayName: "LCY Amount",
-            fieldType: "Dropdown",
-            operations: "Is Equal To,Is Not Equal To",
-            orderID: 5,
-            iSMandatory: "no",
-          },
-          {
-            id: 152,
-            fieldName: "Service Category",
-            displayName: "Service Category",
-            fieldType: "Dropdown",
-            operations: "Is Equal To,Is Not Equal To",
-            orderID: 4,
-            iSMandatory: "yes",
-          },
-          {
-            id: 154,
-            fieldName: "Country",
-            displayName: "Country",
-            fieldType: "Dropdown",
-            operations: "Is Equal To,Is Not Equal To",
-            orderID: 2,
-            iSMandatory: "yes",
-          },
-          {
-            id: 153,
-            fieldName: "Organization",
-            displayName: "Organization",
-            fieldType: "Dropdown",
-            operations: "Is Equal To,Is Not Equal To",
-            orderID: 3,
-            iSMandatory: "yes",
-          },
-          {
-            id: 155,
-            fieldName: "Service Type",
-            displayName: "Service Type",
-            fieldType: "Dropdown",
-            operations: "Is Equal To,Is Not Equal To",
-            orderID: 1,
-            iSMandatory: "yes",
-          },
-        ],
-      },
-      Country: [
-        {
-          id: 1,
-          code: "USA",
-          countryName: "Amarica",
-          status: "A",
-        },
-        {
-          id: 2,
-          code: "IND",
-          countryName: "India",
-          status: "A",
-        },
-        {
-          id: 3,
-          code: "JPN",
-          countryName: "Japan",
-          status: "A",
-        },
-        {
-          id: 4,
-          code: "CHI",
-          countryName: "Chaina",
-          status: "A",
-        },
-        {
-          id: 5,
-          code: "PAK",
-          countryName: "Pakistna",
-          status: "A",
-        },
-        {
-          id: 6,
-          code: "UK",
-          countryName: "England",
-          status: "A",
-        },
-      ],
-      mandatory: "[Country, Organization]",
-      "Service Category": [
-        {
-          id: 1,
-          code: "Bank",
-          codeName: "Bank",
-          status: "A",
-        },
-        {
-          id: 2,
-          code: "Cash",
-          codeName: "Cash",
-          status: "A",
-        },
-        {
-          id: 3,
-          code: "Utility",
-          codeName: "Utility",
-          status: "A",
-        },
-      ],
-      "Service Type": [
-        {
-          id: 1,
-          code: "NEFT",
-          codeName: "NEFT",
-          status: "A",
-        },
-        {
-          id: 2,
-          code: "RTGS",
-          codeName: "RTGS",
-          status: "A",
-        },
-        {
-          id: 3,
-          code: "IMPS",
-          codeName: "IMPS",
-          status: "A",
-        },
-        {
-          id: 4,
-          code: "Cash pick up",
-          codeName: "Cash pick up",
-          status: "A",
-        },
-        {
-          id: 5,
-          code: "A/C transfer",
-          codeName: "A/C transfer",
-          status: "A",
-        },
-      ],
-    },
-    status: "200",
+  criteriaDataDetailsJson: any = {
+    // data: {
+    //   Organization: [
+    //     {
+    //       id: 1,
+    //       code: "SBI",
+    //       codeName: "SBI",
+    //       isCorrespondent: "Y",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 2,
+    //       code: "HDFC",
+    //       codeName: "HDFC",
+    //       isCorrespondent: "Y",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 3,
+    //       code: "ICICI",
+    //       codeName: "ICICI",
+    //       isCorrespondent: "N",
+    //       status: "A",
+    //     },
+    //   ],
+    //   dependance: {
+    //     // Organization: "Country",
+    //     "Service Type": "Service Category",
+    //   },
+    //   viewCriteria: {
+    //     id: 83,
+    //     applications: "Web Application",
+    //     form: "Bank Routings",
+    //     totalCriteraiField: 5,
+    //     status: "A",
+    //     createdBy: "Yogesh",
+    //     createdByID: "yogeshm",
+    //     createdDate: "2023-02-22T12:31:45.905+00:00",
+    //     cmCriteriaDataDetails: [
+    //       {
+    //         id: 151,
+    //         fieldName: "LCY Amount",
+    //         displayName: "LCY Amount",
+    //         fieldType: "Dropdown",
+    //         operations: "Is Equal To,Is Not Equal To",
+    //         orderID: 5,
+    //         iSMandatory: "no",
+    //       },
+    //       {
+    //         id: 152,
+    //         fieldName: "Service Category",
+    //         displayName: "Service Category",
+    //         fieldType: "Dropdown",
+    //         operations: "Is Equal To,Is Not Equal To",
+    //         orderID: 4,
+    //         iSMandatory: "yes",
+    //       },
+    //       {
+    //         id: 154,
+    //         fieldName: "Country",
+    //         displayName: "Country",
+    //         fieldType: "Dropdown",
+    //         operations: "Is Equal To,Is Not Equal To",
+    //         orderID: 2,
+    //         iSMandatory: "yes",
+    //       },
+    //       {
+    //         id: 153,
+    //         fieldName: "Organization",
+    //         displayName: "Organization",
+    //         fieldType: "Dropdown",
+    //         operations: "Is Equal To,Is Not Equal To",
+    //         orderID: 3,
+    //         iSMandatory: "yes",
+    //       },
+    //       {
+    //         id: 155,
+    //         fieldName: "Service Type",
+    //         displayName: "Service Type",
+    //         fieldType: "Dropdown",
+    //         operations: "Is Equal To,Is Not Equal To",
+    //         orderID: 1,
+    //         iSMandatory: "yes",
+    //       },
+    //     ],
+    //   },
+    //   Country: [
+    //     {
+    //       id: 1,
+    //       code: "USA",
+    //       countryName: "Amarica",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 2,
+    //       code: "IND",
+    //       countryName: "India",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 3,
+    //       code: "JPN",
+    //       countryName: "Japan",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 4,
+    //       code: "CHI",
+    //       countryName: "Chaina",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 5,
+    //       code: "PAK",
+    //       countryName: "Pakistna",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 6,
+    //       code: "UK",
+    //       countryName: "England",
+    //       status: "A",
+    //     },
+    //   ],
+    //   mandatory: "[Country, Organization]",
+    //   "Service Category": [
+    //     {
+    //       id: 1,
+    //       code: "Bank",
+    //       codeName: "Bank",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 2,
+    //       code: "Cash",
+    //       codeName: "Cash",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 3,
+    //       code: "Utility",
+    //       codeName: "Utility",
+    //       status: "A",
+    //     },
+    //   ],
+    //   "Service Type": [
+    //     {
+    //       id: 1,
+    //       code: "NEFT",
+    //       codeName: "NEFT",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 2,
+    //       code: "RTGS",
+    //       codeName: "RTGS",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 3,
+    //       code: "IMPS",
+    //       codeName: "IMPS",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 4,
+    //       code: "Cash pick up",
+    //       codeName: "Cash pick up",
+    //       status: "A",
+    //     },
+    //     {
+    //       id: 5,
+    //       code: "A/C transfer",
+    //       codeName: "A/C transfer",
+    //       status: "A",
+    //     },
+    //   ],
+    // },
+    // status: "200",
   };
 
-  cmCriteriaDataDetails: any =
-    this.criteriaDataDetailsJson.data.viewCriteria.cmCriteriaDataDetails;
+  cmCriteriaDataDetails: any = [];
+  // this.criteriaDataDetailsJson.data.viewCriteria.cmCriteriaDataDetails;
 
   // cmCriteriaDataDetails: any = [
   //   {
@@ -578,9 +549,10 @@ export class AddnewrouteComponent implements OnInit {
   //   },
   // ];
 
-  cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-    .replace(/["|\[|\]]/g, "")
-    .split(", ");
+  cmCriteriaMandatory = [];
+  // this.criteriaDataDetailsJson.data.mandatory
+  //   .replace(/["|\[|\]]/g, "")
+  //   .split(", ");
 
   savedLcySlabs = false;
   isLcySlabsCriteria = false;
@@ -609,6 +581,8 @@ export class AddnewrouteComponent implements OnInit {
   @ViewChild("addCriteriaBtn") addCriteriaBtn: ElementRef;
 
   ngOnInit(): void {
+    this.getAddBankRouteCriteriaData();
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -638,17 +612,6 @@ export class AddnewrouteComponent implements OnInit {
       //   });
     }
 
-    this.cmCriteriaDataDetails.forEach((element) => {
-      this.criteriaMapDdlOptions.push({
-        name: element.displayName,
-        code: element.fieldName,
-      });
-
-      // operations.forEach(x:any=> {
-      //   this.criteriaEqualsDdlOptions.push({name: x, })
-      // })
-    });
-
     this.selectCriteriaForm = this.fb.group({
       criteria: new FormControl({ value: "", disabled: false }, [
         Validators.required,
@@ -662,6 +625,38 @@ export class AddnewrouteComponent implements OnInit {
         [Validators.required]
       ),
     });
+  }
+
+  getAddBankRouteCriteriaData() {
+    this.coreService.displayLoadingScreen();
+    this.bankRoutingService
+      .getAddBankRouteCriteriaData()
+      .subscribe(
+        (res) => {
+          this.criteriaDataDetailsJson = res;
+          this.cmCriteriaDataDetails =
+            this.criteriaDataDetailsJson.data.viewCriteria.cmCriteriaDataDetails;
+
+          let crArr = [];
+          this.cmCriteriaDataDetails.forEach((element) => {
+            crArr.push({
+              name: element.displayName,
+              code: element.fieldName,
+            });
+          });
+          this.criteriaMapDdlOptions = crArr;
+
+          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
+            .replace(/["|\[|\]]/g, "")
+            .split(", ");
+        },
+        (err) => {
+          console.log("::error loading AddBankRouteCriteriaData", err);
+        }
+      )
+      .add(() => {
+        this.coreService.removeLoadingScreen();
+      });
   }
 
   get criteriaCtrl() {
@@ -795,6 +790,8 @@ export class AddnewrouteComponent implements OnInit {
     } else {
       this.checkLcySlabCriteria(criteria);
     }
+
+    console.log("::criteriaText", this.criteriaText);
   }
 
   checkLcySlabCriteria(criteria: any) {
@@ -803,16 +800,20 @@ export class AddnewrouteComponent implements OnInit {
       $lcySlabsObs = this.bankRoutingService
         .getTransactionCriteriaRange()
         .pipe(
-          first(
-            (x) => x["txnCriteriaRange"] && x["txnCriteriaRange"].length > 0,
-            true
-          )
+          first((x) => x["txnCriteriaRange"] && x["txnCriteriaRange"].length)
         )
         .subscribe((res) => {
+          console.log("::added slab to criteri arr", res);
           this.savedLcySlabs = !!Object.keys(res).length;
           if (this.savedLcySlabs) {
-            this.criteriaText.push(criteria);
-            this.removeAddCriteriaListener();
+            if (
+              !this.criteriaText.filter(
+                (criteria) => criteria == "LCY Amount = Slab"
+              ).length
+            ) {
+              this.criteriaText.push(criteria);
+              this.removeAddCriteriaListener();
+            }
           } else {
             console.log("No savedLcySlabs");
           }
@@ -882,6 +883,7 @@ export class AddnewrouteComponent implements OnInit {
             (criteria) => criteria == "LCY Amount = Slab"
           ).length
         ) {
+          console.log("::slab selected");
           this.isLcySlabsCriteria = true;
           this.removeAddCriteriaListener = this.renderer.listen(
             this.addCriteriaBtn.nativeElement,
@@ -893,6 +895,9 @@ export class AddnewrouteComponent implements OnInit {
         } else if (event.name == "Slab") {
           this.isLcySlabsCriteria = true;
         } else {
+          if (this.removeAddCriteriaListener) {
+            this.removeAddCriteriaListener();
+          }
           this.isLcySlabsCriteria = false;
         }
         break;
@@ -939,6 +944,7 @@ export class AddnewrouteComponent implements OnInit {
       this.cmCriteriaMandatory.every((r) => formattedCriteriaArr.includes(r))
     ) {
       let criteriaObj = {};
+      criteriaObj["slabs"] = null;
       if (
         this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
           .length
@@ -1011,25 +1017,54 @@ export class AddnewrouteComponent implements OnInit {
         console.log("mandatory and dependance passed");
         const postDataCriteria = new FormData();
 
-        let criteriaMap = JSON.stringify(finalCriteriaObj.criteriaMap);
+        let criteriaMap = finalCriteriaObj.criteriaMap;
+        let slabText = null;
         postDataCriteria.append("criteriaMap", criteriaMap);
+        postDataCriteria.append("slab", slabText);
 
-        console.log(
-          "::postDataCriteria map",
-          postDataCriteria.get("criteriaMap")
-        );
         if (finalCriteriaObj.slabs) {
-          let slabs = JSON.stringify(finalCriteriaObj.slabs);
-          postDataCriteria.append("slabs", slabs);
-          console.log("::postDataCriteria slab", postDataCriteria.get("slabs"));
+          let slabs = finalCriteriaObj.slabs;
+          let slabArr = [];
+          slabs.forEach((slab) => {
+            let rngArr = [];
+            Object.entries(slab).forEach((rng) => {
+              rngArr.push(rng.join(":"));
+            });
+            slabArr.push(rngArr.join("::"));
+          });
+          slabText = slabArr.join("#");
+          postDataCriteria.set("slab", slabText);
         }
-        this.ngxToaster.success(`Criteria Successfully Applied`);
 
-        setTimeout(() => {
-          this.getBanksRoutingData(this.userId);
-        }, 500);
+        this.routeBankCriteriaSearchApi(postDataCriteria);
+      } else {
+        this.bankRoutesData = [];
       }
     }
+  }
+
+  routeBankCriteriaSearchApi(formData: any) {
+    this.coreService.displayLoadingScreen();
+    this.bankRoutingService
+      .postRouteBankCriteriaSearch(formData)
+      .subscribe(
+        (res) => {
+          if (!res["msg"]) {
+            console.log("routeBankCriteriaSearchApi resp", res);
+            this.apiResponse = res;
+            this.ngxToaster.success(`Criteria Successfully Applied`);
+            this.getBanksRoutingData(this.userId);
+          } else {
+            this.ngxToaster.warning(res["msg"]);
+          }
+        },
+        (err) => {
+          console.log("error in BankCriteriaSearchApi", err);
+        }
+      )
+      .add(() => {
+        this.coreService.removeLoadingScreen();
+      });
   }
 
   saveCriteriaAsTemplate() {
@@ -1045,36 +1080,36 @@ export class AddnewrouteComponent implements OnInit {
     formData.append("criteriaName", this.criteriaName);
     formData.append("criteriaMap", this.criteriaText.join(";"));
     // this.criteriaTemplatesDdlOptions.push(payload); //need  to be remove  after sit working
-    // this.bankRoutingService
-    //   .currentCriteriaSaveAsTemplate(formData)
-    //   .subscribe((response) => {
-    //     if (
-    //       response.msg == "Duplicate criteria, please modify existing criteria"
-    //     ) {
-    //       this.clickforsave = false;
-    //       this.criteriaName = "";
-    //       this.ngxToaster.warning(response.msg);
-    //     } else {
-    //       this.ngxToaster.success(response.msg);
-    //       this.clickforsave = false;
-    //       this.criteriaName = "";
-    //       this.getAllTemplates();
-    //     }
-    //   });
+    this.bankRoutingService
+      .currentCriteriaSaveAsTemplate(formData)
+      .subscribe((response) => {
+        if (
+          response.msg == "Duplicate criteria, please modify existing criteria"
+        ) {
+          this.clickforsave = false;
+          this.criteriaName = "";
+          this.ngxToaster.warning(response.msg);
+        } else {
+          this.ngxToaster.success(response.msg);
+          this.clickforsave = false;
+          this.criteriaName = "";
+          this.getAllTemplates();
+        }
+      });
   }
 
   getAllTemplates() {
-    // this.bankRoutingService.getAllCriteriaTemplates().subscribe((response) => {
-    //   if (response.data && response.data.length) {
-    //     this.criteriaTemplatesDdlOptions = response.data;
-    //     this.criteriaTemplatesDdlOptions.forEach((val) => {
-    //       val["name"] = val["criteriaName"];
-    //       val["code"] = val["criteriaName"];
-    //     });
-    //   } else {
-    //     this.ngxToaster.warning(response.msg);
-    //   }
-    // });
+    this.bankRoutingService.getAllCriteriaTemplates().subscribe((response) => {
+      if (response.data && response.data.length) {
+        this.criteriaTemplatesDdlOptions = response.data;
+        this.criteriaTemplatesDdlOptions.forEach((val) => {
+          val["name"] = val["criteriaName"];
+          val["code"] = val["criteriaName"];
+        });
+      } else {
+        this.ngxToaster.warning(response.msg);
+      }
+    });
   }
 
   selectCriteriaTemplate(item) {
