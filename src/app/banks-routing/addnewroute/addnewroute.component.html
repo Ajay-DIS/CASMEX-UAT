@@ -11,7 +11,7 @@
         pButton
         pRipple
         type="button"
-        [disabled]="!bankRoutesData.length"
+        [disabled]="!bankRoutesData || !bankRoutesData.length"
         label="Save"
         class="p-button-raised"
         (click)="saveAddNewRoute('save')"

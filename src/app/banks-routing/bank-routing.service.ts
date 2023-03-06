@@ -28,10 +28,10 @@ export class BankRoutingService {
   $TransactionCriteriaRange = new BehaviorSubject<any>({});
 
   setTransactionCriteriaRange(value: any) {
-    this.$TransactionCriteriaRange.next(value)
+    this.$TransactionCriteriaRange.next(value);
   }
   getTransactionCriteriaRange() {
-    return this.$TransactionCriteriaRange
+    return this.$TransactionCriteriaRange;
   }
 
   getBankRoutingData(id: string) {
@@ -44,6 +44,14 @@ export class BankRoutingService {
       `/remittance/banksRoutingController/updateBanksRoutingStatus`,
       data
     );
+  }
+
+  getAddBankRouteCriteriaData() {
+    return this.http.get(`/remittance/banksRoutingController/addBankRoute`);
+  }
+
+  postRouteBankCriteriaSearch(data:any) {
+    return this.http.post(`/remittance/banksRoutingController/routeBankCriteriaSearch`, data);
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {

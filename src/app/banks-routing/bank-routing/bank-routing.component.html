@@ -23,7 +23,7 @@
       [value]="bankRoutingData"
       sortMode="multiple"
       dataKey="id"
-      [rows]="3"
+      [rows]="5"
       [paginator]="true"
     >
       <ng-template pTemplate="header">
@@ -44,8 +44,27 @@
                 [overlayVisible]="showRouteCodesOptions"
                 [defaultLabel]="'Search'"
                 (onChange)="dt.filter($event.value, 'routeCode', 'in')"
+                [(ngModel)]="selectedFilterRoutes"
                 (onPanelHide)="showRouteCodesOptions = !showRouteCodesOptions"
-              ></p-multiSelect>
+              >
+                <!-- <p-footer>
+                  <div class="flex justify-content-end p-1 filter-footer">
+                    <button
+                      pButton
+                      type="button"
+                      label="Filter"
+                      class="filter-btn"
+                    ></button>
+                    <button
+                      pButton
+                      type="button"
+                      label="Clear"
+                      class="clear-btn"
+                      (click)="clearSelectedFilterRoutes()"
+                    ></button>
+                  </div>
+                </p-footer> -->
+              </p-multiSelect>
             </div>
           </th>
           <th class="table-titles" [pSortableColumn]="'country'">
@@ -532,7 +551,11 @@
                 #statusInp
                 type="checkbox"
                 (click)="updateStatus($event, bankRouting.routeCode)"
-                [checked]="(bankRouting.status == 'Active' || bankRouting.status == 'A') ? true : false"
+                [checked]="
+                  bankRouting.status == 'Active' || bankRouting.status == 'A'
+                    ? true
+                    : false
+                "
               />
               <span class="slider round"></span>
             </label>
