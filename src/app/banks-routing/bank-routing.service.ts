@@ -66,4 +66,8 @@ export class BankRoutingService {
       `remittance/banksRoutingController/getExistingCriteriaList/yogeshm-get`
     );
   }
+
+  addNewRoute(data): Observable<any> {
+    return this.http.post(`/remittance/banksRoutingController/saveBanksRoutings`, data);
+  }
 }

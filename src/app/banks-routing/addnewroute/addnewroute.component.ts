@@ -84,6 +84,7 @@ export class AddnewrouteComponent implements OnInit {
       visible: true,
     },
   ];
+  lcySlab = null;
   isSelectedRouteToBankName = false;
   isSelectedRouteToServiceCategory = false;
   apiResponse: any = {
@@ -565,6 +566,10 @@ export class AddnewrouteComponent implements OnInit {
 
   removeAddCriteriaListener: any;
 
+  routeToBankNameOption = [];
+  routeToServiceCategoryOption = [];
+  routeToServiceTypeOption = [];
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -1020,7 +1025,7 @@ export class AddnewrouteComponent implements OnInit {
         let criteriaMap = finalCriteriaObj.criteriaMap;
         let slabText = null;
         postDataCriteria.append("criteriaMap", criteriaMap);
-        postDataCriteria.append("slab", slabText);
+        postDataCriteria.append("lcySlab", slabText);
 
         if (finalCriteriaObj.slabs) {
           let slabs = finalCriteriaObj.slabs;
@@ -1033,7 +1038,8 @@ export class AddnewrouteComponent implements OnInit {
             slabArr.push(rngArr.join("::"));
           });
           slabText = slabArr.join("#");
-          postDataCriteria.set("slab", slabText);
+          this.lcySlab = slabText;
+          postDataCriteria.set("lcySlab", slabText);
         }
 
         this.routeBankCriteriaSearchApi(postDataCriteria);
@@ -1160,6 +1166,14 @@ export class AddnewrouteComponent implements OnInit {
 
   getBanksRoutingData(id: string) {
     this.bankRoutesData = this.apiResponse.data;
+    this.bankRoutesData.forEach(element => {
+      this.routeToBankNameOption = element.routeToBankName;
+      this.routeToServiceCategoryOption = element.routeToServiceCategory;
+      this.routeToServiceTypeOption = element.routeToServiceType;
+      element.routeToBankName = "";
+      element.routeToServiceType = "";
+      element.routeToServiceCategory = "";
+    })
     if (this.apiResponse.LCY == "Yes") {
       this.bankRoutesColumns.forEach((x) => {
         (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
@@ -1180,15 +1194,7 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   saveAddNewRoute(action) {
-    let payload = {
-      data: this.bankRoutesData,
-      userId: this.userId,
-      routeDesc: this.apiResponse.routeDesc,
-      criteriaMap: this.criteriaText.join(";"),
-      LCY: this.apiResponse.LCY,
-    };
-    console.log("payload JSON", payload);
-    //Api integration here
+    let payload = []
     let isRequiredFields = false;
     this.bankRoutesData.forEach((element) => {
       if (
@@ -1197,19 +1203,42 @@ export class AddnewrouteComponent implements OnInit {
         element.routeToServiceType == ""
       ) {
         isRequiredFields = true;
+      } else {
+        element["userId"] = this.userId;
+        element["routeDesc"] = "new g"; //ask to yogesh
+        element["criteriaMap"] = this.criteriaText.join(";");
+        element["lcySlab"] = this.lcySlab;
+        element["lcyAmountTo"] = element.lcyAmountTo ? element.lcyAmountTo : null;
+        element["lcyAmountFrom"] = element.lcyAmountFrom ? element.lcyAmountFrom : null;
+        payload.push(element);
       }
     });
+    console.log("Payload", {data: payload})
     setTimeout(() => {
       if (isRequiredFields) {
         this.ngxToaster.warning("Please Select required fields.");
       } else {
-        this.ngxToaster.success("Add new Route updated successfully");
-        if (action == "save") {
-          this.router.navigate([`navbar/bank-routing`]);
-        } else if (action == "saveAndAddNew") {
-          window.location.reload();
-          //this.getBanksRoutingData(this.userId);
-        }
+        this.coreService.displayLoadingScreen();
+        this.bankRoutingService
+          .addNewRoute({data: payload})
+          .subscribe(
+            (res) => {
+              if (res["msg"]) {
+                this.ngxToaster.success(res.msg);
+                if (action == "save") {
+                  this.router.navigate([`navbar/bank-routing`]);
+                } else if (action == "saveAndAddNew") {
+                  window.location.reload();
+                }
+              }
+            },
+            (err) => {
+              console.log("error in saveAddNewRoute", err);
+            }
+          )
+          .add(() => {
+            this.coreService.removeLoadingScreen();
+          });
       }
     }, 1000);
   }
