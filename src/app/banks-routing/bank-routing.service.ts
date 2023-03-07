@@ -46,6 +46,12 @@ export class BankRoutingService {
     );
   }
 
+  getBanksRoutingForEdit(routeCode: any) {
+    return this.http.get(
+      `/remittance/banksRoutingController/getBanksRoutingForEdit/${routeCode}`
+    );
+  }
+
   getAddBankRouteCriteriaData() {
     return this.http.get(`/remittance/banksRoutingController/addBankRoute`);
   }

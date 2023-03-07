@@ -177,6 +177,7 @@ export class TransactionCriteriaModal {
       } else {
         this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
       }
+      console.log("::slabform", this.TransactionCriteriaRange);
       this.bankRoutingService.setTransactionCriteriaRange(
         this.TransactionCriteriaRange
       );
