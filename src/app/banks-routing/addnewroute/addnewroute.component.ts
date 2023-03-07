@@ -641,7 +641,6 @@ export class AddnewrouteComponent implements OnInit {
       (res) => {
         console.log("::editData", res);
         this.editBankRouteApiData = res;
-
         // Ajay code
         this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
         let lcySlabForm = {};
@@ -665,7 +664,22 @@ export class AddnewrouteComponent implements OnInit {
         // Ajay code end
 
         // suresh code
-
+        this.bankRoutesData = res["data"];
+        this.bankRoutesData.forEach((element) => {
+          this.routeToBankNameOption = element.routeToBankName;
+          this.routeToServiceCategoryOption = element.routeToServiceCategory;
+          this.routeToServiceTypeOption = element.routeToServiceType;
+          element.routeToBankName = "";
+          element.routeToServiceType = "";
+          element.routeToServiceCategory = "";
+        });
+        if (this.editBankRouteApiData.LCY == "Yes") {
+          this.bankRoutesColumns.forEach((x) => {
+            (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+              (x.visible = true);
+            x.field == "isCorrespondent" && (x.visible = false);
+          });
+        }
         // this.editBankRouteApiData
 
         // suresh code end
