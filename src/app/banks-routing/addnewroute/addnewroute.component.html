@@ -222,7 +222,7 @@
                   [(ngModel)]="row[col.field]"
                 >
                   <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToBankNameOption">
+                  <option *ngFor="let name of routeToBankNameOption">
                     {{ name.codeName }}
                   </option>
                 </select>
@@ -233,7 +233,7 @@
                   [(ngModel)]="row[col.field]"
                 >
                   <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToServiceCategoryOption">
+                  <option *ngFor="let name of routeToServiceCategoryOption">
                     {{ name.codeName }}
                   </option>
                 </select>
@@ -244,7 +244,7 @@
                   [(ngModel)]="row[col.field]"
                 >
                   <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToServiceTypeOption">
+                  <option *ngFor="let name of routeToServiceTypeOption">
                     {{ name.codeName }}
                   </option>
                 </select>
