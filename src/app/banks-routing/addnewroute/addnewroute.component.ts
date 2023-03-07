@@ -680,7 +680,6 @@ export class AddnewrouteComponent implements OnInit {
             x.field == "isCorrespondent" && (x.visible = false);
           });
         }
-        // this.editBankRouteApiData
 
         // suresh code end
       },
