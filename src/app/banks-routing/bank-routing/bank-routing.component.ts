@@ -289,7 +289,7 @@ export class BankRoutingComponent implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    this.router.navigate([`navbar/addnewroute`]);
+    this.router.navigate([`navbar/addnewroute/${data.routeCode}`]);
     // if (data.status == "Active") {
     //   this.router.navigate([`navbar/addnewroute`]);
     // } else {

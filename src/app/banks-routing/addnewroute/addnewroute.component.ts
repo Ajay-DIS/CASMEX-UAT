@@ -27,6 +27,7 @@ import { Table } from "primeng/table";
 export class AddnewrouteComponent implements OnInit {
   @ViewChild("table", { static: false }) table!: Table;
   bankRoutesData: any = [];
+  editBankRouteApiData: any = [];
   bankRoutesColumns = [
     { field: "country", header: "Country", editable: false, visible: true },
     {
@@ -603,6 +604,9 @@ export class AddnewrouteComponent implements OnInit {
     // this.getBanksRoutingData(this.userId);
 
     if (params && params.id) {
+      console.log("::routeCode", params.id);
+      this.getBanksRoutingForEditApi(params.id);
+
       // this.bankRoutingService
       //   .getPaymentModeByCriteriaId(params.id)
       //   .subscribe((response: any) => {
@@ -630,6 +634,46 @@ export class AddnewrouteComponent implements OnInit {
         [Validators.required]
       ),
     });
+  }
+
+  getBanksRoutingForEditApi(routeCode: any) {
+    this.bankRoutingService.getBanksRoutingForEdit(routeCode).subscribe(
+      (res) => {
+        console.log("::editData", res);
+        this.editBankRouteApiData = res;
+
+        // Ajay code
+        this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
+        let lcySlabForm = {};
+        let lcySlabArr = [];
+        if (res["LCY"] == "Yes") {
+          (res as any).data[0]["lcySlab"].split("#").forEach((rngTxt) => {
+            let fromVal = rngTxt.split("::")[0].split(":")[1];
+            let toVal = rngTxt.split("::")[1].split(":")[1];
+            lcySlabArr.push({
+              from: +fromVal,
+              to: +toVal,
+            });
+          });
+          lcySlabForm = {
+            txnCriteriaRange: lcySlabArr,
+          };
+
+          this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
+          console.log("::lcyform", lcySlabForm);
+        }
+        // Ajay code end
+
+        // suresh code
+
+        // this.editBankRouteApiData
+
+        // suresh code end
+      },
+      (err) => {
+        console.log("Error in getBanksRoutingForEditApi", err);
+      }
+    );
   }
 
   getAddBankRouteCriteriaData() {
@@ -1123,6 +1167,12 @@ export class AddnewrouteComponent implements OnInit {
       (x) => x.criteriaName == item.criteriaName
     )[0];
     this.criteriaText = selectedData.criteriaMap.split(";");
+    if (
+      !this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
+        .length
+    ) {
+      this.bankRoutingService.setTransactionCriteriaRange({});
+    }
   }
 
   showTransCriteriaModal() {
@@ -1166,14 +1216,14 @@ export class AddnewrouteComponent implements OnInit {
 
   getBanksRoutingData(id: string) {
     this.bankRoutesData = this.apiResponse.data;
-    this.bankRoutesData.forEach(element => {
+    this.bankRoutesData.forEach((element) => {
       this.routeToBankNameOption = element.routeToBankName;
       this.routeToServiceCategoryOption = element.routeToServiceCategory;
       this.routeToServiceTypeOption = element.routeToServiceType;
       element.routeToBankName = "";
       element.routeToServiceType = "";
       element.routeToServiceCategory = "";
-    })
+    });
     if (this.apiResponse.LCY == "Yes") {
       this.bankRoutesColumns.forEach((x) => {
         (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
@@ -1194,7 +1244,7 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   saveAddNewRoute(action) {
-    let payload = []
+    let payload = [];
     let isRequiredFields = false;
     this.bankRoutesData.forEach((element) => {
       if (
@@ -1208,19 +1258,23 @@ export class AddnewrouteComponent implements OnInit {
         element["routeDesc"] = "new g"; //ask to yogesh
         element["criteriaMap"] = this.criteriaText.join(";");
         element["lcySlab"] = this.lcySlab;
-        element["lcyAmountTo"] = element.lcyAmountTo ? element.lcyAmountTo : null;
-        element["lcyAmountFrom"] = element.lcyAmountFrom ? element.lcyAmountFrom : null;
+        element["lcyAmountTo"] = element.lcyAmountTo
+          ? element.lcyAmountTo
+          : null;
+        element["lcyAmountFrom"] = element.lcyAmountFrom
+          ? element.lcyAmountFrom
+          : null;
         payload.push(element);
       }
     });
-    console.log("Payload", {data: payload})
+    console.log("Payload", { data: payload });
     setTimeout(() => {
       if (isRequiredFields) {
         this.ngxToaster.warning("Please Select required fields.");
       } else {
         this.coreService.displayLoadingScreen();
         this.bankRoutingService
-          .addNewRoute({data: payload})
+          .addNewRoute({ data: payload })
           .subscribe(
             (res) => {
               if (res["msg"]) {
@@ -1251,5 +1305,7 @@ export class AddnewrouteComponent implements OnInit {
     if (this.ref) {
       this.ref.close();
     }
+
+    this.bankRoutingService.setTransactionCriteriaRange({});
   }
 }

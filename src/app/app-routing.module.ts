@@ -35,7 +35,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "/navbar" },
           { label: "Settings", routerLink: "/navbar" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Bank Routing", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -46,7 +46,18 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar" },
           { label: "Settings", routerLink: "../navbar" },
           { label: "Bank Routing", routerLink: "bank-routing" },
-          { label: "Add New Route", routerLink: "addnewroute" },
+          { label: "Add New Route", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "addnewroute/:id",
+        component: AddnewrouteComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar" },
+          { label: "Settings", routerLink: "../navbar" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Edit Route", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
