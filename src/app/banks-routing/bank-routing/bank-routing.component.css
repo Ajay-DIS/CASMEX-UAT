@@ -191,21 +191,20 @@ input:checked + .slider:before {
 :host ::ng-deep .bank-routing-table .p-datatable .p-datatable-thead tr {
   height: 55px;
 }
-.filter-icon{
+.filter-icon {
   position: absolute;
   right: 5%;
   top: 30%;
 }
-.infoicon{
+.infoicon {
   font-size: 14px;
-  width: 213;
-  height: 18;
-  font-Family: IBMPlexSans;
-  font-Style: italic;
+  width: 50%;
+  height: 18px;
+  font-family: IBMPlexSans;
+  font-style: italic;
   letter-spacing: 0;
   text-align: left;
   color: #444444;
-  margin-right: 880px;
 }
 .infoicon img {
   margin-bottom: 5px;
