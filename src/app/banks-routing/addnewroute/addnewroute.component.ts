@@ -1109,7 +1109,7 @@ export class AddnewrouteComponent implements OnInit {
         isRequiredFields = true;
       } else {
         element["userId"] = this.userId;
-        element["routeDesc"] = "new g"; //ask to yogesh
+        element["routeDesc"] = "Based on the critetria selected banks will be routed to preferred routing bank"; //ask to yogesh
         element["criteriaMap"] = this.criteriaText.join(";");
         element["lcySlab"] = this.lcySlab;
         element["lcyAmountTo"] = element.lcyAmountTo

@@ -9,7 +9,7 @@ button {
   float: right;
 }
 .pagetitle {
-  margin-top: 95px;
+  margin-top: 85px;
 }
 p-dropdown .p-dropdown {
   width: 100%;
@@ -26,7 +26,25 @@ p-dropdown .p-dropdown {
   margin: 0 15px;
   background-color: #ffffff;
   border-radius: 10px;
+  margin-top: 5px;
 }
+.applicable-Routes {
+  border: 0.5px solid#eaedf4;
+  margin-bottom: 20px;
+  padding: 10px 0;
+  margin: 0 15px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-top: 5px;
+}
+.applicable-Routes-section {
+  margin-bottom: 10px;
+  padding: 10px 5px;
+  margin: 0 15px;
+  background-color: #ffffff;
+  margin-top: 5px;
+}
+
 
 .templates-dropdown::ng-deep .p-dropdown-label {
   padding-right: 0;
@@ -62,14 +80,15 @@ p-dropdown .p-dropdown {
 }
 
 .description-text {
-  width: 440px;
-  margin-left: 15px;
-  color: #8a9099;
-  font-size: 12px;
-  padding: 9px;
-  height: 35px;
-  border-radius: 5px;
-  background-color: #eaedf4;
+  width: 485px;
+  height: 18px;
+  font-family: IBMPlexSans;
+  font-size: 14px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0;
+  text-align: left;
+  color: #444444;
 }
 
 .dropdowns-select-container {

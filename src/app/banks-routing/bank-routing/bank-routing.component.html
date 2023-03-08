@@ -1,5 +1,9 @@
 <div class="bank-routing-main">
   <div class="pagetitle">
+    <div class="infoicon">
+      <img height="22px" src="../assets/info.svg" alt="" />
+      Saved routes will be shown below.
+    </div>
     <div class="addnew">
       <button
         pButton
@@ -23,19 +27,17 @@
       [value]="bankRoutingData"
       sortMode="multiple"
       dataKey="id"
-      [rows]="6"
+      [rows]="7"
       [paginator]="true"
+      [rowHover]="true"
     >
       <ng-template pTemplate="header">
         <tr>
           <th class="table-titles" [pSortableColumn]="'routeCode'">
             {{ "Bank-Routing.Route Code" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                id="rou"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showRouteCodesOptions = !showRouteCodesOptions"
-              ></i>
+              <img height="13px" id="rou" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteCodesOptions = !showRouteCodesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeCodes"
@@ -70,11 +72,9 @@
           <th class="table-titles" [pSortableColumn]="'country'">
             {{ "Bank-Routing.Country" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                id="cou"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showCountriesOptions = !showCountriesOptions"
-              ></i>
+              <img height="12px" id="cou"
+              class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showCountriesOptions = !showCountriesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="countries"
@@ -90,10 +90,8 @@
           <th class="table-titles" [pSortableColumn]="'routeBankName'">
             {{ "Bank-Routing.Route Bank Name" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showRouteBankNamesOptions = !showRouteBankNamesOptions"
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteBankNamesOptions = !showRouteBankNamesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeBankNames"
@@ -111,13 +109,8 @@
           <th class="table-titles" [pSortableColumn]="'routeServiceCategory'">
             {{ "Bank-Routing.Service Category" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteServiceCategoriesOptions =
-                    !showRouteServiceCategoriesOptions
-                "
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteServiceCategoriesOptions = !showRouteServiceCategoriesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeServiceCategories"
@@ -138,12 +131,8 @@
           <th class="table-titles" [pSortableColumn]="'routeServiceType'">
             {{ "Bank-Routing.Service Type" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteServiceTypesOptions = !showRouteServiceTypesOptions
-                "
-              ></i>
+              <img height="12px"  class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteServiceTypesOptions = !showRouteServiceTypesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeServiceTypes"
@@ -161,12 +150,8 @@
           <th class="table-titles" [pSortableColumn]="'iSCorrespondent'">
             {{ "Bank-Routing.Is Correspondent" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showISCorrespondentsOptions = !showISCorrespondentsOptions
-                "
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showISCorrespondentsOptions = !showISCorrespondentsOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="iSCorrespondents"
@@ -184,12 +169,8 @@
           <th class="table-titles" [pSortableColumn]="'routeToBankName'">
             {{ "Bank-Routing.Route To" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToBankNamesOptions = !showRouteToBankNamesOptions
-                "
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteToBankNamesOptions = !showRouteToBankNamesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeToBankNames"
@@ -207,13 +188,8 @@
           <th class="table-titles" [pSortableColumn]="'routeToServiceCategory'">
             {{ "Bank-Routing.Service Category" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToServiceCategoriesOptions =
-                    !showRouteToServiceCategoriesOptions
-                "
-              ></i>
+              <img height="12px"class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteToServiceCategoriesOptions = !showRouteToServiceCategoriesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeToServiceCategories"
@@ -234,13 +210,8 @@
           <th class="table-titles" [pSortableColumn]="'routeToServiceType'">
             {{ "Bank-Routing.Service Type" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToServiceTypesOptions =
-                    !showRouteToServiceTypesOptions
-                "
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showRouteToServiceTypesOptions =!showRouteToServiceTypesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="routeToServiceTypes"
@@ -263,10 +234,8 @@
           >
             {{ "Bank-Routing.Status" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <i
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showStatusesOptions = !showStatusesOptions"
-              ></i>
+              <img height="12px" class="pi pi-filter bankRoutingFilterIcon"
+              (click)="showStatusesOptions = !showStatusesOptions" src="../assets/filter.svg" alt="" />
               <p-multiSelect
                 #ms1
                 [options]="statuses"
@@ -444,7 +413,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               cursor: pointer;
               color: #2455cf;
             "
@@ -458,7 +427,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -469,7 +438,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -480,7 +449,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -493,7 +462,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -504,7 +473,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -515,7 +484,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -526,7 +495,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
@@ -539,7 +508,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 15px;
+              padding-bottom: 14px;
               font-weight: bold;
             "
           >
