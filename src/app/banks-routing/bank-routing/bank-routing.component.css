@@ -83,7 +83,6 @@ input:checked + .slider:before {
 .search-row th {
   background-color: #fff !important;
 }
-
 :host ::ng-deep .bank-routing-table p-paginator .p-paginator-bottom {
   background-color: #f8f9fa;
   border-top: 1px solid #e9ecef;
@@ -92,12 +91,14 @@ input:checked + .slider:before {
 .ptable::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
   background-color: #2455cf;
   color: white;
+  height: 35px;
+  width: 30px;
+  border-radius: 5px;
 }
 
 .bank-routing-main {
   overflow-x: auto;
   height: auto;
-  min-height: 500px;
 }
 .bank-routing-main::-webkit-scrollbar {
   height: 5px;
@@ -131,7 +132,6 @@ input:checked + .slider:before {
 }
 
 .bankRoutingFilterIcon {
-  position: absolute;
   left: 85%;
   top: 24%;
   font-size: 11px;
@@ -187,4 +187,26 @@ input:checked + .slider:before {
 }
 .filter-footer button.clear-btn {
   color: rgb(138 144 153) !important;
+}
+:host ::ng-deep .bank-routing-table .p-datatable .p-datatable-thead tr {
+  height: 55px;
+}
+.filter-icon{
+  position: absolute;
+  right: 5%;
+  top: 30%;
+}
+.infoicon{
+  font-size: 14px;
+  width: 213;
+  height: 18;
+  font-Family: IBMPlexSans;
+  font-Style: italic;
+  letter-spacing: 0;
+  text-align: left;
+  color: #444444;
+  margin-right: 880px;
+}
+.infoicon img {
+  margin-bottom: 5px;
 }

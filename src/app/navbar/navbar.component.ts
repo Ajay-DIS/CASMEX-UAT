@@ -203,7 +203,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     switch (menuName) {
       case "Dashboard":
         iconName = "dashboard-icon";
-        routeName = "../login";
+        routeName = "";
         break;
       case "Customer Profile":
         iconName = "customerDetails-icon";

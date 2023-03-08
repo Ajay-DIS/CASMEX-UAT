@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit {
             } else {
               localStorage.removeItem("token");
               this.ngxToaster.error(data.msg);
+              this.router.navigate(["/login"]);
             }
           },
           (err) => {
