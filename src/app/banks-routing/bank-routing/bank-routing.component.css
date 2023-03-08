@@ -131,9 +131,6 @@ input:checked + .slider:before {
 }
 
 .bankRoutingFilterIcon {
-  position: absolute;
-  left: 85%;
-  top: 24%;
   font-size: 11px;
   z-index: 99;
   color: rgb(138 144 153);
@@ -187,4 +184,10 @@ input:checked + .slider:before {
 }
 .filter-footer button.clear-btn {
   color: rgb(138 144 153) !important;
+}
+
+.filter-icon {
+  position: absolute;
+  right: 5%;
+  top: 30%;
 }
