@@ -376,6 +376,10 @@ export class AddnewrouteComponent implements OnInit {
   routeToServiceTypeOption = [];
   routeId = "";
 
+  selectedTemplate = this.criteriaTemplatesDdlOptions.length
+    ? "Select Template"
+    : "No saved templates";
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -470,10 +474,13 @@ export class AddnewrouteComponent implements OnInit {
 
         // suresh code
         this.bankRoutesData = res["data"];
-        this.routeToBankNameOption = this.bankRoutesData[0].routeToBankNameOption;
-        this.routeToServiceCategoryOption = this.bankRoutesData[0].routeToServiceCategoryOption;
-        this.routeToServiceTypeOption = this.bankRoutesData[0].routeToServiceTypeOption;
-      
+        this.routeToBankNameOption =
+          this.bankRoutesData[0].routeToBankNameOption;
+        this.routeToServiceCategoryOption =
+          this.bankRoutesData[0].routeToServiceCategoryOption;
+        this.routeToServiceTypeOption =
+          this.bankRoutesData[0].routeToServiceTypeOption;
+
         if (this.editBankRouteApiData.LCY == "Yes") {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
@@ -943,17 +950,32 @@ export class AddnewrouteComponent implements OnInit {
     formData.append("userId", this.userId);
     formData.append("criteriaName", this.criteriaName);
     formData.append("criteriaMap", this.criteriaText.join(";"));
+
+    let slabText = null;
+    let slabs = this.txnCriteriaRangeFormData.txnCriteriaRange;
+    if (slabs && slabs.length) {
+      let slabArr = [];
+      slabs.forEach((slab) => {
+        let rngArr = [];
+        Object.entries(slab).forEach((rng) => {
+          rngArr.push(rng.join(":"));
+        });
+        slabArr.push(rngArr.join("::"));
+      });
+      slabText = slabArr.join("#");
+    }
+    this.lcySlab = slabText;
+    formData.append("lcySlab", this.lcySlab);
     // this.criteriaTemplatesDdlOptions.push(payload); //need  to be remove  after sit working
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(formData)
       .subscribe((response) => {
-        if (
-          response.msg == "Duplicate criteria, please modify existing criteria"
-        ) {
+        if (response.msg == "Criteria Template already exists.") {
           this.clickforsave = false;
           this.criteriaName = "";
           this.ngxToaster.warning(response.msg);
         } else {
+          this.selectedTemplate = this.criteriaName;
           this.ngxToaster.success(response.msg);
           this.clickforsave = false;
           this.criteriaName = "";
@@ -965,10 +987,12 @@ export class AddnewrouteComponent implements OnInit {
   getAllTemplates() {
     this.bankRoutingService.getAllCriteriaTemplates().subscribe((response) => {
       if (response.data && response.data.length) {
+        console.log("::templates", response);
         this.criteriaTemplatesDdlOptions = response.data;
         this.criteriaTemplatesDdlOptions.forEach((val) => {
           val["name"] = val["criteriaName"];
           val["code"] = val["criteriaName"];
+          val["lcySlab"] = val["lcySlab"];
         });
       } else {
         this.ngxToaster.warning(response.msg);
@@ -986,6 +1010,22 @@ export class AddnewrouteComponent implements OnInit {
         .length
     ) {
       this.bankRoutingService.setTransactionCriteriaRange({});
+    } else {
+      let lcySlabForm = {};
+      let lcySlabArr = [];
+      selectedData["lcySlab"].split("#").forEach((rngTxt) => {
+        let fromVal = rngTxt.split("::")[0].split(":")[1];
+        let toVal = rngTxt.split("::")[1].split(":")[1];
+        lcySlabArr.push({
+          from: +fromVal,
+          to: +toVal,
+        });
+      });
+      lcySlabForm = {
+        txnCriteriaRange: lcySlabArr,
+      };
+
+      this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
     }
   }
 
@@ -1088,14 +1128,15 @@ export class AddnewrouteComponent implements OnInit {
       } else {
         this.coreService.displayLoadingScreen();
         let service;
-        if(this.routeId != "") {
-          service = this.bankRoutingService
-          .updateRoute(this.routeId, { data: payload })
+        if (this.routeId != "") {
+          service = this.bankRoutingService.updateRoute(this.routeId, {
+            data: payload,
+          });
         } else {
-          service = this.bankRoutingService
-          .addNewRoute({ data: payload })
+          service = this.bankRoutingService.addNewRoute({ data: payload });
         }
-          service.subscribe(
+        service
+          .subscribe(
             (res) => {
               if (res["msg"]) {
                 this.ngxToaster.success(res.msg);

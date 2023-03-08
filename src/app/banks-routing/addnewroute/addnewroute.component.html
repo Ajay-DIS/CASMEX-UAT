@@ -138,6 +138,7 @@
           }}"
           [disabled]="!criteriaTemplatesDdlOptions.length"
           (onChange)="selectCriteriaTemplate($event.value)"
+          [(ngModel)] = "selectedTemplate"
         ></p-dropdown>
         <!-- <select
           #template
