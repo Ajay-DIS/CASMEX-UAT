@@ -88,190 +88,7 @@ export class AddnewrouteComponent implements OnInit {
   lcySlab = null;
   isSelectedRouteToBankName = false;
   isSelectedRouteToServiceCategory = false;
-  apiResponse: any = {
-    // data: [
-    //   {
-    //     id: "1",
-    //     country: "India23442",
-    //     routeBankName: "SBI",
-    //     routeServiceCategory: "Bank",
-    //     routeServiceType: "NEFT",
-    //     isCorrespondent: "Yes",
-    //     routeToBankName: "",
-    //     routeToBankNameOption: [
-    //       {
-    //         id: 1,
-    //         code: "SBI",
-    //         codeName: "SBI",
-    //         isCorrespondent: "Y",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "HDFC",
-    //         codeName: "HDFC",
-    //         isCorrespondent: "Y",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "ICICI",
-    //         codeName: "ICICI",
-    //         isCorrespondent: "N",
-    //         status: "A",
-    //       },
-    //     ],
-    //     routeToServiceCategory: "",
-    //     routeToServiceCategoryOption: [
-    //       {
-    //         id: 1,
-    //         code: "Bank",
-    //         codeName: "Bank",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "Cash",
-    //         codeName: "Cash",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "Utility",
-    //         codeName: "Utility",
-    //         status: "A",
-    //       },
-    //     ],
-    //     routeToServiceType: "",
-    //     routeToServiceTypeOption: [
-    //       {
-    //         id: 1,
-    //         code: "NEFT",
-    //         codeName: "NEFT",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "RTGS",
-    //         codeName: "RTGS",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "IMPS",
-    //         codeName: "IMPS",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 4,
-    //         code: "Cash pick up",
-    //         codeName: "Cash pick up",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 5,
-    //         code: "A/C transfer",
-    //         codeName: "A/C transfer",
-    //         status: "A",
-    //       },
-    //     ],
-    //     lcyAmountFrom: null,
-    //     lcyAmountTo: null,
-    //   },
-    //   {
-    //     id: "2",
-    //     country: "India2344",
-    //     routeBankName: "HDFC",
-    //     routeServiceCategory: "Cash",
-    //     routeServiceType: "RTGS",
-    //     isCorrespondent: "No",
-    //     routeToBankName: "",
-    //     routeToBankNameOption: [
-    //       {
-    //         id: 1,
-    //         code: "SBI",
-    //         codeName: "SBI",
-    //         isCorrespondent: "Y",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "HDFC",
-    //         codeName: "HDFC",
-    //         isCorrespondent: "Y",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "ICICI",
-    //         codeName: "ICICI",
-    //         isCorrespondent: "N",
-    //         status: "A",
-    //       },
-    //     ],
-    //     routeToServiceCategory: "",
-    //     routeToServiceCategoryOption: [
-    //       {
-    //         id: 1,
-    //         code: "Bank",
-    //         codeName: "Bank",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "Cash",
-    //         codeName: "Cash",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "Utility",
-    //         codeName: "Utility",
-    //         status: "A",
-    //       },
-    //     ],
-    //     routeToServiceType: "",
-    //     routeToServiceTypeOption: [
-    //       {
-    //         id: 1,
-    //         code: "NEFT",
-    //         codeName: "NEFT",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 2,
-    //         code: "RTGS",
-    //         codeName: "RTGS",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 3,
-    //         code: "IMPS",
-    //         codeName: "IMPS",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 4,
-    //         code: "Cash pick up",
-    //         codeName: "Cash pick up",
-    //         status: "A",
-    //       },
-    //       {
-    //         id: 5,
-    //         code: "A/C transfer",
-    //         codeName: "A/C transfer",
-    //         status: "A",
-    //       },
-    //     ],
-    //     lcyAmountFrom: null,
-    //     lcyAmountTo: null,
-    //   },
-    // ],
-    // userId: "yogeshm",
-    // routeDesc: "new g",
-    // criteriaMap: "",
-    // LCY: "No",
-  };
+  apiResponse: any = {};
   hideValuesDropdown = false;
   criteriaText: any[] = [];
   testData: any[] = [];
@@ -282,20 +99,7 @@ export class AddnewrouteComponent implements OnInit {
   criteriaName = "";
   criteriaTemplatesDdlOptions: any = [];
   criteriaMapDdlOptions = [];
-  criteriaEqualsDdlOptions = [
-    // {
-    //   name: "Any",
-    //   code: "",
-    // },
-    // {
-    //   name: "Equal To",
-    //   code: "=",
-    // },
-    // {
-    //   name: "Not Equal To",
-    //   code: "!=",
-    // }
-  ];
+  criteriaEqualsDdlOptions = [];
   correspondentDdlOptions = [];
   // criteriaMap: any = {
   //   criteria: "",
@@ -570,6 +374,7 @@ export class AddnewrouteComponent implements OnInit {
   routeToBankNameOption = [];
   routeToServiceCategoryOption = [];
   routeToServiceTypeOption = [];
+  routeId = "";
 
   constructor(
     private bankRoutingService: BankRoutingService,
@@ -606,7 +411,7 @@ export class AddnewrouteComponent implements OnInit {
     if (params && params.id) {
       console.log("::routeCode", params.id);
       this.getBanksRoutingForEditApi(params.id);
-
+      this.routeId = params.id;
       // this.bankRoutingService
       //   .getPaymentModeByCriteriaId(params.id)
       //   .subscribe((response: any) => {
@@ -665,14 +470,10 @@ export class AddnewrouteComponent implements OnInit {
 
         // suresh code
         this.bankRoutesData = res["data"];
-        this.bankRoutesData.forEach((element) => {
-          this.routeToBankNameOption = element.routeToBankName;
-          this.routeToServiceCategoryOption = element.routeToServiceCategory;
-          this.routeToServiceTypeOption = element.routeToServiceType;
-          element.routeToBankName = "";
-          element.routeToServiceType = "";
-          element.routeToServiceCategory = "";
-        });
+        this.routeToBankNameOption = this.bankRoutesData[0].routeToBankNameOption;
+        this.routeToServiceCategoryOption = this.bankRoutesData[0].routeToServiceCategoryOption;
+        this.routeToServiceTypeOption = this.bankRoutesData[0].routeToServiceTypeOption;
+      
         if (this.editBankRouteApiData.LCY == "Yes") {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
@@ -1286,9 +1087,15 @@ export class AddnewrouteComponent implements OnInit {
         this.ngxToaster.warning("Please Select required fields.");
       } else {
         this.coreService.displayLoadingScreen();
-        this.bankRoutingService
+        let service;
+        if(this.routeId != "") {
+          service = this.bankRoutingService
+          .updateRoute(this.routeId, { data: payload })
+        } else {
+          service = this.bankRoutingService
           .addNewRoute({ data: payload })
-          .subscribe(
+        }
+          service.subscribe(
             (res) => {
               if (res["msg"]) {
                 this.ngxToaster.success(res.msg);

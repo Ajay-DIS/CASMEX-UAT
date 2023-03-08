@@ -76,4 +76,8 @@ export class BankRoutingService {
   addNewRoute(data): Observable<any> {
     return this.http.post(`/remittance/banksRoutingController/saveBanksRoutings`, data);
   }
+
+  updateRoute(id, data): Observable<any> {
+    return this.http.post(`/remittance/banksRoutingController/updateBanksRoutingsDeatils/`+id, data);
+  }
 }
