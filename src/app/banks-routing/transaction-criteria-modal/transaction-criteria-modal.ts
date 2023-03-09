@@ -57,14 +57,11 @@ export class TransactionCriteriaModal {
 
       let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
       let formData = JSON.stringify(x);
-      console.log("saved data", savedData);
-      console.log("form data", formData);
       if (savedData == formData) {
         this.isFormDataChanged = false;
       } else {
         this.isFormDataChanged = true;
       }
-      console.log("form change", savedData == formData);
     });
 
     if (Object.keys(this.config.data.txnCriteriaRange).length) {
@@ -140,12 +137,20 @@ export class TransactionCriteriaModal {
     }
   }
   changeFrom(e: any, i: any) {
-    console.log("changed", e);
-    if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as FormGroup)?.controls[
-        "from"
-      ].setValue(e);
+    if (e >= 0) {
+      if (this.txnCriteriaRange.controls) {
+        (this.txnCriteriaRange.controls[i] as FormGroup)?.controls[
+          "from"
+        ].setValue(e);
+      }
+    } else {
+      if (this.txnCriteriaRange.controls) {
+        (this.txnCriteriaRange.controls[i] as FormGroup)?.controls[
+          "from"
+        ].patchValue(0);
+      }
     }
+    console.log("changed", e);
   }
 
   addTxnCriteriaRange(): void {
@@ -158,14 +163,12 @@ export class TransactionCriteriaModal {
     } else {
       this.checkConditions();
       if (this.rangesOverlapping) {
-
         this.isAnyRangeOverlappingErrMsg =
           "Overlapping criteria range found, please update";
         setTimeout(() => {
           this.isAnyRangeOverlappingErrMsg = "";
         }, 1500);
       } else if (this.isRangeEmpty) {
-
         console.log(
           "slabformdata",
           this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray
@@ -176,7 +179,6 @@ export class TransactionCriteriaModal {
           this.isAnyRangeOverlappingErrMsg = "";
         }, 1500);
       } else if (this.isOrderIncorrect) {
-
         console.log(
           "slabformdata",
           this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray
