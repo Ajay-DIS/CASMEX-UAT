@@ -25,6 +25,7 @@ export class TransactionCriteriaModal {
   isTxnCriteriaRangesSaved = false;
   isAnyRangeOverlappingErrMsg = "";
   isRangeEmpty = false;
+  isOrderIncorrect = false;
   TransactionCriteriaRange = [];
   isFormDataChanged = true;
 
@@ -42,14 +43,30 @@ export class TransactionCriteriaModal {
 
   ngOnInit() {
     this.txnCriteriaRangeForm.valueChanges.subscribe((x) => {
+      // this.txnCriteriaRange = new FormArray([]);
+      // this.allTxnCriteriaRange = new FormArray([])
+
+      // this.allTxnCriteriaRange.value.forEach((range) => {
+      //   this.txnCriteriaRange.push(
+      //     this.createTxnCriteriaRange(range.from, range.to)
+      //   );
+      //   this.allTxnCriteriaRange.push(
+      //     this.createTxnCriteriaRange(range.from, range.to)
+      //   );
+      // });
+
       let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
       let formData = JSON.stringify(x);
+      console.log("saved data", savedData);
+      console.log("form data", formData);
       if (savedData == formData) {
         this.isFormDataChanged = false;
       } else {
         this.isFormDataChanged = true;
       }
+      console.log("form change", savedData == formData);
     });
+
     if (Object.keys(this.config.data.txnCriteriaRange).length) {
       console.log(this.config.data.txnCriteriaRange);
       this.config.data.txnCriteriaRange.txnCriteriaRange.forEach((range) => {
@@ -91,42 +108,43 @@ export class TransactionCriteriaModal {
     let rangesArr = [];
     this.rangesOverlapping = false;
     this.isRangeEmpty = false;
+    this.isOrderIncorrect = false;
     if (this.txnCriteriaRange && this.txnCriteriaRange?.length) {
       this.txnCriteriaRange.controls.forEach((range) => {
         if (range.value) {
-          console.log(range.value);
           if (range.value.from == null || range.value.to == null) {
             this.isRangeEmpty = true;
+          } else if (range.value.from > range.value.to) {
+            this.isOrderIncorrect = true;
           }
           rangesArr.push(range.value);
         }
       });
-      if (
-        rangesArr[rangesArr.length - 1].from == null &&
-        rangesArr[rangesArr.length - 1].to == null
-      ) {
-        this.isRangeEmpty = true;
-      } else {
-        rangesArr.forEach((range, i) => {
-          if (i < rangesArr.length - 1) {
-            if (this.areOverlapping(range, rangesArr[rangesArr.length - 1])) {
-              this.rangesOverlapping = true;
-            }
+
+      rangesArr.forEach((range, i) => {
+        if (i < rangesArr.length - 1) {
+          if (this.areOverlapping(range, rangesArr[rangesArr.length - 1])) {
+            this.rangesOverlapping = true;
           }
-        });
-      }
+        }
+      });
     }
   }
 
-  change(e: any, i: any) {
+  changeTo(e: any, i: any) {
     console.log("changed", e);
     if (this.txnCriteriaRange.controls) {
       (this.txnCriteriaRange.controls[i] as FormGroup)?.controls["to"].setValue(
         e
       );
-      console.log(
-        (this.txnCriteriaRange.controls[i] as FormGroup)?.controls["to"].value
-      );
+    }
+  }
+  changeFrom(e: any, i: any) {
+    console.log("changed", e);
+    if (this.txnCriteriaRange.controls) {
+      (this.txnCriteriaRange.controls[i] as FormGroup)?.controls[
+        "from"
+      ].setValue(e);
     }
   }
 
@@ -140,14 +158,31 @@ export class TransactionCriteriaModal {
     } else {
       this.checkConditions();
       if (this.rangesOverlapping) {
+
         this.isAnyRangeOverlappingErrMsg =
           "Overlapping criteria range found, please update";
         setTimeout(() => {
           this.isAnyRangeOverlappingErrMsg = "";
         }, 1500);
       } else if (this.isRangeEmpty) {
+
+        console.log(
+          "slabformdata",
+          this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray
+        );
         this.isAnyRangeOverlappingErrMsg =
           "Empty range found, please fill it first";
+        setTimeout(() => {
+          this.isAnyRangeOverlappingErrMsg = "";
+        }, 1500);
+      } else if (this.isOrderIncorrect) {
+
+        console.log(
+          "slabformdata",
+          this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray
+        );
+        this.isAnyRangeOverlappingErrMsg =
+          "LCY amount From value cannot exceed LCY amount To value";
         setTimeout(() => {
           this.isAnyRangeOverlappingErrMsg = "";
         }, 1500);
@@ -171,23 +206,52 @@ export class TransactionCriteriaModal {
       setTimeout(() => {
         this.isAnyRangeOverlappingErrMsg = "";
       }, 1500);
+    } else if (this.isOrderIncorrect) {
+      console.log(
+        "slabformdata",
+        this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray
+      );
+      this.isAnyRangeOverlappingErrMsg =
+        "LCY amount From value cannot exceed LCY amount To value";
+      setTimeout(() => {
+        this.isAnyRangeOverlappingErrMsg = "";
+      }, 1500);
     } else {
       if (this.isRangeEmpty) {
-        this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
+        this.isAnyRangeOverlappingErrMsg =
+          "Empty range found, please fill it first";
+        setTimeout(() => {
+          this.isAnyRangeOverlappingErrMsg = "";
+        }, 1500);
       } else {
+        this.isTxnCriteriaRangesSaved = true;
+        console.log("form value", this.txnCriteriaRangeForm.value);
+
+        this.txnCriteriaRangeForm.value.txnCriteriaRange.forEach((range, i) => {
+          if (
+            i > 0 &&
+            Object.values(range).filter((rng) => rng == null).length
+          ) {
+            console.log("null", range, Object.values(range));
+            this.txnCriteriaRangeForm.value.txnCriteriaRange.splice(i, 1);
+          }
+        });
+
         this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
+
+        console.log("::slabform", this.TransactionCriteriaRange);
+        console.log("::setting form");
+        this.bankRoutingService.setTransactionCriteriaRange(
+          this.TransactionCriteriaRange
+        );
       }
-      console.log("::slabform", this.TransactionCriteriaRange);
-      this.bankRoutingService.setTransactionCriteriaRange(
-        this.TransactionCriteriaRange
-      );
-      this.isTxnCriteriaRangesSaved = true;
     }
   }
 
   closeModal() {
     this.saveTxnCriteriaRanges();
-    if (this.isTxnCriteriaRangesSaved) {
+    if (this.isTxnCriteriaRangesSaved && !this.isRangeEmpty) {
+      console.log("closing");
       // this.ref.close(this.txnCriteriaRangeForm.value);
       this.ref.close(this.TransactionCriteriaRange);
     }

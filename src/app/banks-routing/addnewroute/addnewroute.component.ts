@@ -26,6 +26,87 @@ import { Table } from "primeng/table";
 })
 export class AddnewrouteComponent implements OnInit {
   @ViewChild("table", { static: false }) table!: Table;
+
+  dummyTemplateJson = {
+    data: [
+      {
+        id: 221,
+        userID: "yogeshm",
+        criteriaName: "test1",
+        criteriaMap:
+          "Organization != SBI;Country != India;Correspondent = HDFC",
+        lcySlab: null,
+        createdDate: "2023-02-27T08:06:00.451+00:00",
+        status: "A",
+      },
+      {
+        id: 261,
+        userID: "yogeshm",
+        criteriaName: "India HDFC",
+        criteriaMap: "Organization = HDFC;Country = India",
+        lcySlab: null,
+        createdDate: "2023-03-05T23:01:40.949+00:00",
+        status: "A",
+      },
+      {
+        id: 282,
+        userID: "yogeshm",
+        criteriaName: "Japan HDFC slab",
+        criteriaMap: "Organization = HDFC;LCY Amount = Slab;Country = Japan",
+        lcySlab: "from:1::to:10",
+        createdDate: "2023-03-07T16:28:06.252+00:00",
+        status: "A",
+      },
+      {
+        id: 269,
+        userID: "yogeshm",
+        criteriaName: "test1ddd",
+        criteriaMap: "Organization = HDFC;Country = India;LCY Amount = Slab",
+        lcySlab: "from:5::to:5#from:10::to:10",
+        createdDate: "2023-03-07T06:05:00.927+00:00",
+        status: "A",
+      },
+      {
+        id: 241,
+        userID: "yogeshm",
+        criteriaName: "ttttt",
+        criteriaMap: "Organization != SBI;Country != India",
+        lcySlab: null,
+        createdDate: "2023-02-27T16:11:44.181+00:00",
+        status: "A",
+      },
+      {
+        id: 281,
+        userID: "yogeshm",
+        criteriaName: "India HDFC NEFT",
+        criteriaMap: "Organization = HDFC;Country = India;Service Type = NEFT",
+        lcySlab: "null",
+        createdDate: "2023-03-07T16:16:39.497+00:00",
+        status: "A",
+      },
+      {
+        id: 283,
+        userID: "yogeshm",
+        criteriaName: "India HDFC Cash",
+        criteriaMap:
+          "Organization = HDFC;Country = India;Service Category = Cash",
+        lcySlab: "null",
+        createdDate: "2023-03-07T16:37:37.636+00:00",
+        status: "A",
+      },
+      {
+        id: 284,
+        userID: "yogeshm",
+        criteriaName: "test",
+        criteriaMap:
+          "Country = India;Organization = HDFC;Organization = SBI;Service Category = Bank;Service Type != NEFT",
+        lcySlab: "null",
+        createdDate: "2023-03-07T19:53:36.298+00:00",
+        status: "A",
+      },
+    ],
+  };
+
   bankRoutesData: any = [];
   editBankRouteApiData: any = [];
   bankRoutesColumns = [
@@ -109,188 +190,189 @@ export class AddnewrouteComponent implements OnInit {
   //data from API
 
   criteriaDataDetailsJson: any = {
-    // data: {
-    //   Organization: [
-    //     {
-    //       id: 1,
-    //       code: "SBI",
-    //       codeName: "SBI",
-    //       isCorrespondent: "Y",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 2,
-    //       code: "HDFC",
-    //       codeName: "HDFC",
-    //       isCorrespondent: "Y",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 3,
-    //       code: "ICICI",
-    //       codeName: "ICICI",
-    //       isCorrespondent: "N",
-    //       status: "A",
-    //     },
-    //   ],
-    //   dependance: {
-    //     // Organization: "Country",
-    //     "Service Type": "Service Category",
-    //   },
-    //   viewCriteria: {
-    //     id: 83,
-    //     applications: "Web Application",
-    //     form: "Bank Routings",
-    //     totalCriteraiField: 5,
-    //     status: "A",
-    //     createdBy: "Yogesh",
-    //     createdByID: "yogeshm",
-    //     createdDate: "2023-02-22T12:31:45.905+00:00",
-    //     cmCriteriaDataDetails: [
-    //       {
-    //         id: 151,
-    //         fieldName: "LCY Amount",
-    //         displayName: "LCY Amount",
-    //         fieldType: "Dropdown",
-    //         operations: "Is Equal To,Is Not Equal To",
-    //         orderID: 5,
-    //         iSMandatory: "no",
-    //       },
-    //       {
-    //         id: 152,
-    //         fieldName: "Service Category",
-    //         displayName: "Service Category",
-    //         fieldType: "Dropdown",
-    //         operations: "Is Equal To,Is Not Equal To",
-    //         orderID: 4,
-    //         iSMandatory: "yes",
-    //       },
-    //       {
-    //         id: 154,
-    //         fieldName: "Country",
-    //         displayName: "Country",
-    //         fieldType: "Dropdown",
-    //         operations: "Is Equal To,Is Not Equal To",
-    //         orderID: 2,
-    //         iSMandatory: "yes",
-    //       },
-    //       {
-    //         id: 153,
-    //         fieldName: "Organization",
-    //         displayName: "Organization",
-    //         fieldType: "Dropdown",
-    //         operations: "Is Equal To,Is Not Equal To",
-    //         orderID: 3,
-    //         iSMandatory: "yes",
-    //       },
-    //       {
-    //         id: 155,
-    //         fieldName: "Service Type",
-    //         displayName: "Service Type",
-    //         fieldType: "Dropdown",
-    //         operations: "Is Equal To,Is Not Equal To",
-    //         orderID: 1,
-    //         iSMandatory: "yes",
-    //       },
-    //     ],
-    //   },
-    //   Country: [
-    //     {
-    //       id: 1,
-    //       code: "USA",
-    //       countryName: "Amarica",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 2,
-    //       code: "IND",
-    //       countryName: "India",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 3,
-    //       code: "JPN",
-    //       countryName: "Japan",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 4,
-    //       code: "CHI",
-    //       countryName: "Chaina",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 5,
-    //       code: "PAK",
-    //       countryName: "Pakistna",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 6,
-    //       code: "UK",
-    //       countryName: "England",
-    //       status: "A",
-    //     },
-    //   ],
-    //   mandatory: "[Country, Organization]",
-    //   "Service Category": [
-    //     {
-    //       id: 1,
-    //       code: "Bank",
-    //       codeName: "Bank",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 2,
-    //       code: "Cash",
-    //       codeName: "Cash",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 3,
-    //       code: "Utility",
-    //       codeName: "Utility",
-    //       status: "A",
-    //     },
-    //   ],
-    //   "Service Type": [
-    //     {
-    //       id: 1,
-    //       code: "NEFT",
-    //       codeName: "NEFT",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 2,
-    //       code: "RTGS",
-    //       codeName: "RTGS",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 3,
-    //       code: "IMPS",
-    //       codeName: "IMPS",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 4,
-    //       code: "Cash pick up",
-    //       codeName: "Cash pick up",
-    //       status: "A",
-    //     },
-    //     {
-    //       id: 5,
-    //       code: "A/C transfer",
-    //       codeName: "A/C transfer",
-    //       status: "A",
-    //     },
-    //   ],
-    // },
-    // status: "200",
+    data: {
+      Organization: [
+        {
+          id: 1,
+          code: "SBI",
+          codeName: "SBI",
+          isCorrespondent: "Y",
+          status: "A",
+        },
+        {
+          id: 2,
+          code: "HDFC",
+          codeName: "HDFC",
+          isCorrespondent: "Y",
+          status: "A",
+        },
+        {
+          id: 3,
+          code: "ICICI",
+          codeName: "ICICI",
+          isCorrespondent: "N",
+          status: "A",
+        },
+      ],
+      dependance: {
+        // Organization: "Country",
+        "Service Type": "Service Category",
+      },
+      viewCriteria: {
+        id: 83,
+        applications: "Web Application",
+        form: "Bank Routings",
+        totalCriteraiField: 5,
+        status: "A",
+        createdBy: "Yogesh",
+        createdByID: "yogeshm",
+        createdDate: "2023-02-22T12:31:45.905+00:00",
+        cmCriteriaDataDetails: [
+          {
+            id: 151,
+            fieldName: "LCY Amount",
+            displayName: "LCY Amount",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 5,
+            iSMandatory: "no",
+          },
+          {
+            id: 152,
+            fieldName: "Service Category",
+            displayName: "Service Category",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 4,
+            iSMandatory: "yes",
+          },
+          {
+            id: 154,
+            fieldName: "Country",
+            displayName: "Country",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 2,
+            iSMandatory: "yes",
+          },
+          {
+            id: 153,
+            fieldName: "Organization",
+            displayName: "Organization",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 3,
+            iSMandatory: "yes",
+          },
+          {
+            id: 155,
+            fieldName: "Service Type",
+            displayName: "Service Type",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 1,
+            iSMandatory: "yes",
+          },
+        ],
+      },
+      Country: [
+        {
+          id: 1,
+          code: "USA",
+          countryName: "Amarica",
+          status: "A",
+        },
+        {
+          id: 2,
+          code: "IND",
+          countryName: "India",
+          status: "A",
+        },
+        {
+          id: 3,
+          code: "JPN",
+          countryName: "Japan",
+          status: "A",
+        },
+        {
+          id: 4,
+          code: "CHI",
+          countryName: "Chaina",
+          status: "A",
+        },
+        {
+          id: 5,
+          code: "PAK",
+          countryName: "Pakistna",
+          status: "A",
+        },
+        {
+          id: 6,
+          code: "UK",
+          countryName: "England",
+          status: "A",
+        },
+      ],
+      mandatory: "[Country, Organization]",
+      "Service Category": [
+        {
+          id: 1,
+          code: "Bank",
+          codeName: "Bank",
+          status: "A",
+        },
+        {
+          id: 2,
+          code: "Cash",
+          codeName: "Cash",
+          status: "A",
+        },
+        {
+          id: 3,
+          code: "Utility",
+          codeName: "Utility",
+          status: "A",
+        },
+      ],
+      "Service Type": [
+        {
+          id: 1,
+          code: "NEFT",
+          codeName: "NEFT",
+          status: "A",
+        },
+        {
+          id: 2,
+          code: "RTGS",
+          codeName: "RTGS",
+          status: "A",
+        },
+        {
+          id: 3,
+          code: "IMPS",
+          codeName: "IMPS",
+          status: "A",
+        },
+        {
+          id: 4,
+          code: "Cash pick up",
+          codeName: "Cash pick up",
+          status: "A",
+        },
+        {
+          id: 5,
+          code: "A/C transfer",
+          codeName: "A/C transfer",
+          status: "A",
+        },
+      ],
+    },
+    status: "200",
   };
 
-  cmCriteriaDataDetails: any = [];
-  // this.criteriaDataDetailsJson.data.viewCriteria.cmCriteriaDataDetails;
+  // cmCriteriaDataDetails: any = [];
+  cmCriteriaDataDetails: any =
+    this.criteriaDataDetailsJson.data.viewCriteria.cmCriteriaDataDetails;
 
   // cmCriteriaDataDetails: any = [
   //   {
@@ -355,12 +437,13 @@ export class AddnewrouteComponent implements OnInit {
   //   },
   // ];
 
-  cmCriteriaMandatory = [];
-  // this.criteriaDataDetailsJson.data.mandatory
-  //   .replace(/["|\[|\]]/g, "")
-  //   .split(", ");
+  // cmCriteriaMandatory = [];
+  cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
+    .replace(/["|\[|\]]/g, "")
+    .split(", ");
 
   savedLcySlabs = false;
+  nullRange = true;
   isLcySlabsCriteria = false;
 
   ref: DynamicDialogRef;
@@ -375,6 +458,8 @@ export class AddnewrouteComponent implements OnInit {
   routeToServiceCategoryOption = [];
   routeToServiceTypeOption = [];
   routeId = "";
+
+  $oninitLcyFormSubscription: any;
 
   selectedTemplate = this.criteriaTemplatesDdlOptions.length
     ? "Select Template"
@@ -402,32 +487,37 @@ export class AddnewrouteComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
 
-    this.bankRoutingService.getTransactionCriteriaRange().subscribe((res) => {
-      this.txnCriteriaRangeFormData = res;
-      this.savedLcySlabs = !!Object.keys(this.txnCriteriaRangeFormData).length;
-    });
+    this.$oninitLcyFormSubscription = this.bankRoutingService
+      .getTransactionCriteriaRange()
+      .subscribe((res) => {
+        console.log("::::getTransactionRange called in oninit", res);
+        this.txnCriteriaRangeFormData = res;
+        if (!!Object.keys(this.txnCriteriaRangeFormData).length) {
+          console.log("rangeform has data", this.txnCriteriaRangeFormData);
+          this.txnCriteriaRangeFormData["txnCriteriaRange"].forEach((range) => {
+            console.log("range", range);
+            if (Object.values(range).filter((rng) => rng == null).length == 0) {
+              console.log(Object.values(range).filter((rng) => rng == null));
+              this.savedLcySlabs = true;
+            } else {
+              this.savedLcySlabs = false;
+            }
+          });
+        } else {
+          this.savedLcySlabs = false;
+        }
+        // console.log("null range present", this.nullRange);
+        // this.savedLcySlabs = !this.nullRange;
+      });
 
     const params = this.activatedRoute.snapshot.params;
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     this.getAllTemplates();
-    // this.getBanksRoutingData(this.userId);
 
     if (params && params.id) {
       console.log("::routeCode", params.id);
       this.getBanksRoutingForEditApi(params.id);
       this.routeId = params.id;
-      // this.bankRoutingService
-      //   .getPaymentModeByCriteriaId(params.id)
-      //   .subscribe((response: any) => {
-      //     const co =
-      //       response.cmCriteriaData.cmCriteriaDataDetails[0].operations.split(
-      //         ","
-      //       );
-      //     this.criteriaOperations = co;
-      //     response.cmCriteriaData.cmCriteriaDataDetails.map((item: any) => {
-      //       this.testData.push(item);
-      //     });
-      //   });
     }
 
     this.selectCriteriaForm = this.fb.group({
@@ -451,7 +541,9 @@ export class AddnewrouteComponent implements OnInit {
         console.log("::editData", res);
         this.editBankRouteApiData = res;
         // Ajay code
-        this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
+        if ((res as any).data[0]["criteriaMap"]) {
+          this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
+        }
         let lcySlabForm = {};
         let lcySlabArr = [];
         if (res["LCY"] == "Yes") {
@@ -467,8 +559,8 @@ export class AddnewrouteComponent implements OnInit {
             txnCriteriaRange: lcySlabArr,
           };
 
+          console.log("::setting form");
           this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
-          console.log("::lcyform", lcySlabForm);
         }
         // Ajay code end
 
@@ -658,6 +750,7 @@ export class AddnewrouteComponent implements OnInit {
         }
       }
     } else {
+      console.log("checking LCY slab");
       this.checkLcySlabCriteria(criteria);
     }
 
@@ -665,33 +758,46 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   checkLcySlabCriteria(criteria: any) {
-    let $lcySlabsObs;
+    console.log("checking LCY slab criteria");
     if (this.isLcySlabsCriteria) {
-      $lcySlabsObs = this.bankRoutingService
-        .getTransactionCriteriaRange()
-        .pipe(
-          first((x) => x["txnCriteriaRange"] && x["txnCriteriaRange"].length)
-        )
-        .subscribe((res) => {
-          console.log("::added slab to criteri arr", res);
-          this.savedLcySlabs = !!Object.keys(res).length;
-          if (this.savedLcySlabs) {
-            if (
-              !this.criteriaText.filter(
-                (criteria) => criteria == "LCY Amount = Slab"
-              ).length
-            ) {
-              this.criteriaText.push(criteria);
-              this.removeAddCriteriaListener();
-            }
-          } else {
-            console.log("No savedLcySlabs");
-          }
-        });
-    } else {
-      if ($lcySlabsObs) {
-        $lcySlabsObs.unsubscribe();
+      if (this.$oninitLcyFormSubscription) {
+        this.$oninitLcyFormSubscription.unsubscribe();
       }
+      this.bankRoutingService.getTransactionCriteriaRange().subscribe((res) => {
+        console.log("::::getTransactionRange called in checking", res);
+        this.txnCriteriaRangeFormData = res;
+
+        if (!!Object.keys(res).length) {
+          res["txnCriteriaRange"].forEach((range) => {
+            console.log("range", range);
+            if (Object.values(range).filter((rng) => rng == null).length == 0) {
+              console.log(Object.values(range).filter((rng) => rng == null));
+              this.savedLcySlabs = true;
+            } else {
+              this.savedLcySlabs = false;
+            }
+          });
+        } else {
+          this.savedLcySlabs = false;
+        }
+        // console.log("is saved slabs", !this.nullRange);
+        // this.savedLcySlabs = !this.nullRange;
+        if (this.savedLcySlabs) {
+          console.log("already saved slabs");
+          if (
+            !this.criteriaText.filter(
+              (criteria) => criteria == "LCY Amount = Slab"
+            ).length
+          ) {
+            this.criteriaText.push(criteria);
+            console.log("remove called");
+            this.removeAddCriteriaListener();
+          }
+        } else {
+          console.log("No LCy slab saved");
+        }
+      });
+    } else {
       this.criteriaText.push(criteria);
     }
   }
@@ -755,10 +861,12 @@ export class AddnewrouteComponent implements OnInit {
         ) {
           console.log("::slab selected");
           this.isLcySlabsCriteria = true;
+          console.log("adding modal");
           this.removeAddCriteriaListener = this.renderer.listen(
             this.addCriteriaBtn.nativeElement,
             "click",
             (evt) => {
+              console.log("added modal");
               this.showTransCriteriaModal();
             }
           );
@@ -766,6 +874,7 @@ export class AddnewrouteComponent implements OnInit {
           this.isLcySlabsCriteria = true;
         } else {
           if (this.removeAddCriteriaListener) {
+            console.log("remove called");
             this.removeAddCriteriaListener();
           }
           this.isLcySlabsCriteria = false;
@@ -782,11 +891,16 @@ export class AddnewrouteComponent implements OnInit {
     );
     this.criteriaOperations = criteria.operations.split(",");
   }
+
   ondeletecriteria(i: any, criteria: any) {
     if (criteria == "LCY Amount = Slab") {
       this.savedLcySlabs = false;
-      this.bankRoutingService.setTransactionCriteriaRange({});
+      console.log("::setting form");
+      this.bankRoutingService.setTransactionCriteriaRange({
+        txnCriteriaRange: [{ from: null, to: null }],
+      });
       if (this.isLcySlabsCriteria) {
+        console.log("added modal");
         this.removeAddCriteriaListener = this.renderer.listen(
           this.addCriteriaBtn.nativeElement,
           "click",
@@ -923,7 +1037,7 @@ export class AddnewrouteComponent implements OnInit {
           if (!res["msg"]) {
             console.log("routeBankCriteriaSearchApi resp", res);
             this.apiResponse = res;
-            this.ngxToaster.success(`Criteria Successfully Applied`);
+            this.ngxToaster.success(`Criteria Applied Successfully`);
             this.getBanksRoutingData(this.userId);
           } else {
             this.ngxToaster.warning(res["msg"]);
@@ -1009,7 +1123,10 @@ export class AddnewrouteComponent implements OnInit {
       !this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
         .length
     ) {
-      this.bankRoutingService.setTransactionCriteriaRange({});
+      console.log("::setting form");
+      this.bankRoutingService.setTransactionCriteriaRange({
+        txnCriteriaRange: [{ from: null, to: null }],
+      });
     } else {
       let lcySlabForm = {};
       let lcySlabArr = [];
@@ -1025,6 +1142,7 @@ export class AddnewrouteComponent implements OnInit {
         txnCriteriaRange: lcySlabArr,
       };
 
+      console.log("::setting form LCYYYYYYYY", lcySlabForm);
       this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
     }
   }
@@ -1109,7 +1227,8 @@ export class AddnewrouteComponent implements OnInit {
         isRequiredFields = true;
       } else {
         element["userId"] = this.userId;
-        element["routeDesc"] = "Based on the critetria selected banks will be routed to preferred routing bank"; //ask to yogesh
+        element["routeDesc"] =
+          "Based on the critetria selected banks will be routed to preferred routing bank"; //ask to yogesh
         element["criteriaMap"] = this.criteriaText.join(";");
         element["lcySlab"] = this.lcySlab;
         element["lcyAmountTo"] = element.lcyAmountTo
@@ -1167,6 +1286,9 @@ export class AddnewrouteComponent implements OnInit {
       this.ref.close();
     }
 
-    this.bankRoutingService.setTransactionCriteriaRange({});
+    console.log("::setting form");
+    this.bankRoutingService.setTransactionCriteriaRange({
+      txnCriteriaRange: [{ from: null, to: null }],
+    });
   }
 }

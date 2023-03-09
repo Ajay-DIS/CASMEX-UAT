@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+/* @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;1,500&display=swap"); */
+
 @import url("~primeicons/primeicons.css");
 @import url("~primeng/resources/primeng.min.css");
 @import url("~primeng/resources/themes/saga-blue/theme.css");
@@ -6,6 +8,7 @@
 
 body {
   background-color: #f4f6fa;
+  /* font-family: "IBM Plex Sans", sans-serif !important; */
 }
 
 body.minified-sidebar aside#sidebar {
