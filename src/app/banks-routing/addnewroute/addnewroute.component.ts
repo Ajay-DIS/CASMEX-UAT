@@ -1114,6 +1114,7 @@ export class AddnewrouteComponent implements OnInit {
 
   selectCriteriaTemplate(item) {
     this.selectCriteriaForm.reset();
+
     let selectedData = this.criteriaTemplatesDdlOptions.filter(
       (x) => x.criteriaName == item.criteriaName
     )[0];
@@ -1122,6 +1123,16 @@ export class AddnewrouteComponent implements OnInit {
       !this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
         .length
     ) {
+      if (!this.removeAddCriteriaListener) {
+        this.removeAddCriteriaListener = this.renderer.listen(
+          this.addCriteriaBtn.nativeElement,
+          "click",
+          (evt) => {
+            this.showTransCriteriaModal();
+          }
+        );
+      }
+
       this.bankRoutingService.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
       });
