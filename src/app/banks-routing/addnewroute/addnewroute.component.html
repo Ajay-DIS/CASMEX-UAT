@@ -41,10 +41,12 @@
       ></button>
     </div>
   </div>
- 
+
   <div class="criteria-main-section">
     <div class="criteria-bar">
-      <p class="setCriteria">Set Criteria <img height="15px" src="../assets/Icon-info.svg" alt="" /></p>
+      <p class="setCriteria">
+        Set Criteria <img height="15px" src="../assets/Icon-info.svg" alt="" />
+      </p>
       <div class="openCriteria">
         <p *ngIf="savedLcySlabs">
           <a (click)="showTransCriteriaModal()">LCY Amount Slab</a>
@@ -79,7 +81,7 @@
           [options]="criteriaMapDdlOptions"
           optionLabel="name"
           optionValue="code"
-          placeholder="Select a Criteria"
+          placeholder="Select Criteria"
           (onChange)="onChange('criteria', $event.value)"
           formControlName="criteria"
         ></p-dropdown>
@@ -89,7 +91,7 @@
           [options]="criteriaEqualsDdlOptions"
           optionLabel="name"
           optionValue="code"
-          placeholder="Select a Operation"
+          placeholder="Select Operator"
           (onChange)="onChange('condition', $event.value)"
           formControlName="operation"
         ></p-dropdown>
@@ -100,7 +102,7 @@
           [options]="correspondentDdlOptions"
           optionLabel="name"
           optionValue="code"
-          placeholder="Select a Value"
+          placeholder="Value"
           (onChange)="onChange('val', $event.value)"
           formControlName="value"
         ></p-dropdown>
@@ -139,7 +141,7 @@
           }}"
           [disabled]="!criteriaTemplatesDdlOptions.length"
           (onChange)="selectCriteriaTemplate($event.value)"
-          [(ngModel)] = "selectedTemplate"
+          [(ngModel)]="selectedTemplate"
         ></p-dropdown>
       </div>
     </div>
@@ -172,6 +174,7 @@
         </span>
       </span>
     </div>
+
    </div>
    </div>
    <div class="py-3" style="background-color: #ffffff; border-radius: 10px;margin-top: 10px;">
@@ -248,5 +251,5 @@
         </p-table>
       </div>
     </div>
-   </div>
- 
+  </div>
+</div>

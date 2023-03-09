@@ -641,6 +641,11 @@ nav ol li .breadcrumb-item active {
   padding: 0;
   border: none;
 }
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link,
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link:hover,
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link:active {
+  box-shadow: none !important;
+}
 
 @media (max-width: 815px) {
   .header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link .p-menuitem-text {
