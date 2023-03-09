@@ -26,9 +26,10 @@
               [style]="{minWidth: '95%'}"
               [inputStyle]="{minWidth: '95%', background: '#f4f6fa', border: 'none'}"
               [min]="0"
-              (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)"
               formControlName="from"
+              (onInput)="changeFrom($event.value, i)"
             >
+              <!-- (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)" -->
             </p-inputNumber>
           </div>
           <div class="col-6">
@@ -37,10 +38,11 @@
               inputId="integeronly"
               [style]="{minWidth: '100%'}"
               [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
-              [min]="fromInp.value"
               formControlName="to"
-              (onFocus)="change(toInp.value, i)"
+              (onInput)="changeTo($event.value, i)"
             >
+              <!-- [min]="fromInp.value" -->
+              <!-- (onFocus)="change(toInp.value, i)" -->
             </p-inputNumber>
           </div>
         </div>

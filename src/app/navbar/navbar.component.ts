@@ -64,6 +64,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     //   "Tax",
     //   "Charge",
     //   "Payment Mode",
+    //   "Bank Routing",
     //   "Discount",
     //   "Block Transaction",
     //   "Purpose",
@@ -85,6 +86,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   };
   profileOptions: any = [{ name: "Profile" }, { name: "Logout" }];
   toggleState = "left";
+
+  currRoute: any;
 
   constructor(
     private payment: PaymentModeService,
@@ -109,6 +112,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.currRoute = "/" + this.route.snapshot["url"][0]["path"];
+
+    console.log(this.currRoute);
+
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
     });
@@ -140,12 +147,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           label: menu,
           icon: this.getIcons(menu).icon,
           items: submenus,
+          routerLink: this.getIcons(menu).routerLink,
+          routerLinkActiveOptions: { exact: true },
+          expanded: this.currRoute == this.getIcons(menu).routerLink,
         });
       } else {
         this.menuItems.push({
           label: menu,
           icon: this.getIcons(menu).icon,
           routerLink: this.getIcons(menu).routerLink,
+          routerLinkActiveOptions: { exact: true },
+          expanded: this.currRoute == this.getIcons(menu).routerLink,
         });
       }
     });
@@ -157,6 +169,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     if (token) {
       let expiry = JSON.parse(atob(token.split(".")[1])).exp;
       if (new Date(expiry * 1000).getTime() < Date.now()) {
+        this.router.navigate(["login"]);
         return true;
       } else {
         return false;
@@ -203,7 +216,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     switch (menuName) {
       case "Dashboard":
         iconName = "dashboard-icon";
-        routeName = "";
         break;
       case "Customer Profile":
         iconName = "customerDetails-icon";
@@ -225,6 +237,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Settings":
         iconName = "settings-icon";
+        routeName = "/navbar";
         break;
       case "Application Settings":
         iconName = "applicationsettings-icon";
@@ -267,10 +280,28 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   filterMenuItems(e: Event) {
     this.menuItems = this.$MenuItems;
-    this.menuItems = this.menuItems.filter((item) => {
-      return item.label
-        .toLowerCase()
-        .includes(e.target["value"]?.toLowerCase());
+    let arr = [];
+    this.$MenuItems.forEach((item) => {
+      let found = false;
+      if (item.label.toLowerCase().includes(e.target["value"]?.toLowerCase())) {
+        found = true;
+      } else if (item.items) {
+        item.items.forEach((subItem) => {
+          if (!found) {
+            if (
+              subItem["label"]
+                .toLowerCase()
+                .includes(e.target["value"]?.toLowerCase())
+            ) {
+              found = true;
+            }
+          }
+        });
+      }
+      if (found) {
+        arr.push(item);
+      }
     });
+    this.menuItems = arr;
   }
 }

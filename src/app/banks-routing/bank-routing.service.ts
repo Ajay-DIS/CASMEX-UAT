@@ -25,9 +25,12 @@ export class BankRoutingService {
   //   return this.$userData;
   // }
 
-  $TransactionCriteriaRange = new BehaviorSubject<any>({});
+  $TransactionCriteriaRange = new BehaviorSubject<any>({
+    txnCriteriaRange: [{ from: null, to: null }],
+  });
 
   setTransactionCriteriaRange(value: any) {
+    console.log("form value updated service");
     this.$TransactionCriteriaRange.next(value);
   }
   getTransactionCriteriaRange() {
@@ -56,8 +59,11 @@ export class BankRoutingService {
     return this.http.get(`/remittance/banksRoutingController/addBankRoute`);
   }
 
-  postRouteBankCriteriaSearch(data:any) {
-    return this.http.post(`/remittance/banksRoutingController/routeBankCriteriaSearch`, data);
+  postRouteBankCriteriaSearch(data: any) {
+    return this.http.post(
+      `/remittance/banksRoutingController/routeBankCriteriaSearch`,
+      data
+    );
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
@@ -74,10 +80,16 @@ export class BankRoutingService {
   }
 
   addNewRoute(data): Observable<any> {
-    return this.http.post(`/remittance/banksRoutingController/saveBanksRoutings`, data);
+    return this.http.post(
+      `/remittance/banksRoutingController/saveBanksRoutings`,
+      data
+    );
   }
 
   updateRoute(id, data): Observable<any> {
-    return this.http.post(`/remittance/banksRoutingController/updateBanksRoutingsDeatils/`+id, data);
+    return this.http.post(
+      `/remittance/banksRoutingController/updateBanksRoutingsDeatils/` + id,
+      data
+    );
   }
 }
