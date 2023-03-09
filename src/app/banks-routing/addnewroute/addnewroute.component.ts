@@ -571,14 +571,13 @@ export class AddnewrouteComponent implements OnInit {
 
             // x.field == "isCorrespondent" && (x.visible = true);
           });
-        }
-        else  {
+        } else {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
               (x.visible = false);
             // x.field == "isCorrespondent" && (x.visible = true);
           });
-      }
+        }
 
         // suresh code end
       },
@@ -789,7 +788,6 @@ export class AddnewrouteComponent implements OnInit {
           }
         } else {
           console.log("lcy absent");
-
           if (!this.removeAddCriteriaListener) {
             this.removeAddCriteriaListener = this.renderer.listen(
               this.addCriteriaBtn.nativeElement,
@@ -864,13 +862,15 @@ export class AddnewrouteComponent implements OnInit {
           ).length
         ) {
           this.isLcySlabsCriteria = true;
-          this.removeAddCriteriaListener = this.renderer.listen(
-            this.addCriteriaBtn.nativeElement,
-            "click",
-            (evt) => {
-              this.showTransCriteriaModal();
-            }
-          );
+          if (!this.removeAddCriteriaListener) {
+            this.removeAddCriteriaListener = this.renderer.listen(
+              this.addCriteriaBtn.nativeElement,
+              "click",
+              (evt) => {
+                this.showTransCriteriaModal();
+              }
+            );
+          }
         } else if (event.name == "Slab") {
           this.isLcySlabsCriteria = true;
         } else {
@@ -1210,13 +1210,12 @@ export class AddnewrouteComponent implements OnInit {
           (x.visible = true);
         // x.field == "isCorrespondent" && (x.visible = true);
       });
-    }
-    else  {
-        this.bankRoutesColumns.forEach((x) => {
-          (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-            (x.visible = false);
-          // x.field == "isCorrespondent" && (x.visible = true);
-        });
+    } else {
+      this.bankRoutesColumns.forEach((x) => {
+        (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+          (x.visible = false);
+        // x.field == "isCorrespondent" && (x.visible = true);
+      });
     }
     // this.bankRoutingService
     //   .getBankRoutingData(id)
