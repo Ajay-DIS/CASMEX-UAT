@@ -490,14 +490,10 @@ export class AddnewrouteComponent implements OnInit {
     this.$oninitLcyFormSubscription = this.bankRoutingService
       .getTransactionCriteriaRange()
       .subscribe((res) => {
-        console.log("::::getTransactionRange called in oninit", res);
         this.txnCriteriaRangeFormData = res;
         if (!!Object.keys(this.txnCriteriaRangeFormData).length) {
-          console.log("rangeform has data", this.txnCriteriaRangeFormData);
           this.txnCriteriaRangeFormData["txnCriteriaRange"].forEach((range) => {
-            console.log("range", range);
             if (Object.values(range).filter((rng) => rng == null).length == 0) {
-              console.log(Object.values(range).filter((rng) => rng == null));
               this.savedLcySlabs = true;
             } else {
               this.savedLcySlabs = false;
@@ -506,8 +502,6 @@ export class AddnewrouteComponent implements OnInit {
         } else {
           this.savedLcySlabs = false;
         }
-        // console.log("null range present", this.nullRange);
-        // this.savedLcySlabs = !this.nullRange;
       });
 
     const params = this.activatedRoute.snapshot.params;
@@ -515,7 +509,6 @@ export class AddnewrouteComponent implements OnInit {
     this.getAllTemplates();
 
     if (params && params.id) {
-      console.log("::routeCode", params.id);
       this.getBanksRoutingForEditApi(params.id);
       this.routeId = params.id;
     }
@@ -538,7 +531,6 @@ export class AddnewrouteComponent implements OnInit {
   getBanksRoutingForEditApi(routeCode: any) {
     this.bankRoutingService.getBanksRoutingForEdit(routeCode).subscribe(
       (res) => {
-        console.log("::editData", res);
         this.editBankRouteApiData = res;
         // Ajay code
         if ((res as any).data[0]["criteriaMap"]) {
@@ -559,7 +551,6 @@ export class AddnewrouteComponent implements OnInit {
             txnCriteriaRange: lcySlabArr,
           };
 
-          console.log("::setting form");
           this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
         }
         // Ajay code end
@@ -758,28 +749,23 @@ export class AddnewrouteComponent implements OnInit {
         }
       }
     } else {
-      console.log("checking LCY slab");
       this.checkLcySlabCriteria(criteria);
     }
-
-    console.log("::criteriaText", this.criteriaText);
   }
 
   checkLcySlabCriteria(criteria: any) {
-    console.log("checking LCY slab criteria");
     if (this.isLcySlabsCriteria) {
       if (this.$oninitLcyFormSubscription) {
         this.$oninitLcyFormSubscription.unsubscribe();
       }
+
       this.bankRoutingService.getTransactionCriteriaRange().subscribe((res) => {
         console.log("::::getTransactionRange called in checking", res);
         this.txnCriteriaRangeFormData = res;
 
         if (!!Object.keys(res).length) {
           res["txnCriteriaRange"].forEach((range) => {
-            console.log("range", range);
             if (Object.values(range).filter((rng) => rng == null).length == 0) {
-              console.log(Object.values(range).filter((rng) => rng == null));
               this.savedLcySlabs = true;
             } else {
               this.savedLcySlabs = false;
@@ -788,21 +774,31 @@ export class AddnewrouteComponent implements OnInit {
         } else {
           this.savedLcySlabs = false;
         }
-        // console.log("is saved slabs", !this.nullRange);
-        // this.savedLcySlabs = !this.nullRange;
+
         if (this.savedLcySlabs) {
-          console.log("already saved slabs");
+          console.log("lcy present");
           if (
             !this.criteriaText.filter(
               (criteria) => criteria == "LCY Amount = Slab"
             ).length
           ) {
             this.criteriaText.push(criteria);
-            console.log("remove called");
+            this.removeAddCriteriaListener();
+          } else {
             this.removeAddCriteriaListener();
           }
         } else {
-          console.log("No LCy slab saved");
+          console.log("lcy absent");
+
+          if (!this.removeAddCriteriaListener) {
+            this.removeAddCriteriaListener = this.renderer.listen(
+              this.addCriteriaBtn.nativeElement,
+              "click",
+              (evt) => {
+                this.showTransCriteriaModal();
+              }
+            );
+          }
         }
       });
     } else {
@@ -867,14 +863,11 @@ export class AddnewrouteComponent implements OnInit {
             (criteria) => criteria == "LCY Amount = Slab"
           ).length
         ) {
-          console.log("::slab selected");
           this.isLcySlabsCriteria = true;
-          console.log("adding modal");
           this.removeAddCriteriaListener = this.renderer.listen(
             this.addCriteriaBtn.nativeElement,
             "click",
             (evt) => {
-              console.log("added modal");
               this.showTransCriteriaModal();
             }
           );
@@ -882,7 +875,6 @@ export class AddnewrouteComponent implements OnInit {
           this.isLcySlabsCriteria = true;
         } else {
           if (this.removeAddCriteriaListener) {
-            console.log("remove called");
             this.removeAddCriteriaListener();
           }
           this.isLcySlabsCriteria = false;
@@ -903,12 +895,11 @@ export class AddnewrouteComponent implements OnInit {
   ondeletecriteria(i: any, criteria: any) {
     if (criteria == "LCY Amount = Slab") {
       this.savedLcySlabs = false;
-      console.log("::setting form");
+
       this.bankRoutingService.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
       });
       if (this.isLcySlabsCriteria) {
-        console.log("added modal");
         this.removeAddCriteriaListener = this.renderer.listen(
           this.addCriteriaBtn.nativeElement,
           "click",
@@ -963,7 +954,6 @@ export class AddnewrouteComponent implements OnInit {
     Object.keys(this.criteriaDataDetailsJson.data.dependance).forEach(
       (dependantCrt) => {
         if (formattedCriteriaArr.includes(dependantCrt)) {
-          console.log("yes it is dependant", dependantCrt);
           if (
             formattedCriteriaArr.includes(
               this.criteriaDataDetailsJson.data.dependance[dependantCrt]
@@ -1123,6 +1113,7 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   selectCriteriaTemplate(item) {
+    this.selectCriteriaForm.reset();
     let selectedData = this.criteriaTemplatesDdlOptions.filter(
       (x) => x.criteriaName == item.criteriaName
     )[0];
@@ -1131,10 +1122,20 @@ export class AddnewrouteComponent implements OnInit {
       !this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
         .length
     ) {
-      console.log("::setting form");
       this.bankRoutingService.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
       });
+
+      // if (!this.removeAddCriteriaListener) {
+      //   console.log("in template LCY not present");
+      //   this.removeAddCriteriaListener = this.renderer.listen(
+      //     this.addCriteriaBtn.nativeElement,
+      //     "click",
+      //     (evt) => {
+      //       this.showTransCriteriaModal();
+      //     }
+      //   );
+      // }
     } else {
       let lcySlabForm = {};
       let lcySlabArr = [];
@@ -1149,7 +1150,6 @@ export class AddnewrouteComponent implements OnInit {
       lcySlabForm = {
         txnCriteriaRange: lcySlabArr,
       };
-
       console.log("::setting form LCYYYYYYYY", lcySlabForm);
       this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
     }
@@ -1301,7 +1301,6 @@ export class AddnewrouteComponent implements OnInit {
       this.ref.close();
     }
 
-    console.log("::setting form");
     this.bankRoutingService.setTransactionCriteriaRange({
       txnCriteriaRange: [{ from: null, to: null }],
     });

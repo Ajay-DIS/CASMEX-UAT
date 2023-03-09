@@ -30,7 +30,6 @@ export class BankRoutingService {
   });
 
   setTransactionCriteriaRange(value: any) {
-    console.log("form value updated service");
     this.$TransactionCriteriaRange.next(value);
   }
   getTransactionCriteriaRange() {
