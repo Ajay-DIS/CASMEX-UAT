@@ -110,10 +110,10 @@ export class AddnewrouteComponent implements OnInit {
   bankRoutesData: any = [];
   editBankRouteApiData: any = [];
   bankRoutesColumns = [
-    { field: "country", header: "Country", editable: false, visible: true },
+    { field: "country", header: "Country *", editable: false, visible: true },
     {
       field: "routeBankName",
-      header: "Route Bank Name",
+      header: "Route Bank Name *",
       editable: false,
       visible: true,
     },
@@ -149,19 +149,19 @@ export class AddnewrouteComponent implements OnInit {
     },
     {
       field: "routeToBankName",
-      header: "Route to",
+      header: "Route to *",
       editable: true,
       visible: true,
     },
     {
       field: "routeToServiceCategory",
-      header: "Service Category",
+      header: "Service Category *",
       editable: true,
       visible: true,
     },
     {
       field: "routeToServiceType",
-      header: "Service type",
+      header: "Service type *",
       editable: true,
       visible: true,
     },
@@ -577,9 +577,17 @@ export class AddnewrouteComponent implements OnInit {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
               (x.visible = true);
-            x.field == "isCorrespondent" && (x.visible = false);
+
+            // x.field == "isCorrespondent" && (x.visible = true);
           });
         }
+        else  {
+          this.bankRoutesColumns.forEach((x) => {
+            (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+              (x.visible = false);
+            // x.field == "isCorrespondent" && (x.visible = true);
+          });
+      }
 
         // suresh code end
       },
@@ -1200,8 +1208,15 @@ export class AddnewrouteComponent implements OnInit {
       this.bankRoutesColumns.forEach((x) => {
         (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
           (x.visible = true);
-        x.field == "isCorrespondent" && (x.visible = false);
+        // x.field == "isCorrespondent" && (x.visible = true);
       });
+    }
+    else  {
+        this.bankRoutesColumns.forEach((x) => {
+          (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+            (x.visible = false);
+          // x.field == "isCorrespondent" && (x.visible = true);
+        });
     }
     // this.bankRoutingService
     //   .getBankRoutingData(id)
