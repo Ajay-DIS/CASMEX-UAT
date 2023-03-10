@@ -25,8 +25,8 @@
               inputId="integeronly"
               [style]="{minWidth: '95%'}"
               [inputStyle]="{minWidth: '95%', background: '#f4f6fa', border: 'none'}"
-              [min]="0"
               formControlName="from"
+              [min]="0"
               (onInput)="changeFrom($event.value, i)"
             >
               <!-- (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)" -->
