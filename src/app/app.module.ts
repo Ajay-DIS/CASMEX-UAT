@@ -26,6 +26,7 @@ import { BlockUIModule } from "primeng/blockui";
 import { BreadcrumbModule } from "primeng/breadcrumb";
 import { DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
 import { InputNumberModule } from "primeng/inputnumber";
+import { TooltipModule } from "primeng/tooltip";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -76,6 +77,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BreadcrumbModule,
     DynamicDialogModule,
     InputNumberModule,
+    TooltipModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
