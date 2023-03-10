@@ -340,9 +340,10 @@ export class BankRoutingComponent implements OnInit {
               route.createdDate = new Date(route.createdDate);
             });
 
-            this.bankRoutingData = this.bankRoutingApiData.data.sort(
-              (a, b) => a.createdDate - b.createdDate
-            );
+            this.bankRoutingData = this.bankRoutingApiData.data;
+            // .sort(
+            //   (a, b) => a.createdDate - b.createdDate
+            // );
 
             this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
               return { label: code, value: code };

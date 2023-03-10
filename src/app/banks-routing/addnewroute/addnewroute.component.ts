@@ -531,6 +531,7 @@ export class AddnewrouteComponent implements OnInit {
     this.bankRoutingService.getBanksRoutingForEdit(routeCode).subscribe(
       (res) => {
         this.editBankRouteApiData = res;
+        console.log("edit data", res);
         // Ajay code
         if ((res as any).data[0]["criteriaMap"]) {
           this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
@@ -1014,9 +1015,10 @@ export class AddnewrouteComponent implements OnInit {
             slabArr.push(rngArr.join("::"));
           });
           slabText = slabArr.join("#");
-          this.lcySlab = slabText;
-          postDataCriteria.set("lcySlab", slabText);
         }
+
+        this.lcySlab = slabText;
+        postDataCriteria.set("lcySlab", slabText);
 
         this.routeBankCriteriaSearchApi(postDataCriteria);
       } else {
@@ -1031,6 +1033,7 @@ export class AddnewrouteComponent implements OnInit {
       .postRouteBankCriteriaSearch(formData)
       .subscribe(
         (res) => {
+          console.log("criteriasearch DATA", res);
           if (!res["msg"]) {
             console.log("routeBankCriteriaSearchApi resp", res);
             this.apiResponse = res;

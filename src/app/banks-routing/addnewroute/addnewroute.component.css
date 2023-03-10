@@ -45,7 +45,6 @@ p-dropdown .p-dropdown {
   margin-top: 5px;
 }
 
-
 .templates-dropdown::ng-deep .p-dropdown-label {
   padding-right: 0;
 }
@@ -106,6 +105,7 @@ p-dropdown .p-dropdown {
   border-radius: 5px;
   margin-right: 10px;
   margin-bottom: 8px;
+  cursor: pointer;
 }
 
 .left-dropdowns {
@@ -122,17 +122,23 @@ p-dropdown .p-dropdown {
 }
 
 :host ::ng-deep .p-datatable .p-datatable-thead tr th {
-background: rgb(234 237 244);
-color: #8a9099;
-font-size: 12px;
+  background: rgb(234 237 244);
+  color: #8a9099;
+  font-size: 12px;
 }
-:host ::ng-deep .p-datatable .p-datatable-tbody tr td{
+:host ::ng-deep .p-datatable .p-datatable-tbody tr td {
   border: 0px !important;
   border-width: 0px !important ;
 }
-::ng-deep .p-datatable.p-component{
+::ng-deep .p-datatable.p-component {
   font-size: 13px !important;
 }
-::ng-deep .p-datatable .form-select .ng-pristine .ng-valid .ng-star-inserted .ng-touched{
+::ng-deep
+  .p-datatable
+  .form-select
+  .ng-pristine
+  .ng-valid
+  .ng-star-inserted
+  .ng-touched {
   font-size: 13px !important;
 }

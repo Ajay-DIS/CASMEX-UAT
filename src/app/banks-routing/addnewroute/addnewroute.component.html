@@ -45,12 +45,15 @@
   <div class="criteria-main-section">
     <div class="criteria-bar">
       <p class="setCriteria">
-        Set Criteria <img height="15px" src="../assets/Icon-info.svg" alt="" />
+        Set Criteria
+        <img
+          height="15px"
+          src="../assets/Icon-info.svg"
+          alt=""
+          pTooltip="Based on the selected criteria banks will be routed"
+        />
       </p>
       <div class="openCriteria">
-        <p *ngIf="savedLcySlabs">
-          <a (click)="showTransCriteriaModal()">LCY Amount Slab</a>
-        </p>
         <p class="clickcriteria">
           <a (click)="openClickForSave()"
             >Click to save this Criteria as a template</a
@@ -148,6 +151,11 @@
     <div style="padding: 0 1rem; display: flex; flex-wrap: wrap">
       <span
         *ngFor="let criteria of criteriaText; let i = index"
+        (click)="
+          savedLcySlabs &&
+            criteria == 'LCY Amount = Slab' &&
+            showTransCriteriaModal()
+        "
         class="criteria-span"
         >{{ criteria }}
         <span
@@ -180,7 +188,7 @@
    <div class="py-3" style="background-color: #ffffff; border-radius: 10px;margin-top: 10px;">
     <div class="applicable-Routes">
       <div class="criteria-bar">
-        <p class="setCriteria">Applicable Routes <img height="15px" src="../assets/Icon-info.svg" alt="" /></p>
+        <p class="setCriteria">Applicable Routes <img height="15px" src="../assets/Icon-info.svg" alt="" pTooltip="On selected criteria routes below routes will be applied" /></p>
       </div>
       <div class="mt-3">
         <p-table
@@ -252,4 +260,4 @@
       </div>
     </div>
   </div>
-
+</div>

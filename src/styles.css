@@ -60,6 +60,21 @@ body.minified-sidebar .toggle-sidebar {
   padding: 1rem;
 }
 
+.p-tooltip {
+  max-width: 100% !important;
+}
+
+.p-tooltip .p-tooltip-text {
+  font-size: 0.8rem !important;
+  background: #fff !important;
+  color: rgb(138 144 153);
+  font-weight: 500;
+}
+
+.p-tooltip.p-tooltip-right .p-tooltip-arrow {
+  border-right-color: #4950576e;
+}
+
 .p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar {
   width: 3px;
   height: 3px;
