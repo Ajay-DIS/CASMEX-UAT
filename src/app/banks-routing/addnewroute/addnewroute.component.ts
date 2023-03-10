@@ -1213,7 +1213,7 @@ export class AddnewrouteComponent implements OnInit {
     // this.bankRoutesData.forEach((element) =>{
     //   // element.routeToBankName[0].push({codeName: "select",code:""}) ;
     //   element.routeToBankName.splice(0, 0,{codeName: "select",code:""});
-    // }) 
+    // })
     this.bankRoutesData.forEach((element) => {
       // this.routeToBankNameOption = element.routeToBankName;
       // this.routeToServiceCategoryOption = element.routeToServiceCategory;
@@ -1261,7 +1261,7 @@ export class AddnewrouteComponent implements OnInit {
       ) {
         isRequiredFields = true;
       } else {
-        // element["userId"] = this.userId;
+        element["userId"] = this.userId;
         element["routeDesc"] =
           "Based on the critetria selected banks will be routed to preferred routing bank"; //ask to yogesh
         // element["criteriaMap"] = this.criteriaText.join(";");
