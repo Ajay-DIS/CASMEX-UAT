@@ -54,11 +54,13 @@ export class LoginComponent implements OnInit {
             if (data && data.jwt) {
               console.log("::user", data);
               this.loginService.saveLoggedUserInfo(data);
+              // this.coreService.setSessionExpirationStatus(false);
               this.router.navigate(["/navbar"]);
               this.ngxToaster.success("Login is successfull");
             } else {
               localStorage.removeItem("token");
               this.ngxToaster.error(data.msg);
+              // this.coreService.setSessionExpirationStatus(true);
               this.router.navigate(["/login"]);
             }
           },

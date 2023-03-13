@@ -38,6 +38,7 @@ import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
 import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
 import { AddnewrouteComponent } from "./banks-routing/addnewroute/addnewroute.component";
 import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-modal/transaction-criteria-modal";
+import { SessionTimeOutComponent } from './session-time-out/session-time-out.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -55,6 +56,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     BankRoutingComponent,
     AddnewrouteComponent,
     TransactionCriteriaModal,
+    SessionTimeOutComponent,
     // SidebarComponent
   ],
   imports: [
