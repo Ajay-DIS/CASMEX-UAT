@@ -8,7 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { MenuItem } from "primeng/api";
@@ -109,13 +109,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     const browserLang = translate.getBrowserLang();
     translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
+
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.log("::nav end", event);
+        this.currRoute = event["urlAfterRedirects"];
+        this.setSidebarMenu();
+      }
+    });
   }
 
   ngOnInit(): void {
-    this.currRoute = "/" + this.route.snapshot["url"][0]["path"];
-
     console.log(this.currRoute);
-
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
     });
@@ -130,11 +135,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       );
       this.router.navigate(["login"]);
     }
+    // this.setSidebarMenu();
+  }
+
+  setSidebarMenu() {
     if (!!localStorage.getItem("menuItems")) {
+      console.log(":: menu found in local");
       const menuItems = localStorage.getItem("menuItems");
       this.menuItemTree = JSON.parse(menuItems);
     }
+    this.menuItems = [];
     Object.keys(this.menuItemTree).map((menu) => {
+      console.log("menu", menu);
       if (this.menuItemTree[menu].length > 0) {
         const submenus = [];
         this.menuItemTree[menu].map((sub) => {
@@ -149,7 +161,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           items: submenus,
           routerLink: this.getIcons(menu).routerLink,
           routerLinkActiveOptions: { exact: true },
-          expanded: this.currRoute == this.getIcons(menu).routerLink,
+          expanded:
+            this.getIcons(menu).matchUrls &&
+            this.getIcons(menu).matchUrls.includes(this.currRoute),
         });
       } else {
         this.menuItems.push({
@@ -157,7 +171,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           icon: this.getIcons(menu).icon,
           routerLink: this.getIcons(menu).routerLink,
           routerLinkActiveOptions: { exact: true },
-          expanded: this.currRoute == this.getIcons(menu).routerLink,
+          expanded:
+            this.getIcons(menu).matchUrls &&
+            this.getIcons(menu).matchUrls.includes(this.currRoute),
         });
       }
     });
@@ -213,6 +229,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   getIcons(menuName) {
     let iconName;
     let routeName;
+    let matchUrls;
     switch (menuName) {
       case "Dashboard":
         iconName = "dashboard-icon";
@@ -237,10 +254,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Settings":
         iconName = "settings-icon";
-        routeName = "/navbar";
+        matchUrls = ["/navbar/bank-routing", "/navbar/addnewroute"];
+        routeName = "/navbar/bank-routing";
         break;
       case "Application Settings":
         iconName = "applicationsettings-icon";
+        matchUrls = ["/navbar/criteria-settings"];
+        routeName = "/navbar/criteria-settings";
         break;
       case "User Roles Management":
         iconName = "rateSetup-icon";
@@ -259,7 +279,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         iconName = "settings-icon";
         break;
     }
-    return { icon: iconName, routerLink: routeName };
+    return { icon: iconName, matchUrls: matchUrls, routerLink: routeName };
   }
   viewPayment() {
     this.ispaymentMode = false;
