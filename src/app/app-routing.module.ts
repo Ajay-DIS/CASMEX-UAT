@@ -9,6 +9,7 @@ import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payme
 // import { SidebarComponent } from './sidebar/sidebar.component';
 import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
+import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -35,8 +36,8 @@ const routes: Routes = [
         path: "bank-routing",
         component: BankRoutingComponent,
         data: [
-          { label: "Home", routerLink: "/navbar" },
-          { label: "Settings", routerLink: "/navbar" },
+          { label: "Home", routerLink: "/navbar/bank-routing" },
+          { label: "Settings", routerLink: "/navbar/bank-routing" },
           { label: "Bank Routing", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -45,8 +46,8 @@ const routes: Routes = [
         path: "addnewroute",
         component: AddnewrouteComponent,
         data: [
-          { label: "Home", routerLink: "../navbar" },
-          { label: "Settings", routerLink: "../navbar" },
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing", routerLink: "bank-routing" },
           { label: "Add New Route", routerLink: "" },
         ],
@@ -56,10 +57,20 @@ const routes: Routes = [
         path: "addnewroute/:id",
         component: AddnewrouteComponent,
         data: [
-          { label: "Home", routerLink: "../navbar" },
-          { label: "Settings", routerLink: "../navbar" },
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing", routerLink: "bank-routing" },
           { label: "Edit Route", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "criteria-settings",
+        component: CriteriaListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "criteria-settings" },
+          { label: "Criteria", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

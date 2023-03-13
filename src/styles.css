@@ -140,3 +140,7 @@ input.p-inputnumber-input {
   font-weight: 500;
   color: black;
 }
+
+.p-datatable .p-sortable-column:focus {
+  box-shadow: none;
+}
