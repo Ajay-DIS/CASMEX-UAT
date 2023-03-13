@@ -55,8 +55,8 @@
 }
 
 .toggle-sidebar {
-  position: absolute;
-  top: 80px;
+  position: fixed;
+  top: 70px;
   left: 250px;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
   border-radius: 50%;
   border: 1.5px solid white;
   transition: 0.3ms;
-  z-index: 101;
+  z-index: 999;
   transition: 0.3s;
 }
 
@@ -236,7 +236,7 @@
   background-color: #fff;
 }
 .sidebar .sidebar-content::-webkit-scrollbar-thumb {
-  background-color: #aab7cf;
+  background-color: #0447c4;
 }
 
 .sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a {

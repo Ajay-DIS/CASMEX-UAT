@@ -13,14 +13,21 @@ export class CoreService {
 
   constructor() {}
 
-  $loadingScreen = new BehaviorSubject<boolean>(false);
+ 
+  // $SessionExpired = new BehaviorSubject<boolean>(true);
+  // setSessionExpirationStatus(status:boolean) {
+  //   this.$SessionExpired.next(status);
+  // }
+  
 
+  $loadingScreen = new BehaviorSubject<boolean>(false);
   displayLoadingScreen() {
     this.$loadingScreen.next(true);
   }
   removeLoadingScreen() {
     this.$loadingScreen.next(false);
   }
+ 
 
   $breadCrumbMenu = new BehaviorSubject<any[]>(this.breadcrumbsItems);
 

@@ -133,7 +133,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.ngxToaster.error(
         "Your Session has been Expired, Please login again"
       );
-      this.router.navigate(["login"]);
+      this.router.navigate(["navbar/session-time-out"]);
     }
     // this.setSidebarMenu();
   }
@@ -185,7 +185,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     if (token) {
       let expiry = JSON.parse(atob(token.split(".")[1])).exp;
       if (new Date(expiry * 1000).getTime() < Date.now()) {
-        this.router.navigate(["login"]);
+        this.router.navigate(["navbar/session-time-out"]);
         return true;
       } else {
         return false;

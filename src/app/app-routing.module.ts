@@ -8,6 +8,7 @@ import { NavbarComponent } from "./navbar/navbar.component";
 import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payment-mode.component";
 // import { SidebarComponent } from './sidebar/sidebar.component';
 import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
+import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: "", redirectTo: "bank-routing", pathMatch: "full" },
+      { path: "session-time-out", component: SessionTimeOutComponent },
       {
         path: "payment-mode",
         component: PaymentModeComponent,
