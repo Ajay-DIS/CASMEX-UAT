@@ -1,0 +1,454 @@
+<div class="criteria-setting-main">
+  <div class="pagetitle">
+    <div class="infoicon">
+      <img height="22px" src="../assets/info.svg" alt="" />
+      List of criteria's created for forms.
+    </div>
+    <div class="addnew">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Add New Criteria"
+        class="p-button-raised"
+        style="border-radius: 5px"
+      ></button>
+    </div>
+  </div>
+  <div class="ptable">
+    <p-card class="p-col-12" *ngIf="!criteriaSettingData">
+      {{ noDataMsg }}
+    </p-card>
+    <p-table
+      *ngIf="criteriaSettingData"
+      class="criteria-setting-table"
+      #dt
+      [value]="criteriaSettingData"
+      sortMode="multiple"
+      dataKey="id"
+      [rows]="7"
+      [paginator]="true"
+      [rowHover]="true"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-titles" [pSortableColumn]="'application'">
+            Application
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="13px"
+                id="rou"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showApplicationOptions = !showApplicationOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="applications"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showApplicationOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'application', 'in')"
+                (onPanelHide)="showApplicationOptions = !showApplicationOptions"
+              >
+              </p-multiSelect>
+            </div>
+          </th>
+          <th class="table-titles" [pSortableColumn]="'form'">
+            Form
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                id="cou"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showFormOptions = !showFormOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="forms"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showFormOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'form', 'in')"
+                (onPanelHide)="showFormOptions = !showFormOptions"
+              ></p-multiSelect>
+            </div>
+          </th>
+          <th
+            class="table-titles"
+            style="width: 140px"
+            [pSortableColumn]="'totalCriteriaFields'"
+          >
+            Total Criteria Fields
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showCriteriaFieldsOptions = !showCriteriaFieldsOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="totalCriteriaFields"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showCriteriaFieldsOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="
+                  dt.filter($event.value, 'totalCriteriaFields', 'in')
+                "
+                (onPanelHide)="
+                  showCriteriaFieldsOptions = !showCriteriaFieldsOptions
+                "
+              ></p-multiSelect>
+            </div>
+          </th>
+          <th
+            class="table-titles"
+            style="width: 120px"
+            [pSortableColumn]="'totalListFields'"
+          >
+            Total List Fields
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showListFieldsOptions = !showListFieldsOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="totalListFields"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showListFieldsOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'totalListFields', 'in')"
+                (onPanelHide)="showListFieldsOptions = !showListFieldsOptions"
+              ></p-multiSelect>
+            </div>
+          </th>
+          <th
+            class="table-titles"
+            style="width: 120px"
+            [pSortableColumn]="'createdDate'"
+          >
+            Created Date
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showCreatedDateOptions = !showCreatedDateOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="createdDates"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showCreatedDateOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'createdDate', 'in')"
+                (onPanelHide)="showCreatedDateOptions = !showCreatedDateOptions"
+              ></p-multiSelect>
+            </div>
+          </th>
+          <th
+            class="table-titles"
+            style="width: 150px"
+            [pSortableColumn]="'createdBy'"
+          >
+            Created By
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showCreatedByOptions = !showCreatedByOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="createdBy"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showCreatedByOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'createdBy', 'in')"
+                (onPanelHide)="showCreatedByOptions = !showCreatedByOptions"
+              ></p-multiSelect>
+            </div>
+          </th>
+          <th class="table-titles" style="width: 130px">Operations</th>
+          <th
+            class="table-titles"
+            style="text-align: center; width: 120px"
+            [pSortableColumn]="'status'"
+          >
+            Status
+            <div (click)="$event.stopPropagation()" class="filter-icon">
+              <img
+                height="12px"
+                class="pi pi-filter criteriaSettingFilterIcon"
+                (click)="showStatusesOptions = !showStatusesOptions"
+                src="../assets/filter.svg"
+                alt=""
+              />
+              <p-multiSelect
+                #ms1
+                [options]="statuses"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="showStatusesOptions"
+                [defaultLabel]="'Search'"
+                (onChange)="dt.filter($event.value, 'status', 'in')"
+                (onPanelHide)="showStatusesOptions = !showStatusesOptions"
+              ></p-multiSelect>
+            </div>
+          </th>
+        </tr>
+        <tr class="search-row">
+          <th>
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'application',
+                    'contains'
+                  )
+                "
+              />
+            </span>
+          </th>
+          <th>
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter($any($event.target).value, 'form', 'contains')
+                "
+              />
+            </span>
+          </th>
+          <th>
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'totalCriteriaFields',
+                    'contains'
+                  )
+                "
+              />
+            </span>
+          </th>
+          <th style="padding: 8px">
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'totalListFields',
+                    'contains'
+                  )
+                "
+              />
+            </span>
+          </th>
+          <th style="padding: 8px">
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter(
+                    $any($event.target).value,
+                    'createdDate',
+                    'contains'
+                  )
+                "
+              />
+            </span>
+          </th>
+          <th style="padding: 8px">
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                pInputText
+                [classList]="'table-search'"
+                placeholder="Search"
+                (input)="
+                  dt.filter($any($event.target).value, 'createdBy', 'contains')
+                "
+              />
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-criteriaSetting>
+        <tr>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+            "
+          >
+            <a>{{ criteriaSetting.application }}</a>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+            "
+          >
+            <span class="image-text">{{ criteriaSetting.form }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+              text-align: center;
+            "
+          >
+            <span class="image-text">{{
+              criteriaSetting.totalCriteriaFields
+            }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+              text-align: center;
+            "
+          >
+            <span class="image-text">{{
+              criteriaSetting.totalListFields
+            }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+            "
+          >
+            <span class="image-text">{{
+              criteriaSetting.createdDate | date
+            }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+            "
+          >
+            <span class="image-text">{{ criteriaSetting.createdBy }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 14px;
+              font-weight: bold;
+            "
+          >
+            <span class="image-text">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-clone"
+                class="operation-btns mr-2"
+              ></button>
+              <button
+                pButton
+                type="button"
+                icon="pi pi-eye"
+                class="operation-btns"
+              ></button>
+            </span>
+          </td>
+          <td style="border: none; text-align: center">
+            <label class="switch" style="border: none">
+              <input
+                #statusInp
+                type="checkbox"
+                [checked]="
+                  criteriaSetting.status == 'Active' ||
+                  criteriaSetting.status == 'A'
+                    ? true
+                    : false
+                "
+              />
+              <span class="slider round"></span>
+            </label>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4">No Data found.</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        {{ state.page * state.rows + 1 }} -
+        {{
+          state.rows * (state.page + 1) > state.totalRecords
+            ? state.totalRecords
+            : state.rows * (state.page + 1)
+        }}
+        of {{ state.totalRecords }}
+      </ng-template>
+    </p-table>
+  </div>
+</div>
