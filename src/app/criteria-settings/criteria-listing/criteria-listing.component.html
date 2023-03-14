@@ -26,13 +26,17 @@
       [value]="criteriaSettingData"
       sortMode="multiple"
       dataKey="id"
-      [rows]="7"
+      [rows]="10"
       [paginator]="true"
       [rowHover]="true"
     >
       <ng-template pTemplate="header">
         <tr>
-          <th class="table-titles" [pSortableColumn]="'application'">
+          <th
+            class="table-titles"
+            style="width: 135px"
+            [pSortableColumn]="'application'"
+          >
             Application
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
@@ -56,7 +60,11 @@
               </p-multiSelect>
             </div>
           </th>
-          <th class="table-titles" [pSortableColumn]="'form'">
+          <th
+            class="table-titles"
+            style="width: 160px"
+            [pSortableColumn]="'form'"
+          >
             Form
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
@@ -137,7 +145,7 @@
           </th>
           <th
             class="table-titles"
-            style="width: 120px"
+            style="width: 110px"
             [pSortableColumn]="'createdDate'"
           >
             Created Date
@@ -163,7 +171,7 @@
           </th>
           <th
             class="table-titles"
-            style="width: 150px"
+            style="width: 135px"
             [pSortableColumn]="'createdBy'"
           >
             Created By
@@ -187,10 +195,10 @@
               ></p-multiSelect>
             </div>
           </th>
-          <th class="table-titles" style="width: 130px">Operations</th>
+          <th class="table-titles" style="width: 120px">Operations</th>
           <th
             class="table-titles"
-            style="text-align: center; width: 120px"
+            style="text-align: center; width: 100px"
             [pSortableColumn]="'status'"
           >
             Status
@@ -320,26 +328,10 @@
       </ng-template>
       <ng-template pTemplate="body" let-criteriaSetting>
         <tr>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
-            "
-          >
+          <td style="font-size: 12px; border: none; border-bottom: none">
             <a>{{ criteriaSetting.application }}</a>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
-            "
-          >
+          <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">{{ criteriaSetting.form }}</span>
           </td>
           <td
@@ -347,8 +339,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
+
               text-align: center;
             "
           >
@@ -361,8 +352,7 @@
               font-size: 12px;
               border: none;
               border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
+
               text-align: center;
             "
           >
@@ -370,39 +360,15 @@
               criteriaSetting.totalListFields
             }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
-            "
-          >
+          <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">{{
               criteriaSetting.createdDate | date
             }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
-            "
-          >
+          <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">{{ criteriaSetting.createdBy }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-              font-weight: bold;
-            "
-          >
+          <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">
               <button
                 pButton

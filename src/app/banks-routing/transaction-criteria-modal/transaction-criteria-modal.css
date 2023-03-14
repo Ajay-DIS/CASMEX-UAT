@@ -10,7 +10,7 @@ button {
 
 :host ::ng-deep .addTxnBtn span {
   font-size: 30px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .all-range-groups {
