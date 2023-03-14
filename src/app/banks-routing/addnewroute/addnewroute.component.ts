@@ -1100,19 +1100,21 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   getAllTemplates() {
-    this.bankRoutingService.getAllCriteriaTemplates().subscribe((response) => {
-      if (response.data && response.data.length) {
-        console.log("::templates", response);
-        this.criteriaTemplatesDdlOptions = response.data;
-        this.criteriaTemplatesDdlOptions.forEach((val) => {
-          val["name"] = val["criteriaName"];
-          val["code"] = val["criteriaName"];
-          val["lcySlab"] = val["lcySlab"];
-        });
-      } else {
-        this.ngxToaster.warning(response.msg);
-      }
-    });
+    this.bankRoutingService
+      .getAllCriteriaTemplates(this.userId)
+      .subscribe((response) => {
+        if (response.data && response.data.length) {
+          console.log("::templates", response);
+          this.criteriaTemplatesDdlOptions = response.data;
+          this.criteriaTemplatesDdlOptions.forEach((val) => {
+            val["name"] = val["criteriaName"];
+            val["code"] = val["criteriaName"];
+            val["lcySlab"] = val["lcySlab"];
+          });
+        } else {
+          this.ngxToaster.warning(response.msg);
+        }
+      });
   }
 
   selectCriteriaTemplate(item) {
@@ -1283,7 +1285,7 @@ export class AddnewrouteComponent implements OnInit {
         this.coreService.displayLoadingScreen();
         let service;
         if (this.routeId != "") {
-          service = this.bankRoutingService.updateRoute(this.routeId, {
+          service = this.bankRoutingService.updateRoute(this.routeId, this.userId, {
             data: payload,
           });
         } else {

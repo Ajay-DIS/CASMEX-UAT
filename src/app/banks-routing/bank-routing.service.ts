@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 import {
@@ -38,7 +38,8 @@ export class BankRoutingService {
 
   getBankRoutingData(id: string) {
     return this.http.get(
-      `/remittance/banksRoutingController/getBanksRoutingList/${id}`
+      `/remittance/banksRoutingController/getBanksRoutingList`,
+      { headers: new HttpHeaders().set("userId", id) }
     );
   }
   updateBankRouteStatus(data: any) {
@@ -50,7 +51,8 @@ export class BankRoutingService {
 
   getBanksRoutingForEdit(routeCode: any) {
     return this.http.get(
-      `/remittance/banksRoutingController/getBanksRoutingForEdit/${routeCode}`
+      `/remittance/banksRoutingController/getBanksRoutingForEdit`,
+      { headers: new HttpHeaders().set("routeCode", routeCode) }
     );
   }
 
@@ -72,9 +74,10 @@ export class BankRoutingService {
     );
   }
 
-  getAllCriteriaTemplates(): Observable<any> {
+  getAllCriteriaTemplates(id: string): Observable<any> {
     return this.http.get(
-      `remittance/banksRoutingController/getExistingCriteriaList/yogeshm-get`
+      `remittance/banksRoutingController/getExistingCriteriaList`,
+      { headers: new HttpHeaders().set("userId", id) }
     );
   }
 
@@ -85,10 +88,15 @@ export class BankRoutingService {
     );
   }
 
-  updateRoute(id, data): Observable<any> {
-    return this.http.post(
-      `/remittance/banksRoutingController/updateBanksRoutingsDeatils/` + id,
-      data
+  updateRoute(routeCode, userId, data): Observable<any> {
+    return this.http.put(
+      `/remittance/banksRoutingController/updateBanksRoutingsDeatils/`,
+      data,
+      {
+        headers: new HttpHeaders()
+          .set("userId", userId)
+          .set("routeCode", routeCode),
+      }
     );
   }
 }
