@@ -1,68 +1,176 @@
 <div>
-    <div class="pagetitle">
-        <nav>
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item">{{'Home.home' | translate}}</li>
-            <li class="breadcrumb-item">{{ 'Home.Settings' | translate }}</li>
-            <li class="breadcrumb-item">{{'Home.Module Settings' | translate}}</li>
-            <li class="breadcrumb-item active" style="color: #2455cf;">{{'Home.Payment Mode Settings' | translate}}</li>
-          </ol>
-        </nav>
-        <div class="addnew">
-            <button pButton pRipple type="button" label="{{'Home.Add New' | translate}}" class="p-button-raised"></button>
-        </div>
+  <div class="pagetitle">
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">{{ "Home.home" | translate }}</li>
+        <li class="breadcrumb-item">{{ "Home.Settings" | translate }}</li>
+        <li class="breadcrumb-item">
+          {{ "Home.Module Settings" | translate }}
+        </li>
+        <li class="breadcrumb-item active" style="color: #2455cf">
+          {{ "Home.Payment Mode Settings" | translate }}
+        </li>
+      </ol>
+    </nav>
+    <div class="addnew">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="{{ 'Home.Add New' | translate }}"
+        class="p-button-raised"
+      ></button>
     </div>
-        <div class="ptable">            
-            <p-table class="payment-mode-table" #dt [value]="paymentData" sortMode="multiple" dataKey="id" [rows]="5" [showCurrentPageReport]="true"
-            [rowsPerPageOptions]="[5,20,50]" styleClass="p-datatable-customers" [paginator]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
-            <ng-template pTemplate="header">
-                <tr>
-                    <th class="table-titles" [pSortableColumn]="'paymentModeName'">{{'Home.Payment mode description' | translate}} <img src="../../assets/icon/down arrow.svg" alt=""></th>
-                    <th class="table-titles" [pSortableColumn]="'criteriaMap'">{{'Home.Criteria' | translate}} <img src="../../assets/icon/down arrow.svg" alt=""></th>
-                    <th class="table-titles" [pSortableColumn]="'cmPaymentApplicableString'">{{'Home.Applicable on' | translate}} <img src="../../assets/icon/down arrow.svg" alt=""></th>
-                    <th class="table-titles" [pSortableColumn]="'status'">{{'Home.Status' | translate}} <img src="../../assets/icon/down arrow.svg" alt=""></th>
-                </tr>
-                <tr>
-                    <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'paymentModeName', 'contains')" placeholder="Search.." class="p-column-filter" >
-                    </th>
-                    <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'criteriaMap', 'contains')" placeholder="Search.." class="p-column-filter" >
-                    </th>
-                    <th >
-                        <input pInputText [classList]="'table-search'"  type="text" (input)="dt.filter($any($event.target).value, 'cmPaymentApplicableString', 'contains')" placeholder="Search.." class="p-column-filter" >
-                    </th>
-                    <th  style="padding: 8px;">
-                        <input pInputText [classList]="'table-search'" placeholder="Search.." type="text" (input)="dt.filter($any($event.target).value, 'status', 'contains')">
-                      </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-payment>
-                <tr>
-                    <td style="font-size: 12px;border: none; border-bottom: none; padding-bottom: 15px;cursor: pointer;color:#2455cf ;">
-                        <a (click)="navigateToViewPayment(payment)">{{payment.paymentModeName}}</a>
-                    </td>
-                    <td style="font-size: 12px;border: none; border-bottom: none; padding-bottom: 15px; font-weight: bold;">
-                        <span class="image-text">{{payment.criteriaMap.split(";").join("; ")}}</span>
-                    </td>
-                    <td style="font-size: 12px;border: none; border-bottom: none; padding-bottom: 15px; font-weight: bold;">
-                        <span class="image-text">{{payment.cmPaymentApplicableString}}</span>
-                    </td>
-                    <td style="padding-left: 50px;border: none;">
-                        <label class="switch" style="margin-left: 10px;border: none;">
-                          <input type="checkbox" checked>
-                          <span class="slider round"></span>
-                        </label>
-                      </td>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td colspan="4">No Data found.</td>
-                </tr>
-            </ng-template>
-        </p-table>
-        </div>
-  
+  </div>
+  <div class="ptable">
+    <p-table
+      class="payment-mode-table"
+      #dt
+      [value]="paymentData"
+      sortMode="multiple"
+      dataKey="id"
+      [rows]="5"
+      [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[5, 20, 50]"
+      styleClass="p-datatable-customers"
+      [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="table-titles" [pSortableColumn]="'paymentModeName'">
+            {{ "Home.Payment mode description" | translate }}
+            <img src="../../assets/icon/down arrow.svg" alt="" />
+          </th>
+          <th class="table-titles" [pSortableColumn]="'criteriaMap'">
+            {{ "Home.Criteria" | translate }}
+            <img src="../../assets/icon/down arrow.svg" alt="" />
+          </th>
+          <th
+            class="table-titles"
+            [pSortableColumn]="'cmPaymentApplicableString'"
+          >
+            {{ "Home.Applicable on" | translate }}
+            <img src="../../assets/icon/down arrow.svg" alt="" />
+          </th>
+          <th class="table-titles" [pSortableColumn]="'status'">
+            {{ "Home.Status" | translate }}
+            <img src="../../assets/icon/down arrow.svg" alt="" />
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <input
+              pInputText
+              [classList]="'table-search'"
+              type="text"
+              (input)="
+                dt.filter(
+                  $any($event.target).value,
+                  'paymentModeName',
+                  'contains'
+                )
+              "
+              placeholder="Search.."
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <input
+              pInputText
+              [classList]="'table-search'"
+              type="text"
+              (input)="
+                dt.filter($any($event.target).value, 'criteriaMap', 'contains')
+              "
+              placeholder="Search.."
+              class="p-column-filter"
+            />
+          </th>
+          <th>
+            <input
+              pInputText
+              [classList]="'table-search'"
+              type="text"
+              (input)="
+                dt.filter(
+                  $any($event.target).value,
+                  'cmPaymentApplicableString',
+                  'contains'
+                )
+              "
+              placeholder="Search.."
+              class="p-column-filter"
+            />
+          </th>
+          <th style="padding: 8px">
+            <input
+              pInputText
+              [classList]="'table-search'"
+              placeholder="Search.."
+              type="text"
+              (input)="
+                dt.filter($any($event.target).value, 'status', 'contains')
+              "
+            />
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-payment>
+        <tr>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 15px;
+              cursor: pointer;
+              color: #2455cf;
+            "
+          >
+            <a (click)="navigateToViewPayment(payment)">{{
+              payment.paymentModeName
+            }}</a>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 15px;
+              font-weight: 500;
+            "
+          >
+            <span class="image-text">{{
+              payment.criteriaMap.split(";").join("; ")
+            }}</span>
+          </td>
+          <td
+            style="
+              font-size: 12px;
+              border: none;
+              border-bottom: none;
+              padding-bottom: 15px;
+              font-weight: 500;
+            "
+          >
+            <span class="image-text">{{
+              payment.cmPaymentApplicableString
+            }}</span>
+          </td>
+          <td style="padding-left: 50px; border: none">
+            <label class="switch" style="margin-left: 10px; border: none">
+              <input type="checkbox" checked />
+              <span class="slider round"></span>
+            </label>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4">No Data found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </div>

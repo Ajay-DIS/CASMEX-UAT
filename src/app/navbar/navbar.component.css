@@ -26,13 +26,6 @@
   line-height: 1;
 }
 
-.logo span {
-  font-size: 26px;
-  font-weight: 700;
-  color: #012970;
-  font-family: "Nunito", sans-serif;
-}
-
 .header {
   width: calc(100% - 270px);
   margin-left: 270px;
@@ -133,7 +126,7 @@
 
 .header-nav .nav-profile span {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .header-nav .badge-number {
@@ -162,7 +155,7 @@
 
 .header-nav .notifications .notification-item h4 {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 5px;
 }
 
@@ -179,7 +172,7 @@
 .header-nav .profile .dropdown-header h6 {
   font-size: 18px;
   margin-bottom: 0;
-  font-weight: 600;
+  font-weight: 500;
   color: #444444;
 }
 
@@ -266,7 +259,7 @@
 .profile-dropdown::ng-deep .p-dropdown .p-dropdown-label {
   padding-bottom: 0;
   padding-top: 0;
-  font-weight: 600;
+  font-weight: 500;
   color: black;
 }
 
@@ -421,7 +414,7 @@
   font-size: 11px;
   text-transform: uppercase;
   color: #899bbd;
-  font-weight: 600;
+  font-weight: 500;
   margin: 10px 0 5px 15px;
 }
 
@@ -429,7 +422,7 @@
   display: flex;
   align-items: center;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: #4154f1;
   transition: 0.3;
   background: #f6f9ff;
@@ -620,12 +613,12 @@ nav ol li .breadcrumb-item active {
 }
 .sidebar-content-footer .help-content {
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
   color: white;
 }
 .sidebar-content-footer .copyright-version-content {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 500;
   color: white;
 }
 .sidebar-content-footer .help-icon-content {
@@ -661,10 +654,10 @@ nav ol li .breadcrumb-item active {
 
 .header-bar::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
   color: rgba(99, 117, 252);
-  font-weight: 600;
+  font-weight: 500;
 }
 .header-bar::ng-deep .p-breadcrumb ul li:nth-last-child(3) .p-menuitem-text {
-  font-weight: 600;
+  font-weight: 500;
 }
 .header-bar::ng-deep .p-breadcrumb ul li.p-breadcrumb-chevron:before {
   content: "\002F";

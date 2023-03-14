@@ -57,7 +57,7 @@ p-dropdown .p-dropdown {
 .setCriteria {
   color: rgb(36 85 207);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   width: 55%;
   cursor: pointer;
 }
@@ -73,16 +73,16 @@ p-dropdown .p-dropdown {
 .openCriteria a {
   color: rgb(36 85 207);
   border-bottom: 1px solid rgb(36 85 207);
-  font-weight: 600;
+  font-weight: 500;
   font-size: 12px;
   cursor: pointer;
 }
 
 .description-text {
-  width: 485px;
+  width: 560px;
   height: 18px;
-  font-family: IBMPlexSans;
-  font-size: 14px;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
   font-weight: 500;
   font-style: italic;
   letter-spacing: 0;

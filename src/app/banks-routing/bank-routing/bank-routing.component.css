@@ -65,7 +65,7 @@ input:checked + .slider:before {
   border: none;
   background-color: #eaedf4;
   font-size: 11px !important;
-  font-weight: 600;
+  font-weight: 500;
   color: #8a9099;
 }
 
@@ -173,6 +173,9 @@ input:checked + .slider:before {
   text-align: left;
   padding: 0.5rem 1rem;
   background: rgb(234 237 244);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
 }
 
 .filter-footer {
@@ -191,11 +194,11 @@ input:checked + .slider:before {
 :host ::ng-deep .bank-routing-table .p-datatable .p-datatable-thead tr {
   height: 55px;
 }
-:host ::ng-deep .bank-routing-table .p-datatable .p-datatable-tbody tr td  {
+:host ::ng-deep .bank-routing-table .p-datatable .p-datatable-tbody tr td {
   padding: 0.47rem 1rem;
-  font-family: IBMPlexSans !important;
-  font-size: 16;
-  font-style: normal; 
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
 }
 .filter-icon {
   position: absolute;
@@ -203,10 +206,10 @@ input:checked + .slider:before {
   top: 30%;
 }
 .infoicon {
-  font-size: 14px;
+  font-size: 13px;
   width: 50%;
   height: 18px;
-  font-family: IBMPlexSans;
+  font-family: "IBM Plex Sans", sans-serif;
   font-style: italic;
   letter-spacing: 0;
   text-align: left;
