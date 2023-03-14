@@ -1277,41 +1277,99 @@ export class AddnewrouteComponent implements OnInit {
         payload.push(element);
       }
     });
-    console.log("Payload", { data: payload });
-    setTimeout(() => {
-      if (isRequiredFields) {
-        this.ngxToaster.warning("Please Select required fields.");
-      } else {
-        this.coreService.displayLoadingScreen();
-        let service;
-        if (this.routeId != "") {
-          service = this.bankRoutingService.updateRoute(this.routeId, this.userId, {
-            data: payload,
-          });
+
+    console.log(
+      this.bankRoutesData[0]["lcySlab"],
+      this.lcySlab,
+      this.getSlabCriteriaText(
+        this.txnCriteriaRangeFormData["txnCriteriaRange"]
+      )
+    );
+    if (
+      this.bankRoutesData[0]["criteriaMap"] &&
+      this.checkArrSimilarity(
+        this.criteriaText,
+        this.bankRoutesData[0]["criteriaMap"].split(";")
+      )
+    ) {
+      if (
+        !this.bankRoutesData[0]["lcySlab"] ||
+        this.getSlabCriteriaText(
+          this.txnCriteriaRangeFormData["txnCriteriaRange"]
+        ) == this.bankRoutesData[0]["lcySlab"]
+      ) {
+        console.log("Payload", { data: payload });
+        if (isRequiredFields) {
+          this.ngxToaster.warning("Please Select required fields.");
         } else {
-          service = this.bankRoutingService.addNewRoute({ data: payload });
-        }
-        service
-          .subscribe(
-            (res) => {
-              if (res["msg"]) {
-                this.ngxToaster.success(res.msg);
-                if (action == "save") {
-                  this.router.navigate([`navbar/bank-routing`]);
-                } else if (action == "saveAndAddNew") {
-                  window.location.reload();
-                }
+          this.coreService.displayLoadingScreen();
+          let service;
+          if (this.routeId != "") {
+            service = this.bankRoutingService.updateRoute(
+              this.routeId,
+              this.userId,
+              {
+                data: payload,
               }
-            },
-            (err) => {
-              console.log("error in saveAddNewRoute", err);
-            }
-          )
-          .add(() => {
-            this.coreService.removeLoadingScreen();
-          });
+            );
+          } else {
+            service = this.bankRoutingService.addNewRoute({ data: payload });
+          }
+          service
+            .subscribe(
+              (res) => {
+                if (res["msg"]) {
+                  this.ngxToaster.success(res.msg);
+                  if (action == "save") {
+                    this.router.navigate([`navbar/bank-routing`]);
+                  } else if (action == "saveAndAddNew") {
+                    window.location.reload();
+                  }
+                }
+              },
+              (err) => {
+                console.log("error in saveAddNewRoute", err);
+              }
+            )
+            .add(() => {
+              this.coreService.removeLoadingScreen();
+            });
+        }
+      } else {
+        this.ngxToaster.warning(
+          "LCY Criteria has been modified, Please apply it first"
+        );
       }
-    }, 1000);
+    } else {
+      this.ngxToaster.warning(
+        "Criterias has been modified, Please apply them first"
+      );
+    }
+  }
+
+  getSlabCriteriaText(slabs: any[]) {
+    let slabArr = [];
+    let slabText = null;
+    slabs.forEach((slab) => {
+      let rngArr = [];
+      Object.entries(slab).forEach((rng) => {
+        rngArr.push(rng.join(":"));
+      });
+      slabArr.push(rngArr.join("::"));
+    });
+    slabText = slabArr.join("#");
+    return slabText;
+  }
+
+  checkArrSimilarity(arr1: any[], arr2: any[]) {
+    console.log(arr1, arr2);
+    const containsAll = (arr1, arr2) =>
+      arr2.every((arr2Item) => arr1.includes(arr2Item));
+
+    const sameMembers = (arr1, arr2) =>
+      containsAll(arr1, arr2) && containsAll(arr2, arr1);
+
+    return sameMembers(arr1, arr2);
   }
 
   reset() {

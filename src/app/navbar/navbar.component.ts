@@ -112,7 +112,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        console.log("::nav end", event);
         this.currRoute = event["urlAfterRedirects"];
         this.setSidebarMenu();
       }
@@ -134,19 +133,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         "Your Session has been Expired, Please login again"
       );
       this.router.navigate(["navbar/session-time-out"]);
+      this.coreService.removeLoadingScreen();
     }
     // this.setSidebarMenu();
   }
 
   setSidebarMenu() {
     if (!!localStorage.getItem("menuItems")) {
-      console.log(":: menu found in local");
       const menuItems = localStorage.getItem("menuItems");
       this.menuItemTree = JSON.parse(menuItems);
     }
     this.menuItems = [];
     Object.keys(this.menuItemTree).map((menu) => {
-      console.log("menu", menu);
       if (this.menuItemTree[menu].length > 0) {
         const submenus = [];
         this.menuItemTree[menu].map((sub) => {
@@ -178,7 +176,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
     });
     this.$MenuItems = this.menuItems;
-    console.log(this.menuItems);
   }
 
   isTokenExpired(token: string) {
@@ -290,7 +287,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   selectProfileOption(data) {
-    console.log("event", data);
     if (data && data.name == "Logout") {
       localStorage.removeItem("token");
       this.ngxToaster.error("Logged Out Successfully.");
