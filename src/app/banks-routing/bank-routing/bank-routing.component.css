@@ -1,63 +1,8 @@
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 48px;
-  height: 25px;
+.bank-routing-table::ng-deep .p-datatable .p-datatable-thead {
+  width: 100%;
 }
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 1px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 0px;
-  bottom: 2px;
-  background-color: white;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
-}
-
-input:checked + .slider {
-  background-color: #55c78a;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #55c78a;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
+.bank-routing-table::ng-deep .p-datatable .p-datatable-thead > tr {
+  width: 100%;
 }
 
 .table-titles {
@@ -74,7 +19,7 @@ input:checked + .slider:before {
   height: 35px;
   border: none;
   font-size: 12px;
-  max-width: 100%;
+  max-width: 96%;
 }
 .search-row {
   border-bottom: 1px solid #e9ecef;
@@ -83,22 +28,15 @@ input:checked + .slider:before {
 .search-row th {
   background-color: #fff !important;
 }
-:host ::ng-deep .bank-routing-table p-paginator .p-paginator-bottom {
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-}
 
-.ptable::ng-deep .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  background-color: #2455cf;
-  color: white;
-  height: 35px;
-  width: 30px;
-  border-radius: 5px;
+.addnew button {
+  font-family: "IBM Plex Sans", sans-serif !important;
 }
 
 .bank-routing-main {
   overflow-x: auto;
   height: auto;
+  padding-left: 20px;
 }
 .bank-routing-main::-webkit-scrollbar {
   height: 5px;
@@ -117,6 +55,9 @@ input:checked + .slider:before {
 
 .p-inputtext::placeholder {
   color: rgb(138 144 153);
+  font-family: "IBM Plex Sans", sans-serif !important;
+  opacity: 0.5;
+  font-weight: 500;
 }
 
 .p-input-icon-left > .p-inputtext {
@@ -126,16 +67,13 @@ input:checked + .slider:before {
 
 .p-input-icon-left > i:first-of-type {
   left: 0.5rem;
-  color: #6c757d;
+  color: rgb(138 144 153);
   font-size: 0.8rem;
   margin-top: -0.3rem;
 }
 
 .bankRoutingFilterIcon {
-  left: 85%;
-  top: 24%;
   font-size: 11px;
-  z-index: 99;
   color: rgb(138 144 153);
 }
 .bankRoutingFilterIcon:hover {
@@ -146,9 +84,7 @@ input:checked + .slider:before {
 :host ::ng-deep .bank-routing-table .p-multiselect-label-container {
   display: none;
 }
-:host ::ng-deep .bank-routing-table .p-multiselect-panel {
-  width: 220px;
-}
+
 :host
   ::ng-deep
   .bank-routing-table
@@ -176,6 +112,7 @@ input:checked + .slider:before {
   font-family: "IBM Plex Sans", sans-serif;
   font-style: normal;
   font-weight: 500;
+  color: rgb(68 68 68) !important;
 }
 
 .filter-footer {
@@ -199,14 +136,15 @@ input:checked + .slider:before {
   font-family: "IBM Plex Sans", sans-serif;
   font-style: normal;
   font-weight: 500;
+  color: rgb(0 0 0);
 }
 .filter-icon {
   position: absolute;
-  right: 5%;
-  top: 30%;
+  right: 3%;
+  top: 35%;
 }
 .infoicon {
-  font-size: 13px;
+  font-size: 12px;
   width: 50%;
   height: 18px;
   font-family: "IBM Plex Sans", sans-serif;
@@ -214,7 +152,10 @@ input:checked + .slider:before {
   letter-spacing: 0;
   text-align: left;
   color: #444444;
+  display: flex;
+  align-items: center;
 }
 .infoicon img {
-  margin-bottom: 5px;
+  margin-right: 5px;
+  height: 18px !important;
 }

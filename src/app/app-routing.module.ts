@@ -43,7 +43,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "addnewroute",
+        path: "bank-routing/addnewroute",
         component: AddnewrouteComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
@@ -54,7 +54,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "addnewroute/:id",
+        path: "bank-routing/addnewroute/:id",
         component: AddnewrouteComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
