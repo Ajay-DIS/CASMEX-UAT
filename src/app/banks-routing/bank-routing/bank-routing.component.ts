@@ -289,14 +289,7 @@ export class BankRoutingComponent implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    this.router.navigate([`navbar/addnewroute/${data.routeCode}`]);
-    // if (data.status == "Active") {
-    //   this.router.navigate([`navbar/addnewroute`]);
-    // } else {
-    //   this.ngxToaster.warning(
-    //     `This Route is currently in Inactive State, Please change the status to view details`
-    //   );
-    // }
+    this.router.navigate(["navbar", "bank-routing", "addnewroute", data.routeCode]);
   }
 
   updateStatus(e: any, bankRoute: string) {
@@ -399,6 +392,6 @@ export class BankRoutingComponent implements OnInit {
   }
 
   addNewRoutePage() {
-    this.router.navigateByUrl("/navbar/addnewroute");
+    this.router.navigate(["navbar", "bank-routing", "addnewroute"]);
   }
 }

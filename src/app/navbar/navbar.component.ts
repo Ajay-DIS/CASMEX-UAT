@@ -24,6 +24,7 @@ import { PaymentModeService } from "../payment-mode-settings/payment-mode-servic
 export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild("toggleSidebar") toggleSidebarBtn: ElementRef;
   @ViewChild("sidebarDiv") sidebarDiv: ElementRef;
+  @ViewChild("logo") logoImg: ElementRef;
 
   breadcrumbsItems: MenuItem[] = [
     { label: "Home", routerLink: "/navbar" },
@@ -150,15 +151,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.menuItemTree[menu].map((sub) => {
           submenus.push({
             label: sub,
-            items: [],
           });
         });
         this.menuItems.push({
           label: menu,
           icon: this.getIcons(menu).icon,
-          items: submenus,
-          routerLink: this.getIcons(menu).routerLink,
-          routerLinkActiveOptions: { exact: true },
+          items: this.getSubMenus(submenus),
+          // routerLink: this.getIcons(menu).routerLink,
+          // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
             this.getIcons(menu).matchUrls.includes(this.currRoute),
@@ -167,8 +167,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.menuItems.push({
           label: menu,
           icon: this.getIcons(menu).icon,
-          routerLink: this.getIcons(menu).routerLink,
-          routerLinkActiveOptions: { exact: true },
+          // routerLink: this.getIcons(menu).routerLink,
+          // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
             this.getIcons(menu).matchUrls.includes(this.currRoute),
@@ -176,6 +176,23 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
     });
     this.$MenuItems = this.menuItems;
+  }
+
+  getSubMenus(menu: any) {
+    menu.forEach((item) => {
+      switch (item["label"]) {
+        case "Bank Routing":
+          item["routerLink"] = "/navbar/bank-routing";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+
+        case "Criteria Setting":
+          item["routerLink"] = "/navbar/criteria-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+      }
+    });
+    return menu;
   }
 
   isTokenExpired(token: string) {
@@ -192,12 +209,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const bodyTag = this.el.nativeElement.closest("body");
+    let bigLogoImgSrc = "assets/icon/casmex logo.svg";
+    let smallLogoImgSrc = "assets/icon/logo-Icon.svg";
     this.toggleSidebarBtn.nativeElement.addEventListener("click", () => {
+      console.log("::logo", this.logoImg.nativeElement.getAttribute("src"));
       if (bodyTag.classList.contains("minified-sidebar")) {
         bodyTag.classList.remove("minified-sidebar");
+        this.logoImg.nativeElement.setAttribute("src", bigLogoImgSrc);
         this.toggleState = "left";
       } else {
         bodyTag.classList.add("minified-sidebar");
+        this.logoImg.nativeElement.setAttribute("src", smallLogoImgSrc);
         this.toggleState = "right";
       }
     });
@@ -251,7 +273,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Settings":
         iconName = "settings-icon";
-        matchUrls = ["/navbar/bank-routing", "/navbar/addnewroute"];
+        matchUrls = [
+          "/navbar/bank-routing",
+          "/navbar/bank-routing/addnewroute",
+        ];
         routeName = "/navbar/bank-routing";
         break;
       case "Application Settings":

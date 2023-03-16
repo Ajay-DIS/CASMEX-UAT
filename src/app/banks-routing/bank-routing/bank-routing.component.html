@@ -1,7 +1,7 @@
 <div class="bank-routing-main">
   <div class="pagetitle">
     <div class="infoicon">
-      <img height="22px" src="../assets/info.svg" alt="" />
+      <img src="../assets/info.svg" alt="" />
       Saved routes will be shown below.
     </div>
     <div class="addnew">
@@ -12,7 +12,7 @@
         (click)="addNewRoutePage()"
         label="{{ 'Bank-Routing.Add New Route' | translate }}"
         class="p-button-raised"
-        style="border-radius: 5px"
+        style="padding: 7px 19px"
       ></button>
     </div>
   </div>
@@ -36,7 +36,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeCode'"
-            style="width: 92px"
+            style="width: 9%"
           >
             {{ "Bank-Routing.Route Code" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -55,6 +55,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteCodesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'routeCode', 'in')"
                 [(ngModel)]="selectedFilterRoutes"
                 (onPanelHide)="showRouteCodesOptions = !showRouteCodesOptions"
@@ -82,7 +83,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'country'"
-            style="width: 90px"
+            style="width: 8.5%"
           >
             {{ "Bank-Routing.Country" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -101,6 +102,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showCountriesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'country', 'in')"
                 (onPanelHide)="showCountriesOptions = !showCountriesOptions"
               ></p-multiSelect>
@@ -109,7 +111,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeBankName'"
-            style="width: 125px"
+            style="width: 12%"
           >
             {{ "Bank-Routing.Route Bank Name" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -127,6 +129,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteBankNamesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'routeBankName', 'in')"
                 (onPanelHide)="
                   showRouteBankNamesOptions = !showRouteBankNamesOptions
@@ -137,7 +140,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeServiceCategory'"
-            style="width: 120px"
+            style="width: 11.5%"
           >
             {{ "Bank-Routing.Service Category" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -158,6 +161,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteServiceCategoriesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="
                   dt.filter($event.value, 'routeServiceCategory', 'in')
                 "
@@ -171,7 +175,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeServiceType'"
-            style="width: 100px"
+            style="width: 9.5%"
           >
             {{ "Bank-Routing.Service Type" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -191,6 +195,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteServiceTypesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'routeServiceType', 'in')"
                 (onPanelHide)="
                   showRouteServiceTypesOptions = !showRouteServiceTypesOptions
@@ -201,7 +206,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'iSCorrespondent'"
-            style="width: 125px"
+            style="width: 12%"
           >
             {{ "Bank-Routing.Is Correspondent" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -221,6 +226,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showISCorrespondentsOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'iSCorrespondent', 'in')"
                 (onPanelHide)="
                   showISCorrespondentsOptions = !showISCorrespondentsOptions
@@ -231,7 +237,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeToBankName'"
-            style="width: 80px"
+            style="width: 8.5%"
           >
             {{ "Bank-Routing.Route To" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -251,6 +257,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteToBankNamesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'routeToBankName', 'in')"
                 (onPanelHide)="
                   showRouteToBankNamesOptions = !showRouteToBankNamesOptions
@@ -261,7 +268,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeToServiceCategory'"
-            style="width: 120px"
+            style="width: 11.5%"
           >
             {{ "Bank-Routing.Service Category" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -282,6 +289,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteToServiceCategoriesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="
                   dt.filter($event.value, 'routeToServiceCategory', 'in')
                 "
@@ -295,7 +303,7 @@
           <th
             class="table-titles"
             [pSortableColumn]="'routeToServiceType'"
-            style="width: 102px"
+            style="width: 10%"
           >
             {{ "Bank-Routing.Service Type" | translate }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -316,6 +324,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showRouteToServiceTypesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'routeToServiceType', 'in')"
                 (onPanelHide)="
                   showRouteToServiceTypesOptions =
@@ -326,11 +335,15 @@
           </th>
           <th
             class="table-titles"
-            style="text-align: center; width: 85px"
+            style="text-align: center; width: 7.5%"
             [pSortableColumn]="'status'"
           >
             {{ "Bank-Routing.Status" | translate }}
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              (click)="$event.stopPropagation()"
+              class="filter-icon"
+              style="right: 8%"
+            >
               <img
                 height="12px"
                 class="pi pi-filter bankRoutingFilterIcon"
@@ -345,6 +358,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showStatusesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'status', 'in')"
                 (onPanelHide)="showStatusesOptions = !showStatusesOptions"
               ></p-multiSelect>
@@ -514,15 +528,16 @@
             style="
               font-size: 12px;
               border: none;
-              border-bottom: none;
               padding-bottom: 14px;
               cursor: pointer;
               color: #2455cf;
             "
           >
-            <a (click)="viewBankRouting(bankRouting)">{{
-              bankRouting.routeCode
-            }}</a>
+            <a
+              style="text-decoration: underline !important"
+              (click)="viewBankRouting(bankRouting)"
+              >{{ bankRouting.routeCode }}</a
+            >
           </td>
           <td
             style="
@@ -610,10 +625,10 @@
           </td>
           <td style="border: none; text-align: center">
             <label class="switch" style="border: none">
+              <!-- (click)="updateStatus($event, bankRouting.routeCode)" -->
               <input
                 #statusInp
                 type="checkbox"
-                (click)="updateStatus($event, bankRouting.routeCode)"
                 [checked]="
                   bankRouting.status == 'Active' || bankRouting.status == 'A'
                     ? true

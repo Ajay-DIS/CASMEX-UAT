@@ -35,7 +35,7 @@
           <th
             class="table-titles"
             style="width: 135px"
-            [pSortableColumn]="'application'"
+            [pSortableColumn]="'applications'"
           >
             Application
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -54,7 +54,8 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showApplicationOptions"
                 [defaultLabel]="'Search'"
-                (onChange)="dt.filter($event.value, 'application', 'in')"
+                [appendTo]="'body'"
+                (onChange)="dt.filter($event.value, 'applications', 'in')"
                 (onPanelHide)="showApplicationOptions = !showApplicationOptions"
               >
               </p-multiSelect>
@@ -82,6 +83,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showFormOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'form', 'in')"
                 (onPanelHide)="showFormOptions = !showFormOptions"
               ></p-multiSelect>
@@ -90,7 +92,7 @@
           <th
             class="table-titles"
             style="width: 140px"
-            [pSortableColumn]="'totalCriteriaFields'"
+            [pSortableColumn]="'totalCriteraiField'"
           >
             Total Criteria Fields
             <div (click)="$event.stopPropagation()" class="filter-icon">
@@ -108,9 +110,8 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showCriteriaFieldsOptions"
                 [defaultLabel]="'Search'"
-                (onChange)="
-                  dt.filter($event.value, 'totalCriteriaFields', 'in')
-                "
+                [appendTo]="'body'"
+                (onChange)="dt.filter($event.value, 'totalCriteraiField', 'in')"
                 (onPanelHide)="
                   showCriteriaFieldsOptions = !showCriteriaFieldsOptions
                 "
@@ -138,7 +139,8 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showListFieldsOptions"
                 [defaultLabel]="'Search'"
-                (onChange)="dt.filter($event.value, 'totalListFields', 'in')"
+                [appendTo]="'body'"
+                (onChange)="dt.filter($event.value, 'totalListField', 'in')"
                 (onPanelHide)="showListFieldsOptions = !showListFieldsOptions"
               ></p-multiSelect>
             </div>
@@ -164,6 +166,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showCreatedDateOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'createdDate', 'in')"
                 (onPanelHide)="showCreatedDateOptions = !showCreatedDateOptions"
               ></p-multiSelect>
@@ -190,12 +193,13 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showCreatedByOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'createdBy', 'in')"
                 (onPanelHide)="showCreatedByOptions = !showCreatedByOptions"
               ></p-multiSelect>
             </div>
           </th>
-          <th class="table-titles" style="width: 120px">Operations</th>
+          <th class="table-titles" style="width: 100px">Operations</th>
           <th
             class="table-titles"
             style="text-align: center; width: 100px"
@@ -217,6 +221,7 @@
                 [displaySelectedLabel]="false"
                 [overlayVisible]="showStatusesOptions"
                 [defaultLabel]="'Search'"
+                [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'status', 'in')"
                 (onPanelHide)="showStatusesOptions = !showStatusesOptions"
               ></p-multiSelect>
@@ -235,7 +240,7 @@
                 (input)="
                   dt.filter(
                     $any($event.target).value,
-                    'application',
+                    'applications',
                     'contains'
                   )
                 "
@@ -267,7 +272,7 @@
                 (input)="
                   dt.filter(
                     $any($event.target).value,
-                    'totalCriteriaFields',
+                    'totalCriteraiField',
                     'contains'
                   )
                 "
@@ -285,7 +290,7 @@
                 (input)="
                   dt.filter(
                     $any($event.target).value,
-                    'totalListFields',
+                    'totalListField',
                     'contains'
                   )
                 "
@@ -329,7 +334,7 @@
       <ng-template pTemplate="body" let-criteriaSetting>
         <tr>
           <td style="font-size: 12px; border: none; border-bottom: none">
-            <a>{{ criteriaSetting.application }}</a>
+            <a>{{ criteriaSetting.applications }}</a>
           </td>
           <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">{{ criteriaSetting.form }}</span>
@@ -344,7 +349,7 @@
             "
           >
             <span class="image-text">{{
-              criteriaSetting.totalCriteriaFields
+              criteriaSetting.totalCriteraiField
             }}</span>
           </td>
           <td
@@ -356,13 +361,11 @@
               text-align: center;
             "
           >
-            <span class="image-text">{{
-              criteriaSetting.totalListFields
-            }}</span>
+            <span class="image-text">{{ criteriaSetting.totalListField }}</span>
           </td>
           <td style="font-size: 12px; border: none; border-bottom: none">
             <span class="image-text">{{
-              criteriaSetting.createdDate | date
+              criteriaSetting.createdDate | date : "mediumDate"
             }}</span>
           </td>
           <td style="font-size: 12px; border: none; border-bottom: none">

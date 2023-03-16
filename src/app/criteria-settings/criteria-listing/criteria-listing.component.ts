@@ -1,6 +1,9 @@
-import { Component, OnInit } from "@angular/core";
+import { DatePipe } from "@angular/common";
+import { Component, InjectionToken, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
+import { CriteriaSettingsService } from "../criteria-settings.service";
 
 @Component({
   selector: "app-criteria-listing",
@@ -11,197 +14,195 @@ export class CriteriaListingComponent implements OnInit {
   noDataMsg: string = "Criteria Setting Data Not Available";
 
   dummyCriteriaSettingsData = {
-    application: [
-      "Casmex Core",
-      "Casmex Core",
-      "Casmex Core",
-      "Casmex Core",
-      "Casmex Core",
-      "Casmex Core",
-      "Casmex Core",
+    totalCriteraiField: ["2", "3", "5"],
+    createdDate: [
+      "2023-01-23 14:04:59.247",
+      "2023-02-22 18:01:45.905",
+      "2023-01-18 14:30:43.635",
+      "2023-01-18 15:04:33.004",
     ],
-    form: ["India234", "India2", "India23", "India2344", "India"],
-    operations: ["SBI12344", "SBI1", "SBI", "SBI12", "SBI1234", "SBI123"],
     data: [
       {
-        id: 7,
-        userID: "yogeshm",
-        application: "Casmex Core",
+        id: 83,
+        applications: "Web Application",
+        form: "Bank Routings",
+        totalCriteraiField: 5,
+        status: "A",
+        createdBy: "Yogesh",
+        createdByID: "yogeshm",
+        createdDate: "2023-02-22T12:31:45.905+00:00",
+        cmCriteriaDataDetails: [
+          {
+            id: 152,
+            fieldName: "Service Category",
+            displayName: "Service Category",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 4,
+            iSMandatory: "no",
+          },
+          {
+            id: 154,
+            fieldName: "Country",
+            displayName: "Country",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 1,
+            iSMandatory: "yes",
+          },
+          {
+            id: 151,
+            fieldName: "LCY Amount",
+            displayName: "LCY Amount",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 5,
+            iSMandatory: "no",
+          },
+          {
+            id: 153,
+            fieldName: "Organization",
+            displayName: "Organization",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 2,
+            iSMandatory: "yes",
+          },
+          {
+            id: 155,
+            fieldName: "Service Type",
+            displayName: "Service Type",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 3,
+            iSMandatory: "no",
+          },
+        ],
+      },
+      {
+        id: 64,
+        applications: "Web Application",
+        form: "Payment Mode Settings1",
+        totalCriteraiField: 3,
+        status: "A",
+        createdBy: "Yogesh Mishra",
+        createdByID: "yogeshm",
+        createdDate: "2023-01-23T08:34:59.247+00:00",
+        cmCriteriaDataDetails: [
+          {
+            id: 131,
+            fieldName: "Branch",
+            displayName: "Branch",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 2,
+            iSMandatory: "no",
+          },
+          {
+            id: 132,
+            fieldName: "Correspondent",
+            displayName: "Correspondent",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 1,
+            iSMandatory: "no",
+          },
+          {
+            id: 130,
+            fieldName: "Country",
+            displayName: "Country",
+            fieldType: "Smart Search",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 3,
+            iSMandatory: "no",
+          },
+        ],
+      },
+      {
+        id: 52,
+        applications: "Web Application",
         form: "Payment Mode Settings",
-        totalCriteriaFields: "6",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI",
-        createdDate: "2023-02-15T08:44:15.987+00:00",
-        status: "Active",
-        updatedBy: "Ajay",
-        updatedDate: "2023-02-15T12:28:48.559+00:00",
+        totalCriteraiField: 3,
+        status: "A",
+        createdBy: "Yogesh Mishra",
+        createdByID: "yogeshm",
+        createdDate: "2023-01-18T09:34:33.004+00:00",
+        cmCriteriaDataDetails: [
+          {
+            id: 114,
+            fieldName: "Correspondent",
+            displayName: "Correspondent",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 1,
+            iSMandatory: "no",
+          },
+          {
+            id: 113,
+            fieldName: "Branch",
+            displayName: "Branch",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 2,
+            iSMandatory: "no",
+          },
+          {
+            id: 115,
+            fieldName: "Country",
+            displayName: "Country",
+            fieldType: "Smart Search",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 3,
+            iSMandatory: "no",
+          },
+        ],
       },
       {
-        id: 8,
-        userID: "yogeshm",
-        application: "Mobile Application",
-        form: "Tax Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI",
-        createdDate: "2023-02-15T08:44:18.596+00:00",
-        status: "Inactive",
-        updatedBy: "Ajay",
-        updatedDate: "2023-02-15T12:28:48.568+00:00",
-      },
-      {
-        id: 11,
-        userID: "yogeshm",
-        application: "Web Application",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "4",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI123",
-        createdDate: "2023-02-16T06:31:23.054+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 12,
-        userID: "yogeshm",
-        application: "Mobile Application",
-        form: "Module Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI1234",
-        createdDate: "2023-02-16T06:31:36.623+00:00",
-        status: "Inactive",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 13,
-        userID: "yogeshm",
-        application: "Casmex Core",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "5",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI12344",
-        createdDate: "2023-02-16T06:31:49.309+00:00",
-        status: "Inactive",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 9,
-        userID: "yogeshm",
-        application: "Casmex Core",
-        form: "Module Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI1",
-        createdDate: "2023-02-16T06:30:55.006+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 10,
-        userID: "yogeshm",
-        application: "Web Application",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI12",
-        createdDate: "2023-02-16T06:31:08.691+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 10,
-        userID: "yogeshm",
-        application: "Web Application",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI12",
-        createdDate: "2023-02-16T06:31:08.691+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 10,
-        userID: "yogeshm",
-        application: "Web Application",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI12",
-        createdDate: "2023-02-16T06:31:08.691+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
-      },
-      {
-        id: 10,
-        userID: "yogeshm",
-        application: "Web Application",
-        form: "Payment Mode Settings",
-        totalCriteriaFields: "3",
-        totalListFields: "8",
-        createdBy: "Pallavi Loha",
-        operations: "SBI12",
-        createdDate: "2023-02-16T06:31:08.691+00:00",
-        status: "Active",
-        updatedBy: null,
-        updatedDate: null,
+        id: 50,
+        applications: "Web Application",
+        form: "TAX setting",
+        totalCriteraiField: 2,
+        status: "A",
+        createdBy: "Yogesh",
+        createdByID: "yogeshm",
+        createdDate: "2023-01-18T09:00:43.635+00:00",
+        cmCriteriaDataDetails: [
+          {
+            id: 108,
+            fieldName: "State",
+            displayName: "State",
+            fieldType: "Dropdown",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 1,
+            iSMandatory: "no",
+          },
+          {
+            id: 109,
+            fieldName: "Country",
+            displayName: "Country",
+            fieldType: "Smart Search",
+            operations: "Is Equal To,Is Not Equal To",
+            orderID: 2,
+            iSMandatory: "no",
+          },
+        ],
       },
     ],
-    totalCriteriaFields: [
-      "ICICI",
-      "ICICI10234",
-      "ICICI102",
-      "ICICI102344",
-      "ICICI10",
-      "ICICI1023",
+    form: [
+      "TAX setting",
+      "Payment Mode Settings",
+      "Bank Routings",
+      "Payment Mode Settings1",
     ],
-    createdDate: [
-      "Cash1",
-      "Cash21",
-      "Cash21344",
-      "Cash2134",
-      "Cash",
-      "Cash213",
-    ],
-    totalListFields: ["DF11234", "DF112344", "DF1123", "DF11", "DF1", "DF112"],
-    routeToServiceType: [
-      "NFT1",
-      "NFT213",
-      "NFT21344",
-      "NFT21",
-      "NFT2134",
-      "NFT",
-    ],
-    routeToServiceCategory: [
-      "NFT1",
-      "NFT12",
-      "NFT12344",
-      "NFT",
-      "NFT123",
-      "NFT1234",
-    ],
-    createdBy: ["Yes1", "Yes21", "Yes", "Yes2134", "Yes213", "Yes21344"],
-    status: ["Active", "Inactive"],
+    createdBy: ["Yogesh", "Yogesh Mishra"],
+    createdByID: ["yogeshm"],
+    applications: ["Web Application"],
+    status: ["A"],
   };
 
-  criteriaSettingData = this.dummyCriteriaSettingsData.data;
+  criteriaSettingApiData: any;
+  criteriaSettingData: any[] = [];
+  // criteriaSettingData = this.dummyCriteriaSettingsData.data;
 
   showApplicationOptions: boolean = false;
   showFormOptions: boolean = false;
@@ -211,52 +212,20 @@ export class CriteriaListingComponent implements OnInit {
   showCreatedByOptions: boolean = false;
   showStatusesOptions: boolean = false;
 
-  applications: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  forms: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  totalCriteriaFields: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  totalListFields: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  createdDates: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  createdBy: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  statuses: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
+  applications: any[];
+  forms: any[];
+  totalCriteriaFields: any[];
+  totalListFields: any = [];
+  createdDates: any[];
+  createdBy: any[];
+  statuses: any[];
 
   constructor(
     private coreService: CoreService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private datePipe: DatePipe,
+    private criterisSettingsService: CriteriaSettingsService,
+    private ngxToaster: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -264,6 +233,79 @@ export class CriteriaListingComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.coreService.removeLoadingScreen();
+
+    //
+    this.criterisSettingsService
+      .getCriteriaSettingListing()
+      .subscribe(
+        (res) => {
+          console.log(res);
+          this.criteriaSettingApiData = res;
+          if (res["data"]) {
+            this.criteriaSettingData = res["data"];
+            this.formatApiData();
+            this.setFilterOptions();
+          } else {
+            this.ngxToaster.warning(res["msg"]);
+          }
+        },
+        (err) => {
+          console.log("Error in criterisSettingListing", err);
+        }
+      )
+      .add(() => {
+        this.coreService.removeLoadingScreen();
+      });
+
+    //
+  }
+
+  filter(a: any, b: any) {
+    console.log("a:", a);
+    console.log("b:", b);
+  }
+
+  formatApiData() {
+    this.criteriaSettingData.forEach((criteria) => {
+      criteria["totalListField"] = "7";
+      criteria["totalCriteraiField"] = `${criteria["totalCriteraiField"]}`;
+      criteria["createdDate"] = this.datePipe.transform(
+        criteria["createdDate"]
+      );
+    });
+  }
+
+  setFilterOptions() {
+    this.applications = this.criteriaSettingApiData.applications.map((code) => {
+      return { label: code, value: code };
+    });
+    this.forms = this.criteriaSettingApiData.form.map((code) => {
+      return { label: code, value: code };
+    });
+    this.totalCriteriaFields = this.criteriaSettingApiData[
+      "totalCriteraiField"
+    ].map((code) => {
+      return { label: code, value: code };
+    });
+    this.totalListFields = [{ label: "7", value: "7" }];
+    let createdDatesApi = this.criteriaSettingApiData.createdDate.map(
+      (code) => {
+        let formatDate = this.datePipe.transform(code);
+        console.log(this.createdDates);
+        return formatDate;
+      }
+    );
+    console.log([...new Set(createdDatesApi.map((v) => v))]);
+    this.createdDates = [...new Set(createdDatesApi.map((v) => v))].map(
+      (value) => {
+        return { label: value, value: value };
+      }
+    );
+    this.createdBy = this.criteriaSettingApiData.createdBy.map((code) => {
+      return { label: code, value: code };
+    });
+    this.statuses = this.criteriaSettingApiData.status.map((code) => {
+      return { label: code, value: code };
+    });
   }
 }
