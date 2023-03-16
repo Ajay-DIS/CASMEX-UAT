@@ -384,6 +384,7 @@
                 type="button"
                 icon="pi pi-eye"
                 class="operation-btns"
+                (click)="openClickForView(criteriaSetting)"
               ></button>
             </span>
           </td>
@@ -420,4 +421,39 @@
       </ng-template>
     </p-table>
   </div>
+</div>
+<div>
+  <p-dialog
+  [(visible)]="clickforview"
+  [modal]="true"
+  [style]="{ width: '70vw' }"
+  class="viewTemplateModal"
+>
+  <ng-template
+    pTemplate="header"
+    style="border-top-right-radius: 10px !important; background: rgb(233, 238, 250);
+    font-family: IBM Plex Sans, sans-serif;"
+  > Application: Casmex Core | Form: Payment Mode Settings</ng-template>
+  <p-table [value]="criteriaDataArrayView" class="criteria-view-table" [rowHover]="true">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Field Name</th>
+            <th>Display Name</th>
+            <th>Field Type</th>
+            <th>Operator</th>
+            <th>Criteria Priority</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>{{product.fieldName}}</td>
+            <td>{{product.displayName}}</td>
+            <td>{{product.fieldType}}</td>
+            <td>{{product.operations}}</td>
+            <td>{{product.orderID}}</td>
+        </tr>
+    </ng-template>
+</p-table>
+  
+</p-dialog>
 </div>
