@@ -558,7 +558,7 @@ export class AddnewrouteComponent implements OnInit {
 
         // suresh code
         this.bankRoutesData = res["data"];
-        console.log(this.bankRoutesData)
+        console.log(this.bankRoutesData);
         // this.routeToBankNameOption = this.bankRoutesData[0].routeToBankNameOption;
         // this.routeToServiceCategoryOption = this.bankRoutesData[0].routeToServiceCategoryOption;
         // this.routeToServiceTypeOption = this.bankRoutesData[0].routeToServiceTypeOption;
@@ -1187,7 +1187,7 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   selectedColumn(column, row, index) {
-    console.log("enterin select ",index, column, row);
+    console.log("enterin select ", index, column, row);
     //let index = this.bankRoutesData.findIndex((x) => x.id == row.id);
     // (column == "routeToBankName") && (this.isSelectedRouteToBankName = true);
     // if (column == "routeToServiceCategory") {
@@ -1200,7 +1200,7 @@ export class AddnewrouteComponent implements OnInit {
     //   }
     // }
     // if (column == "routeToServiceType") {
-      
+
     //   console.log(
     //     "this.bankRoutesData[index]",
     //     this.bankRoutesData[index]["routeToServiceType"]
@@ -1210,31 +1210,31 @@ export class AddnewrouteComponent implements OnInit {
     //     this.ngxToaster.warning("Please select the service category first");
     //   }
     // }
-    switch(column) {
-      case "routeToBankName": 
+    switch (column) {
+      case "routeToBankName":
         this.selectedRowCollumn[index].routeToBank = true;
         this.bankRoutesData[index]["routeToServiceCategory"] = "";
-      break;
-      case "routeToServiceCategory": 
+        break;
+      case "routeToServiceCategory":
         this.bankRoutesData[index]["routeToServiceType"] = "";
-        if(!this.selectedRowCollumn[index].routeToBank) {
+        if (!this.selectedRowCollumn[index].routeToBank) {
           this.ngxToaster.warning("Please select the route to bank first");
           this.selectedRowCollumn[index].routeToServiceCategory = false;
         } else {
           this.selectedRowCollumn[index].routeToServiceCategory = true;
         }
-      break;
-      case "routeToServiceType": 
-        if(!this.selectedRowCollumn[index].routeToServiceCategory) {
+        break;
+      case "routeToServiceType":
+        if (!this.selectedRowCollumn[index].routeToServiceCategory) {
           this.ngxToaster.warning("Please select the service category first");
           this.selectedRowCollumn[index].routeToServiceType = false;
         } else {
           this.selectedRowCollumn[index].routeToServiceType = true;
         }
-      break;
-      default: break;
+        break;
+      default:
+        break;
     }
-
   }
 
   getBanksRoutingData(id: string) {
@@ -1253,7 +1253,11 @@ export class AddnewrouteComponent implements OnInit {
       element.routeToBankName = "";
       element.routeToServiceType = "";
       element.routeToServiceCategory = "";
-      this.selectedRowCollumn.push({routeToBank: false, routeToServiceCategory: false, routeToServiceType: false})
+      this.selectedRowCollumn.push({
+        routeToBank: false,
+        routeToServiceCategory: false,
+        routeToServiceType: false,
+      });
     });
     if (this.apiResponse.LCY == "Yes") {
       this.bankRoutesColumns.forEach((x) => {

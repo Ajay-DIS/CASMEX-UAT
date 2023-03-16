@@ -42,7 +42,7 @@
         ></button>
       </div>
     </div>
-    <div class="criteria-main-section">
+    <div class="criteria-main-section" style="position: relative">
       <div class="criteria-bar">
         <p class="setCriteria">
           Set Criteria
@@ -61,8 +61,18 @@
           </p>
         </div>
       </div>
-      <p-dialog [(visible)]="clickforsave" [style]="{ width: '30vw' }">
-        <ng-template pTemplate="header"> Save Template </ng-template>
+      <p-dialog
+        [(visible)]="clickforsave"
+        [modal]="true"
+        [style]="{ width: '30vw' }"
+        class="saveTemplateModal"
+      >
+        <ng-template
+          pTemplate="header"
+          style="border-top-right-radius: 10px !important"
+        >
+          Save Template
+        </ng-template>
         <p>Name</p>
         <input type="text" class="form-control" [(ngModel)]="criteriaName" />
         <ng-template pTemplate="footer" style="text-align: center">
@@ -120,16 +130,6 @@
             [disabled]="!selectCriteriaForm.valid"
             (click)="addCriteriaMap()"
           ></button>
-          <button
-            pButton
-            pRipple
-            style="position: absolute; left: 562px"
-            type="button"
-            label="Apply Criteria"
-            class="p-button-raised"
-            [disabled]="!criteriaText.length"
-            (click)="applyCriteria()"
-          ></button>
         </div>
         <div class="right-select">
           <p-dropdown
@@ -148,16 +148,22 @@
           ></p-dropdown>
         </div>
       </div>
-    <div style="padding: 0 1rem; display: flex; flex-wrap: wrap">
-      <span
-        *ngFor="let criteria of criteriaText; let i = index"
-        (click)="
-          savedLcySlabs &&
-            criteria == 'LCY Amount = Slab' &&
-            showTransCriteriaModal()
-        "
-        class="criteria-span"
-        > {{ criteria == 'LCY Amount = Slab' ? '' :criteria }}<a *ngIf="criteria == 'LCY Amount = Slab'">{{criteria}}</a>
+      <div style="padding: 0 1rem; display: flex; flex-wrap: wrap">
+        <span
+          *ngFor="let criteria of criteriaText; let i = index"
+          (click)="
+            savedLcySlabs &&
+              criteria == 'LCY Amount = Slab' &&
+              showTransCriteriaModal()
+          "
+          class="criteria-span"
+        >
+          {{ criteria == "LCY Amount = Slab" ? "" : criteria
+          }}<a
+            style="cursor: pointer"
+            *ngIf="criteria == 'LCY Amount = Slab'"
+            >{{ criteria }}</a
+          >
           <span
             role="button"
             style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
@@ -181,106 +187,138 @@
             </svg>
           </span>
         </span>
-      </span>
-      <div>
-        <button
-          pButton
-          pRipple
-          style="position: absolute; left: 820px;margin-top:50px"
-          type="button"
-          label="Apply Criteria"
-          class="p-button-raised"
-          [disabled]="!criteriaText.length"
-          (click)="applyCriteria()"
-        ></button>
+        <div>
+          <button
+            pButton
+            pRipple
+            style="position: absolute; bottom: 10%; left: 42%"
+            type="button"
+            label="Apply Criteria"
+            class="p-button-raised"
+            [disabled]="!criteriaText.length"
+            (click)="applyCriteria()"
+          ></button>
+        </div>
       </div>
-      
     </div>
   </div>
-</div>
-<div
-  class="py-3"
-  style="background-color: #ffffff; border-radius: 10px; margin-top: 10px"
->
-  <div class="applicable-Routes">
-    <div class="criteria-bar">
-      <p class="setCriteria">
-        Applicable Routes
-        <img
-          height="15px"
-          src="../assets/Icon-info.svg"
-          alt=""
-          pTooltip="On selected criteria routes below routes will be applied."
-        />
-      </p>
-    </div>
-    <div class="mt-1 addnewroute-table">
-      <p-table
-        #table
-        [value]="bankRoutesData"
-        editMode="row"
-        scrollHeight="700px"
-        [rowHover]="true"
-      >
-        <ng-template pTemplate="header">
-          <tr>
-            <ng-container *ngFor="let col of bankRoutesColumns">
-              <th *ngIf="col.visible">
-                {{ col.header }}
-              </th>
-            </ng-container>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-row let-col="bankRoutesColumns" let-rowIndex="rowIndex">
-          <tr>
-            <ng-container *ngFor="let col of bankRoutesColumns">
-              <td *ngIf="col.visible" pEditable="true">
-                <span
-                  *ngIf="
-                    col.field != 'routeToBankName' &&
-                    col.field != 'routeToServiceCategory' &&
-                    col.field != 'routeToServiceType'
-                  "
-                  >{{ row[col.field] }}</span
-                >
-                <select style="height: 35px;font-size: 13px;font-family: IBM Plex Sans, sans-serif;border-color: #e8e9eb;"
-                  (change)="selectedColumn('routeToBankName', row, rowIndex)"
-                  class="form-select"
-                  *ngIf="col.field == 'routeToBankName'"
-                  [(ngModel)]="row[col.field]" [value]="row[col.field]"
-                >
-                  <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToBankNameOption">
-                    {{ name.codeName }}
-                  </option>
-                </select>
-                <select id="dropdownid" style="height: 35px;font-size: 13px;font-family: IBM Plex Sans, sans-serif;border-color: #e8e9eb;"
-                  (change)="selectedColumn('routeToServiceCategory', row, rowIndex)"
-                  class="form-select"
-                  *ngIf="col.field == 'routeToServiceCategory'"
-                  [(ngModel)]="row[col.field]" [value]="row[col.field]"
-                >
-                  <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToServiceCategoryOption">
-                    {{ name.codeName }}
-                  </option>
-                </select>
-                <select style="height: 35px;font-size: 13px;font-family: IBM Plex Sans, sans-serif;border-color: #e8e9eb;"
-                  (change)="selectedColumn('routeToServiceType', row, rowIndex)"
-                  class="form-select"
-                  *ngIf="col.field == 'routeToServiceType'"
-                  [(ngModel)]="row[col.field]" [value]="row[col.field]"
-                >
-                  <option value="" selected>Select</option>
-                  <option *ngFor="let name of row.routeToServiceTypeOption">
-                    {{ name.codeName }}
-                  </option>
-                </select>
-              </td>
-            </ng-container>
-          </tr>
-        </ng-template>
-      </p-table>
+  <div
+    class="py-3"
+    style="background-color: #ffffff; border-radius: 10px; margin-top: 10px"
+  >
+    <div class="applicable-Routes">
+      <div class="criteria-bar">
+        <p class="setCriteria">
+          Applicable Routes
+          <img
+            height="15px"
+            src="../assets/Icon-info.svg"
+            alt=""
+            pTooltip="On selected criteria routes below routes will be applied."
+          />
+        </p>
+      </div>
+      <div class="mt-1 addnewroute-table">
+        <p-table
+          #table
+          [value]="bankRoutesData"
+          editMode="row"
+          scrollHeight="700px"
+          [rowHover]="true"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <ng-container *ngFor="let col of bankRoutesColumns">
+                <th *ngIf="col.visible">
+                  {{ col.header }}
+                </th>
+              </ng-container>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-row
+            let-col="bankRoutesColumns"
+            let-rowIndex="rowIndex"
+          >
+            <tr>
+              <ng-container *ngFor="let col of bankRoutesColumns">
+                <td *ngIf="col.visible" pEditable="true">
+                  <span
+                    *ngIf="
+                      col.field != 'routeToBankName' &&
+                      col.field != 'routeToServiceCategory' &&
+                      col.field != 'routeToServiceType'
+                    "
+                    >{{ row[col.field] }}</span
+                  >
+                  <select
+                    style="
+                      height: 35px;
+                      font-size: 13px;
+                      font-family: IBM Plex Sans, sans-serif;
+                      border-color: #e8e9eb;
+                    "
+                    (change)="selectedColumn('routeToBankName', row, rowIndex)"
+                    class="form-select"
+                    *ngIf="col.field == 'routeToBankName'"
+                    [(ngModel)]="row[col.field]"
+                    [value]="row[col.field]"
+                  >
+                    <option value="" selected>Select</option>
+                    <option *ngFor="let name of row.routeToBankNameOption">
+                      {{ name.codeName }}
+                    </option>
+                  </select>
+                  <select
+                    id="dropdownid"
+                    style="
+                      height: 35px;
+                      font-size: 13px;
+                      font-family: IBM Plex Sans, sans-serif;
+                      border-color: #e8e9eb;
+                    "
+                    (change)="
+                      selectedColumn('routeToServiceCategory', row, rowIndex)
+                    "
+                    class="form-select"
+                    *ngIf="col.field == 'routeToServiceCategory'"
+                    [(ngModel)]="row[col.field]"
+                    [value]="row[col.field]"
+                  >
+                    <option value="" selected>Select</option>
+                    <option
+                      *ngFor="let name of row.routeToServiceCategoryOption"
+                    >
+                      {{ name.codeName }}
+                    </option>
+                  </select>
+                  <select
+                    style="
+                      height: 35px;
+                      font-size: 13px;
+                      font-family: IBM Plex Sans, sans-serif;
+                      border-color: #e8e9eb;
+                    "
+                    (change)="
+                      selectedColumn('routeToServiceType', row, rowIndex)
+                    "
+                    class="form-select"
+                    *ngIf="col.field == 'routeToServiceType'"
+                    [(ngModel)]="row[col.field]"
+                    [value]="row[col.field]"
+                  >
+                    <option value="" selected>Select</option>
+                    <option *ngFor="let name of row.routeToServiceTypeOption">
+                      {{ name.codeName }}
+                    </option>
+                  </select>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
     </div>
   </div>
 </div>

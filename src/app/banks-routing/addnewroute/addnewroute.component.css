@@ -39,9 +39,7 @@ p-dropdown .p-dropdown {
   margin: 0 15px;
   background-color: #ffffff;
   border-radius: 10px;
-  
 }
-
 
 .templates-dropdown::ng-deep .p-dropdown-label {
   padding-right: 0;
@@ -104,7 +102,6 @@ p-dropdown .p-dropdown {
   border-radius: 5px;
   margin-right: 10px;
   margin-bottom: 8px;
-  cursor: pointer;
 }
 
 .left-dropdowns {
@@ -144,7 +141,6 @@ p-dropdown .p-dropdown {
   font-size: 13px !important;
 }
 
-
 :host ::ng-deep .p-dialog .p-dialog-header {
   border-top-right-radius: 15px !important;
   border-top-left-radius: 15px !important;
@@ -155,11 +151,16 @@ p-dropdown .p-dropdown {
   border-bottom-left-radius: 15px !important;
 }
 
-:host ::ng-deep .saveTemplateModal .p-dialog .p-dialog-header .p-dialog-header-icon:last-child {
+:host
+  ::ng-deep
+  .saveTemplateModal
+  .p-dialog
+  .p-dialog-header
+  .p-dialog-header-icon:last-child {
   margin-right: -33px;
   margin-top: -61px;
   background-color: #55c78a;
-  color:#fff;
+  color: #fff;
 }
 .addnewroute-table {
   max-height: 295px;
