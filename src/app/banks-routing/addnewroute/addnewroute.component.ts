@@ -181,6 +181,7 @@ export class AddnewrouteComponent implements OnInit {
   criteriaMapDdlOptions = [];
   criteriaEqualsDdlOptions = [];
   correspondentDdlOptions = [];
+  selectedRowCollumn = [];
   // criteriaMap: any = {
   //   criteria: "",
   //   condition: "",
@@ -557,12 +558,10 @@ export class AddnewrouteComponent implements OnInit {
 
         // suresh code
         this.bankRoutesData = res["data"];
-        this.routeToBankNameOption =
-          this.bankRoutesData[0].routeToBankNameOption;
-        this.routeToServiceCategoryOption =
-          this.bankRoutesData[0].routeToServiceCategoryOption;
-        this.routeToServiceTypeOption =
-          this.bankRoutesData[0].routeToServiceTypeOption;
+        console.log(this.bankRoutesData)
+        // this.routeToBankNameOption = this.bankRoutesData[0].routeToBankNameOption;
+        // this.routeToServiceCategoryOption = this.bankRoutesData[0].routeToServiceCategoryOption;
+        // this.routeToServiceTypeOption = this.bankRoutesData[0].routeToServiceTypeOption;
 
         if (this.editBankRouteApiData.LCY == "Yes") {
           this.bankRoutesColumns.forEach((x) => {
@@ -1187,27 +1186,55 @@ export class AddnewrouteComponent implements OnInit {
     });
   }
 
-  selectedColumn(column, row) {
-    console.log("enterin select ", column, row);
-    column == "routeToBankName" && (this.isSelectedRouteToBankName = true);
-    if (column == "routeToServiceCategory") {
-      if (!this.isSelectedRouteToBankName) {
-        this.ngxToaster.warning("Please select the route to bank first");
-      } else {
-        this.isSelectedRouteToServiceCategory = true;
-      }
+  selectedColumn(column, row, index) {
+    console.log("enterin select ",index, column, row);
+    //let index = this.bankRoutesData.findIndex((x) => x.id == row.id);
+    // (column == "routeToBankName") && (this.isSelectedRouteToBankName = true);
+    // if (column == "routeToServiceCategory") {
+    //   if (!this.isSelectedRouteToBankName) {
+    //     this.ngxToaster.warning("Please select the route to bank first");
+    //     this.isSelectedRouteToServiceCategory = true;
+    //     this.bankRoutesData[index]["routeToServiceCategory"] = "";
+    //     console.log("this.bankRoutesData[index]",this.bankRoutesData[index]);
+    //     let s = []; Object.assign(s, this.bankRoutesData); this.bankRoutesData = []; this.bankRoutesData = s;
+    //   }
+    // }
+    // if (column == "routeToServiceType") {
+      
+    //   console.log(
+    //     "this.bankRoutesData[index]",
+    //     this.bankRoutesData[index]["routeToServiceType"]
+    //   );
+    //   // let cell = this.table.findCell(row.id, column)
+    //   if (!this.isSelectedRouteToServiceCategory) {
+    //     this.ngxToaster.warning("Please select the service category first");
+    //   }
+    // }
+    switch(column) {
+      case "routeToBankName": 
+        this.selectedRowCollumn[index].routeToBank = true;
+        this.bankRoutesData[index]["routeToServiceCategory"] = "";
+      break;
+      case "routeToServiceCategory": 
+        this.bankRoutesData[index]["routeToServiceType"] = "";
+        if(!this.selectedRowCollumn[index].routeToBank) {
+          this.ngxToaster.warning("Please select the route to bank first");
+          this.selectedRowCollumn[index].routeToServiceCategory = false;
+        } else {
+          this.selectedRowCollumn[index].routeToServiceCategory = true;
+        }
+      break;
+      case "routeToServiceType": 
+        if(!this.selectedRowCollumn[index].routeToServiceCategory) {
+          this.ngxToaster.warning("Please select the service category first");
+          this.selectedRowCollumn[index].routeToServiceType = false;
+        } else {
+          this.selectedRowCollumn[index].routeToServiceType = true;
+        }
+      break;
+      default: break;
     }
-    if (column == "routeToServiceType") {
-      let index = this.bankRoutesData.findIndex((x) => x.id == row.id);
-      console.log(
-        "this.bankRoutesData[index]",
-        this.bankRoutesData[index]["routeToServiceType"]
-      );
-      // let cell = this.table.findCell(row.id, column)
-      if (!this.isSelectedRouteToServiceCategory) {
-        this.ngxToaster.warning("Please select the service category first");
-      }
-    }
+
   }
 
   getBanksRoutingData(id: string) {
@@ -1226,6 +1253,7 @@ export class AddnewrouteComponent implements OnInit {
       element.routeToBankName = "";
       element.routeToServiceType = "";
       element.routeToServiceCategory = "";
+      this.selectedRowCollumn.push({routeToBank: false, routeToServiceCategory: false, routeToServiceType: false})
     });
     if (this.apiResponse.LCY == "Yes") {
       this.bankRoutesColumns.forEach((x) => {
