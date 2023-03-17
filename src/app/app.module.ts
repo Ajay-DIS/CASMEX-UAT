@@ -27,6 +27,7 @@ import { BreadcrumbModule } from "primeng/breadcrumb";
 import { DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
 import { InputNumberModule } from "primeng/inputnumber";
 import { TooltipModule } from "primeng/tooltip";
+import { PickListModule } from "primeng/picklist";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -41,6 +42,7 @@ import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-m
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { DatePipe } from "@angular/common";
+import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -60,6 +62,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TransactionCriteriaModal,
     SessionTimeOutComponent,
     CriteriaListingComponent,
+    CriteriaSettingsDetailComponent,
     // SidebarComponent
   ],
   imports: [
@@ -83,6 +86,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DynamicDialogModule,
     InputNumberModule,
     TooltipModule,
+    PickListModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

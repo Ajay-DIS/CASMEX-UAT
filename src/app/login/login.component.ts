@@ -56,7 +56,7 @@ export class LoginComponent implements OnInit {
               this.loginService.saveLoggedUserInfo(data);
               // this.coreService.setSessionExpirationStatus(false);
               this.router.navigate(["/navbar"]);
-              this.ngxToaster.success("Login is successfull");
+              this.ngxToaster.success("Login Successfull");
             } else {
               localStorage.removeItem("token");
               this.ngxToaster.error(data.msg);
