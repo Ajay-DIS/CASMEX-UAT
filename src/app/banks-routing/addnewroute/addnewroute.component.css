@@ -1,18 +1,6 @@
-.add-new-route-main {
-  padding-left: 20px;
-}
-.buttons-section {
-  display: flex;
-}
-button {
-  margin-left: 8px;
-}
 .clickcriteria {
   display: flex;
   float: right;
-}
-.pagetitle {
-  margin-top: 85px;
 }
 p-dropdown .p-dropdown {
   width: 100%;
@@ -73,18 +61,6 @@ p-dropdown .p-dropdown {
   font-weight: 500;
   font-size: 12px;
   cursor: pointer;
-}
-
-.description-text {
-  width: 560px;
-  height: 18px;
-  font-family: "IBM Plex Sans", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: 0;
-  text-align: left;
-  color: #444444;
 }
 
 .dropdowns-select-container {
@@ -151,17 +127,6 @@ p-dropdown .p-dropdown {
   border-bottom-left-radius: 15px !important;
 }
 
-:host
-  ::ng-deep
-  .saveTemplateModal
-  .p-dialog
-  .p-dialog-header
-  .p-dialog-header-icon:last-child {
-  margin-right: -33px;
-  margin-top: -61px;
-  background-color: #55c78a;
-  color: #fff;
-}
 .addnewroute-table {
   max-height: 295px;
   overflow-y: auto;

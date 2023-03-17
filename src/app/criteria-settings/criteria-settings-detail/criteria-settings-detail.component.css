@@ -1,0 +1,58 @@
+.select-form-application {
+  display: flex;
+}
+.select-form-application .field {
+  align-items: center;
+  gap: 15px;
+}
+
+.select-form-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-form-application p-dropdown {
+  width: 80%;
+}
+.select-form-application::ng-deep .p-dropdown {
+  width: 80%;
+  height: 35px;
+  align-items: center;
+  background-color: rgb(244 246 250);
+  border: none !important;
+}
+.select-form-application::ng-deep .p-dropdown-trigger,
+.select-form-application::ng-deep .p-dropdown-label {
+  color: black;
+}
+
+.drag-criteria-fields::ng-deep .p-picklist-list {
+  border-radius: 10px;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(1)
+  span::before {
+  content: "\e905" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(2)
+  span::before {
+  content: "\e9ae" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(3)
+  span::before {
+  content: "\e904" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(4)
+  span::before {
+  content: "\e9af" !important;
+}
+
+.form-app-heading-execute-btn button {
+  padding: 5px 18px !important;
+}

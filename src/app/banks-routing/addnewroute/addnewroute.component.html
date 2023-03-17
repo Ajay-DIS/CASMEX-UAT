@@ -1,5 +1,5 @@
-<div class="add-new-route-main">
-  <div class="pagetitle">
+<div class="visible-main-section">
+  <div class="pagetitle detail-page">
     <nav>
       <ol class="breadcrumb"></ol>
     </nav>
@@ -63,6 +63,7 @@
       </div>
       <p-dialog
         [(visible)]="clickforsave"
+        [appendTo]="'body'"
         [modal]="true"
         [style]="{ width: '30vw' }"
         class="saveTemplateModal"

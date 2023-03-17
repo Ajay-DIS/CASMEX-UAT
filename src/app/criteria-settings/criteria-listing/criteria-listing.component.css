@@ -22,11 +22,6 @@
   background-color: #fff !important;
 }
 
-.criteria-setting-main {
-  overflow-x: auto;
-  height: auto;
-  padding-left: 20px;
-}
 .criteria-setting-main::-webkit-scrollbar {
   height: 5px;
   background-color: #fff;
@@ -133,7 +128,7 @@
 }
 .filter-icon {
   position: absolute;
-  right: 5%;
+  right: 13%;
   top: 30%;
 }
 .infoicon {
@@ -179,13 +174,7 @@
   font-size: 14px;
   font-weight: 500;
 }
-:host
-  ::ng-deep
-  .criteria-view-table
-  .p-datatable
-  .p-datatable-thead
-  > tr
-  > th {
+:host ::ng-deep .criteria-view-table .p-datatable .p-datatable-thead > tr > th {
   text-align: left;
   padding: 0.4rem 1rem;
   background: rgb(234 237 244);
@@ -193,16 +182,4 @@
   font-style: normal;
   font-weight: 500;
   font-size: 16px;
-}
-
-:host
-  ::ng-deep
-  .viewTemplateModal
-  .p-dialog
-  .p-dialog-header
-  .p-dialog-header-icon:last-child {
-  margin-right: -33px;
-  margin-top: -61px;
-  background-color: #55c78a;
-  color: #fff;
 }

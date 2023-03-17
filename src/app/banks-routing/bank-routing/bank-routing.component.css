@@ -29,15 +29,6 @@
   background-color: #fff !important;
 }
 
-.addnew button {
-  font-family: "IBM Plex Sans", sans-serif !important;
-}
-
-.bank-routing-main {
-  overflow-x: auto;
-  height: auto;
-  padding-left: 20px;
-}
 .bank-routing-main::-webkit-scrollbar {
   height: 5px;
   background-color: #fff;
