@@ -161,7 +161,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
-            this.getIcons(menu).matchUrls.includes(this.currRoute),
+            this.getIcons(menu).matchUrls.some((v) =>
+              this.currRoute.includes(v)
+            ),
         });
       } else {
         this.menuItems.push({
@@ -171,7 +173,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
-            this.getIcons(menu).matchUrls.includes(this.currRoute),
+            this.getIcons(menu).matchUrls.some((v) =>
+              this.currRoute.includes(v)
+            ),
         });
       }
     });
