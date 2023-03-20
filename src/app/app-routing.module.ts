@@ -10,6 +10,7 @@ import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payme
 import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
+import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -71,6 +72,20 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "criteria-settings" },
           { label: "Criteria", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "criteria-settings/add-criteria-settings",
+        component: CriteriaSettingsDetailComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Application Settings",
+            routerLink: "../navbar/criteria-settings",
+          },
+          { label: "Criteria", routerLink: "criteria-settings" },
+          { label: "Add Criteria settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

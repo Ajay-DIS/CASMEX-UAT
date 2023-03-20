@@ -1,4 +1,4 @@
-<div class="criteria-setting-main">
+<div class="visible-main-section">
   <div class="pagetitle">
     <div class="infoicon">
       <img height="22px" src="../assets/info.svg" alt="" />
@@ -11,7 +11,7 @@
         type="button"
         label="Add New Criteria"
         class="p-button-raised"
-        style="border-radius: 5px"
+        routerLink="add-criteria-settings"
       ></button>
     </div>
   </div>
@@ -38,7 +38,11 @@
             [pSortableColumn]="'applications'"
           >
             Application
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              (click)="$event.stopPropagation()"
+              style="right: 35%"
+              class="filter-icon"
+            >
               <img
                 height="13px"
                 id="rou"
@@ -67,7 +71,11 @@
             [pSortableColumn]="'form'"
           >
             Form
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              (click)="$event.stopPropagation()"
+              style="right: 60%"
+              class="filter-icon"
+            >
               <img
                 height="12px"
                 id="cou"
@@ -178,7 +186,11 @@
             [pSortableColumn]="'createdBy'"
           >
             Created By
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              (click)="$event.stopPropagation()"
+              style="right: 35%"
+              class="filter-icon"
+            >
               <img
                 height="12px"
                 class="pi pi-filter criteriaSettingFilterIcon"
@@ -279,7 +291,7 @@
               />
             </span>
           </th>
-          <th style="padding: 8px">
+          <th>
             <span style="max-width: 100%" class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
@@ -297,7 +309,7 @@
               />
             </span>
           </th>
-          <th style="padding: 8px">
+          <th>
             <span style="max-width: 100%" class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
@@ -315,7 +327,7 @@
               />
             </span>
           </th>
-          <th style="padding: 8px">
+          <th>
             <span style="max-width: 100%" class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
@@ -436,14 +448,14 @@
   <p-table [value]="criteriaDataArrayView" class="criteria-view-table" [rowHover]="true" [style]="{ width: '100%'}">
     <ng-template pTemplate="header">
         <tr>
-            <th>Field Name</th>
-            <th>Display Name</th>
-            <th>Field Type</th>
-            <th>Operator</th>
-            <th>Criteria Priority</th>
+          <th>Field Name</th>
+          <th>Display Name</th>
+          <th>Field Type</th>
+          <th>Operator</th>
+          <th>Criteria Priority</th>
         </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-product>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
         <tr>
             <td><input type="text" placeholder="{{product.fieldName}}" [disabled]="true"></td>
             <td><input type="text" placeholder="{{product.displayName}}" [disabled]="true"></td>
@@ -451,8 +463,7 @@
             <td><input type="text" placeholder="{{product.operations}}" [disabled]="true" style="width: 200px;"></td>
             <td><input type="text" placeholder="{{product.orderID}}" [disabled]="true"  style="text-align: center;width: 90px;margin-left: 20px;"></td>
         </tr>
-    </ng-template>
-</p-table>
-  
-</p-dialog>
+      </ng-template>
+    </p-table>
+  </p-dialog>
 </div>
