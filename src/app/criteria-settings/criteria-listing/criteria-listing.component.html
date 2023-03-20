@@ -434,30 +434,19 @@
     </p-table>
   </div>
 </div>
-<div>
+<div >
   <p-dialog
-    [(visible)]="clickforview"
-    [appendTo]="'body'"
-    [modal]="true"
-    [style]="{ width: '70vw' }"
-    class="viewTemplateModal"
-  >
-    <ng-template
-      pTemplate="header"
-      style="
-        border-top-right-radius: 10px !important;
-        background: rgb(233, 238, 250);
-        font-family: IBM Plex Sans, sans-serif;
-      "
-    >
-      Application: Casmex Core | Form: Payment Mode Settings</ng-template
-    >
-    <p-table
-      [value]="criteriaDataArrayView"
-      class="criteria-view-table"
-      [rowHover]="true"
-    >
-      <ng-template pTemplate="header">
+  [(visible)]="clickforview"
+  [modal]="true"
+  [style]="{ width: '70vw',left:'50px'}"
+>
+  <ng-template
+    pTemplate="header"
+  > <div class="application-header">
+    Application: Casmex Core | Form: Payment Mode Settings
+  </div> </ng-template>
+  <p-table [value]="criteriaDataArrayView" class="criteria-view-table" [rowHover]="true" [style]="{ width: '100%'}">
+    <ng-template pTemplate="header">
         <tr>
           <th>Field Name</th>
           <th>Display Name</th>
@@ -468,11 +457,11 @@
       </ng-template>
       <ng-template pTemplate="body" let-product>
         <tr>
-          <td>{{ product.fieldName }}</td>
-          <td>{{ product.displayName }}</td>
-          <td>{{ product.fieldType }}</td>
-          <td>{{ product.operations }}</td>
-          <td>{{ product.orderID }}</td>
+            <td><input type="text" placeholder="{{product.fieldName}}" [disabled]="true"></td>
+            <td><input type="text" placeholder="{{product.displayName}}" [disabled]="true"></td>
+            <td><input type="text" placeholder="{{product.fieldType}}" [disabled]="true"></td>
+            <td><input type="text" placeholder="{{product.operations}}" [disabled]="true" style="width: 200px;"></td>
+            <td><input type="text" placeholder="{{product.orderID}}" [disabled]="true"  style="text-align: center;width: 90px;margin-left: 20px;"></td>
         </tr>
       </ng-template>
     </p-table>
