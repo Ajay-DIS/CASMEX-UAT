@@ -269,3 +269,13 @@ p-paginator .p-paginator-bottom {
 .p-multiselect-panel .p-multiselect-items {
   font-size: 13px;
 }
+
+/* P DIALOG START*/
+.p-dialog-header-icons .p-dialog-header-icon.p-dialog-header-close {
+  position: absolute !important;
+  right: -13px;
+  top: -13px;
+  background: #55c78a !important;
+  color: white !important;
+}
+/* P DIALOG END*/

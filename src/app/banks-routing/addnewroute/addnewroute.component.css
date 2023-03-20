@@ -151,17 +151,6 @@ p-dropdown .p-dropdown {
   border-bottom-left-radius: 15px !important;
 }
 
-:host
-  ::ng-deep
-  .saveTemplateModal
-  .p-dialog
-  .p-dialog-header
-  .p-dialog-header-icon:last-child {
-  margin-right: -33px;
-  margin-top: -61px;
-  background-color: #55c78a;
-  color: #fff;
-}
 .addnewroute-table {
   max-height: 295px;
   overflow-y: auto;
