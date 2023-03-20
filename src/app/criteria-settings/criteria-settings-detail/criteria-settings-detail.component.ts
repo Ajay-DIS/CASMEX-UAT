@@ -19,7 +19,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     { name: "Washington", code: "Washington" },
   ];
 
+  // Suresh start
+
+  // Suresh end
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  // Suresh start
+
+  // Suresh end
 }
