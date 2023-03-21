@@ -108,8 +108,41 @@
         class="p-button-raised"
       ></button>
     </div>
-  </div>
+  
   <!-- Suresh start -->
+  <div class="application-table">
+    <div class="application-header">
+      Application: Casmex Core | Form: Payment Mode Settings
+    </div>
+    <div class="application-ptable">
+      <p-table [value]="criteriaSettingtable" class="criteria-view-table" [rowHover]="true" [style]="{ width: '100%'}">
+        <ng-template pTemplate="header">
+            <tr>
+              <th>Field Name</th>
+              <th>Display Name</th>
+              <th>Field Type</th>
+              <th>Operator</th>
+              <th>Criteria Priority</th>
+              <th>Is Mandatory</th>
+              <th>Dependency</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product>
+            <tr>
+                <td><input type="text" placeholder="{{product.fieldName}}" [disabled]="true"></td>
+                <td><input type="text" placeholder="{{product.displayName}}" [disabled]="true"></td>
+                <td><input type="text" placeholder="{{product.fieldType}}" [disabled]="true"></td>
+                <td><input type="text" placeholder="{{product.operations}}" [disabled]="true" style="width: 200px;"></td>
+                <td><input type="text" placeholder="{{product.orderID}}" [disabled]="true"  style="text-align: center;width: 90px;margin-left: 20px;"></td>
+                <td><input type="checkbox"></td>
+                <td><input type="text" placeholder="{{product.dependency}}" [disabled]="true"></td>
+            </tr>
+          </ng-template>
+        </p-table>
+    </div>
 
+  </div>
+  
   <!-- Suresh end -->
+</div>
 </div>
