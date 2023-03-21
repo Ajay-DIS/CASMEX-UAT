@@ -111,3 +111,36 @@
 .form-app-heading-execute-btn button {
   padding: 5px 18px !important;
 }
+/* suresh start*/
+.application-header{
+  background-color: #f4f6fa;
+  border-radius: 5px;
+  padding: 5px;
+  width: 420px;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  bottom:30px;
+  left: 15px;
+}
+:host ::ng-deep .criteria-view-table .p-datatable .p-datatable-tbody tr td input{
+  border: none;
+  background-color: #f4f6fa;
+  width: 133px;
+  height: 35px;
+  border-radius: 5px;
+  font-weight: 500;
+  padding-left: 5px;
+}
+:host ::ng-deep .criteria-view-table .p-datatable .p-datatable-thead > tr > th {
+  text-align: left;
+  padding: 0.47rem 1rem;
+  background: rgb(234 237 244);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+}
+/* suresh end*/
