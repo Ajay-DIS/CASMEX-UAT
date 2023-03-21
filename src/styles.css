@@ -238,7 +238,7 @@ button.p-button {
 /* picklist */
 
 .p-picklist .p-picklist-buttons {
-  padding: 1.2rem 1.5rem;
+  padding: 6px 1.5rem;
   background: rgb(234 237 244);
   margin: 0 10px;
   border-left: 1px solid #0000001f;
@@ -248,6 +248,8 @@ button.p-button {
 .p-picklist-buttons button.p-button {
   height: 30px;
   width: 30px;
+  box-shadow: none !important;
+  margin: 3px 0 !important;
 }
 
 /* picklist END */
