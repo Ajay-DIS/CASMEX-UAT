@@ -39,27 +39,29 @@
         ></button>
       </div>
     </div>
-    <div class="select-form-application m-2">
+    <div [formGroup]="selectAppForm" class="select-form-application m-2">
       <div class="d-flex field col-5 md-3">
         <label class="detail-page-section-heading" for="state"
           >Application</label
         >
         <p-dropdown
-          inputId="state"
-          [options]="states"
-          [(ngModel)]="selectedState"
+          inputId="application"
+          [options]="criteriaApplicationOptions"
           placeholder="Select"
           optionLabel="name"
+          formControlName="applications"
+          (onChange)="onAppChange($event)"
         ></p-dropdown>
       </div>
       <div class="d-flex field col-5 md-3">
         <label class="detail-page-section-heading" for="state">Form</label>
         <p-dropdown
-          inputId="state"
-          [options]="states"
-          [(ngModel)]="selectedState"
+          inputId="form"
+          [options]="criteriaFormsOptions"
           placeholder="Select"
           optionLabel="name"
+          formControlName="forms"
+          (onChange)="executeQueries()"
         ></p-dropdown>
       </div>
     </div>
@@ -76,21 +78,14 @@
         </div>
       </div>
       <p-pickList
-        [source]="list1"
-        [target]="list2"
+        [source]="selectFields"
+        [target]="selectedFields"
         [showSourceControls]="false"
         [showTargetControls]="false"
       >
-        <ng-template let-car pTemplate="item">
-          <div>
-            <img
-              src="assets/showcase/images/demo/car/{{ car.brand }}.png"
-              style="display: inline-block; margin: 2px 0 2px 2px"
-              width="48"
-            />
-            <div style="font-size: 14px; float: right; margin: 15px 5px 0 0">
-              {{ car.brand }} - {{ car.year }} - {{ car.color }}
-            </div>
+        <ng-template let-field pTemplate="item">
+          <div class="field-item">
+            {{ field.displayName }}
           </div>
         </ng-template>
       </p-pickList>
@@ -103,7 +98,7 @@
         pButton
         pRipple
         type="button"
-        [disabled]="false"
+        [disabled]="!selectedFields.length"
         label="Execute"
         class="p-button-raised"
       ></button>

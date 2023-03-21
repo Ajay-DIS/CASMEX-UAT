@@ -219,10 +219,10 @@ export class CriteriaListingComponent implements OnInit {
   createdDates: any[];
   createdBy: any[];
   statuses: any[];
-//suresh
-clickforview = false;
-criteriaDataArrayView = [];
-//suresh
+  //suresh
+  clickforview = false;
+  criteriaDataArrayView = [];
+  //suresh
   constructor(
     private coreService: CoreService,
     private route: ActivatedRoute,
@@ -311,8 +311,8 @@ criteriaDataArrayView = [];
       return { label: code, value: code };
     });
   }
-  openClickForView(data){
-    console.log("data", data)
+  openClickForView(data) {
+    console.log("data", data);
     this.criteriaDataArrayView = data.cmCriteriaDataDetails;
     this.clickforview = true;
   }

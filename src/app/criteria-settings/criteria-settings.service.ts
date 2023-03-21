@@ -10,4 +10,13 @@ export class CriteriaSettingsService {
   getCriteriaSettingListing() {
     return this.http.get(`/applicationSettings/getListOfCriteria`);
   }
+
+  // criteria details
+  getCriteriaAppFormsList() {
+    return this.http.get(`/applicationSettings/criteriaTypes`);
+  }
+
+  getCriteriaFieldsExecuteQueries() {
+    return this.http.get(`/applicationSettings/executeQueries`);
+  }
 }
