@@ -185,6 +185,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.fieldsQueriesData =
                 res["data"]["cmCriteriaOperationsMasters"];
               this.selectFields = this.fieldsQueriesData;
+              this.selectFields.forEach(item=> {
+                item['operationOption']= item.operations.split(',');
+              })
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
               this.isFieldsQueriesData = false;

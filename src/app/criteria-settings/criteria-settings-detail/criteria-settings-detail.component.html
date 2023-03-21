@@ -104,21 +104,21 @@
         (click)="criteriaSettingtable = selectedFields"
       ></button>
     </div>
-
-    <!-- Suresh start -->
-    <div class="application-table">
-      <div class="application-header">
-        Application: {{ appCtrl.value }} | Form:
-        {{ formCtrl.value }}
-      </div>
-      <div class="application-ptable">
+  
+  <!-- Suresh start -->
+  <div class="application-table">
+    <div class="application-header" *ngIf="criteriaSettingtable.length">
+        Application: {{ appCtrl.value.name }} | Form:
+        {{ formCtrl.value.name }}
+    </div>
+    <div class="application-ptable" *ngIf="criteriaSettingtable.length">
         <p-table
           [value]="criteriaSettingtable"
           class="criteria-view-table"
           [rowHover]="true"
           [style]="{ width: '100%' }"
         >
-          <ng-template pTemplate="header">
+        <ng-template pTemplate="header">
             <tr>
               <th>Field Name</th>
               <th>Display Name</th>
@@ -129,7 +129,7 @@
               <th>Dependency</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-product>
+          <ng-template pTemplate="body" let-product let-col="settingsCol">
             <tr>
               <td>
                 <input
@@ -153,22 +153,22 @@
                 />
               </td>
               <td>
-                <input
-                  type="text"
-                  placeholder="{{ product.operations }}"
-                  [disabled]="true"
-                  style="width: 200px"
-                />
+                <select [value]="product.operations" style="background: #f4f6fa;border-radius: 5px;border: none;width: 147px;height: 35px;">
+                  <option value="" selected>Select</option>
+                    <option *ngFor="let name of product.operationOption">
+                      {{ name }}
+                    </option>
+                </select>
               </td>
               <td>
                 <input
                   type="text"
                   placeholder="{{ product.orderID }}"
-                  [disabled]="true"
-                  style="text-align: center; width: 90px; margin-left: 20px"
+                  [disabled]="false"
+                  style="width: 90px; margin-left: 10px"
                 />
               </td>
-              <td><input type="checkbox" /></td>
+              <td><input type="checkbox" style="width: 15px;margin-left: 20px" [checked]="product.iSMandatory=='yes' ? true : false" /></td>
               <td>
                 <input
                   type="text"
@@ -179,9 +179,9 @@
             </tr>
           </ng-template>
         </p-table>
-      </div>
     </div>
-
-    <!-- Suresh end -->
   </div>
+  
+  <!-- Suresh end -->
+</div>
 </div>
