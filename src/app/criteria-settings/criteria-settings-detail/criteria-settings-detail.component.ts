@@ -107,7 +107,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     },
     status: "200",
   };
-
+  orderIDArray:any = [];
   // Suresh end
 
   constructor(
@@ -201,6 +201,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.selectFields = [...this.fieldsQueriesData];
               this.selectFields.forEach((item) => {
                 item["operationOption"] = item.operations.split(",");
+                item['orderID']= "";
+                item['operations'] = "";
               });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
@@ -279,6 +281,26 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   // Suresh start
+  criteriaPriorityValidation(event) {
+    let orderID = Number(event.target.value);
+    if (orderID > this.criteriaSettingtable.length) {
+      this.ngxToaster.warning("Please enter valid priority.");
+    } else {
+      let index = this.orderIDArray.findIndex(x => x==orderID)
+      if (index == -1) {
+        (orderID > 0) && (this.orderIDArray.push(orderID));
+      } else {
+        this.ngxToaster.warning("Entered priority is already exist please try with different.");
+      }
+    }
+  }
 
+  saveCriteriaSettings() {
+    console.log("this.criteriaSettingtable", this.criteriaSettingtable)
+    this.criteriaSettingtable.forEach(element => {
+      (element.operations == "") && (this.ngxToaster.warning("Please select operation."));
+      (element.orderID == 0) && (this.ngxToaster.warning("Please select Order ID."));
+    })
+  }
   // Suresh end
 }
