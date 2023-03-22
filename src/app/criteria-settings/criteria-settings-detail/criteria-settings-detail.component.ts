@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { ActivatedRoute } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
+import { ConfirmationService } from "primeng/api";
 import { take } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
@@ -9,6 +11,7 @@ import { CriteriaSettingsService } from "../criteria-settings.service";
   selector: "app-criteria-settings-detail",
   templateUrl: "./criteria-settings-detail.component.html",
   styleUrls: ["./criteria-settings-detail.component.css"],
+  providers: [ConfirmationService],
 })
 export class CriteriaSettingsDetailComponent implements OnInit {
   selectAppForm: any;
@@ -108,14 +111,19 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   // Suresh end
 
   constructor(
-    private criteriaSettingsService: CriteriaSettingsService,
-    private ngxToaster: ToastrService,
+    private confirmationService: ConfirmationService,
     private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private ngxToaster: ToastrService,
+    private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService
   ) {}
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
     this.setSelectAppForm();
     this.criteriaSettingsService
       .getCriteriaAppFormsList()
@@ -172,9 +180,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.formCtrl.enable();
   }
 
+  onFormChange(e: any) {
+    this.executeQueries();
+  }
+
   executeQueries() {
     this.coreService.displayLoadingScreen();
+    console.log("changed form");
     if (!this.isFieldsQueriesData) {
+      console.log("changed form if");
       this.criteriaSettingsService
         .getCriteriaFieldsExecuteQueries()
         .pipe(take(1))
@@ -184,10 +198,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.isFieldsQueriesData = true;
               this.fieldsQueriesData =
                 res["data"]["cmCriteriaOperationsMasters"];
-              this.selectFields = this.fieldsQueriesData;
-              this.selectFields.forEach(item=> {
-                item['operationOption']= item.operations.split(',');
-              })
+              this.selectFields = [...this.fieldsQueriesData];
+              this.selectFields.forEach((item) => {
+                item["operationOption"] = item.operations.split(",");
+              });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
               this.isFieldsQueriesData = false;
@@ -202,10 +216,66 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         });
     } else {
+      console.log("changed form else");
+      console.log(this.fieldsQueriesData);
+      this.selectFields = [...this.fieldsQueriesData];
+      this.selectedFields = [];
+      this.criteriaSettingtable = [];
       setTimeout(() => {
         this.coreService.removeLoadingScreen();
       }, 500);
     }
+  }
+
+  executeBtnClick() {
+    this.criteriaSettingtable = [...this.selectedFields];
+  }
+
+  checkCriteriaDuplication() {
+    this.coreService.displayLoadingScreen();
+    this.criteriaSettingsService
+      .getCriteriaSettingListing()
+      .pipe(take(1))
+      .subscribe(
+        (res) => {
+          if (res["appForm"].length) {
+            let duplicateCriteria = false;
+            res["appForm"].forEach((appForm) => {
+              let app = appForm.split(":")[0];
+              let form = appForm.split(":")[1];
+              if (
+                this.appCtrl.value.name == app &&
+                this.formCtrl.value.name == form &&
+                !duplicateCriteria
+              ) {
+                duplicateCriteria = true;
+                this.confirmationService.confirm({
+                  message:
+                    "Criteria for this Application & Form already exists, Do you want to update it?",
+                  accept: () => {
+                    console.log("Update it -- call save method API");
+                  },
+                  reject: () => {
+                    console.log("Dont update it -- reject");
+                  },
+                });
+              } else {
+                console.log("not same", app, form);
+              }
+            });
+          }
+          console.log(res["appForm"]);
+        },
+        (err) => {
+          console.log(
+            "error in getting criteria list for checking duplication",
+            err
+          );
+        }
+      )
+      .add(() => {
+        this.coreService.removeLoadingScreen();
+      });
   }
 
   // Suresh start
