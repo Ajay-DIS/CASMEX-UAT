@@ -24,8 +24,9 @@
           pButton
           pRipple
           type="button"
-          [disabled]="false"
-          label="Save" (click)="saveCriteriaSettings()"
+          [disabled]="invalidForSave"
+          label="Save"
+          (click)="saveCriteriaSettings()"
           class="p-button-raised"
         ></button>
         <button
@@ -153,7 +154,18 @@
                 />
               </td>
               <td>
-                <select [value]="product.operations" [(ngModel)]="product.operations" style="background: #f4f6fa;font-weight: 500;;border-radius: 5px;border: none;width: 147px;height: 35px;">
+                <select
+                  [value]="product.operations"
+                  [(ngModel)]="product.operations"
+                  style="
+                    background: #f4f6fa;
+                    font-weight: 500;
+                    border-radius: 5px;
+                    border: none;
+                    width: 147px;
+                    height: 35px;
+                  "
+                >
                   <option value="" selected>Select</option>
                   <option *ngFor="let name of product.operationOption">
                     {{ name }}
@@ -162,13 +174,23 @@
               </td>
               <td>
                 <input
-                  type="number" [value]="product.orderID" [(ngModel)]="product.orderID"
+                  type="number"
+                  [value]="product.orderID"
+                  [(ngModel)]="product.orderID"
                   placeholder="{{ product.orderID }}"
-                  [disabled]="false" (input)="criteriaPriorityValidation($event)"
+                  [disabled]="false"
+                  (input)="criteriaPriorityValidation($event)"
                   style="width: 90px; margin-left: 10px"
                 />
               </td>
-              <td><input type="checkbox" style="width: 15px;margin-left: 20px" [(ngModel)]="product.iSMandatory" [checked]="product.iSMandatory" /></td>
+              <td>
+                <input
+                  type="checkbox"
+                  style="width: 15px; margin-left: 20px"
+                  [(ngModel)]="product.iSMandatory"
+                  [checked]="product.iSMandatory"
+                />
+              </td>
               <td>
                 <input
                   type="text"
