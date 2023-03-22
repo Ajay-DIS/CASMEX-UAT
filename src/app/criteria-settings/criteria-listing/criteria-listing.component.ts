@@ -314,6 +314,8 @@ export class CriteriaListingComponent implements OnInit {
   openClickForView(data) {
     console.log("data", data);
     this.criteriaDataArrayView = data.cmCriteriaDataDetails;
+    this.criteriaDataArrayView['applications'] = data['applications'];
+    this.criteriaDataArrayView['form'] = data['form'];
     this.clickforview = true;
   }
 }

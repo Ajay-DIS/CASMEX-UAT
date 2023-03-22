@@ -28,6 +28,7 @@ import { DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
 import { InputNumberModule } from "primeng/inputnumber";
 import { TooltipModule } from "primeng/tooltip";
 import { PickListModule } from "primeng/picklist";
+import { ConfirmDialogModule } from "primeng/confirmdialog";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -87,6 +88,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     InputNumberModule,
     TooltipModule,
     PickListModule,
+    ConfirmDialogModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
