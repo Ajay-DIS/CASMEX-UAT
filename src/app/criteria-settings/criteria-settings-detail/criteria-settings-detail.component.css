@@ -143,4 +143,14 @@
   font-weight: 500;
   font-size: 16px;
 }
+:host ::ng-deep .criteria-view-table .p-datatable .p-datatable-tbody tr td {
+  padding: 0.40rem 0.5rem;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  color: #8a9099;
+  height: 48px;
+}
 /* suresh end*/
