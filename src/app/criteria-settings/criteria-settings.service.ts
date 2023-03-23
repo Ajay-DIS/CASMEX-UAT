@@ -19,4 +19,8 @@ export class CriteriaSettingsService {
   getCriteriaFieldsExecuteQueries() {
     return this.http.get(`/applicationSettings/executeQueries`);
   }
+
+  postCriteriaFieldsToSave(data: any) {
+    return this.http.post(`/applicationSettings/executeQueries`, data);
+  }
 }

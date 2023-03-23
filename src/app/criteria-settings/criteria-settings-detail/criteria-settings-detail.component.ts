@@ -33,6 +33,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   invalidForSave = false;
 
+  userData: any;
+
   // Suresh start
   criteriaSettingtable = [];
   criteriaSettingDetails: any = {
@@ -123,6 +125,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -236,16 +239,18 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeBtnClick() {
-    this.criteriaSettingtable = this.selectedFields;
+    this.criteriaSettingtable = [...this.selectedFields];
     this.criteriaSettingtable.forEach((item) => {
       item["orderID"] = "";
       item["operations"] = "";
     });
     let s = []; Object.assign(s, this.criteriaSettingtable);
-    this.criteriaSettingtable = []; this.criteriaSettingtable = s;
+    this.criteriaSettingtable = []; 
+    this.criteriaSettingtable = s;
   }
 
   checkCriteriaDuplication() {
+    this.saveCriteriaFields();
     this.coreService.displayLoadingScreen();
     this.criteriaSettingsService
       .getCriteriaSettingListing()
@@ -264,8 +269,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               ) {
                 duplicateCriteria = true;
                 this.confirmationService.confirm({
-                  message:
-                    "Criteria for this Application & Form already exists, Do you want to update it?",
+                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
                     console.log("Update it -- call save method API");
                   },
@@ -292,6 +296,36 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       });
   }
 
+  saveCriteriaFields() {
+    let data = {
+      form: this.formCtrl.value.name,
+      applications: this.appCtrl.value.name,
+      createdBy: null,
+      createdByID: this.userData.userId,
+      status: "A",
+      cmCriteriaDataDetails: [],
+    };
+
+    this.criteriaSettingtable.forEach((criteria) => {
+      let criteriaDetails = {
+        fieldName: criteria["fieldName"],
+        displayName: criteria["displayName"],
+        fieldType: criteria["fieldType"],
+        operations: criteria["operations"],
+        iSMandatory: criteria["iSMandatory"] ? "yes" : "no",
+        orderID: criteria["orderID"],
+        dependency: criteria["dependency"],
+      };
+      data["cmCriteriaDataDetails"].push(criteriaDetails);
+    });
+
+    console.log(data);
+  }
+
+  toggleIsMandatory(e: any) {
+    console.log(e, this.criteriaSettingtable);
+  }
+
   // Suresh start
   criteriaPriorityValidation(event, field) {
     let orderID = Number(event.target.value);
@@ -301,8 +335,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.invalidForSave = true;
     } else {
       let index = this.orderIDArray.indexOf(orderID);
-      console.log(index, this.criteriaSettingtable.indexOf(field),orderID);
-      if (orderID == 0) {
+      console.log(index, this.criteriaSettingtable.indexOf(field));
+      if (index == -1 || this.criteriaSettingtable.indexOf(field) == index) {
+        orderID > 0 &&
+          (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
+            orderID);
+        this.invalidForSave = false;
+      } else {
         this.ngxToaster.warning(
           "Priority is required and should be atleast 1"
         );
