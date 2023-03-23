@@ -179,7 +179,7 @@
                   [(ngModel)]="product.orderID"
                   placeholder="{{ product.orderID }}"
                   [disabled]="false"
-                  (input)="criteriaPriorityValidation($event)"
+                  (input)="criteriaPriorityValidation($event, product)"
                   style="width: 90px; margin-left: 10px"
                 />
               </td>

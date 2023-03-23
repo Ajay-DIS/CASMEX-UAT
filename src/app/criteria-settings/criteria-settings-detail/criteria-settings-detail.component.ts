@@ -319,15 +319,18 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   // Suresh start
-  criteriaPriorityValidation(event) {
+  criteriaPriorityValidation(event, field) {
     let orderID = Number(event.target.value);
     if (orderID > this.criteriaSettingtable.length) {
       this.ngxToaster.warning("Please enter valid priority.");
       this.invalidForSave = true;
     } else {
-      let index = this.orderIDArray.findIndex((x) => x == orderID);
-      if (index == -1) {
-        orderID > 0 && this.orderIDArray.push(orderID);
+      let index = this.orderIDArray.indexOf(orderID);
+      console.log(index, this.criteriaSettingtable.indexOf(field));
+      if (index == -1 || this.criteriaSettingtable.indexOf(field) == index) {
+        orderID > 0 &&
+          (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
+            orderID);
         this.invalidForSave = false;
       } else {
         this.ngxToaster.warning(
