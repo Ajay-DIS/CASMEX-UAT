@@ -261,7 +261,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               ) {
                 duplicateCriteria = true;
                 this.confirmationService.confirm({
-                  message: `Criteria for this Application (${this.appCtrl.value.name}) & Form (${this.formCtrl.value.name}) already exists, Do you want to update it?`,
+                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
                     console.log("Update it -- call save method API");
                   },
