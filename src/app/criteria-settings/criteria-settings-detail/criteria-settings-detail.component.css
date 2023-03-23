@@ -153,4 +153,12 @@
   color: #8a9099;
   height: 48px;
 }
+#operationsmulti ::ng-deep .p-multiselect {
+  background: #f4f6fa;
+  font-weight: 500;
+  border-radius: 5px;
+  border: none;
+  width: 147px;
+  height: 35px;
+}
 /* suresh end*/
