@@ -24,7 +24,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="invalidForSave"
+          [disabled]="invalidForSave || !criteriaSettingtable.length"
           label="Save"
           (click)="saveCriteriaSettings()"
           class="p-button-raised"
@@ -187,8 +187,9 @@
                 <input
                   type="checkbox"
                   style="width: 15px; margin-left: 20px"
+                  [value]="product.iSMandatory"
                   [(ngModel)]="product.iSMandatory"
-                  [checked]="product.iSMandatory"
+                  (change)="toggleIsMandatory(product)"
                 />
               </td>
               <td>

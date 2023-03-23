@@ -33,6 +33,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   invalidForSave = false;
 
+  userData: any;
+
   // Suresh start
   criteriaSettingtable = [];
   criteriaSettingDetails: any = {
@@ -123,6 +125,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -205,6 +208,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 item["operationOption"] = item.operations.split(",");
                 item["orderID"] = "";
                 item["operations"] = "";
+                item["iSMandatory"] =
+                  item["iSMandatory"] == "yes" ? true : false;
               });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
@@ -233,9 +238,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   executeBtnClick() {
     this.criteriaSettingtable = [...this.selectedFields];
+    console.log(this.criteriaSettingtable);
   }
 
   checkCriteriaDuplication() {
+    this.saveCriteriaFields();
     this.coreService.displayLoadingScreen();
     this.criteriaSettingsService
       .getCriteriaSettingListing()
@@ -254,8 +261,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               ) {
                 duplicateCriteria = true;
                 this.confirmationService.confirm({
-                  message:
-                    "Criteria for this Application & Form already exists, Do you want to update it?",
+                  message: `Criteria for this Application (${this.appCtrl.value.name}) & Form (${this.formCtrl.value.name}) already exists, Do you want to update it?`,
                   accept: () => {
                     console.log("Update it -- call save method API");
                   },
@@ -280,6 +286,36 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .add(() => {
         this.coreService.removeLoadingScreen();
       });
+  }
+
+  saveCriteriaFields() {
+    let data = {
+      form: this.formCtrl.value.name,
+      applications: this.appCtrl.value.name,
+      createdBy: null,
+      createdByID: this.userData.userId,
+      status: "A",
+      cmCriteriaDataDetails: [],
+    };
+
+    this.criteriaSettingtable.forEach((criteria) => {
+      let criteriaDetails = {
+        fieldName: criteria["fieldName"],
+        displayName: criteria["displayName"],
+        fieldType: criteria["fieldType"],
+        operations: criteria["operations"],
+        iSMandatory: criteria["iSMandatory"] ? "yes" : "no",
+        orderID: criteria["orderID"],
+        dependency: criteria["dependency"],
+      };
+      data["cmCriteriaDataDetails"].push(criteriaDetails);
+    });
+
+    console.log(data);
+  }
+
+  toggleIsMandatory(e: any) {
+    console.log(e, this.criteriaSettingtable);
   }
 
   // Suresh start
