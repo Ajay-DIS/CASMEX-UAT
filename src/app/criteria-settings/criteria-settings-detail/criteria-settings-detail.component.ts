@@ -190,6 +190,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeQueries() {
+    this.selectedFields = [];
+    this.criteriaSettingtable = [];
     this.coreService.displayLoadingScreen();
     console.log("changed form");
     if (!this.isFieldsQueriesData) {
@@ -205,7 +207,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 res["data"]["cmCriteriaOperationsMasters"];
               this.selectFields = [...this.fieldsQueriesData];
               this.selectFields.forEach((item) => {
-                item["operationOption"] = item.operations.split(",");
+                item["operationOption"] = item.operations.split(",").map(x=> {return {label: x, code: x}});
                 item["orderID"] = "";
                 item["operations"] = "";
                 item["iSMandatory"] =
@@ -238,7 +240,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   executeBtnClick() {
     this.criteriaSettingtable = [...this.selectedFields];
-    console.log(this.criteriaSettingtable);
+    this.criteriaSettingtable.forEach((item) => {
+      item["orderID"] = "";
+      item["operations"] = "";
+    });
+    let s = []; Object.assign(s, this.criteriaSettingtable);
+    this.criteriaSettingtable = []; 
+    this.criteriaSettingtable = s;
   }
 
   checkCriteriaDuplication() {
@@ -322,7 +330,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   criteriaPriorityValidation(event, field) {
     let orderID = Number(event.target.value);
     if (orderID > this.criteriaSettingtable.length) {
-      this.ngxToaster.warning("Please enter valid priority.");
+      let msg = "Please enter priority " + (this.criteriaSettingtable.length == 1 ? "as 1 only" : "between 1 to "+this.criteriaSettingtable.length);
+      this.ngxToaster.warning(msg);
       this.invalidForSave = true;
     } else {
       let index = this.orderIDArray.indexOf(orderID);
@@ -334,11 +343,35 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         this.invalidForSave = false;
       } else {
         this.ngxToaster.warning(
-          "Entered priority is already exist please try with different."
+          "Priority is required and should be atleast 1"
         );
+        (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
+              orderID);
         this.invalidForSave = true;
       }
+      else {
+        if (index == -1 || this.criteriaSettingtable.indexOf(field) == index) {
+          orderID > 0 &&
+            (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
+              orderID);
+          this.invalidForSave = false;
+        } else {
+            this.ngxToaster.warning(
+              "Entered priority is already exist please try with different."
+            );
+            this.invalidForSave = true;
+        }
+      }
+      
     }
+  }
+
+  bindSelectedOperations(values, rowIndex) {
+    let selectedOp:any = [];
+    selectedOp = [...(values.map(x => x.code))].join(',')
+    console.log("selected", selectedOp, "this.criteriaSettingtable[rowIndex].operations", this.criteriaSettingtable[rowIndex].operations)
+    // this.criteriaSettingtable[rowIndex].operations = "";
+    // this.criteriaSettingtable[rowIndex].operations = selectedOp
   }
 
   saveCriteriaSettings() {
@@ -358,7 +391,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     if (emptyOperation) {
       this.ngxToaster.warning("Please select operation.");
     } else if (emptyPriority) {
-      this.ngxToaster.warning("Please Enter Priority More than 0.");
+      this.ngxToaster.warning("Priority is required.");
     } else {
       this.checkCriteriaDuplication();
     }

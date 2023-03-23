@@ -130,7 +130,7 @@
               <th>Dependency</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-product let-col="settingsCol">
+          <ng-template pTemplate="body" let-product let-col="settingsCol" let-rowIndex="rowIndex" >
             <tr>
               <td>
                 <input
@@ -154,27 +154,16 @@
                 />
               </td>
               <td>
-                <select
-                  [value]="product.operations"
-                  [(ngModel)]="product.operations"
-                  style="
-                    background: #f4f6fa;
-                    font-weight: 500;
-                    border-radius: 5px;
-                    border: none;
-                    width: 147px;
-                    height: 35px;
-                  "
-                >
-                  <option value="" selected>Select</option>
-                  <option *ngFor="let name of product.operationOption">
-                    {{ name }}
-                  </option>
-                </select>
+                <p-multiSelect 
+                id="operationsmulti"
+                [options]="product.operationOption" 
+                [(ngModel)]="product.operations" 
+                defaultLabel="Select" [showHeader]="false" (onChange)="bindSelectedOperations(product.operations, rowIndex)"
+                optionLabel="label" display="chip"></p-multiSelect>
               </td>
               <td>
                 <input
-                  type="number"
+                  type="number" min="1"
                   [value]="product.orderID"
                   [(ngModel)]="product.orderID"
                   placeholder="{{ product.orderID }}"
@@ -189,7 +178,6 @@
                   style="width: 15px; margin-left: 20px"
                   [value]="product.iSMandatory"
                   [(ngModel)]="product.iSMandatory"
-                  (change)="toggleIsMandatory(product)"
                 />
               </td>
               <td>
