@@ -243,6 +243,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     });
     let s = []; Object.assign(s, this.criteriaSettingtable);
     this.criteriaSettingtable = []; this.criteriaSettingtable = s;
+    this.orderIDArray = [];
   }
 
   checkCriteriaDuplication() {
@@ -356,6 +357,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     } else {
       this.checkCriteriaDuplication();
     }
+  }
+  reset() {
+    window.location.reload();
   }
   // Suresh end
 }
