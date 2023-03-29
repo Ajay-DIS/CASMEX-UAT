@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
 import { take } from "rxjs/operators";
@@ -32,6 +32,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   fieldsQueriesData: any = [];
 
   invalidForSave = false;
+
+  userData: any;
 
   // Suresh start
   criteriaId = "";
@@ -118,6 +120,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private ngxToaster: ToastrService,
     private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService,
@@ -126,6 +129,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -214,7 +218,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 res["data"]["cmCriteriaOperationsMasters"];
               this.selectFields = [...this.fieldsQueriesData];
               this.selectFields.forEach((item) => {
-                item["operationOption"] = item.operations.split(",").map(x=> {return {label: x, code: x}});
+                item["operationOption"] = item.operations
+                  .split(",")
+                  .map((x) => {
+                    return { label: x, code: x };
+                  });
                 item["orderID"] = "";
                 item["operations"] = "";
                 item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
@@ -246,7 +254,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeBtnClick() {
-    this.criteriaSettingtable = this.selectedFields;
+    this.criteriaSettingtable = [...this.selectedFields];
     this.criteriaSettingtable.forEach((item) => {
       item["orderID"] = "";
       item["operations"] = "";
@@ -277,19 +285,21 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               ) {
                 duplicateCriteria = true;
                 this.confirmationService.confirm({
-                  message:
-                    "Criteria for this Application & Form already exists, Do you want to update it?",
+                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
+                    this.saveCriteriaFields();
                     console.log("Update it -- call save method API");
                   },
                   reject: () => {
+                    this.ngxToaster.warning("Criteria saving revoked");
                     console.log("Dont update it -- reject");
                   },
                 });
-              } else {
-                console.log("not same", app, form);
               }
             });
+            if (!duplicateCriteria) {
+              this.saveCriteriaFields();
+            }
           }
           console.log(res["appForm"]);
         },
@@ -305,51 +315,100 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       });
   }
 
+  saveCriteriaFields() {
+    this.coreService.displayLoadingScreen();
+    let data = {
+      form: this.formCtrl.value.name,
+      applications: this.appCtrl.value.name,
+      createdBy: null,
+      createdByID: this.userData.userId,
+      status: "A",
+      cmCriteriaDataDetails: [],
+    };
+    console.log("on save", this.criteriaSettingtable);
+    this.criteriaSettingtable.forEach((criteria) => {
+      let operations = [];
+      criteria["operations"].forEach((op) => {
+        operations.push(op["label"]);
+      });
+      let criteriaDetails = {
+        fieldName: criteria["fieldName"],
+        displayName: criteria["displayName"],
+        fieldType: criteria["fieldType"],
+        operations: operations.join(","),
+        iSMandatory: criteria["iSMandatory"] ? "yes" : "no",
+        orderID: criteria["orderID"],
+        dependency: criteria["dependency"],
+      };
+      data["cmCriteriaDataDetails"].push(criteriaDetails);
+    });
+
+    this.criteriaSettingsService.postCriteriaFieldsToSave(data).subscribe(
+      (res) => {
+        if (res["msg"]) {
+          this.ngxToaster.success(res["msg"]);
+          this.router.navigate(["navbar", "criteria-settings"]);
+        }
+      },
+      (err) => {
+        console.log("Error in saving criteria", err);
+      }
+    );
+    console.log(data);
+  }
+
+  toggleIsMandatory(e: any) {
+    console.log(e, this.criteriaSettingtable);
+  }
+
   // Suresh start
   criteriaPriorityValidation(event, field) {
     let orderID = Number(event.target.value);
     if (orderID > this.criteriaSettingtable.length) {
-      let msg = "Please enter priority " + (this.criteriaSettingtable.length == 1 ? "as 1 only" : "between 1 to "+this.criteriaSettingtable.length);
+      let msg =
+        "Please enter priority " +
+        (this.criteriaSettingtable.length == 1
+          ? "as 1 only"
+          : "between 1 to " + this.criteriaSettingtable.length);
       this.ngxToaster.warning(msg);
       this.invalidForSave = true;
     } else {
       let index = this.orderIDArray.indexOf(orderID);
-      console.log(index, this.criteriaSettingtable.indexOf(field),orderID);
-      if (orderID == 0) {
-        this.ngxToaster.warning(
-          "Priority is required and should be atleast 1"
-        );
-        (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
-              orderID);
+      console.log(index, this.criteriaSettingtable.indexOf(field), orderID);
+      if (orderID <= 0) {
+        this.ngxToaster.warning("Priority is required and should be atleast 1");
+        this.orderIDArray[this.criteriaSettingtable.indexOf(field)] = orderID;
         this.invalidForSave = true;
-      }
-      else {
+      } else {
         if (index == -1 || this.criteriaSettingtable.indexOf(field) == index) {
           orderID > 0 &&
             (this.orderIDArray[this.criteriaSettingtable.indexOf(field)] =
               orderID);
           this.invalidForSave = false;
         } else {
-            this.ngxToaster.warning(
-              "Entered priority is already exist please try with different."
-            );
-            this.invalidForSave = true;
+          this.ngxToaster.warning(
+            "Entered priority is already exist please try with different."
+          );
+          this.invalidForSave = true;
         }
       }
-      
     }
   }
 
   bindSelectedOperations(values, rowIndex) {
-    let selectedOp:any = [];
-    selectedOp = [...(values.map(x => x.code))].join(',')
-    console.log("selected", selectedOp, "this.criteriaSettingtable[rowIndex].operations", this.criteriaSettingtable[rowIndex].operations)
+    let selectedOp: any = [];
+    selectedOp = [...values.map((x) => x.code)].join(",");
+    console.log(
+      "selected",
+      selectedOp,
+      "this.criteriaSettingtable[rowIndex].operations",
+      this.criteriaSettingtable[rowIndex].operations
+    );
     // this.criteriaSettingtable[rowIndex].operations = "";
     // this.criteriaSettingtable[rowIndex].operations = selectedOp
   }
 
   saveCriteriaSettings() {
-    console.log("this.criteriaSettingtable", this.criteriaSettingtable);
     let emptyOperation = false;
     let emptyPriority = false;
     this.criteriaSettingtable.forEach((element) => {
@@ -367,6 +426,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     } else if (emptyPriority) {
       this.ngxToaster.warning("Priority is required.");
     } else {
+      console.log("passed validation");
       this.checkCriteriaDuplication();
     }
   }
