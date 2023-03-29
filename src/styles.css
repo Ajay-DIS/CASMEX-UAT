@@ -367,3 +367,13 @@ p-paginator .p-paginator-bottom {
   background: #55c78a;
 }
 /* P DIALOG END*/
+
+/* Primeng overide style */
+.p-component {
+  font-family: "IBM Plex Sans", sans-serif !important;
+}
+.p-component.p-multiselect {
+  font-size: 14px !important;
+  color: black !important;
+}
+/* Primeng overide style end */
