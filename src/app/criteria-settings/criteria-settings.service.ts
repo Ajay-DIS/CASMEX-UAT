@@ -19,4 +19,7 @@ export class CriteriaSettingsService {
   getCriteriaFieldsExecuteQueries() {
     return this.http.get(`/applicationSettings/executeQueries`);
   }
+  getCriteriaCloneData(criteriaId:any){
+    return this.http.get(`/applicationSettings/getCriteriaClone/${criteriaId}`)
+  }
 }
