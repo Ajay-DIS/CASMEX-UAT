@@ -3,7 +3,8 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
-import { take } from "rxjs/operators";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
 
@@ -15,13 +16,9 @@ import { CriteriaSettingsService } from "../criteria-settings.service";
 })
 export class CriteriaSettingsDetailComponent implements OnInit {
   selectAppForm: any;
-  selectFields: any[] = [
-    // { name: "Arizona", code: "Arizona" },
-    // { name: "California", value: "California" },
-    // { name: "Florida", code: "Florida" },
-    // { name: "Ohio", code: "Ohio" },
-    // { name: "Washington", code: "Washington" },
-  ];
+  selectFields: any[] = [];
+
+  restoreSelectFields: any[] = [];
 
   selectedFields: any[] = [];
 
@@ -116,6 +113,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   criteriaSettingtableopt: [];
   // Suresh end
 
+  params: any;
+
   constructor(
     private confirmationService: ConfirmationService,
     private fb: FormBuilder,
@@ -124,10 +123,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private ngxToaster: ToastrService,
     private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService,
-    private activatedRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
+    this.params = this.activatedRoute.snapshot.params;
     this.coreService.displayLoadingScreen();
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
@@ -169,9 +169,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         }
       )
       .add(() => {
-        this.coreService.removeLoadingScreen();
+        if (!(this.params && this.params.id)) {
+          this.coreService.removeLoadingScreen();
+        }
       });
-     
   }
 
   setSelectAppForm() {
@@ -193,6 +194,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   onAppChange(e: any) {
+    this.formCtrl.reset();
+    this.criteriaSettingtable = [];
+    this.selectedFields = [];
+    this.selectFields = [];
     this.formCtrl.enable();
   }
 
@@ -217,6 +222,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.fieldsQueriesData =
                 res["data"]["cmCriteriaOperationsMasters"];
               this.selectFields = [...this.fieldsQueriesData];
+              this.restoreSelectFields = [...this.fieldsQueriesData];
               this.selectFields.forEach((item) => {
                 item["operationOption"] = item.operations
                   .split(",")
@@ -225,8 +231,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                   });
                 item["orderID"] = "";
                 item["operations"] = "";
-                item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-                
+                item["iSMandatory"] =
+                  item["iSMandatory"] == "yes" ? true : false;
               });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
@@ -258,11 +264,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingtable.forEach((item) => {
       item["orderID"] = "";
       item["operations"] = "";
-      item["iSMandatory"] = "no"; item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-
+      item["iSMandatory"] = "no";
+      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
-    let s = []; Object.assign(s, this.criteriaSettingtable);
-    this.criteriaSettingtable = []; this.criteriaSettingtable = s;
+    let s = [];
+    Object.assign(s, this.criteriaSettingtable);
+    this.criteriaSettingtable = [];
+    this.criteriaSettingtable = s;
     this.orderIDArray = [];
   }
 
@@ -405,8 +413,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       "this.criteriaSettingtable[rowIndex].operations",
       this.criteriaSettingtable[rowIndex].operations
     );
-    // this.criteriaSettingtable[rowIndex].operations = "";
-    // this.criteriaSettingtable[rowIndex].operations = selectedOp
   }
 
   saveCriteriaSettings() {
@@ -432,27 +438,62 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     }
   }
 
-  setCloneCriteriaData(criteriaId:any){
-    this.criteriaSettingsService.getCriteriaCloneData(criteriaId).pipe(take(1)).subscribe((data)=>{
-    console.log(data);
-    this.criteriaSettingtable = data["data"]["cloneCriteria"]["cmCriteriaDataDetails"];
-    this.criteriaSettingtable.forEach((item) => {
-      item["operationOption"] = item.operations.split(",").map(x=> {return {label: x, value: x}});
-      // console.log("operationOption", item.operationOption)
-      item["operations"] = item.operationOption;
-      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-    });
-    console.log(this.criteriaSettingtable);
-    const appValue = this.criteriaApplicationOptions.find(value => value.code === data["data"]["cloneCriteria"]["applications"])
-    this.appCtrl.setValue(appValue);
-    const formValue = this.criteriaFormsOptions.find(value => value.code === data["data"]["cloneCriteria"]["form"])
-    this.formCtrl.setValue(formValue);
+  setCloneCriteriaData(criteriaId: any) {
+    forkJoin({
+      cloneCriteriaData:
+        this.criteriaSettingsService.getCriteriaCloneData(criteriaId),
+      criteriaFieldsData:
+        this.criteriaSettingsService.getCriteriaFieldsExecuteQueries(),
     })
-//  this.appCtrl.setValue({name:"test",code: "test"});
-//  console.log(this.appCtrl)
+      .pipe(
+        take(1),
+        map((response) => {
+          const cloneCriteriaData =
+            response.cloneCriteriaData["data"]["cloneCriteria"];
+          const criteriaFieldsData =
+            response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
+          console.log("cloneCriteriaData", cloneCriteriaData);
+          console.log("criteriaFieldsData", criteriaFieldsData);
+          cloneCriteriaData["cmCriteriaDataDetails"].forEach((cloneD: any) => {
+            cloneD["operationOption"] = criteriaFieldsData
+              .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"])
+              ["operations"].split(",")
+              .map((x) => {
+                return { label: x, value: x };
+              });
+            let selectedOpt = cloneD["operations"].split(",");
+            cloneD["operations"] = selectedOpt.map((opt) => {
+              return { label: opt, value: opt };
+            });
+            console.log(selectedOpt, cloneD["operationOption"]);
+            cloneD["iSMandatory"] =
+              cloneD["iSMandatory"] == "yes" ? true : false;
+          });
+          return cloneCriteriaData;
+        })
+      )
+      .subscribe((data) => {
+        this.criteriaSettingtable = data["cmCriteriaDataDetails"];
+        this.criteriaSettingtable.forEach((item, i) => {
+          item["operations"] = this.criteriaSettingtable[i]["operations"];
+        });
 
+        const appValue = this.criteriaApplicationOptions.find(
+          (value) => value.code === data["applications"]
+        );
+        this.appCtrl.setValue(appValue);
+        const formValue = this.criteriaFormsOptions.find(
+          (value) => value.code === data["form"]
+        );
+        this.formCtrl.setValue(formValue);
+      })
+      .add(() => {
+        if (this.params && this.params.id) {
+          this.coreService.removeLoadingScreen();
+        }
+      });
   }
-  
+
   reset() {
     window.location.reload();
   }

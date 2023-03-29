@@ -110,8 +110,8 @@
     <!-- Suresh start -->
     <div class="application-table">
       <div class="application-header" *ngIf="criteriaSettingtable.length">
-        Application: {{ appCtrl.value.name }} | Form:
-        {{ formCtrl.value.name }}
+        Application: {{ appCtrl.value && appCtrl.value.name }} | Form:
+        {{ formCtrl.value && formCtrl.value.name }}
       </div>
       <div class="application-ptable" *ngIf="criteriaSettingtable.length">
         <p-table
