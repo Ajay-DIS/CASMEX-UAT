@@ -89,6 +89,20 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "criteria-settings/add-criteria-settings/:id",
+        component: CriteriaSettingsDetailComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Application Settings",
+            routerLink: "../navbar/criteria-settings",
+          },
+          { label: "Criteria", routerLink: "criteria-settings" },
+          { label: "Add Criteria settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

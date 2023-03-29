@@ -1,6 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, InjectionToken, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
@@ -224,6 +224,7 @@ export class CriteriaListingComponent implements OnInit {
   criteriaDataArrayView = [];
   //suresh
   constructor(
+    private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
@@ -316,4 +317,9 @@ export class CriteriaListingComponent implements OnInit {
     this.criteriaDataArrayView["form"] = data["form"];
     this.clickforview = true;
   }
+  openClickForClone(data:any){
+    this.router.navigate(["navbar", "criteria-settings", "add-criteria-settings", data.id]);
+  
+}
+
 }

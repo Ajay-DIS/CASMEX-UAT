@@ -19,6 +19,9 @@ export class CriteriaSettingsService {
   getCriteriaFieldsExecuteQueries() {
     return this.http.get(`/applicationSettings/executeQueries`);
   }
+  
+  getCriteriaCloneData(criteriaId:any){
+    return this.http.get(`/applicationSettings/getCriteriaClone/${criteriaId}`)
 
   postCriteriaFieldsToSave(data: any) {
     return this.http.post(`/applicationSettings/saveCriteria`, data);

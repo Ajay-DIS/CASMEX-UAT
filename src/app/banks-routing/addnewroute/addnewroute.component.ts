@@ -1362,7 +1362,7 @@ export class AddnewrouteComponent implements OnInit {
                   if (action == "save") {
                     this.router.navigate([`navbar/bank-routing`]);
                   } else if (action == "saveAndAddNew") {
-                    window.location.reload();
+                    this.router.navigate([`navbar/bank-routing/addnewroute`]);
                   }
                 }
               },
