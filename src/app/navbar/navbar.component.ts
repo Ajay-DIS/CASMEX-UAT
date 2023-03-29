@@ -12,7 +12,10 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { MenuItem } from "primeng/api";
+import { Observable } from "rxjs";
+import { take } from "rxjs/operators";
 import { environment } from "src/environments/environment";
+import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
 import { PaymentModeService } from "../payment-mode-settings/payment-mode-service.service";
 
@@ -85,31 +88,34 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     // Incoming: [],
     // "Alerts & Notification": [],
   };
-  profileOptions: any = [{ name: "Profile" }, { name: "Logout" }];
+
+  userActions = [{ name: "Profile" }, { name: "Logout" }];
+  get profileOptions() {
+    return this.userActions;
+  }
   toggleState = "left";
 
   currRoute: any;
 
   constructor(
-    private payment: PaymentModeService,
     public translate: TranslateService,
-    private httpClient: HttpClient,
     private el: ElementRef,
     private router: Router,
     private ngxToaster: ToastrService,
     private coreService: CoreService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) {
-    this.cities1 = [
-      { label: "English", value: "en" },
-      { label: "Arabic", value: "ar" },
-      { label: "Germany ", value: "de" },
-    ];
-    translate.addLangs(["en", "ar", "de"]);
-    translate.setDefaultLang("en");
+    // this.cities1 = [
+    //   { label: "English", value: "en" },
+    //   { label: "Arabic", value: "ar" },
+    //   { label: "Germany ", value: "de" },
+    // ];
+    // translate.addLangs(["en", "ar", "de"]);
+    // translate.setDefaultLang("en");
 
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
+    // const browserLang = translate.getBrowserLang();
+    // translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -125,17 +131,18 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.breadcrumbsItems = menu;
     });
 
-    let token = localStorage.getItem("token");
-    let isTokenExpired = this.isTokenExpired(token);
-    console.log("isTokenExpired", isTokenExpired);
-    if (isTokenExpired) {
-      localStorage.removeItem("token");
-      this.ngxToaster.error(
-        "Your Session has been Expired, Please login again"
-      );
-      this.router.navigate(["navbar/session-time-out"]);
-      this.coreService.removeLoadingScreen();
-    }
+    this.coreService.userActionsObs.subscribe((opt) => {
+      this.userActions = opt;
+    });
+
+    this.authService.userDataSub.pipe(take(1)).subscribe((user) => {
+      console.log(user);
+      if (!user) {
+        this.userActions = [{ name: "Login" }];
+      } else {
+        this.userActions = [{ name: "Profile" }, { name: "Logout" }];
+      }
+    });
     // this.setSidebarMenu();
   }
 
@@ -197,18 +204,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
     });
     return menu;
-  }
-
-  isTokenExpired(token: string) {
-    if (token) {
-      let expiry = JSON.parse(atob(token.split(".")[1])).exp;
-      if (new Date(expiry * 1000).getTime() < Date.now()) {
-        this.router.navigate(["navbar/session-time-out"]);
-        return true;
-      } else {
-        return false;
-      }
-    }
   }
 
   ngAfterViewInit() {
@@ -307,18 +302,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
     return { icon: iconName, matchUrls: matchUrls, routerLink: routeName };
   }
-  viewPayment() {
-    this.ispaymentMode = false;
-    this.isviewPaymentMode = true;
-  }
-  onChange(item: any) {
-    this.translate.use(item.value);
-  }
+  // onChange(item: any) {
+  //   this.translate.use(item.value);
+  // }
 
   selectProfileOption(data) {
-    if (data && data.name == "Logout") {
+    if (data && (data.name == "Logout" || data.name == "Login")) {
+      if (this.authService.clearTimer) {
+        clearTimeout(this.authService.clearTimer);
+      }
+      this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
-      this.ngxToaster.error("Logged Out Successfully.");
+      localStorage.removeItem("userData");
+      if (data.name == "Logout") {
+        this.ngxToaster.success("Logged Out Successfully.");
+      }
       this.router.navigate(["login"]);
     }
   }

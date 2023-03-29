@@ -10,7 +10,7 @@
         pRipple
         type="button"
         (click)="addNewRoutePage()"
-        label="{{ 'Bank-Routing.Add New Route' | translate }}"
+        label="Add New Route"
         class="p-button-raised"
       ></button>
     </div>
@@ -37,7 +37,7 @@
             [pSortableColumn]="'routeCode'"
             style="width: 9%"
           >
-            {{ "Bank-Routing.Route Code" | translate }}
+            Route Code
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="13px"
@@ -84,7 +84,7 @@
             [pSortableColumn]="'country'"
             style="width: 8.5%"
           >
-            {{ "Bank-Routing.Country" | translate }}
+            Country
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -112,7 +112,7 @@
             [pSortableColumn]="'routeBankName'"
             style="width: 12%"
           >
-            {{ "Bank-Routing.Route Bank Name" | translate }}
+            Bank-Routing
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -141,7 +141,7 @@
             [pSortableColumn]="'routeServiceCategory'"
             style="width: 11.5%"
           >
-            {{ "Bank-Routing.Service Category" | translate }}
+            Service Category
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -176,7 +176,7 @@
             [pSortableColumn]="'routeServiceType'"
             style="width: 9.5%"
           >
-            {{ "Bank-Routing.Service Type" | translate }}
+            Service Type
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -207,7 +207,7 @@
             [pSortableColumn]="'iSCorrespondent'"
             style="width: 12%"
           >
-            {{ "Bank-Routing.Is Correspondent" | translate }}
+            Is Correspondent
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -238,7 +238,7 @@
             [pSortableColumn]="'routeToBankName'"
             style="width: 8.5%"
           >
-            {{ "Bank-Routing.Route To" | translate }}
+            Route To
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -269,7 +269,7 @@
             [pSortableColumn]="'routeToServiceCategory'"
             style="width: 11.5%"
           >
-            {{ "Bank-Routing.Service Category" | translate }}
+            Service Category
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -304,7 +304,7 @@
             [pSortableColumn]="'routeToServiceType'"
             style="width: 10%"
           >
-            {{ "Bank-Routing.Service Type" | translate }}
+            Service Type
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
@@ -337,7 +337,7 @@
             style="text-align: center; width: 7.5%"
             [pSortableColumn]="'status'"
           >
-            {{ "Bank-Routing.Status" | translate }}
+            Status
             <div
               (click)="$event.stopPropagation()"
               class="filter-icon"
@@ -624,7 +624,6 @@
           </td>
           <td style="border: none; text-align: center">
             <label class="switch" style="border: none">
-              
               <input
                 #statusInp
                 type="checkbox"

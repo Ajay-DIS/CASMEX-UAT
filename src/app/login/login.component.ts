@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
+import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { BankRoutingService } from "../banks-routing/bank-routing.service";
 import { CoreService } from "../core.service";
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private ngxToaster: ToastrService,
     private loginService: LoginService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -49,19 +51,16 @@ export class LoginComponent implements OnInit {
 
       this.loginService
         .loginUser(formData)
+        .pipe(take(1))
         .subscribe(
           (data: any) => {
             if (data && data.jwt) {
               console.log("::user", data);
               this.loginService.saveLoggedUserInfo(data);
-              // this.coreService.setSessionExpirationStatus(false);
               this.router.navigate(["/navbar"]);
               this.ngxToaster.success("Login Successfull");
             } else {
-              localStorage.removeItem("token");
-              this.ngxToaster.error(data.msg);
-              // this.coreService.setSessionExpirationStatus(true);
-              this.router.navigate(["/login"]);
+              data["msg"] && this.ngxToaster.warning(data["msg"]);
             }
           },
           (err) => {

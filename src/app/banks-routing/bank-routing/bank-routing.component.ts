@@ -312,7 +312,6 @@ export class BankRoutingComponent implements OnInit {
 
   updateBankRouteStatus(data: any, sliderElm: any) {
     this.bankRoutingService.updateBankRouteStatus(data).subscribe((res) => {
-      console.log("::updateStatusApi", res);
       if (res["msg"]) {
         sliderElm.checked = sliderElm!.checked;
         this.ngxToaster.success(res["msg"]);

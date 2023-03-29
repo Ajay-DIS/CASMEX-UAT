@@ -948,11 +948,18 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   checkDependanceCondition(formattedCriteriaArr: any) {
+    console.log(
+      "apidata",
+      this.criteriaDataDetailsJson.data.dependance["Service Category"]
+    );
     let dependencyCheckPassed = true;
 
     Object.keys(this.criteriaDataDetailsJson.data.dependance).forEach(
       (dependantCrt) => {
-        if (formattedCriteriaArr.includes(dependantCrt)) {
+        if (
+          formattedCriteriaArr.includes(dependantCrt) &&
+          this.criteriaDataDetailsJson.data.dependance[dependantCrt] != "null"
+        ) {
           if (
             formattedCriteriaArr.includes(
               this.criteriaDataDetailsJson.data.dependance[dependantCrt]
