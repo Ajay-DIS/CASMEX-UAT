@@ -13,12 +13,15 @@ export class CoreService {
 
   constructor() {}
 
- 
+  userActionsObs = new BehaviorSubject<any>([
+    { name: "Profile" },
+    { name: "Logout" },
+  ]);
+
   // $SessionExpired = new BehaviorSubject<boolean>(true);
   // setSessionExpirationStatus(status:boolean) {
   //   this.$SessionExpired.next(status);
   // }
-  
 
   $loadingScreen = new BehaviorSubject<boolean>(false);
   displayLoadingScreen() {
@@ -27,7 +30,6 @@ export class CoreService {
   removeLoadingScreen() {
     this.$loadingScreen.next(false);
   }
- 
 
   $breadCrumbMenu = new BehaviorSubject<any[]>(this.breadcrumbsItems);
 

@@ -4,6 +4,7 @@ import {
   Component,
   OnInit,
 } from "@angular/core";
+import { AuthService } from "./auth/auth.service";
 import { CoreService } from "./core.service";
 
 @Component({
@@ -14,13 +15,15 @@ import { CoreService } from "./core.service";
 export class AppComponent implements OnInit, AfterContentChecked {
   constructor(
     private coreService: CoreService,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
   title = "casmex";
 
   blocked: boolean;
 
   ngOnInit() {
+    this.authService.autoLogin();
     this.coreService.$loadingScreen.subscribe((isLoading) => {
       this.blocked = isLoading;
     });

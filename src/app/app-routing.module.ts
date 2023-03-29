@@ -15,7 +15,7 @@ import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-se
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
   // { path: 'sidebar', component: SidebarComponent, canActivate: [AuthGuard] },
-  { path: "login", component: LoginComponent },
+  { path: "login", component: LoginComponent, canActivate: [AuthGuard] },
   {
     path: "navbar",
     component: NavbarComponent,

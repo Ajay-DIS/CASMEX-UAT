@@ -26,7 +26,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private ngxToaster: ToastrService,
     private loginService: LoginService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -54,14 +55,14 @@ export class LoginComponent implements OnInit {
             if (data && data.jwt) {
               console.log("::user", data);
               this.loginService.saveLoggedUserInfo(data);
-              // this.coreService.setSessionExpirationStatus(false);
               this.router.navigate(["/navbar"]);
               this.ngxToaster.success("Login Successfull");
             } else {
-              localStorage.removeItem("token");
-              this.ngxToaster.error(data.msg);
-              // this.coreService.setSessionExpirationStatus(true);
-              this.router.navigate(["/login"]);
+              // this.authService.isUserAuthenticated.next(false)
+              // localStorage.removeItem("token");
+              // this.ngxToaster.error(data.msg);
+              // this.router.navigate(["/login"]);
+              data['msg'] && this.ngxToaster.warning(data['msg'])
             }
           },
           (err) => {

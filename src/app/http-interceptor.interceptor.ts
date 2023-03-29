@@ -1,26 +1,49 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
-} from '@angular/common/http';
-import { Observable } from 'rxjs';
+  HttpInterceptor,
+} from "@angular/common/http";
+import { Observable, of } from "rxjs";
+import { AuthService } from "./auth/auth.service";
+import { Router } from "@angular/router";
+import { ToastrService } from "ngx-toastr";
+import { CoreService } from "./core.service";
 
 @Injectable()
 export class HttpInterceptorInterceptor implements HttpInterceptor {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private ngxToaster: ToastrService,
+    private coreService: CoreService
+  ) {}
 
-  constructor() {}
-
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token = localStorage.getItem('token');
-    console.log("token passing", token)
-    return next.handle(request.clone(
-      {
-        // setHeaders: {Token: `Bearer ${token}`}
-        setHeaders: {Authorization: `${token}`}
-        
-      }
-      ));
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    if (
+      !this.authService.isLoggedIn() &&
+      request["url"] == "http://172.26.1.25:8889/login"
+    ) {
+      console.log("auth not needed", request);
+      return next.handle(request);
+    } else if (!this.authService.isLoggedIn()) {
+      this.coreService.userActionsObs.next([{ name: "Login" }]);
+      console.log("not authorized", request);
+      this.ngxToaster.warning(
+        "Your session has timed out. Please log in again to continue."
+      );
+      this.router.navigate(["navbar/session-time-out"]);
+    } else {
+      const token = localStorage.getItem("token");
+      return next.handle(
+        request.clone({
+          setHeaders: { Authorization: `${token}` },
+        })
+      );
+    }
   }
 }

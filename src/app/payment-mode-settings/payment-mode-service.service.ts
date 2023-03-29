@@ -20,11 +20,6 @@ export class PaymentModeService {
   // getPaymentModeByCriteriaId(id: string) {
   //   return this.http.get(`${environment.baseUrl}/remittance/paymentModeSettings/getPaymentModeCriteriaById/${id}`);
   // }
-  // getFiles() {
-  //   return this.http.get<any>('assets/files.json')
-  //     .toPromise()
-  //     .then(res => <TreeNode[]>res.data);
-  // }
   // getPaymentModeDescription() {
   //   return this.http.get(`/remittance/paymentModeSettings/getPaymentModeCriteriaById/23`)
   // }
@@ -39,10 +34,10 @@ export class PaymentModeService {
       `/remittance/paymentModeSettings/getPaymentModeCriteriaById/${id}`
     );
   }
-  getFiles() {
-    return this.http
-      .get<any>("assets/files.json")
-      .toPromise()
-      .then((res) => <TreeNode[]>res.data);
-  }
+  // getFiles() {
+  //   return this.http
+  //     .get<any>("assets/files.json")
+  //     .toPromise()
+  //     .then((res) => <TreeNode[]>res.data);
+  // }
 }
