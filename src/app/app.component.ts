@@ -80,6 +80,12 @@ export class AppComponent implements OnInit, AfterContentChecked {
         (data: any) => {
           if (data && data.jwt) {
             console.log("::user", data);
+            if (this.authService.clearTimer) {
+              clearTimeout(this.authService.clearTimer);
+            }
+            if (this.authService.clearWarningTimer) {
+              clearTimeout(this.authService.clearWarningTimer);
+            }
             this.loginService.saveLoggedUserInfo(data);
             this.ngxToaster.success("Login Successfull");
           } else {
