@@ -757,3 +757,17 @@ nav ol li .breadcrumb-item active {
   filter: invert(100%) sepia(5%) saturate(0%) hue-rotate(32deg) brightness(107%)
     contrast(105%);
 }
+
+/* LEAVE IT
+
+#overlay-header {
+  position: fixed;
+  display: none;
+  left: 270px;
+  height: 80px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+<div #overlayHeader id="overlay-header"></div> 
+
+*/
