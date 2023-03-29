@@ -624,10 +624,11 @@
           </td>
           <td style="border: none; text-align: center">
             <label class="switch" style="border: none">
-              <!-- (click)="updateStatus($event, bankRouting.routeCode)" -->
+              
               <input
                 #statusInp
                 type="checkbox"
+                (click)="updateStatus($event, bankRouting.routeCode)"
                 [checked]="
                   bankRouting.status == 'Active' || bankRouting.status == 'A'
                     ? true

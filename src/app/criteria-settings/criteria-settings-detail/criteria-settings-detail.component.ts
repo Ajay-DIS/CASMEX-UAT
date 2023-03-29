@@ -36,6 +36,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   userData: any;
 
   // Suresh start
+  criteriaId = "";
   criteriaSettingtable = [];
   criteriaSettingDetails: any = {
     data: {
@@ -112,6 +113,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     status: "200",
   };
   orderIDArray: any = [];
+  criteriaSettingtableopt: [];
   // Suresh end
 
   constructor(
@@ -121,7 +123,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private router: Router,
     private ngxToaster: ToastrService,
     private criteriaSettingsService: CriteriaSettingsService,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +150,12 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             ].map((app) => {
               return { name: app.criteriaForms, code: app.criteriaForms };
             });
+            const params = this.activatedRoute.snapshot.params;
+            if (params && params.id) {
+              this.setCloneCriteriaData(params.id);
+              this.criteriaId = params.id;
+              this.formCtrl.enable();
+            }
           } else if (res["msg"]) {
             this.ngxToaster.warning(res["msg"]);
             this.appCtrl.disable();
@@ -162,6 +171,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .add(() => {
         this.coreService.removeLoadingScreen();
       });
+     
   }
 
   setSelectAppForm() {
@@ -215,8 +225,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                   });
                 item["orderID"] = "";
                 item["operations"] = "";
-                item["iSMandatory"] =
-                  item["iSMandatory"] == "yes" ? true : false;
+                item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+                
               });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
@@ -248,11 +258,12 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingtable.forEach((item) => {
       item["orderID"] = "";
       item["operations"] = "";
+      item["iSMandatory"] = "no"; item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+
     });
-    let s = [];
-    Object.assign(s, this.criteriaSettingtable);
-    this.criteriaSettingtable = [];
-    this.criteriaSettingtable = s;
+    let s = []; Object.assign(s, this.criteriaSettingtable);
+    this.criteriaSettingtable = []; this.criteriaSettingtable = s;
+    this.orderIDArray = [];
   }
 
   checkCriteriaDuplication() {
@@ -418,6 +429,31 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       console.log("passed validation");
       this.checkCriteriaDuplication();
     }
+  }
+
+  setCloneCriteriaData(criteriaId:any){
+    this.criteriaSettingsService.getCriteriaCloneData(criteriaId).pipe(take(1)).subscribe((data)=>{
+    console.log(data);
+    this.criteriaSettingtable = data["data"]["cloneCriteria"]["cmCriteriaDataDetails"];
+    this.criteriaSettingtable.forEach((item) => {
+      item["operationOption"] = item.operations.split(",").map(x=> {return {label: x, value: x}});
+      // console.log("operationOption", item.operationOption)
+      item["operations"] = item.operationOption;
+      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+    });
+    console.log(this.criteriaSettingtable);
+    const appValue = this.criteriaApplicationOptions.find(value => value.code === data["data"]["cloneCriteria"]["applications"])
+    this.appCtrl.setValue(appValue);
+    const formValue = this.criteriaFormsOptions.find(value => value.code === data["data"]["cloneCriteria"]["form"])
+    this.formCtrl.setValue(formValue);
+    })
+//  this.appCtrl.setValue({name:"test",code: "test"});
+//  console.log(this.appCtrl)
+
+  }
+  
+  reset() {
+    window.location.reload();
   }
   // Suresh end
 }
