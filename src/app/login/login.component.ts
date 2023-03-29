@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
+import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { BankRoutingService } from "../banks-routing/bank-routing.service";
 import { CoreService } from "../core.service";
@@ -50,6 +51,7 @@ export class LoginComponent implements OnInit {
 
       this.loginService
         .loginUser(formData)
+        .pipe(take(1))
         .subscribe(
           (data: any) => {
             if (data && data.jwt) {
@@ -58,11 +60,7 @@ export class LoginComponent implements OnInit {
               this.router.navigate(["/navbar"]);
               this.ngxToaster.success("Login Successfull");
             } else {
-              // this.authService.isUserAuthenticated.next(false)
-              // localStorage.removeItem("token");
-              // this.ngxToaster.error(data.msg);
-              // this.router.navigate(["/login"]);
-              data['msg'] && this.ngxToaster.warning(data['msg'])
+              data["msg"] && this.ngxToaster.warning(data["msg"]);
             }
           },
           (err) => {

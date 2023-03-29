@@ -16,8 +16,12 @@ export class AuthService {
   ) {}
 
   userDataSub = new BehaviorSubject<User>(null);
+  showSessionConfirm = new BehaviorSubject<{ status: boolean; timer?: any }>({
+    status: false,
+  });
 
   clearTimer: any;
+  clearWarningTimer: any;
 
   isLoggedIn() {
     return !!localStorage.getItem("userData");
@@ -27,7 +31,10 @@ export class AuthService {
     if (this.clearTimer) {
       clearTimeout(this.clearTimer);
     }
-
+    if (this.clearWarningTimer) {
+      clearTimeout(this.clearWarningTimer);
+    }
+    this.showSessionConfirm.next({ status: false });
     this.coreService.userActionsObs.next([{ name: "Login" }]);
     this.userDataSub.next(null);
     localStorage.removeItem("token");
@@ -40,9 +47,29 @@ export class AuthService {
 
   autoLogout(expiryTimer: any) {
     console.log("expire in ", expiryTimer / 1000, "sec");
+    this.sessionTimeoutWarning(expiryTimer);
     this.clearTimer = setTimeout(() => {
       this.logout();
     }, expiryTimer);
+  }
+
+  sessionTimeoutWarning(expiryTimer: any) {
+    if (expiryTimer >= 120000) {
+      this.clearWarningTimer = setTimeout(() => {
+        this.showSessionConfirm.next({ status: true, timer: "2 Minutes" });
+      }, expiryTimer - 120000);
+    } else {
+      if (expiryTimer <= 0 && clearTimeout) {
+        this.showSessionConfirm.next({ status: false });
+        clearTimeout(this.clearWarningTimer);
+      } else {
+        let remainTime =
+          expiryTimer / 1000 > 60
+            ? `${Math.floor(expiryTimer / (1000 * 60))} Minute`
+            : `less than 1 Minute`;
+        this.showSessionConfirm.next({ status: true, timer: remainTime });
+      }
+    }
   }
 
   autoLogin() {

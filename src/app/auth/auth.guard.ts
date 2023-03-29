@@ -9,6 +9,7 @@ import {
 import { Toast, ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
+import { CoreService } from "../core.service";
 import { AuthService } from "./auth.service";
 
 @Injectable({
@@ -18,7 +19,8 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private ngxToaster: ToastrService
+    private ngxToaster: ToastrService,
+    private coreService: CoreService
   ) {}
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -28,8 +30,6 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    console.log(route["_routerState"]["url"]);
-
     if (
       route["routeConfig"]["path"] == "login" &&
       this.authService.isLoggedIn()
@@ -49,6 +49,7 @@ export class AuthGuard implements CanActivate {
         return true;
       } else {
         console.log("unauthorized");
+        this.coreService.userActionsObs.next([{ name: "Login" }]);
         this.ngxToaster.warning(
           "Your session has timed out. Please log in again to continue."
         );

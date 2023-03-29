@@ -594,7 +594,7 @@ nav ol li .breadcrumb-item active {
 .sidebar-content-footer {
   background-color: #2455cf;
   margin-top: auto;
-  padding: 1.2rem 0.8rem 1.2rem 1.5rem;
+  padding: 1.2rem 0.8rem 1.2rem 1rem;
   border-radius: 5px;
   background: linear-gradient(to right, rgba(21 83 241), rgba(22 69 184));
 }

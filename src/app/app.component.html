@@ -6,3 +6,23 @@
 <app-sidebar></app-sidebar> -->
 <!-- <app-login></app-login> -->
 <!-- <app-bank-routing></app-bank-routing> -->
+
+<p-confirmDialog class="session-confirm" #cd icon="pi pi-exclamation-triangle" [closable]="false">
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Logout"
+      (click)="cd.reject()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Continue"
+      (click)="cd.accept()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

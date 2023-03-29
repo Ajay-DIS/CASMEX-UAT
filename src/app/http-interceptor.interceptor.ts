@@ -5,7 +5,7 @@ import {
   HttpEvent,
   HttpInterceptor,
 } from "@angular/common/http";
-import { Observable, of } from "rxjs";
+import { EMPTY, Observable, of } from "rxjs";
 import { AuthService } from "./auth/auth.service";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
@@ -37,6 +37,7 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
         "Your session has timed out. Please log in again to continue."
       );
       this.router.navigate(["navbar/session-time-out"]);
+      return EMPTY;
     } else {
       const token = localStorage.getItem("token");
       return next.handle(

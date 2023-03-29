@@ -89,10 +89,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     // "Alerts & Notification": [],
   };
 
-  userActions = [
-    { name: 'Profile' },
-    { name: 'Logout' },
-  ];
+  userActions = [{ name: "Profile" }, { name: "Logout" }];
   get profileOptions() {
     return this.userActions;
   }
@@ -134,19 +131,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.breadcrumbsItems = menu;
     });
 
-    this.coreService.userActionsObs.subscribe(opt => {
-      this.userActions = opt
-    })
+    this.coreService.userActionsObs.subscribe((opt) => {
+      this.userActions = opt;
+    });
 
     this.authService.userDataSub.pipe(take(1)).subscribe((user) => {
       console.log(user);
       if (!user) {
-        this.userActions = [{ name: 'Login' }];
+        this.userActions = [{ name: "Login" }];
       } else {
-        this.userActions = [
-          { name: 'Profile' },
-          { name: 'Logout' },
-        ];
+        this.userActions = [{ name: "Profile" }, { name: "Logout" }];
       }
     });
     // this.setSidebarMenu();
@@ -317,11 +311,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       if (this.authService.clearTimer) {
         clearTimeout(this.authService.clearTimer);
       }
-      console.log("log");
       this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
-      this.ngxToaster.success("Logged Out Successfully.");
+      if (data.name == "Logout") {
+        this.ngxToaster.success("Logged Out Successfully.");
+      }
       this.router.navigate(["login"]);
     }
   }

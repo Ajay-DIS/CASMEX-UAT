@@ -294,11 +294,9 @@ export class CriteriaListingComponent implements OnInit {
     let createdDatesApi = this.criteriaSettingApiData.createdDate.map(
       (code) => {
         let formatDate = this.datePipe.transform(code);
-        console.log(this.createdDates);
         return formatDate;
       }
     );
-    console.log([...new Set(createdDatesApi.map((v) => v))]);
     this.createdDates = [...new Set(createdDatesApi.map((v) => v))].map(
       (value) => {
         return { label: value, value: value };
@@ -314,8 +312,8 @@ export class CriteriaListingComponent implements OnInit {
   openClickForView(data) {
     console.log("data", data);
     this.criteriaDataArrayView = data.cmCriteriaDataDetails;
-    this.criteriaDataArrayView['applications'] = data['applications'];
-    this.criteriaDataArrayView['form'] = data['form'];
+    this.criteriaDataArrayView["applications"] = data["applications"];
+    this.criteriaDataArrayView["form"] = data["form"];
     this.clickforview = true;
   }
 }

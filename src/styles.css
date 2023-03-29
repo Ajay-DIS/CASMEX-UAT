@@ -167,21 +167,6 @@ input:checked + .slider:before {
   background: rgb(240 242 254);
 }
 
-.p-dialog.txn-criteria-modal {
-  max-width: 483px;
-  width: 483px;
-  border-radius: 15px;
-}
-.p-dialog.txn-criteria-modal .all-range-groups {
-  max-height: 280px;
-  overflow: auto;
-}
-
-.p-dialog.txn-criteria-modal .p-dialog-content {
-  border-radius: 15px;
-  padding: 1rem;
-}
-
 .p-tooltip {
   max-width: 100% !important;
 }
@@ -197,33 +182,6 @@ input:checked + .slider:before {
   border-right-color: #4950576e;
 }
 
-.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-  background-color: #fff;
-}
-
-.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar-thumb {
-  background-color: #aab7cf;
-}
-
-.p-dialog.txn-criteria-modal .p-dialog-header {
-  padding: 0;
-}
-.p-dialog.txn-criteria-modal .p-dialog-header {
-  position: relative;
-}
-.p-dialog.txn-criteria-modal .p-dialog-header-icons {
-  position: absolute;
-  right: -10px;
-  top: -10px;
-}
-.p-dialog.txn-criteria-modal .p-dialog-header-icon {
-  color: #fff;
-  border-color: transparent;
-  background: #55c78a;
-}
-
 button.p-button {
   border-radius: 5px !important;
   background-color: rgb(36 85 207);
@@ -234,6 +192,12 @@ button.p-button {
   font-size: 13px;
   font-family: "IBM Plex Sans", sans-serif !important;
 }
+
+/* INPUT */
+.p-inputtext:enabled:focus {
+  box-shadow: none !important;
+}
+/* INPUT END */
 
 /* picklist */
 
@@ -356,5 +320,50 @@ p-paginator .p-paginator-bottom {
   top: -13px;
   background: #55c78a !important;
   color: white !important;
+}
+
+.p-dialog-mask.p-component-overlay {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.p-dialog.txn-criteria-modal {
+  max-width: 483px;
+  width: 483px;
+  border-radius: 15px;
+}
+.p-dialog.txn-criteria-modal .all-range-groups {
+  max-height: 280px;
+  overflow: auto;
+}
+
+.p-dialog.txn-criteria-modal .p-dialog-content {
+  border-radius: 15px;
+  padding: 1rem;
+}
+
+.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background-color: #fff;
+}
+
+.p-dialog.txn-criteria-modal .all-range-groups::-webkit-scrollbar-thumb {
+  background-color: #aab7cf;
+}
+
+.p-dialog.txn-criteria-modal .p-dialog-header {
+  padding: 0;
+}
+.p-dialog.txn-criteria-modal .p-dialog-header {
+  position: relative;
+}
+.p-dialog.txn-criteria-modal .p-dialog-header-icons {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+}
+.p-dialog.txn-criteria-modal .p-dialog-header-icon {
+  color: #fff;
+  border-color: transparent;
+  background: #55c78a;
 }
 /* P DIALOG END*/
