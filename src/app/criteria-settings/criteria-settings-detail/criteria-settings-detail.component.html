@@ -110,8 +110,8 @@
     <!-- Suresh start -->
     <div class="application-table">
       <div class="application-header" *ngIf="criteriaSettingtable.length">
-        Application: {{ appCtrl.value.name }} | Form:
-        {{ formCtrl.value.name }}
+        Application: {{ appCtrl.value && appCtrl.value.name }} | Form:
+        {{ formCtrl.value && formCtrl.value.name }}
       </div>
       <div class="application-ptable" *ngIf="criteriaSettingtable.length">
         <p-table
@@ -131,7 +131,12 @@
               <th>Dependency</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-product let-col="settingsCol" let-rowIndex="rowIndex" >
+          <ng-template
+            pTemplate="body"
+            let-product
+            let-col="settingsCol"
+            let-rowIndex="rowIndex"
+          >
             <tr>
               <td>
                 <input
@@ -155,16 +160,23 @@
                 />
               </td>
               <td>
-                <p-multiSelect 
-                id="operationsmulti"
-                [options]="product.operationOption" 
-                [(ngModel)]="product.operations" 
-                defaultLabel="Select" [showHeader]="false" (onChange)="bindSelectedOperations(product.operations, rowIndex)"
-                optionLabel="label" display="chip"></p-multiSelect>
+                <p-multiSelect
+                  id="operationsmulti"
+                  [options]="product.operationOption"
+                  [(ngModel)]="product.operations"
+                  defaultLabel="Select"
+                  [showHeader]="false"
+                  (onChange)="
+                    bindSelectedOperations(product.operations, rowIndex)
+                  "
+                  optionLabel="label"
+                  display="chip"
+                ></p-multiSelect>
               </td>
               <td>
                 <input
-                  type="number" min="1"
+                  type="number"
+                  min="1"
                   [value]="product.orderID"
                   [(ngModel)]="product.orderID"
                   placeholder="{{ product.orderID }}"

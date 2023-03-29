@@ -26,7 +26,6 @@
               [style]="{minWidth: '95%'}"
               [inputStyle]="{minWidth: '95%', background: '#f4f6fa', border: 'none'}"
               formControlName="from"
-              [min]="0"
               (onInput)="changeFrom($event.value, i)"
             >
               <!-- (onInput)="toInp.value = ((toInp.value >= $event.value) ? toInp.value : $event.value)" -->
@@ -51,10 +50,10 @@
     <div
       class="col-12 justify-content-end d-flex align-items-center rangeOverlapErr"
       style="font-size: 0.8em"
-      *ngIf="isAnyRangeOverlappingErrMsg"
+      *ngIf="isAnyErrorInRangeMsg"
     >
       <i class="pi pi-info-circle mr-2" style="color: red"></i>
-      <span> {{isAnyRangeOverlappingErrMsg}} </span>
+      <span> {{isAnyErrorInRangeMsg}} </span>
     </div>
     <div class="d-flex jc-between">
       <div class="col-12">
