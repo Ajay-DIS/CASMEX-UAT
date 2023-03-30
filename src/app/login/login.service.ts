@@ -33,7 +33,10 @@ export class LoginService {
   }
 
   loginUser(data: LoginFormData) {
-    return this.http.post(`${environment.baseUrl}/login`, data);
+    return this.http.post(
+      `${environment.baseUrl}/login/loginController/login`,
+      data
+    );
   }
 }
 

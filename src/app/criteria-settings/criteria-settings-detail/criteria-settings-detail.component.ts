@@ -114,6 +114,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   // Suresh end
 
   params: any;
+  isCloneMode = false;
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -152,6 +153,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             });
             const params = this.activatedRoute.snapshot.params;
             if (params && params.id) {
+              this.isCloneMode = true;
               this.setCloneCriteriaData(params.id);
               this.criteriaId = params.id;
               this.formCtrl.enable();
@@ -194,10 +196,12 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   onAppChange(e: any) {
-    this.formCtrl.reset();
-    this.criteriaSettingtable = [];
-    this.selectedFields = [];
-    this.selectFields = [];
+    if (!this.isCloneMode) {
+      this.criteriaSettingtable = [];
+      this.selectedFields = [];
+      this.formCtrl.reset();
+      this.selectFields = [];
+    }
     this.formCtrl.enable();
   }
 
@@ -206,8 +210,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeQueries() {
-    this.selectedFields = [];
-    this.criteriaSettingtable = [];
     this.coreService.displayLoadingScreen();
     console.log("changed form");
     if (!this.isFieldsQueriesData) {
@@ -248,11 +250,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         });
     } else {
-      console.log("changed form else");
-      console.log(this.fieldsQueriesData);
-      this.selectFields = [...this.fieldsQueriesData];
-      this.selectedFields = [];
-      this.criteriaSettingtable = [];
+      if (!this.isCloneMode) {
+        this.selectFields = [...this.fieldsQueriesData];
+        this.selectedFields = [];
+        this.criteriaSettingtable = [];
+      }
       setTimeout(() => {
         this.coreService.removeLoadingScreen();
       }, 500);
@@ -355,8 +357,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingsService.postCriteriaFieldsToSave(data).subscribe(
       (res) => {
         if (res["msg"]) {
-          this.ngxToaster.success(res["msg"]);
           this.router.navigate(["navbar", "criteria-settings"]);
+          this.ngxToaster.success(res["msg"]);
         }
       },
       (err) => {
@@ -425,8 +427,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       if (element.orderID == 0 || element.orderID < 0) {
         emptyPriority = true;
       }
-      // (element.operations == "") && (this.ngxToaster.warning("Please select operation."));
-      // element.orderID == 0 && this.ngxToaster.warning("Please Enter Priority.");
     });
     if (emptyOperation) {
       this.ngxToaster.warning("Please select operation.");
@@ -452,8 +452,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             response.cloneCriteriaData["data"]["cloneCriteria"];
           const criteriaFieldsData =
             response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
-          console.log("cloneCriteriaData", cloneCriteriaData);
-          console.log("criteriaFieldsData", criteriaFieldsData);
           cloneCriteriaData["cmCriteriaDataDetails"].forEach((cloneD: any) => {
             cloneD["operationOption"] = criteriaFieldsData
               .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"])
@@ -465,10 +463,22 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             cloneD["operations"] = selectedOpt.map((opt) => {
               return { label: opt, value: opt };
             });
-            console.log(selectedOpt, cloneD["operationOption"]);
             cloneD["iSMandatory"] =
               cloneD["iSMandatory"] == "yes" ? true : false;
           });
+          this.isFieldsQueriesData = true;
+          this.fieldsQueriesData = [...criteriaFieldsData];
+
+          this.selectedFields = criteriaFieldsData.filter((crit) => {
+            return cloneCriteriaData["cmCriteriaDataDetails"].find(
+              (cloneCrit) => {
+                return cloneCrit["fieldName"] == crit["fieldName"];
+              }
+            );
+          });
+          this.selectFields = criteriaFieldsData.filter(
+            (el) => !this.selectedFields.includes(el)
+          );
           return cloneCriteriaData;
         })
       )
