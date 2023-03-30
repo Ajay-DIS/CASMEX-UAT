@@ -10,6 +10,7 @@ import { AuthService } from "./auth/auth.service";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { CoreService } from "./core.service";
+import { environment } from "src/environments/environment";
 
 @Injectable()
 export class HttpInterceptorInterceptor implements HttpInterceptor {
@@ -26,7 +27,7 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     if (
       !this.authService.isLoggedIn() &&
-      request["url"] == "http://172.26.1.25:8889/login"
+      request["url"] == `${environment.baseUrl}/login/loginController/login`
     ) {
       console.log("auth not needed", request);
       return next.handle(request);
