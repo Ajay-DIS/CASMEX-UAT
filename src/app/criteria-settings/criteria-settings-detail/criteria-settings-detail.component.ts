@@ -125,7 +125,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.params = this.activatedRoute.snapshot.params;
@@ -453,9 +453,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           const criteriaFieldsData =
             response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
           cloneCriteriaData["cmCriteriaDataDetails"].forEach((cloneD: any) => {
+            this.orderIDArray.push(cloneD.orderID)
             cloneD["operationOption"] = criteriaFieldsData
               .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"])
-              ["operations"].split(",")
+            ["operations"].split(",")
               .map((x) => {
                 return { label: x, value: x };
               });
@@ -505,7 +506,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   reset() {
-    window.location.reload();
+    this.criteriaSettingtable = [];
+    this.selectFields = [];
+    this.selectedFields = [];
+    this.setSelectAppForm();
   }
   // Suresh end
 }
