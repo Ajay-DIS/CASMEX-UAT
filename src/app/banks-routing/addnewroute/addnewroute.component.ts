@@ -482,7 +482,7 @@ export class AddnewrouteComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAddBankRouteCriteriaData();
-
+    this.setSelectAppForm1();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -513,6 +513,9 @@ export class AddnewrouteComponent implements OnInit {
       this.routeId = params.id;
     }
 
+    
+  }
+  setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
       criteria: new FormControl({ value: "", disabled: false }, [
         Validators.required,
@@ -1412,7 +1415,10 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   reset() {
-    window.location.reload();
+    this.bankRoutesData = [];
+    this.setSelectAppForm1();
+    this.criteriaText = [];
+    this.bankRoutesData[0]["criteriaMap"] = [];
   }
 
   ngOnDestroy() {
