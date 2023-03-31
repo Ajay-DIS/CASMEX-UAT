@@ -95,7 +95,10 @@ p-dropdown .p-dropdown {
 
 :host ::ng-deep .p-datatable .p-datatable-thead tr th {
   background: rgb(234 237 244);
-  color: #8a9099;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  color: rgb(68 68 68) !important;
   font-size: 12px;
 }
 :host ::ng-deep .p-datatable .p-datatable-tbody tr td {
@@ -104,12 +107,12 @@ p-dropdown .p-dropdown {
   padding: 0.47rem 0.5rem;
   font-family: "IBM Plex Sans", sans-serif;
   font-style: normal;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   height: 48px;
 }
 ::ng-deep .p-datatable.p-component {
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 ::ng-deep
   .p-datatable
@@ -118,7 +121,7 @@ p-dropdown .p-dropdown {
   .ng-valid
   .ng-star-inserted
   .ng-touched {
-  font-size: 13px !important;
+  font-size: 12px !important;
 }
 
 :host ::ng-deep .p-dialog .p-dialog-header {
@@ -138,6 +141,7 @@ p-dropdown .p-dropdown {
 .applycriteriabtn {
   background: #f6f6f8;
   position: absolute;
+  left: 0px;
   height: 60px;
   width: 100%;
   bottom: -14px;
