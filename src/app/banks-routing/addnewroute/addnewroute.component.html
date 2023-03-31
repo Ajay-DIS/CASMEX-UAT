@@ -124,7 +124,7 @@
             #addCriteriaBtn
             pButton
             pRipple
-            style="position: absolute; left: 515px; width: 35px"
+            style="position: absolute; left: 525px; width: 35px"
             type="button"
             label="+"
             class="p-button-primary"
@@ -159,6 +159,11 @@
               showTransCriteriaModal()
           "
           class="criteria-span"
+          [ngStyle]="{
+            backgroundColor: criteria.includes('!=')
+              ? 'rgb(248 253 235)'
+              : 'rgb(234 237 244)'
+          }"
         >
           {{ criteria == "LCY Amount = Slab" ? "" : criteria
           }}<a
@@ -193,7 +198,12 @@
           <button
             pButton
             pRipple
-            style="position: absolute; bottom: 19%; left: 42%;background-color: #2455cf"
+            style="
+              position: absolute;
+              bottom: 19%;
+              left: 42%;
+              background-color: #2455cf;
+            "
             type="button"
             label="Apply Criteria"
             class="p-button-raised"
