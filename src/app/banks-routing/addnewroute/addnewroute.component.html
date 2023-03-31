@@ -265,12 +265,6 @@
                     >{{ row[col.field] }}</span
                   >
                   <select
-                    style="
-                      height: 35px;
-                      font-size: 12px;
-                      font-family: IBM Plex Sans, sans-serif;
-                      border-color: #e8e9eb;
-                    "
                     (change)="selectedColumn('routeToBankName', row, rowIndex)"
                     class="form-select"
                     *ngIf="col.field == 'routeToBankName'"
@@ -284,14 +278,6 @@
                   </select>
                   <select
                     id="dropdownid"
-                    style="
-                      height: 35px;
-                      font-size: 12px;
-                      font-family: IBM Plex Sans, sans-serif;
-                      border-color: #e8e9eb;
-                      font-weight: 500;
-                      font-style: normal;
-                    "
                     (change)="
                       selectedColumn('routeToServiceCategory', row, rowIndex)
                     "
@@ -308,12 +294,6 @@
                     </option>
                   </select>
                   <select
-                    style="
-                      height: 35px;
-                      font-size: 12px;
-                      font-family: IBM Plex Sans, sans-serif;
-                      border-color: #e8e9eb;
-                    "
                     (change)="
                       selectedColumn('routeToServiceType', row, rowIndex)
                     "
