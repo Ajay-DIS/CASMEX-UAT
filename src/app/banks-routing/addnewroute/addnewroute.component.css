@@ -93,18 +93,10 @@ p-dropdown .p-dropdown {
   justify-content: flex-end;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-thead tr th {
-  background: rgb(234 237 244);
-  font-family: "IBM Plex Sans", sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  color: rgb(68 68 68) !important;
-  font-size: 12px;
-}
 :host ::ng-deep .p-datatable .p-datatable-tbody tr td {
   border: 0px !important;
   border-width: 0px !important ;
-  padding: 0.47rem 0.5rem;
+  padding: 0.47rem 0.5rem 0.47rem 1rem;
   font-family: "IBM Plex Sans", sans-serif;
   font-style: normal;
   font-size: 12px;
@@ -148,4 +140,39 @@ p-dropdown .p-dropdown {
   margin-bottom: 0px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(1) {
+  width: 7%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(2) {
+  width: 11.5%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(3) {
+  width: 10.5%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(4) {
+  width: 8%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(5) {
+  width: 10.5%;
+}
+
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(1) {
+  width: 10%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(2) {
+  width: 12%;
+}
+.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(3) {
+  width: 9%;
+}
+
+.form-select {
+  height: 35px;
+  font-size: 12px;
+  font-family: IBM Plex Sans, sans-serif;
+  border-color: #e8e9eb;
+  padding: 0.375rem 1.7rem 0.375rem 0.75rem;
+  font-weight: 500;
 }
