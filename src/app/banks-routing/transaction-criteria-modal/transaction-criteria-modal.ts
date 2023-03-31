@@ -112,9 +112,9 @@ export class TransactionCriteriaModal {
         if (range.value) {
           if (range.value.from == null || range.value.to == null) {
             this.isRangeEmpty = true;
-          } else if (range.value.from <= 0 || range.value.to <= 0) {
+          } else if (range.value.from < 0 || range.value.to < 0) {
             this.isRangeValueLessThanZero = true;
-          } else if (range.value.from > range.value.to) {
+          } else if (range.value.from >= range.value.to) {
             this.isOrderIncorrect = true;
           }
           rangesArr.push(range.value);
@@ -155,7 +155,7 @@ export class TransactionCriteriaModal {
     } else {
       this.checkConditions();
       if (this.isRangeValueLessThanZero) {
-        this.isAnyErrorInRangeMsg = "Range Value should be greater than 0";
+        this.isAnyErrorInRangeMsg = "Range Value should be positive";
         setTimeout(() => {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);
@@ -172,7 +172,7 @@ export class TransactionCriteriaModal {
         }, 1500);
       } else if (this.isOrderIncorrect) {
         this.isAnyErrorInRangeMsg =
-          "LCY amount From value cannot exceed LCY amount To value";
+          "LCY amount From value should be less than LCY amount To value";
         setTimeout(() => {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);
@@ -190,7 +190,7 @@ export class TransactionCriteriaModal {
   saveTxnCriteriaRanges() {
     this.checkConditions();
     if (this.isRangeValueLessThanZero) {
-      this.isAnyErrorInRangeMsg = "Range Value should be greater than 0";
+      this.isAnyErrorInRangeMsg = "Range Value should be positive";
       setTimeout(() => {
         this.isAnyErrorInRangeMsg = "";
       }, 1500);
@@ -202,7 +202,7 @@ export class TransactionCriteriaModal {
       }, 1500);
     } else if (this.isOrderIncorrect) {
       this.isAnyErrorInRangeMsg =
-        "LCY amount From value cannot exceed LCY amount To value";
+        "LCY amount From value should be less than LCY amount To value";
       setTimeout(() => {
         this.isAnyErrorInRangeMsg = "";
       }, 1500);

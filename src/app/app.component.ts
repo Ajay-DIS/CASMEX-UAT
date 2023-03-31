@@ -70,7 +70,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   login() {
     this.coreService.displayLoadingScreen();
     this.loginService
-      .loginUser({
+      .refreshAuthToken({
         application: "CASMEX_CORE",
         username: "yogeshm",
         password: "test@123",
@@ -79,15 +79,15 @@ export class AppComponent implements OnInit, AfterContentChecked {
       .subscribe(
         (data: any) => {
           if (data && data.jwt) {
-            console.log("::user", data);
+            console.log("::refreshToken", data);
             if (this.authService.clearTimer) {
               clearTimeout(this.authService.clearTimer);
             }
             if (this.authService.clearWarningTimer) {
               clearTimeout(this.authService.clearWarningTimer);
             }
-            this.loginService.saveLoggedUserInfo(data);
-            this.ngxToaster.success("Login Successfull");
+            this.loginService.refreshUserSessionToken(data.jwt);
+            this.ngxToaster.success("Session extended successfully");
           } else {
             data["msg"] && this.ngxToaster.warning(data["msg"]);
           }
