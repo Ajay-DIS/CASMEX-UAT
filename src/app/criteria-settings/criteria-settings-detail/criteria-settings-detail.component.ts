@@ -262,23 +262,28 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeBtnClick() {
-    this.selectedFields.forEach((item) => {
+    let newArray = this.selectedFields.filter(item => !this.criteriaSettingtable.find(obj=> obj.fieldName == item.fieldName))
+    this.criteriaSettingtable.forEach((item) => {
       item["orderID"] = "";
       if (!item["operationOption"]) {
         item["operationOption"] = item["operations"].split(",").map((opt) => {
           return { label: opt, value: opt };
         });
-        let index = this.criteriaSettingtable.findIndex(x => x.fieldName == item.fieldName);
-        if(index == -1) {
-          item["operations"] = ""
-        } else {
-          item["operations"] = item["operationOption"];
-        }
-        
+            item["operations"] = item["operationOption"];
       }
       item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
-    this.criteriaSettingtable = [...this.selectedFields];
+    newArray.forEach((item) => {
+      item["orderID"] = "";
+      if (!item["operationOption"]) {
+        item["operationOption"] = item["operations"].split(",").map((opt) => {
+          return { label: opt, value: opt };
+        });
+            item["operations"] = "";
+      }
+      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+    });
+    this.criteriaSettingtable = [...this.criteriaSettingtable, ...newArray];
     this.orderIDArray = [];
   }
 

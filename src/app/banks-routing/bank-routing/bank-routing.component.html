@@ -40,11 +40,11 @@
             Route Code
             <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
-                height="13px"
+                height="12px"
                 id="rou"
                 class="pi pi-filter bankRoutingFilterIcon"
                 (click)="showRouteCodesOptions = !showRouteCodesOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterRoutes.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -55,7 +55,7 @@
                 [overlayVisible]="showRouteCodesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeCode', 'in')"
+                (onChange)="dt.filter($event.value, 'routeCode', 'in') ;"
                 [(ngModel)]="selectedFilterRoutes"
                 (onPanelHide)="showRouteCodesOptions = !showRouteCodesOptions"
               >
@@ -91,7 +91,7 @@
                 id="cou"
                 class="pi pi-filter bankRoutingFilterIcon"
                 (click)="showCountriesOptions = !showCountriesOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterCountry.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -102,6 +102,7 @@
                 [overlayVisible]="showCountriesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterCountry"
                 (onChange)="dt.filter($event.value, 'country', 'in')"
                 (onPanelHide)="showCountriesOptions = !showCountriesOptions"
               ></p-multiSelect>
@@ -118,7 +119,7 @@
                 height="12px"
                 class="pi pi-filter bankRoutingFilterIcon"
                 (click)="showRouteBankNamesOptions = !showRouteBankNamesOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterRouteBankName.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -129,6 +130,7 @@
                 [overlayVisible]="showRouteBankNamesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterRouteBankName"
                 (onChange)="dt.filter($event.value, 'routeBankName', 'in')"
                 (onPanelHide)="
                   showRouteBankNamesOptions = !showRouteBankNamesOptions
@@ -150,7 +152,7 @@
                   showRouteServiceCategoriesOptions =
                     !showRouteServiceCategoriesOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterServiceCategories.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -161,6 +163,7 @@
                 [overlayVisible]="showRouteServiceCategoriesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterServiceCategories"
                 (onChange)="
                   dt.filter($event.value, 'routeServiceCategory', 'in')
                 "
@@ -184,7 +187,7 @@
                 (click)="
                   showRouteServiceTypesOptions = !showRouteServiceTypesOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterServiceType.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -195,6 +198,7 @@
                 [overlayVisible]="showRouteServiceTypesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterServiceType"
                 (onChange)="dt.filter($event.value, 'routeServiceType', 'in')"
                 (onPanelHide)="
                   showRouteServiceTypesOptions = !showRouteServiceTypesOptions
@@ -215,7 +219,7 @@
                 (click)="
                   showISCorrespondentsOptions = !showISCorrespondentsOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterISCorrespondent.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -226,6 +230,7 @@
                 [overlayVisible]="showISCorrespondentsOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterISCorrespondent"
                 (onChange)="dt.filter($event.value, 'iSCorrespondent', 'in')"
                 (onPanelHide)="
                   showISCorrespondentsOptions = !showISCorrespondentsOptions
@@ -246,7 +251,7 @@
                 (click)="
                   showRouteToBankNamesOptions = !showRouteToBankNamesOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterRouteToBank.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -257,6 +262,7 @@
                 [overlayVisible]="showRouteToBankNamesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterRouteToBank"
                 (onChange)="dt.filter($event.value, 'routeToBankName', 'in')"
                 (onPanelHide)="
                   showRouteToBankNamesOptions = !showRouteToBankNamesOptions
@@ -278,7 +284,7 @@
                   showRouteToServiceCategoriesOptions =
                     !showRouteToServiceCategoriesOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterRouteToServiceCategories.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -289,6 +295,7 @@
                 [overlayVisible]="showRouteToServiceCategoriesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterRouteToServiceCategories"
                 (onChange)="
                   dt.filter($event.value, 'routeToServiceCategory', 'in')
                 "
@@ -313,7 +320,7 @@
                   showRouteToServiceTypesOptions =
                     !showRouteToServiceTypesOptions
                 "
-                src="../assets/filter.svg"
+                [src]="selectedFilterRouteToServiceType.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -324,6 +331,7 @@
                 [overlayVisible]="showRouteToServiceTypesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterRouteToServiceType"
                 (onChange)="dt.filter($event.value, 'routeToServiceType', 'in')"
                 (onPanelHide)="
                   showRouteToServiceTypesOptions =
@@ -347,7 +355,7 @@
                 height="12px"
                 class="pi pi-filter bankRoutingFilterIcon"
                 (click)="showStatusesOptions = !showStatusesOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterStatus.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -358,6 +366,7 @@
                 [overlayVisible]="showStatusesOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterStatus"
                 (onChange)="dt.filter($event.value, 'status', 'in')"
                 (onPanelHide)="showStatusesOptions = !showStatusesOptions"
               ></p-multiSelect>

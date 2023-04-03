@@ -48,7 +48,7 @@
                 id="rou"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showApplicationOptions = !showApplicationOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterApplication.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -59,6 +59,7 @@
                 [overlayVisible]="showApplicationOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterApplication"
                 (onChange)="dt.filter($event.value, 'applications', 'in')"
                 (onPanelHide)="showApplicationOptions = !showApplicationOptions"
               >
@@ -81,7 +82,7 @@
                 id="cou"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showFormOptions = !showFormOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterForm.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -92,6 +93,7 @@
                 [overlayVisible]="showFormOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterForm"
                 (onChange)="dt.filter($event.value, 'form', 'in')"
                 (onPanelHide)="showFormOptions = !showFormOptions"
               ></p-multiSelect>
@@ -108,7 +110,7 @@
                 height="12px"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showCriteriaFieldsOptions = !showCriteriaFieldsOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterCriteriaFields.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -119,6 +121,7 @@
                 [overlayVisible]="showCriteriaFieldsOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterCriteriaFields"
                 (onChange)="dt.filter($event.value, 'totalCriteraiField', 'in')"
                 (onPanelHide)="
                   showCriteriaFieldsOptions = !showCriteriaFieldsOptions
@@ -137,7 +140,7 @@
                 height="12px"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showListFieldsOptions = !showListFieldsOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterListFields.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -148,6 +151,7 @@
                 [overlayVisible]="showListFieldsOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterListFields"
                 (onChange)="dt.filter($event.value, 'totalListField', 'in')"
                 (onPanelHide)="showListFieldsOptions = !showListFieldsOptions"
               ></p-multiSelect>
@@ -164,7 +168,7 @@
                 height="12px"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showCreatedDateOptions = !showCreatedDateOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterCreatedDate.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -175,6 +179,7 @@
                 [overlayVisible]="showCreatedDateOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterCreatedDate"
                 (onChange)="dt.filter($event.value, 'createdDate', 'in')"
                 (onPanelHide)="showCreatedDateOptions = !showCreatedDateOptions"
               ></p-multiSelect>
@@ -195,7 +200,7 @@
                 height="12px"
                 class="pi pi-filter criteriaSettingFilterIcon"
                 (click)="showCreatedByOptions = !showCreatedByOptions"
-                src="../assets/filter.svg"
+                [src]="selectedFilterCreatedBy.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
                 alt=""
               />
               <p-multiSelect
@@ -206,6 +211,7 @@
                 [overlayVisible]="showCreatedByOptions"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
+                [(ngModel)]="selectedFilterCreatedBy"
                 (onChange)="dt.filter($event.value, 'createdBy', 'in')"
                 (onPanelHide)="showCreatedByOptions = !showCreatedByOptions"
               ></p-multiSelect>
