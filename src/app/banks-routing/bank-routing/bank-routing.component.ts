@@ -283,8 +283,6 @@ export class BankRoutingComponent implements OnInit {
 
   clearSelectedFilterRoutes() {
     console.log(this.selectedFilterRoutes)
-    // this.selectedFilterRoutes = [];
-    // this.table.filter([], "routeCode", "in");
   }
 
   ngOnInit(): void {
@@ -343,9 +341,6 @@ export class BankRoutingComponent implements OnInit {
             });
 
             this.bankRoutingData = this.bankRoutingApiData.data;
-            // .sort(
-            //   (a, b) => a.createdDate - b.createdDate
-            // );
 
             this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
               return { label: code, value: code };
