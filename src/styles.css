@@ -442,4 +442,7 @@ p-paginator .p-paginator-bottom {
 .p-datatable .p-sortable-column.p-highlight {
   background: #e9ecef !important;
 }
+.p-treetable .p-sortable-column.p-highlight {
+  background: #e9ecef !important;
+}
 /* Primeng overide style end */
