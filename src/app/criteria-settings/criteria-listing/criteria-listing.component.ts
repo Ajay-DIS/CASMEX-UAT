@@ -222,6 +222,13 @@ export class CriteriaListingComponent implements OnInit {
   //suresh
   clickforview = false;
   criteriaDataArrayView = [];
+
+  selectedFilterApplication: any[] = [];
+  selectedFilterForm: any[] = [];
+  selectedFilterCriteriaFields: any[] = [];
+  selectedFilterListFields: any[] = [];
+  selectedFilterCreatedDate: any[] = [];
+  selectedFilterCreatedBy: any[] = [];
   //suresh
   constructor(
     private router: Router,

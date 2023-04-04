@@ -271,10 +271,18 @@ export class BankRoutingComponent implements OnInit {
   noDataMsg: string = "Banks Routing Data Not Available";
 
   selectedFilterRoutes: any[] = [];
+  selectedFilterCountry: any[] = [];
+  selectedFilterRouteBankName: any[] = [];
+  selectedFilterServiceCategories: any[] = [];
+  selectedFilterServiceType: any[] = [];
+  selectedFilterISCorrespondent: any[] = [];
+  selectedFilterRouteToBank: any[] = [];
+  selectedFilterRouteToServiceCategories: any[] = [];
+  selectedFilterRouteToServiceType: any[] = [];
+  selectedFilterStatus: any[] = [];
 
   clearSelectedFilterRoutes() {
-    this.selectedFilterRoutes = [];
-    this.table.filter([], "routeCode", "in");
+    console.log(this.selectedFilterRoutes)
   }
 
   // grouping
