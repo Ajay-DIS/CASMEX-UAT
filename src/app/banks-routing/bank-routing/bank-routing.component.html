@@ -19,574 +19,99 @@
     <p-card class="p-col-12" *ngIf="!bankRoutesGroups">
       {{ noDataMsg }}
     </p-card>
-    <p-table
-      *ngIf="bankRoutesGroups"
-      class="bank-routing-table"
-      #dt
-      [value]="bankRoutesGroups | slice : 0 : bankRoutesGroups.length"
-      dataKey="groupID"
+    <p-treeTable
+      #tt
+      [value]="files1"
+      [columns]="cols"
+      styleClass="p-treetable-sm"
       sortMode="multiple"
       [rows]="10"
       [paginator]="true"
       [rowHover]="true"
     >
-      <ng-template pTemplate="header">
+      <ng-template pTemplate="header" let-columns>
         <tr>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeCode'"
-            style="width: 9%"
-          >
-            Route Code
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="13px"
-                id="rou"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showRouteCodesOptions = !showRouteCodesOptions"
-                src="../assets/filter.svg"
-                alt=""
+          <th *ngFor="let col of columns" [ttSortableColumn]="col.field">
+            {{ col.header }}
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let col of cols">
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                pInputText
+                type="text"
+                class="table-search"
+                placeholder="Search"
+                (input)="
+                  tt.filter($event.target.value, col.field, col.filterMatchMode)
+                "
               />
-              <p-multiSelect
-                #ms1
-                [options]="routeCodes"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteCodesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeCode', 'in')"
-                [(ngModel)]="selectedFilterRoutes"
-                (onPanelHide)="showRouteCodesOptions = !showRouteCodesOptions"
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowNode
+        let-rowData="rowData"
+        let-columns="columns"
+      >
+        <tr
+          [ngStyle]="{
+            border: objectKeys(rowData).length == 1 ? '1px solid #e9ecef' : ''
+          }"
+        >
+          <ng-container *ngFor="let col of columns; let i = index">
+            <td *ngIf="i + 1 != columns.length">
+              <p-treeTableToggler
+                [rowNode]="rowNode"
+                *ngIf="objectKeys(rowData).length == 1 && i == 0"
+                class="group-row"
+              ></p-treeTableToggler>
+              <div
+                *ngIf="!(objectKeys(rowData).length > 1 && i == 0)"
+                style="display: inline-block"
+                [ngClass]="objectKeys(rowData).length == 1 ? 'expandable' : ''"
               >
-                <!-- <p-footer>
-                  <div class="flex justify-content-end p-1 filter-footer">
-                    <button
-                      pButton
-                      type="button"
-                      label="Filter"
-                      class="filter-btn"
-                    ></button>
-                    <button
-                      pButton
-                      type="button"
-                      label="Clear"
-                      class="clear-btn"
-                      (click)="clearSelectedFilterRoutes()"
-                    ></button>
-                  </div>
-                </p-footer> -->
-              </p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'country'"
-            style="width: 8.5%"
-          >
-            Country
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                id="cou"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showCountriesOptions = !showCountriesOptions"
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="countries"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showCountriesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'country', 'in')"
-                (onPanelHide)="showCountriesOptions = !showCountriesOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeBankName'"
-            style="width: 12%"
-          >
-            Bank-Routing
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showRouteBankNamesOptions = !showRouteBankNamesOptions"
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeBankNames"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteBankNamesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeBankName', 'in')"
-                (onPanelHide)="
-                  showRouteBankNamesOptions = !showRouteBankNamesOptions
+                {{ rowData[col["field"]] }}
+              </div>
+              <a
+                *ngIf="objectKeys(rowData).length > 1 && i == 0"
+                style="
+                  text-decoration: underline !important;
+                  margin-left: 42px;
+                  color: rgb(36 85 207);
                 "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeServiceCategory'"
-            style="width: 11.5%"
-          >
-            Service Category
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteServiceCategoriesOptions =
-                    !showRouteServiceCategoriesOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeServiceCategories"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteServiceCategoriesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="
-                  dt.filter($event.value, 'routeServiceCategory', 'in')
-                "
-                (onPanelHide)="
-                  showRouteServiceCategoriesOptions =
-                    !showRouteServiceCategoriesOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeServiceType'"
-            style="width: 9.5%"
-          >
-            Service Type
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteServiceTypesOptions = !showRouteServiceTypesOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeServiceTypes"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteServiceTypesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeServiceType', 'in')"
-                (onPanelHide)="
-                  showRouteServiceTypesOptions = !showRouteServiceTypesOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'iSCorrespondent'"
-            style="width: 12%"
-          >
-            Is Correspondent
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showISCorrespondentsOptions = !showISCorrespondentsOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="iSCorrespondents"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showISCorrespondentsOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'iSCorrespondent', 'in')"
-                (onPanelHide)="
-                  showISCorrespondentsOptions = !showISCorrespondentsOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeToBankName'"
-            style="width: 8.5%"
-          >
-            Route To
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToBankNamesOptions = !showRouteToBankNamesOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeToBankNames"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteToBankNamesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeToBankName', 'in')"
-                (onPanelHide)="
-                  showRouteToBankNamesOptions = !showRouteToBankNamesOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeToServiceCategory'"
-            style="width: 11.5%"
-          >
-            Service Category
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToServiceCategoriesOptions =
-                    !showRouteToServiceCategoriesOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeToServiceCategories"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteToServiceCategoriesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="
-                  dt.filter($event.value, 'routeToServiceCategory', 'in')
-                "
-                (onPanelHide)="
-                  showRouteToServiceCategoriesOptions =
-                    !showRouteToServiceCategoriesOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            [pSortableColumn]="'routeToServiceType'"
-            style="width: 10%"
-          >
-            Service Type
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="
-                  showRouteToServiceTypesOptions =
-                    !showRouteToServiceTypesOptions
-                "
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="routeToServiceTypes"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showRouteToServiceTypesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'routeToServiceType', 'in')"
-                (onPanelHide)="
-                  showRouteToServiceTypesOptions =
-                    !showRouteToServiceTypesOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            style="text-align: center; width: 7.5%"
-            [pSortableColumn]="'status'"
-          >
-            Status
-            <div
-              (click)="$event.stopPropagation()"
-              class="filter-icon"
-              style="right: 8%"
+                (click)="viewBankRouting(rowData)"
+                >{{ rowData[col["field"]] }}</a
+              >
+            </td>
+            <td
+              *ngIf="i + 1 == columns.length"
+              style="border: none; text-align: center"
             >
-              <img
-                height="12px"
-                class="pi pi-filter bankRoutingFilterIcon"
-                (click)="showStatusesOptions = !showStatusesOptions"
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="statuses"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showStatusesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'status', 'in')"
-                (onPanelHide)="showStatusesOptions = !showStatusesOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-        </tr>
-        <tr class="search-row">
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter($any($event.target).value, 'routeCode', 'contains')
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter($any($event.target).value, 'country', 'contains')
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeBankName',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeServiceCategory',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeServiceType',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'iSCorrespondent',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeToBankName',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeToServiceCategory',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th style="padding: 8px 0px 8px 1rem">
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'routeToServiceType',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-bankRouting let-expanded="expanded">
-        <tr>
-          <td colspan="10">
-            <div class="group-row d-flex">
-              <button
-                type="button"
-                pButton
-                pRipple
-                [pRowToggler]="bankRouting"
-                rowExpandMode="single"
-                class="p-button-text p-button-rounded p-button-plain"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
-              ></button>
-              <a style="text-decoration: underline !important">{{
-                bankRouting.groupID
-              }}</a>
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="rowexpansion" let-bankRouting>
-        <tr *ngFor="let route of bankRouting.routes">
-          <td style="cursor: pointer; color: #2455cf" class="table-description">
-            <a
-              style="text-decoration: underline !important"
-              (click)="viewBankRouting(route)"
-              >{{ route.routeCode }}</a
-            >
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.country }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeBankName }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeServiceCategory }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeServiceType }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.iSCorrespondent }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeToBankName }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeToServiceCategory }}</span>
-          </td>
-          <td class="table-description">
-            <span class="image-text">{{ route.routeToServiceType }}</span>
-          </td>
-          <td style="border: none; text-align: center">
-            <label class="switch" style="border: none">
-              <input
-                #statusInp
-                type="checkbox"
-                (click)="updateStatus($event, route.routeCode)"
-                [checked]="
-                  route.status == 'Active' || route.status == 'A' ? true : false
-                "
-              />
-              <span class="slider round"></span>
-            </label>
-          </td>
+              <label
+                *ngIf="objectKeys(rowData).length != 1"
+                class="switch"
+                style="border: none"
+              >
+                <input
+                  #statusInp
+                  type="checkbox"
+                  (click)="updateStatus($event, rowData['routeCode'])"
+                  [checked]="
+                    rowData[col['field']] == 'Active' ||
+                    rowData[col['field']] == 'A'
+                      ? true
+                      : false
+                  "
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </ng-container>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
@@ -605,6 +130,6 @@
         }}
         of {{ state.totalRecords }}
       </ng-template>
-    </p-table>
+    </p-treeTable>
   </div>
 </div>
