@@ -1,4 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
+import { DatePipe } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { NgModule } from "@angular/core";
 import {
@@ -9,9 +10,9 @@ import {
 import { FormsModule, NgModel, ReactiveFormsModule } from "@angular/forms";
 import { TranslateLoader, TranslateModule } from "@ngx-translate/core";
 import { TranslateHttpLoader } from "@ngx-translate/http-loader";
+
 import { TableModule } from "primeng/table";
 import { DialogModule } from "primeng/dialog";
-
 import { SidebarModule } from "primeng/sidebar";
 import { ButtonModule } from "primeng/button";
 import { TreeModule } from "primeng/tree";
@@ -42,7 +43,6 @@ import { AddnewrouteComponent } from "./banks-routing/addnewroute/addnewroute.co
 import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-modal/transaction-criteria-modal";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
-import { DatePipe } from "@angular/common";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 
 // AoT requires an exported function for factories
