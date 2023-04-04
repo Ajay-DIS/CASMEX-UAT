@@ -218,33 +218,6 @@
             </div>
           </th>
           <th class="table-titles" style="width: 100px">Operations</th>
-          <!-- <th
-            class="table-titles"
-            style="text-align: center; width: 100px"
-            [pSortableColumn]="'status'"
-          >
-            Status
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showStatusesOptions = !showStatusesOptions"
-                src="../assets/filter.svg"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="statuses"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showStatusesOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                (onChange)="dt.filter($event.value, 'status', 'in')"
-                (onPanelHide)="showStatusesOptions = !showStatusesOptions"
-              ></p-multiSelect>
-            </div>
-          </th> -->
         </tr>
         <tr class="search-row">
           <th>
@@ -407,21 +380,6 @@
               ></button>
             </span>
           </td>
-          <!-- <td style="border: none; text-align: center">
-            <label class="switch" style="border: none">
-              <input
-                #statusInp
-                type="checkbox"
-                [checked]="
-                  criteriaSetting.status == 'Active' ||
-                  criteriaSetting.status == 'A'
-                    ? true
-                    : false
-                "
-              />
-              <span class="slider round"></span>
-            </label>
-          </td> -->
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">

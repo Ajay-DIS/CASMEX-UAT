@@ -87,17 +87,6 @@
   height: 18px;
 }
 
-/* :host ::ng-deep .bank-routing-table .p-datatable .p-datatable-thead > tr > th {
-  text-align: left;
-  padding: 0.5rem 1rem;
-  background: rgb(234 237 244);
-  font-family: "IBM Plex Sans", sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  color: rgb(68 68 68) !important;
-  font-size: 12px !important;
-} */
-
 .filter-footer {
   background-color: rgb(244 246 250) !important;
 }

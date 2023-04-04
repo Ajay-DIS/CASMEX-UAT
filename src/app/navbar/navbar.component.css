@@ -365,19 +365,6 @@
   border-radius: 5px;
 }
 
-/* @media (max-width: 1199px) {
-  .sidebar {
-    left: -300px;
-  }
-} */
-/* 
-.sidebar::-webkit-scrollbar {
-  
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  
-} */
 
 .sidebar .sidebar-header {
   display: flex;
@@ -758,16 +745,4 @@ nav ol li .breadcrumb-item active {
     contrast(105%);
 }
 
-/* LEAVE IT
 
-#overlay-header {
-  position: fixed;
-  display: none;
-  left: 270px;
-  height: 80px;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-}
-<div #overlayHeader id="overlay-header"></div> 
-
-*/
