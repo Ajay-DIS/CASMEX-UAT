@@ -17,7 +17,7 @@ import {
 import { BankRoutingService } from "../bank-routing.service";
 import { CoreService } from "src/app/core.service";
 import { DialogService } from "primeng/dynamicdialog";
-import { MessageService } from "primeng/api";
+import { MessageService, TreeNode } from "primeng/api";
 
 @Component({
   selector: "app-bank-routing",
@@ -285,6 +285,28 @@ export class BankRoutingComponent implements OnInit {
     console.log(this.selectedFilterRoutes)
   }
 
+  // grouping
+  bankRoutesGroups: { groupID: string; routes: BankRouting[] }[] = [];
+  // grouping end
+
+  // treetable
+  objectKeys = Object.keys;
+  cols = [
+    { field: "routeCode", header: "Route Code" },
+    { field: "country", header: "Country" },
+    { field: "routeBankName", header: "Bank Routing" },
+    { field: "routeServiceCategory", header: "Service Category" },
+    { field: "routeServiceType", header: "Service Type" },
+    { field: "iSCorrespondent", header: "Is Correspondent" },
+    { field: "routeToBankName", header: "Route To" },
+    { field: "routeToServiceCategory", header: "Service Category" },
+    { field: "routeToServiceType", header: "Service Type" },
+    { field: "status", header: "Status" },
+  ];
+
+  files1: TreeNode[] = [];
+  // treetable end
+
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
@@ -297,7 +319,12 @@ export class BankRoutingComponent implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    this.router.navigate(["navbar", "bank-routing", "addnewroute", data.routeCode]);
+    this.router.navigate([
+      "navbar",
+      "bank-routing",
+      "addnewroute",
+      data.routeCode,
+    ]);
   }
 
   updateStatus(e: any, bankRoute: string) {
@@ -340,8 +367,56 @@ export class BankRoutingComponent implements OnInit {
               route.createdDate = new Date(route.createdDate);
             });
 
-            this.bankRoutingData = this.bankRoutingApiData.data;
+            // % Before grouping
+            // this.bankRoutingData = [...this.bankRoutingApiData.data];
+            // % Before grouping end
+            let groups = [];
+            this.bankRoutesGroups = [];
+            this.files1 = [];
+            this.bankRoutingApiData.data.forEach((route) => {
+              if (!groups.includes(route.groupID)) {
+                groups.push(route.groupID);
+              }
+            });
 
+            groups.forEach((g) => {
+              let treeTableGrp = [];
+              let routeGrp: any = this.bankRoutingApiData.data.filter(
+                (route) => {
+                  return route.groupID == g;
+                }
+              );
+
+              this.bankRoutingApiData.data.forEach((route) => {
+                let routeData: any = [];
+                if (route.groupID == g) {
+                  routeData = {
+                    routeCode: route["routeCode"],
+                    country: route["country"],
+                    routeBankName: route["routeBankName"],
+                    routeServiceCategory: route["routeServiceCategory"],
+                    routeServiceType: route["routeServiceType"],
+                    iSCorrespondent: route["iSCorrespondent"],
+                    routeToBankName: route["routeToBankName"],
+                    routeToServiceCategory: route["routeToServiceCategory"],
+                    routeToServiceType: route["routeToServiceType"],
+                    status: route["status"],
+                  };
+                  treeTableGrp.push({ data: routeData });
+                }
+              });
+
+              this.files1.push({
+                data: { routeCode: g },
+                children: treeTableGrp,
+              });
+              this.bankRoutesGroups.push({ groupID: g, routes: routeGrp });
+            });
+            console.log(this.bankRoutesGroups);
+            console.log(this.files1);
+            // .sort(
+            //   (a, b) => a.createdDate - b.createdDate
+            // );
             this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
               return { label: code, value: code };
             });

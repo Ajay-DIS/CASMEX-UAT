@@ -29,6 +29,7 @@ import { InputNumberModule } from "primeng/inputnumber";
 import { TooltipModule } from "primeng/tooltip";
 import { PickListModule } from "primeng/picklist";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { TreeTableModule } from "primeng/treetable";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -89,6 +90,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TooltipModule,
     PickListModule,
     ConfirmDialogModule,
+    TreeTableModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

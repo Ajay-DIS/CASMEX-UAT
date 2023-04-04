@@ -16,6 +16,7 @@ export interface BankRoutingApiData{
 export  interface BankRouting {
     id: number,
     userID: string,
+    groupID: string,
     routeCode: string;
     country: string;
     routeBankName: string;
