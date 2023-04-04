@@ -5,7 +5,7 @@ import {
   Renderer2,
   ViewChild,
 } from "@angular/core";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
@@ -472,7 +472,7 @@ export class AddnewrouteComponent implements OnInit {
     public dialogService: DialogService,
     public messageService: MessageService,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private renderer: Renderer2,
     private route: ActivatedRoute,
     private coreService: CoreService
@@ -517,14 +517,14 @@ export class AddnewrouteComponent implements OnInit {
   }
   setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
-      criteria: new FormControl({ value: "", disabled: false }, [
+      criteria: new UntypedFormControl({ value: "", disabled: false }, [
         Validators.required,
       ]),
-      operation: new FormControl(
+      operation: new UntypedFormControl(
         { value: "", disabled: !this.criteriaEqualsDdlOptions.length },
         [Validators.required]
       ),
-      value: new FormControl(
+      value: new UntypedFormControl(
         { value: "", disabled: !this.correspondentDdlOptions.length },
         [Validators.required]
       ),
