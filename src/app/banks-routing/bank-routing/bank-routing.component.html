@@ -16,16 +16,16 @@
     </div>
   </div>
   <div class="ptable">
-    <p-card class="p-col-12" *ngIf="!bankRoutingData">
+    <p-card class="p-col-12" *ngIf="!bankRoutesGroups">
       {{ noDataMsg }}
     </p-card>
     <p-table
-      *ngIf="bankRoutingData"
+      *ngIf="bankRoutesGroups"
       class="bank-routing-table"
       #dt
-      [value]="bankRoutingData"
+      [value]="bankRoutesGroups | slice : 0 : bankRoutesGroups.length"
+      dataKey="groupID"
       sortMode="multiple"
-      dataKey="id"
       [rows]="10"
       [paginator]="true"
       [rowHover]="true"
@@ -521,117 +521,67 @@
           </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-bankRouting>
+      <ng-template pTemplate="body" let-bankRouting let-expanded="expanded">
         <tr>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              padding-bottom: 14px;
-              cursor: pointer;
-              color: #2455cf;
-            "
-          >
+          <td colspan="10">
+            <div class="group-row d-flex">
+              <button
+                type="button"
+                pButton
+                pRipple
+                [pRowToggler]="bankRouting"
+                rowExpandMode="single"
+                class="p-button-text p-button-rounded p-button-plain"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              ></button>
+              <a style="text-decoration: underline !important">{{
+                bankRouting.groupID
+              }}</a>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="rowexpansion" let-bankRouting>
+        <tr *ngFor="let route of bankRouting.routes">
+          <td style="cursor: pointer; color: #2455cf" class="table-description">
             <a
               style="text-decoration: underline !important"
-              (click)="viewBankRouting(bankRouting)"
-              >{{ bankRouting.routeCode }}</a
+              (click)="viewBankRouting(route)"
+              >{{ route.routeCode }}</a
             >
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.country }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.country }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.routeBankName }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeBankName }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{
-              bankRouting.routeServiceCategory
-            }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeServiceCategory }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.routeServiceType }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeServiceType }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.iSCorrespondent }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.iSCorrespondent }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.routeToBankName }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeToBankName }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{
-              bankRouting.routeToServiceCategory
-            }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeToServiceCategory }}</span>
           </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-              padding-bottom: 14px;
-            "
-          >
-            <span class="image-text">{{ bankRouting.routeToServiceType }}</span>
+          <td class="table-description">
+            <span class="image-text">{{ route.routeToServiceType }}</span>
           </td>
           <td style="border: none; text-align: center">
             <label class="switch" style="border: none">
               <input
                 #statusInp
                 type="checkbox"
-                (click)="updateStatus($event, bankRouting.routeCode)"
+                (click)="updateStatus($event, route.routeCode)"
                 [checked]="
-                  bankRouting.status == 'Active' || bankRouting.status == 'A'
-                    ? true
-                    : false
+                  route.status == 'Active' || route.status == 'A' ? true : false
                 "
               />
               <span class="slider round"></span>

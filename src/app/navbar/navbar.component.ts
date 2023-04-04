@@ -211,7 +211,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     let bigLogoImgSrc = "assets/icon/casmex logo.svg";
     let smallLogoImgSrc = "assets/icon/logo-Icon.svg";
     this.toggleSidebarBtn.nativeElement.addEventListener("click", () => {
-      console.log("::logo", this.logoImg.nativeElement.getAttribute("src"));
       if (bodyTag.classList.contains("minified-sidebar")) {
         bodyTag.classList.remove("minified-sidebar");
         this.logoImg.nativeElement.setAttribute("src", bigLogoImgSrc);

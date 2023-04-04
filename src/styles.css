@@ -388,4 +388,12 @@ p-paginator .p-paginator-bottom {
   font-size: 12px;
   height: 50px;
 }
+
+.p-button:focus {
+  box-shadow: none !important;
+}
+
+.p-datatable .p-sortable-column.p-highlight {
+  background: #e9ecef !important;
+}
 /* Primeng overide style end */

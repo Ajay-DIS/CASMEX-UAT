@@ -277,6 +277,10 @@ export class BankRoutingComponent implements OnInit {
     this.table.filter([], "routeCode", "in");
   }
 
+  // grouping
+  bankRoutesGroups: { groupID: string; routes: BankRouting[] }[] = [];
+  // grouping end
+
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
@@ -289,7 +293,12 @@ export class BankRoutingComponent implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    this.router.navigate(["navbar", "bank-routing", "addnewroute", data.routeCode]);
+    this.router.navigate([
+      "navbar",
+      "bank-routing",
+      "addnewroute",
+      data.routeCode,
+    ]);
   }
 
   updateStatus(e: any, bankRoute: string) {
@@ -332,11 +341,27 @@ export class BankRoutingComponent implements OnInit {
               route.createdDate = new Date(route.createdDate);
             });
 
-            this.bankRoutingData = this.bankRoutingApiData.data;
+            // % Before grouping
+            // this.bankRoutingData = [...this.bankRoutingApiData.data];
+            // % Before grouping end
+            let groups = [];
+            this.bankRoutesGroups = [];
+            this.bankRoutingApiData.data.forEach((route) => {
+              if (!groups.includes(route.groupID)) {
+                groups.push(route.groupID);
+              }
+            });
+
+            groups.forEach((g) => {
+              let routeGrp = this.bankRoutingApiData.data.filter((route) => {
+                return route.groupID == g;
+              });
+              this.bankRoutesGroups.push({ groupID: g, routes: routeGrp });
+            });
+            console.log(this.bankRoutesGroups);
             // .sort(
             //   (a, b) => a.createdDate - b.createdDate
             // );
-
             this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
               return { label: code, value: code };
             });

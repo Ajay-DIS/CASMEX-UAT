@@ -121,6 +121,18 @@
   font-weight: 500;
   color: rgb(0 0 0);
 }
+:host
+  ::ng-deep
+  .bank-routing-table
+  .p-datatable
+  .p-datatable-tbody
+  tr
+  td.table-description {
+  font-size: 12px;
+  border: none;
+  padding-bottom: 14px;
+  padding-left: 30px;
+}
 .filter-icon {
   position: absolute;
   right: 3%;
@@ -142,3 +154,19 @@
   margin-right: 5px;
   height: 18px !important;
 }
+
+/* Grouping */
+.group-row {
+  gap: 5px;
+  align-items: center;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 500;
+  color: rgb(68 68 68) !important;
+  font-size: 12px;
+  color: rgb(36 85 207) !important;
+}
+.group-row button {
+  color: rgb(36 85 207) !important;
+  font-weight: 600;
+}
+/* Grouping end */
