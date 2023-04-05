@@ -517,13 +517,14 @@ export class AddnewrouteComponent implements OnInit {
     }
 
     //check mandatory fieds
-    this.bankRoutesColumns.forEach(element => {
-      this.cmCriteriaMandatory.forEach(item => {
-        (element.header == item) && (element.header = element.header+' *');
-        (item == 'Organization') && (element.field == 'routeBankName') && (element.header = element.header+' *');
-      })
-    })
-    
+    this.bankRoutesColumns.forEach((element) => {
+      this.cmCriteriaMandatory.forEach((item) => {
+        element.header == item && (element.header = element.header + " *");
+        item == "Organization" &&
+          element.field == "routeBankName" &&
+          (element.header = element.header + " *");
+      });
+    });
   }
   setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
@@ -609,11 +610,11 @@ export class AddnewrouteComponent implements OnInit {
             });
           });
           this.criteriaMapDdlOptions = crArr;
-          console.log(this.criteriaDataDetailsJson.data)
+          console.log(this.criteriaDataDetailsJson.data);
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
-          console.log(" this.cmCriteriaMandatory",  this.cmCriteriaMandatory)
+          console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
         },
         (err) => {
           console.log("::error loading AddBankRouteCriteriaData", err);
@@ -1165,11 +1166,12 @@ export class AddnewrouteComponent implements OnInit {
     console.log("enterin select ", index, column, row);
     switch (column) {
       case "routeToBankName":
-        (this.mode == 'add') && (this.selectedRowCollumn[index].routeToBank = true);
+        this.mode == "add" &&
+          (this.selectedRowCollumn[index].routeToBank = true);
         this.bankRoutesData[index]["routeToServiceCategory"] = "";
         break;
       case "routeToServiceCategory":
-        if(this.mode == 'add') {
+        if (this.mode == "add") {
           this.bankRoutesData[index]["routeToServiceType"] = "";
           if (!this.selectedRowCollumn[index].routeToBank) {
             this.ngxToaster.warning("Please select the route to bank first");
@@ -1180,7 +1182,7 @@ export class AddnewrouteComponent implements OnInit {
         }
         break;
       case "routeToServiceType":
-        if(this.mode == 'add') {
+        if (this.mode == "add") {
           if (!this.selectedRowCollumn[index].routeToServiceCategory) {
             this.ngxToaster.warning("Please select the service category first");
             this.selectedRowCollumn[index].routeToServiceType = false;
@@ -1188,7 +1190,7 @@ export class AddnewrouteComponent implements OnInit {
             this.selectedRowCollumn[index].routeToServiceType = true;
           }
         }
-        
+
         break;
       default:
         break;
@@ -1236,7 +1238,7 @@ export class AddnewrouteComponent implements OnInit {
       } else {
         element["userId"] = this.userId;
         element["routeDesc"] =
-          "Based on the critetria selected banks will be routed to preferred routing bank"; 
+          "Based on the critetria selected banks will be routed to preferred routing bank";
         element["lcyAmountTo"] = element.lcyAmountTo
           ? element.lcyAmountTo
           : null;
@@ -1263,6 +1265,7 @@ export class AddnewrouteComponent implements OnInit {
     ) {
       if (
         !this.bankRoutesData[0]["lcySlab"] ||
+        this.bankRoutesData[0]["lcySlab"] == "null" ||
         this.getSlabCriteriaText(
           this.txnCriteriaRangeFormData["txnCriteriaRange"]
         ) == this.bankRoutesData[0]["lcySlab"]
