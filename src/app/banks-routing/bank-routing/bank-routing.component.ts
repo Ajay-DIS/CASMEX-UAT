@@ -281,9 +281,7 @@ export class BankRoutingComponent implements OnInit {
   selectedFilterRouteToServiceType: any[] = [];
   selectedFilterStatus: any[] = [];
 
-  clearSelectedFilterRoutes() {
-    console.log(this.selectedFilterRoutes)
-  }
+  loading = true;
 
   // grouping
   bankRoutesGroups: { groupID: string; routes: BankRouting[] }[] = [];
@@ -301,7 +299,7 @@ export class BankRoutingComponent implements OnInit {
     { field: "routeToBankName", header: "Route To" },
     { field: "routeToServiceCategory", header: "Service Category" },
     { field: "routeToServiceType", header: "Service Type" },
-    { field: "status", header: "Status" },
+    { field: "status", header: "Status", width: "9%" },
   ];
 
   files1: TreeNode[] = [];
@@ -411,7 +409,9 @@ export class BankRoutingComponent implements OnInit {
                 children: treeTableGrp,
               });
               this.bankRoutesGroups.push({ groupID: g, routes: routeGrp });
+              this.loading = false;
             });
+
             console.log(this.bankRoutesGroups);
             console.log(this.files1);
             // .sort(

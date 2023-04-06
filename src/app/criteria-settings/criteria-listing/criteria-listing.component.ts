@@ -230,6 +230,8 @@ export class CriteriaListingComponent implements OnInit {
   selectedFilterCreatedDate: any[] = [];
   selectedFilterCreatedBy: any[] = [];
   //suresh
+
+  loading = true;
   constructor(
     private router: Router,
     private coreService: CoreService,
@@ -284,6 +286,7 @@ export class CriteriaListingComponent implements OnInit {
         criteria["createdDate"]
       );
     });
+    this.loading = false;
   }
 
   setFilterOptions() {
@@ -324,9 +327,12 @@ export class CriteriaListingComponent implements OnInit {
     this.criteriaDataArrayView["form"] = data["form"];
     this.clickforview = true;
   }
-  openClickForClone(data:any){
-    this.router.navigate(["navbar", "criteria-settings", "add-criteria-settings", data.id]);
-  
-}
-
+  openClickForClone(data: any) {
+    this.router.navigate([
+      "navbar",
+      "criteria-settings",
+      "add-criteria-settings",
+      data.id,
+    ]);
+  }
 }
