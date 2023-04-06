@@ -84,9 +84,7 @@
                 type="text"
                 class="table-search"
                 placeholder="Search"
-                (input)="
-                  dt.filter($event.target.value, col.field, col.filterMatchMode)
-                "
+                (input)="dt.filter($event.target.value, col.field, 'contains')"
               />
             </span>
           </th>
