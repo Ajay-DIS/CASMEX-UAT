@@ -11,7 +11,6 @@
         type="button"
         label="Add Tax"
         class="p-button-raised"
-        routerLink="add-criteria-settings"
       ></button>
     </div>
   </div>
@@ -29,6 +28,7 @@
       [loading]="loading"
       [resizableColumns]="true"
       columnResizeMode="fit"
+      [rowHover]="true"
     >
       <ng-template pTemplate="header" let-columns>
         <tr>
