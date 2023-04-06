@@ -11,6 +11,7 @@ import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-m
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
+import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -100,6 +101,16 @@ const routes: Routes = [
           },
           { label: "Criteria", routerLink: "criteria-settings" },
           { label: "Add Criteria settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "tax-settings",
+        component: TaxListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "tax-settings" },
+          { label: "Tax Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

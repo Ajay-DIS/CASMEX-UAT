@@ -45,6 +45,7 @@ import { SessionTimeOutComponent } from "./session-time-out/session-time-out.com
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { DatePipe } from "@angular/common";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
+import { TaxListingComponent } from './tax-settings/tax-listing/tax-listing.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -65,6 +66,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SessionTimeOutComponent,
     CriteriaListingComponent,
     CriteriaSettingsDetailComponent,
+    TaxListingComponent,
     // SidebarComponent
   ],
   imports: [

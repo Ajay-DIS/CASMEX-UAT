@@ -5,21 +5,6 @@
   width: 100%;
 }
 
-.table-search {
-  background-color: #f4f6fa;
-  height: 35px;
-  border: none;
-  font-size: 12px;
-  max-width: 96%;
-}
-.search-row {
-  border-bottom: 1px solid #e9ecef;
-}
-
-.search-row th {
-  background-color: #fff !important;
-}
-
 .bank-routing-main::-webkit-scrollbar {
   height: 5px;
   background-color: #fff;
@@ -102,27 +87,6 @@
 }
 :host ::ng-deep .bank-routing-table .p-datatable .p-datatable-thead tr {
   height: 55px;
-}
-.filter-icon {
-  position: absolute;
-  right: 3%;
-  top: 30%;
-}
-.infoicon {
-  font-size: 12px;
-  width: 50%;
-  height: 18px;
-  font-family: "IBM Plex Sans", sans-serif;
-  font-style: italic;
-  letter-spacing: 0;
-  text-align: left;
-  color: #444444;
-  display: flex;
-  align-items: center;
-}
-.infoicon img {
-  margin-right: 5px;
-  height: 18px !important;
 }
 
 /* Grouping */
