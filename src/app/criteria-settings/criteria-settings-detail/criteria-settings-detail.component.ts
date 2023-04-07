@@ -262,28 +262,25 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeBtnClick() {
-    let newArray = this.selectedFields.filter(item => !this.criteriaSettingtable.find(obj=> obj.fieldName == item.fieldName))
-    this.criteriaSettingtable.forEach((item) => {
+    this.selectedFields.forEach((item) => {
+      console.log(item);
       item["orderID"] = "";
       if (!item["operationOption"]) {
         item["operationOption"] = item["operations"].split(",").map((opt) => {
           return { label: opt, value: opt };
         });
-            item["operations"] = item["operationOption"];
+        let index = this.criteriaSettingtable.findIndex(
+          (x) => x.fieldName == item.fieldName
+        );
+        if (index == -1) {
+          item["operations"] = "";
+        } else {
+          item["operations"] = this.criteriaSettingtable[index]["operations"];
+        }
       }
       item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
-    newArray.forEach((item) => {
-      item["orderID"] = "";
-      if (!item["operationOption"]) {
-        item["operationOption"] = item["operations"].split(",").map((opt) => {
-          return { label: opt, value: opt };
-        });
-            item["operations"] = "";
-      }
-      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-    });
-    this.criteriaSettingtable = [...this.criteriaSettingtable, ...newArray];
+    this.criteriaSettingtable = [...this.selectedFields];
     this.orderIDArray = [];
   }
 

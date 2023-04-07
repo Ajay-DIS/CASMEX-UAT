@@ -89,6 +89,11 @@
   height: 55px;
 }
 
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+
 /* Grouping */
 .group-row {
   gap: 5px;
