@@ -83,6 +83,11 @@
   font-weight: 500;
 }
 
+:host ::ng-deep .criteria-setting-table .p-multiselect-trigger,
+:host ::ng-deep .criteria-setting-table .p-multiselect-label-container {
+  display: none;
+}
+
 .operation-btns {
   background-color: rgb(85 199 138);
   color: white;

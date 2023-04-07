@@ -381,11 +381,6 @@ p-paginator .p-paginator-bottom {
 
 /* table filter style */
 
-p-table .p-multiselect-trigger,
-p-table .p-multiselect-label-container {
-  display: none;
-}
-
 p-table .filter-icon {
   /* position: absolute;
   right: 3%;
