@@ -5,7 +5,11 @@ import {
   Renderer2,
   ViewChild,
 } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
@@ -17,6 +21,7 @@ import { CoreService } from "src/app/core.service";
 import { BankRoutingService } from "../bank-routing.service";
 import { TransactionCriteriaModal } from "../transaction-criteria-modal/transaction-criteria-modal";
 import { Table } from "primeng/table";
+import { CriteriaTemplateData } from "../banks-routing.model";
 
 @Component({
   selector: "app-addnewroute",
@@ -512,8 +517,6 @@ export class AddnewrouteComponent implements OnInit {
       this.getBanksRoutingForEditApi(params.id);
       this.routeId = params.id;
     }
-
-    
   }
   setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
@@ -1128,13 +1131,16 @@ export class AddnewrouteComponent implements OnInit {
 
   selectCriteriaTemplate(item) {
     this.selectCriteriaForm.reset();
-
-    let selectedData = this.criteriaTemplatesDdlOptions.filter(
-      (x) => x.criteriaName == item.criteriaName
-    )[0];
+    let selectedData: CriteriaTemplateData =
+      this.criteriaTemplatesDdlOptions.filter((x: { criteriaName: any }) => {
+        return x.criteriaName == item.criteriaName;
+      })[0];
+    console.log(selectedData);
+    console.log(selectedData.criteriaMap);
     this.criteriaText = selectedData.criteriaMap.split(";");
+    console.log(this.criteriaText);
     if (
-      !this.criteriaText.filter((criteria) => criteria == "LCY Amount = Slab")
+      !this.criteriaText?.filter((criteria) => criteria == "LCY Amount = Slab")
         .length
     ) {
       if (!this.removeAddCriteriaListener) {

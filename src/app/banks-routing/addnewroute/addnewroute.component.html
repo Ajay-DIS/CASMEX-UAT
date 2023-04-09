@@ -137,7 +137,6 @@
             class="templates-dropdown"
             [options]="criteriaTemplatesDdlOptions"
             optionLabel="name"
-            optionValue="code"
             [appendTo]="'body'"
             placeholder="{{
               criteriaTemplatesDdlOptions.length
@@ -207,7 +206,7 @@
             type="button"
             label="Apply Criteria"
             class="p-button-raised"
-            [disabled]="!criteriaText.length"
+            [disabled]="!criteriaText?.length"
             (click)="applyCriteria()"
           ></button>
         </div>

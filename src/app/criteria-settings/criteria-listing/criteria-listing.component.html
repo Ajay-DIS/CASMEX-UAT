@@ -60,7 +60,7 @@
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
                 (onChange)="dt.filter($event.value, 'applications', 'in')"
-                (onPanelHide)="showApplicationOptions = !showApplicationOptions"
+                (onPanelHide)="showApplicationOptions = false"
               >
               </p-multiSelect>
             </div>
