@@ -114,10 +114,10 @@ export class AddnewrouteComponent implements OnInit {
   bankRoutesData: any = [];
   editBankRouteApiData: any = [];
   bankRoutesColumns = [
-    { field: "country", header: "Country *", editable: false, visible: true },
+    { field: "country", header: "Country", editable: false, visible: true },
     {
       field: "routeBankName",
-      header: "Route Bank Name *",
+      header: "Route Bank Name",
       editable: false,
       visible: true,
     },
@@ -465,6 +465,7 @@ export class AddnewrouteComponent implements OnInit {
   routeId = "";
 
   $oninitLcyFormSubscription: any;
+  mode = "add";
 
   selectedTemplate = this.criteriaTemplatesDdlOptions.length
     ? "Select Template"
@@ -486,6 +487,7 @@ export class AddnewrouteComponent implements OnInit {
   @ViewChild("addCriteriaBtn") addCriteriaBtn: ElementRef;
 
   ngOnInit(): void {
+    this.mode = "add";
     this.getAddBankRouteCriteriaData();
     this.setSelectAppForm1();
     this.route.data.subscribe((data) => {
@@ -514,9 +516,20 @@ export class AddnewrouteComponent implements OnInit {
     this.getAllTemplates();
 
     if (params && params.id) {
+      this.mode = "edit";
       this.getBanksRoutingForEditApi(params.id);
       this.routeId = params.id;
     }
+
+    //check mandatory fieds
+    this.bankRoutesColumns.forEach((element) => {
+      this.cmCriteriaMandatory.forEach((item) => {
+        element.header == item && (element.header = element.header + " *");
+        item == "Organization" &&
+          element.field == "routeBankName" &&
+          (element.header = element.header + " *");
+      });
+    });
   }
   setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
@@ -538,7 +551,7 @@ export class AddnewrouteComponent implements OnInit {
     this.bankRoutingService.getBanksRoutingForEdit(routeCode).subscribe(
       (res) => {
         this.editBankRouteApiData = res;
-        console.log("edit data", res);
+
         // Ajay code
         if ((res as any).data[0]["criteriaMap"]) {
           this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
@@ -564,23 +577,15 @@ export class AddnewrouteComponent implements OnInit {
 
         // suresh code
         this.bankRoutesData = res["data"];
-        console.log(this.bankRoutesData);
-        // this.routeToBankNameOption = this.bankRoutesData[0].routeToBankNameOption;
-        // this.routeToServiceCategoryOption = this.bankRoutesData[0].routeToServiceCategoryOption;
-        // this.routeToServiceTypeOption = this.bankRoutesData[0].routeToServiceTypeOption;
-
         if (this.editBankRouteApiData.LCY == "Yes") {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
               (x.visible = true);
-
-            // x.field == "isCorrespondent" && (x.visible = true);
           });
         } else {
           this.bankRoutesColumns.forEach((x) => {
             (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
               (x.visible = false);
-            // x.field == "isCorrespondent" && (x.visible = true);
           });
         }
 
@@ -610,10 +615,11 @@ export class AddnewrouteComponent implements OnInit {
             });
           });
           this.criteriaMapDdlOptions = crArr;
-
+          console.log(this.criteriaDataDetailsJson.data);
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
+          console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
         },
         (err) => {
           console.log("::error loading AddBankRouteCriteriaData", err);
@@ -681,32 +687,6 @@ export class AddnewrouteComponent implements OnInit {
               this.validCriteria = false;
               return false;
             } else {
-              // if (splitText.split("  ")[1] == "Any") {
-              //   console.log("::any already there");
-              //   let conflictingCriteria;
-              //   let anyCriteria = this.criteriaText.filter((criteria) => {
-              //     return criteria.includes(splitText.split("  ")[0]);
-              //   });
-              //   conflictingCriteria = anyCriteria.filter(
-              //     (crt) => !crt.includes("Any")
-              //   );
-              //   if (anyCriteria.length <= 1) {
-              //     console.log("::any criterias", anyCriteria);
-              //     console.log("::any with one condition is added");
-              //   } else {
-              //     console.log(
-              //       "::any with more than one condition is trying to add"
-              //     );
-              //     this.ngxToaster.warning(
-              //       "Please delete existing criteria " +
-              //         conflictingCriteria +
-              //         ", then add " +
-              //         criteria
-              //     );
-              //     this.validCriteria = false;
-              //     return false;
-              //   }
-              // }
               let isAlreadyCriteriaNotEqualCondition = false;
               let isAlreadyCriteriaEqualCondition = false;
 
@@ -1093,7 +1073,6 @@ export class AddnewrouteComponent implements OnInit {
     }
     this.lcySlab = slabText;
     formData.append("lcySlab", this.lcySlab);
-    // this.criteriaTemplatesDdlOptions.push(payload); //need  to be remove  after sit working
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(formData)
       .subscribe((response) => {
@@ -1156,17 +1135,6 @@ export class AddnewrouteComponent implements OnInit {
       this.bankRoutingService.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
       });
-
-      // if (!this.removeAddCriteriaListener) {
-      //   console.log("in template LCY not present");
-      //   this.removeAddCriteriaListener = this.renderer.listen(
-      //     this.addCriteriaBtn.nativeElement,
-      //     "click",
-      //     (evt) => {
-      //       this.showTransCriteriaModal();
-      //     }
-      //   );
-      // }
     } else {
       let lcySlabForm = {};
       let lcySlabArr = [];
@@ -1204,49 +1172,33 @@ export class AddnewrouteComponent implements OnInit {
 
   selectedColumn(column, row, index) {
     console.log("enterin select ", index, column, row);
-    //let index = this.bankRoutesData.findIndex((x) => x.id == row.id);
-    // (column == "routeToBankName") && (this.isSelectedRouteToBankName = true);
-    // if (column == "routeToServiceCategory") {
-    //   if (!this.isSelectedRouteToBankName) {
-    //     this.ngxToaster.warning("Please select the route to bank first");
-    //     this.isSelectedRouteToServiceCategory = true;
-    //     this.bankRoutesData[index]["routeToServiceCategory"] = "";
-    //     console.log("this.bankRoutesData[index]",this.bankRoutesData[index]);
-    //     let s = []; Object.assign(s, this.bankRoutesData); this.bankRoutesData = []; this.bankRoutesData = s;
-    //   }
-    // }
-    // if (column == "routeToServiceType") {
-
-    //   console.log(
-    //     "this.bankRoutesData[index]",
-    //     this.bankRoutesData[index]["routeToServiceType"]
-    //   );
-    //   // let cell = this.table.findCell(row.id, column)
-    //   if (!this.isSelectedRouteToServiceCategory) {
-    //     this.ngxToaster.warning("Please select the service category first");
-    //   }
-    // }
     switch (column) {
       case "routeToBankName":
-        this.selectedRowCollumn[index].routeToBank = true;
+        this.mode == "add" &&
+          (this.selectedRowCollumn[index].routeToBank = true);
         this.bankRoutesData[index]["routeToServiceCategory"] = "";
         break;
       case "routeToServiceCategory":
-        this.bankRoutesData[index]["routeToServiceType"] = "";
-        if (!this.selectedRowCollumn[index].routeToBank) {
-          this.ngxToaster.warning("Please select the route to bank first");
-          this.selectedRowCollumn[index].routeToServiceCategory = false;
-        } else {
-          this.selectedRowCollumn[index].routeToServiceCategory = true;
+        if (this.mode == "add") {
+          this.bankRoutesData[index]["routeToServiceType"] = "";
+          if (!this.selectedRowCollumn[index].routeToBank) {
+            this.ngxToaster.warning("Please select the route to bank first");
+            this.selectedRowCollumn[index].routeToServiceCategory = false;
+          } else {
+            this.selectedRowCollumn[index].routeToServiceCategory = true;
+          }
         }
         break;
       case "routeToServiceType":
-        if (!this.selectedRowCollumn[index].routeToServiceCategory) {
-          this.ngxToaster.warning("Please select the service category first");
-          this.selectedRowCollumn[index].routeToServiceType = false;
-        } else {
-          this.selectedRowCollumn[index].routeToServiceType = true;
+        if (this.mode == "add") {
+          if (!this.selectedRowCollumn[index].routeToServiceCategory) {
+            this.ngxToaster.warning("Please select the service category first");
+            this.selectedRowCollumn[index].routeToServiceType = false;
+          } else {
+            this.selectedRowCollumn[index].routeToServiceType = true;
+          }
         }
+
         break;
       default:
         break;
@@ -1255,14 +1207,7 @@ export class AddnewrouteComponent implements OnInit {
 
   getBanksRoutingData(id: string) {
     this.bankRoutesData = this.apiResponse.data;
-    // this.bankRoutesData.forEach((element) =>{
-    //   // element.routeToBankName[0].push({codeName: "select",code:""}) ;
-    //   element.routeToBankName.splice(0, 0,{codeName: "select",code:""});
-    // })
     this.bankRoutesData.forEach((element) => {
-      // this.routeToBankNameOption = element.routeToBankName;
-      // this.routeToServiceCategoryOption = element.routeToServiceCategory;
-      // this.routeToServiceTypeOption = element.routeToServiceType;
       element.routeToBankNameOption = element.routeToBankName;
       element.routeToServiceCategoryOption = element.routeToServiceCategory;
       element.routeToServiceTypeOption = element.routeToServiceType;
@@ -1279,25 +1224,13 @@ export class AddnewrouteComponent implements OnInit {
       this.bankRoutesColumns.forEach((x) => {
         (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
           (x.visible = true);
-        // x.field == "isCorrespondent" && (x.visible = true);
       });
     } else {
       this.bankRoutesColumns.forEach((x) => {
         (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
           (x.visible = false);
-        // x.field == "isCorrespondent" && (x.visible = true);
       });
     }
-    // this.bankRoutingService
-    //   .getBankRoutingData(id)
-    //   .subscribe((result):any=> {
-    //     if(result) {
-    //       this.bankRoutesData = result["data"];
-    //       this.routeToDdlOption = result["routeToBankName"].concat(result["routeBankName"]);
-    //       this.serviceCategoryDdlOptions= result["routeServiceCategory"].concat(result["routeToServiceCategory"]);
-    //       this.serviceTypeDdlOptions = result["routeServiceType"].concat(result["routeToServiceType"])
-    //     }
-    //   })
   }
 
   saveAddNewRoute(action) {
@@ -1313,9 +1246,7 @@ export class AddnewrouteComponent implements OnInit {
       } else {
         element["userId"] = this.userId;
         element["routeDesc"] =
-          "Based on the critetria selected banks will be routed to preferred routing bank"; //ask to yogesh
-        // element["criteriaMap"] = this.criteriaText.join(";");
-        // element["lcySlab"] = this.lcySlab;
+          "Based on the critetria selected banks will be routed to preferred routing bank";
         element["lcyAmountTo"] = element.lcyAmountTo
           ? element.lcyAmountTo
           : null;
@@ -1342,6 +1273,7 @@ export class AddnewrouteComponent implements OnInit {
     ) {
       if (
         !this.bankRoutesData[0]["lcySlab"] ||
+        this.bankRoutesData[0]["lcySlab"] == "null" ||
         this.getSlabCriteriaText(
           this.txnCriteriaRangeFormData["txnCriteriaRange"]
         ) == this.bankRoutesData[0]["lcySlab"]

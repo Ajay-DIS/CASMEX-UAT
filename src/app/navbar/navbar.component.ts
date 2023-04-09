@@ -201,6 +201,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/criteria-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+
+        case "Tax":
+          item["routerLink"] = "/navbar/tax-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
       }
     });
     return menu;
@@ -273,6 +278,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         iconName = "settings-icon";
         matchUrls = [
           "/navbar/bank-routing",
+          "/navbar/tax-settings",
           "/navbar/bank-routing/addnewroute",
         ];
         routeName = "/navbar/bank-routing";

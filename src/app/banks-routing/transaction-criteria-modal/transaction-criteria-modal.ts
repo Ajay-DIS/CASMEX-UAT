@@ -44,17 +44,6 @@ export class TransactionCriteriaModal {
 
   ngOnInit() {
     this.txnCriteriaRangeForm.valueChanges.subscribe((x) => {
-      // this.txnCriteriaRange = new FormArray([]);
-      // this.allTxnCriteriaRange = new FormArray([])
-
-      // this.allTxnCriteriaRange.value.forEach((range) => {
-      //   this.txnCriteriaRange.push(
-      //     this.createTxnCriteriaRange(range.from, range.to)
-      //   );
-      //   this.allTxnCriteriaRange.push(
-      //     this.createTxnCriteriaRange(range.from, range.to)
-      //   );
-      // });
 
       let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
       let formData = JSON.stringify(x);
@@ -235,7 +224,6 @@ export class TransactionCriteriaModal {
   closeModal() {
     this.saveTxnCriteriaRanges();
     if (this.isTxnCriteriaRangesSaved && !this.isRangeEmpty) {
-      // this.ref.close(this.txnCriteriaRangeForm.value);
       this.ref.close(this.TransactionCriteriaRange);
     }
   }
