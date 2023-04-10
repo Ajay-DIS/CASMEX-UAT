@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
+import { MultiSelect } from "primeng/multiselect";
 
 @Component({
   selector: "app-criteria-listing",
@@ -204,32 +205,44 @@ export class CriteriaListingComponent implements OnInit {
   criteriaSettingData: any[] = [];
   // criteriaSettingData = this.dummyCriteriaSettingsData.data;
 
-  showApplicationOptions: boolean = false;
-  showFormOptions: boolean = false;
-  showCriteriaFieldsOptions: boolean = false;
-  showListFieldsOptions: boolean = false;
-  showCreatedDateOptions: boolean = false;
-  showCreatedByOptions: boolean = false;
-  showStatusesOptions: boolean = false;
+  showapplicationsOptions: boolean = false;
+  showformOptions: boolean = false;
+  showtotalCriteraiFieldOptions: boolean = false;
+  showtotalListFieldsOptions: boolean = false;
+  showcreatedDateOptions: boolean = false;
+  showcreatedByOptions: boolean = false;
 
   applications: any[];
-  forms: any[];
-  totalCriteriaFields: any[];
-  totalListFields: any = [];
-  createdDates: any[];
+  form: any[];
+  totalCriteraiField: any[];
+  totalListField: any = [];
+  createdDate: any[];
   createdBy: any[];
-  statuses: any[];
   //suresh
   clickforview = false;
   criteriaDataArrayView = [];
 
-  selectedFilterApplication: any[] = [];
-  selectedFilterForm: any[] = [];
-  selectedFilterCriteriaFields: any[] = [];
-  selectedFilterListFields: any[] = [];
-  selectedFilterCreatedDate: any[] = [];
-  selectedFilterCreatedBy: any[] = [];
+  selectedFilterapplications: any[] = [];
+  selectedFilterform: any[] = [];
+  selectedFiltertotalCriteraiField: any[] = [];
+  selectedFiltertotalListField: any[] = [];
+  selectedFiltercreatedDate: any[] = [];
+  selectedFiltercreatedBy: any[] = [];
   //suresh
+
+  cols: any[] = [
+    { field: "applications", header: "Applications", width: "15%" },
+    { field: "form", header: "Form", width: "15%" },
+    {
+      field: "totalCriteraiField",
+      header: "Total Criteria Fields",
+      width: "15%",
+    },
+    { field: "totalListField", header: "Total List Fields", width: "15%" },
+    { field: "createdDate", header: "Created Date", width: "15%" },
+    { field: "createdBy", header: "Created By", width: "15%" },
+    { field: "operations", header: "Operations", width: "10%" },
+  ];
 
   loading = true;
   constructor(
@@ -293,30 +306,27 @@ export class CriteriaListingComponent implements OnInit {
     this.applications = this.criteriaSettingApiData.applications.map((code) => {
       return { label: code, value: code };
     });
-    this.forms = this.criteriaSettingApiData.form.map((code) => {
+    this.form = this.criteriaSettingApiData.form.map((code) => {
       return { label: code, value: code };
     });
-    this.totalCriteriaFields = this.criteriaSettingApiData[
+    this.totalCriteraiField = this.criteriaSettingApiData[
       "totalCriteraiField"
     ].map((code) => {
       return { label: code, value: code };
     });
-    this.totalListFields = [{ label: "7", value: "7" }];
+    this.totalListField = [{ label: "7", value: "7" }];
     let createdDatesApi = this.criteriaSettingApiData.createdDate.map(
       (code) => {
         let formatDate = this.datePipe.transform(code);
         return formatDate;
       }
     );
-    this.createdDates = [...new Set(createdDatesApi.map((v) => v))].map(
+    this.createdDate = [...new Set(createdDatesApi.map((v) => v))].map(
       (value) => {
         return { label: value, value: value };
       }
     );
     this.createdBy = this.criteriaSettingApiData.createdBy.map((code) => {
-      return { label: code, value: code };
-    });
-    this.statuses = this.criteriaSettingApiData.status.map((code) => {
       return { label: code, value: code };
     });
   }
@@ -334,5 +344,30 @@ export class CriteriaListingComponent implements OnInit {
       "add-criteria-settings",
       data.id,
     ]);
+  }
+
+  toggleFilterVisibility(field) {
+    this[`show${field}Options`] = !this[`show${field}Options`];
+  }
+
+  hideFilterVisibility(field) {
+    this[`show${field}Options`] = false;
+  }
+
+  getSelectedFilterArr(field: any) {
+    return this[`selectedFilter${field}`];
+  }
+
+  setSelectedFilter(ms: MultiSelect, field: any) {
+    this[`selectedFilter${field}`] = ms.value;
+    console.log(ms.value, this[`selectedFilter${field}`]);
+  }
+
+  fieldFilterVisible(field: any) {
+    return this[`show${field}Options`];
+  }
+
+  fieldFilterOptions(field: any): [] {
+    return this[field];
   }
 }

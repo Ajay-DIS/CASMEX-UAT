@@ -40,14 +40,10 @@
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div
-              (click)="$event.stopPropagation()"
-              style="right: 35%"
-              class="filter-icon"
-            >
+            <div (click)="$event.stopPropagation()" class="filter-icon">
               <img
                 height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
+                class="pi pi-filter"
                 (click)="toggleFilterVisibility(col.field)"
                 [src]="
                   getSelectedFilterArr(col.field).length
@@ -69,7 +65,7 @@
                   dt.filter($event.value, col.field, 'in');
                   setSelectedFilter(ms, col.field)
                 "
-                (onPanelHide)="toggleFilterVisibility(col.field)"
+                (onPanelHide)="hideFilterVisibility(col.field)"
               >
               </p-multiSelect>
             </div>
@@ -80,9 +76,8 @@
             <span style="max-width: 100%" class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
-                pInputText
                 type="text"
-                class="table-search"
+                class="p-inputtext table-search"
                 placeholder="Search"
                 (input)="dt.filter($event.target.value, col.field, 'contains')"
               />

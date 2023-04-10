@@ -1114,8 +1114,6 @@ export class AddnewrouteComponent implements OnInit {
       this.criteriaTemplatesDdlOptions.filter((x: { criteriaName: any }) => {
         return x.criteriaName == item.criteriaName;
       })[0];
-    console.log(selectedData);
-    console.log(selectedData.criteriaMap);
     this.criteriaText = selectedData.criteriaMap.split(";");
     console.log(this.criteriaText);
     if (
@@ -1165,13 +1163,11 @@ export class AddnewrouteComponent implements OnInit {
     this.ref.onClose.subscribe((data: any) => {
       if (data) {
         this.txnCriteriaRangeFormData = data;
-        console.log("::addnewroute", data);
       }
     });
   }
 
   selectedColumn(column, row, index) {
-    console.log("enterin select ", index, column, row);
     switch (column) {
       case "routeToBankName":
         this.mode == "add" &&

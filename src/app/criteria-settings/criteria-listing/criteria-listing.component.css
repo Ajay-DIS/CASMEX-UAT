@@ -29,17 +29,6 @@
   margin-top: -0.3rem;
 }
 
-.criteriaSettingFilterIcon {
-  left: 85%;
-  top: 24%;
-  font-size: 11px;
-  z-index: 99;
-  color: rgb(138 144 153);
-}
-.criteriaSettingFilterIcon:hover {
-  color: #2455cf;
-}
-
 :host
   ::ng-deep
   .criteria-setting-table
@@ -73,7 +62,7 @@
 .filter-footer button.clear-btn {
   color: rgb(138 144 153) !important;
 }
-:host ::ng-deep .criteria-setting-table .p-datatable .p-datatable-thead tr {
+/* :host ::ng-deep .criteria-setting-table .p-datatable .p-datatable-thead tr {
   height: 55px;
 }
 :host ::ng-deep .criteria-setting-table .p-datatable .p-datatable-tbody tr td {
@@ -81,10 +70,10 @@
   font-family: "IBM Plex Sans", sans-serif;
   font-style: normal;
   font-weight: 500;
-}
+} */
 
-:host ::ng-deep .criteria-setting-table .p-multiselect-trigger,
-:host ::ng-deep .criteria-setting-table .p-multiselect-label-container {
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
   display: none;
 }
 

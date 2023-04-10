@@ -20,25 +20,6 @@
   position: relative;
 }
 
-.p-inputtext::placeholder {
-  color: rgb(138 144 153);
-  font-family: "IBM Plex Sans", sans-serif !important;
-  opacity: 0.5;
-  font-weight: 500;
-}
-
-.p-input-icon-left > .p-inputtext {
-  padding-left: 1.7rem;
-  font-size: 11px !important;
-}
-
-.p-input-icon-left > i:first-of-type {
-  left: 0.5rem;
-  color: rgb(138 144 153);
-  font-size: 0.8rem;
-  margin-top: -0.3rem;
-}
-
 .bankRoutingFilterIcon {
   font-size: 11px;
   color: rgb(138 144 153);
