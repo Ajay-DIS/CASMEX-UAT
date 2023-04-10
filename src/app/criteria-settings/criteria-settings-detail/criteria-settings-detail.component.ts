@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
@@ -118,7 +118,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   constructor(
     private confirmationService: ConfirmationService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private ngxToaster: ToastrService,
@@ -179,10 +179,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   setSelectAppForm() {
     this.selectAppForm = this.fb.group({
-      applications: new FormControl({ value: "", disabled: false }, [
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
         Validators.required,
       ]),
-      forms: new FormControl({ value: "", disabled: true }, [
+      forms: new UntypedFormControl({ value: "", disabled: true }, [
         Validators.required,
       ]),
     });

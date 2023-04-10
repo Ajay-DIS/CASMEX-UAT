@@ -189,6 +189,10 @@ export class TaxListingComponent implements OnInit {
     this[`show${field}Options`] = !this[`show${field}Options`];
   }
 
+  hideFilterVisibility(field) {
+    this[`show${field}Options`] = false;
+  }
+
   getSelectedFilterArr(field: any) {
     return this[`selectedFilter${field}`];
   }

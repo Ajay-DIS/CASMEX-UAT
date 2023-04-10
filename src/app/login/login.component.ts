@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { take } from "rxjs/operators";
@@ -15,7 +15,7 @@ import { LoginFormData, LoginService } from "./login.service";
   styleUrls: ["./login.component.css"],
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+  loginForm!: UntypedFormGroup;
   isFormInvalid = false;
   loggedInUserData = {
     username: "yogeshm",
@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
     application: "CASMEX_CORE",
   };
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     private ngxToaster: ToastrService,
     private loginService: LoginService,

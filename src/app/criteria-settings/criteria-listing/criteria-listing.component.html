@@ -20,367 +20,113 @@
       {{ noDataMsg }}
     </p-card>
     <p-table
-      *ngIf="criteriaSettingData"
-      class="criteria-setting-table"
       #dt
+      [columns]="cols"
       [value]="criteriaSettingData"
-      sortMode="multiple"
-      dataKey="id"
-      [loading]="loading"
-      [rows]="10"
       [paginator]="true"
+      [rows]="10"
+      [loading]="loading"
+      [resizableColumns]="true"
+      columnResizeMode="fit"
       [rowHover]="true"
     >
-      <ng-template pTemplate="header">
+      <ng-template pTemplate="header" let-columns>
         <tr>
           <th
-            class="table-titles"
-            style="width: 135px"
-            [pSortableColumn]="'applications'"
+            *ngFor="let col of columns; let i = index"
+            pReorderableColumn
+            [pSortableColumn]="col.field"
+            pResizableColumn
+            [style.width]="col.width"
           >
-            Application
+            {{ col.header }}
             <div
+              *ngIf="!(i + 1 == columns.length)"
               (click)="$event.stopPropagation()"
-              style="right: 35%"
               class="filter-icon"
             >
               <img
                 height="12px"
-                id="rou"
                 class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showApplicationOptions = !showApplicationOptions"
-                [src]="selectedFilterApplication.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
+                (click)="toggleFilterVisibility(col.field)"
+                [src]="
+                  getSelectedFilterArr(col.field).length
+                    ? '../assets/ActiveFilter.svg'
+                    : '../assets/filter.svg'
+                "
                 alt=""
               />
               <p-multiSelect
-                #ms1
-                [options]="applications"
+                #ms
+                [options]="fieldFilterOptions(col.field)"
                 [filter]="true"
                 [displaySelectedLabel]="false"
-                [overlayVisible]="showApplicationOptions"
+                [overlayVisible]="fieldFilterVisible(col.field)"
                 [defaultLabel]="'Search'"
                 [appendTo]="'body'"
-                [(ngModel)]="selectedFilterApplication"
-                (onChange)="dt.filter($event.value, 'applications', 'in')"
-                (onPanelHide)="showApplicationOptions = !showApplicationOptions"
+                [autoWidth]="false"
+                (onChange)="
+                  dt.filter($event.value, col.field, 'in');
+                  setSelectedFilter(ms, col.field)
+                "
+                (onPanelHide)="hideFilterVisibility(col.field)"
               >
               </p-multiSelect>
             </div>
           </th>
-          <th
-            class="table-titles"
-            style="width: 160px"
-            [pSortableColumn]="'form'"
-          >
-            Form
-            <div
-              (click)="$event.stopPropagation()"
-              style="right: 60%"
-              class="filter-icon"
-            >
-              <img
-                height="12px"
-                id="cou"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showFormOptions = !showFormOptions"
-                [src]="selectedFilterForm.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="forms"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showFormOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                [(ngModel)]="selectedFilterForm"
-                (onChange)="dt.filter($event.value, 'form', 'in')"
-                (onPanelHide)="showFormOptions = !showFormOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            style="width: 140px"
-            [pSortableColumn]="'totalCriteraiField'"
-          >
-            Total Criteria Fields
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showCriteriaFieldsOptions = !showCriteriaFieldsOptions"
-                [src]="selectedFilterCriteriaFields.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="totalCriteriaFields"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showCriteriaFieldsOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                [(ngModel)]="selectedFilterCriteriaFields"
-                (onChange)="dt.filter($event.value, 'totalCriteraiField', 'in')"
-                (onPanelHide)="
-                  showCriteriaFieldsOptions = !showCriteriaFieldsOptions
-                "
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            style="width: 120px"
-            [pSortableColumn]="'totalListFields'"
-          >
-            Total List Fields
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showListFieldsOptions = !showListFieldsOptions"
-                [src]="selectedFilterListFields.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="totalListFields"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showListFieldsOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                [(ngModel)]="selectedFilterListFields"
-                (onChange)="dt.filter($event.value, 'totalListField', 'in')"
-                (onPanelHide)="showListFieldsOptions = !showListFieldsOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            style="width: 110px"
-            [pSortableColumn]="'createdDate'"
-          >
-            Created Date
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showCreatedDateOptions = !showCreatedDateOptions"
-                [src]="selectedFilterCreatedDate.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="createdDates"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showCreatedDateOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                [(ngModel)]="selectedFilterCreatedDate"
-                (onChange)="dt.filter($event.value, 'createdDate', 'in')"
-                (onPanelHide)="showCreatedDateOptions = !showCreatedDateOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th
-            class="table-titles"
-            style="width: 135px"
-            [pSortableColumn]="'createdBy'"
-          >
-            Created By
-            <div
-              (click)="$event.stopPropagation()"
-              style="right: 35%"
-              class="filter-icon"
-            >
-              <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="showCreatedByOptions = !showCreatedByOptions"
-                [src]="selectedFilterCreatedBy.length ? '../assets/ActiveFilter.svg' : '../assets/filter.svg'"
-                alt=""
-              />
-              <p-multiSelect
-                #ms1
-                [options]="createdBy"
-                [filter]="true"
-                [displaySelectedLabel]="false"
-                [overlayVisible]="showCreatedByOptions"
-                [defaultLabel]="'Search'"
-                [appendTo]="'body'"
-                [(ngModel)]="selectedFilterCreatedBy"
-                (onChange)="dt.filter($event.value, 'createdBy', 'in')"
-                (onPanelHide)="showCreatedByOptions = !showCreatedByOptions"
-              ></p-multiSelect>
-            </div>
-          </th>
-          <th class="table-titles" style="width: 100px">Operations</th>
         </tr>
+
         <tr class="search-row">
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
+          <th *ngFor="let col of cols; let i = index">
+            <span
+              *ngIf="!(i + 1 == columns.length)"
+              class="p-input-icon-left"
+              [style.width]="'120px'"
+            >
               <i class="pi pi-search"></i>
               <input
                 type="text"
-                pInputText
-                [classList]="'table-search'"
+                class="p-inputtext table-search"
                 placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'applications',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter($any($event.target).value, 'form', 'contains')
-                "
-              />
-            </span>
-          </th>
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'totalCriteraiField',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'totalListField',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter(
-                    $any($event.target).value,
-                    'createdDate',
-                    'contains'
-                  )
-                "
-              />
-            </span>
-          </th>
-          <th>
-            <span style="max-width: 100%" class="p-input-icon-left">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                pInputText
-                [classList]="'table-search'"
-                placeholder="Search"
-                (input)="
-                  dt.filter($any($event.target).value, 'createdBy', 'contains')
-                "
+                (input)="dt.filter($event.target.value, col.field, 'contains')"
               />
             </span>
           </th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-criteriaSetting>
-        <tr>
-          <td style="font-size: 12px; border: none; border-bottom: none">
-            <a>{{ criteriaSetting.applications }}</a>
-          </td>
-          <td style="font-size: 12px; border: none; border-bottom: none">
-            <span class="image-text">{{ criteriaSetting.form }}</span>
-          </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-
-              text-align: center;
-            "
-          >
-            <span class="image-text">{{
-              criteriaSetting.totalCriteraiField
-            }}</span>
-          </td>
-          <td
-            style="
-              font-size: 12px;
-              border: none;
-              border-bottom: none;
-
-              text-align: center;
-            "
-          >
-            <span class="image-text">{{ criteriaSetting.totalListField }}</span>
-          </td>
-          <td style="font-size: 12px; border: none; border-bottom: none">
-            <span class="image-text">{{
-              criteriaSetting.createdDate | date : "mediumDate"
-            }}</span>
-          </td>
-          <td style="font-size: 12px; border: none; border-bottom: none">
-            <span class="image-text">{{ criteriaSetting.createdBy }}</span>
-          </td>
-          <td style="font-size: 12px; border: none; border-bottom: none">
-            <span class="image-text">
-              <button
-                pButton
-                type="button"
-                icon="pi pi-clone"
-                class="operation-btns mr-2"
-                (click)="openClickForClone(criteriaSetting)"
-              ></button>
-              <button
-                pButton
-                type="button"
-                icon="pi pi-eye"
-                class="operation-btns"
-                (click)="openClickForView(criteriaSetting)"
-              ></button>
-            </span>
-          </td>
+      <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-index="rowIndex"
+      >
+        <tr [pReorderableRow]="index">
+          <ng-container *ngFor="let col of columns; let i = index">
+            <td *ngIf="i + 1 < columns.length" style="border: none">
+              {{ rowData[col["field"]] }}
+            </td>
+            <td
+              *ngIf="i + 1 == columns.length"
+              style="border: none; text-align: center"
+            >
+              <span class="image-text">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-clone"
+                  class="operation-btns mr-2"
+                  (click)="openClickForClone(rowData)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-eye"
+                  class="operation-btns"
+                  (click)="openClickForView(rowData)"
+                ></button>
+              </span>
+            </td>
+          </ng-container>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">

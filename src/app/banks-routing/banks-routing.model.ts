@@ -10,8 +10,22 @@ export interface BankRoutingApiData{
     iSCorrespondent: any[],
     status: any[],
     data: BankRouting[]
-  
   }
+
+export interface CriteriaTemplateData{
+  code ?: string
+  createdDate : string
+  criteriaID : number
+  criteriaMap : string
+  criteriaName : string
+  id : number
+  lcySlab : string
+  name ?: string
+  status : string
+  userID : string
+  }
+
+  
   
 export  interface BankRouting {
     id: number,

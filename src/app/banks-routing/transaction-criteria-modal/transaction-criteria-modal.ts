@@ -1,9 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import {
-  FormArray,
-  FormBuilder,
+  UntypedFormArray,
+  UntypedFormBuilder,
   FormControl,
-  FormGroup,
+  UntypedFormGroup,
   Validators,
 } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
@@ -15,10 +15,10 @@ import { BankRoutingService } from "../bank-routing.service";
   styleUrls: ["./transaction-criteria-modal.css"],
 })
 export class TransactionCriteriaModal {
-  txnCriteriaRangeForm: FormGroup = new FormGroup({
-    txnCriteriaRange: new FormArray([]),
+  txnCriteriaRangeForm: UntypedFormGroup = new UntypedFormGroup({
+    txnCriteriaRange: new UntypedFormArray([]),
   });
-  txnCriteriaRange: FormArray = new FormArray([]);
+  txnCriteriaRange: UntypedFormArray = new UntypedFormArray([]);
 
   showError: boolean = false;
   rangesOverlapping = false;
@@ -31,15 +31,15 @@ export class TransactionCriteriaModal {
   isRangeValueLessThanZero = false;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private ref: DynamicDialogRef,
     private ngxToaster: ToastrService,
     public config: DynamicDialogConfig,
     private bankRoutingService: BankRoutingService
   ) {}
 
-  get allTxnCriteriaRange(): FormArray {
-    return this.txnCriteriaRangeForm.get("txnCriteriaRange") as FormArray;
+  get allTxnCriteriaRange(): UntypedFormArray {
+    return this.txnCriteriaRangeForm.get("txnCriteriaRange") as UntypedFormArray;
   }
 
   ngOnInit() {
@@ -83,7 +83,7 @@ export class TransactionCriteriaModal {
       ? b.to >= a.from && typeof b.to == typeof a.from
       : b.from <= a.to && typeof a.to == typeof b.from;
 
-  createTxnCriteriaRange(from: number, to: number): FormGroup {
+  createTxnCriteriaRange(from: number, to: number): UntypedFormGroup {
     return this.formBuilder.group({
       from: from,
       to: to,
@@ -122,14 +122,14 @@ export class TransactionCriteriaModal {
 
   changeTo(e: any, i: any) {
     if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as FormGroup)?.controls["to"].setValue(
+      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls["to"].setValue(
         e
       );
     }
   }
   changeFrom(e: any, i: any) {
     if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as FormGroup)?.controls[
+      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
         "from"
       ].setValue(e);
     }
@@ -170,7 +170,7 @@ export class TransactionCriteriaModal {
         this.isTxnCriteriaRangesSaved = false;
         this.txnCriteriaRange = this.txnCriteriaRangeForm.get(
           "txnCriteriaRange"
-        ) as FormArray;
+        ) as UntypedFormArray;
         this.txnCriteriaRange.push(this.createTxnCriteriaRange(null, null));
       }
     }
