@@ -1,0 +1,50 @@
+.logos {
+  background-image: url("../../assets/bg-image.svg");
+  background-size: cover;
+}
+
+.form-style input {
+  border: 0;
+  height: 50px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+.form-style input:focus {
+  border-bottom: 1px solid var(--primary-color);
+  box-shadow: none;
+  outline: 0;
+  background-color: var(--surface-border);
+}
+.sideline {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--surface-b);
+}
+
+button {
+  height: 44px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+a,
+a:focus,
+a:hover {
+  color: var(--primary-color);
+}
+
+.sideline:before,
+.sideline:after {
+  content: "";
+  border-top: 1px solid var(--surface-border);
+  margin: 0 20px 0 0;
+  flex: 1 0 20px;
+}
+
+.sideline:after {
+  margin: 0 0 0 20px;
+}

@@ -1,7 +1,7 @@
 <div class="visible-main-section">
   <div class="pagetitle">
     <div class="infoicon">
-      <img src="../assets/info.svg" alt="" />
+      <i class="pi pi-info-circle"></i>
       Saved routes will be shown below.
     </div>
     <div class="addnew">
@@ -37,7 +37,7 @@
             {{ col.header }}
           </th>
         </tr>
-        <tr>
+        <tr class="search-row">
           <th *ngFor="let col of cols">
             <span style="max-width: 100%" class="p-input-icon-left">
               <i class="pi pi-search"></i>
@@ -61,7 +61,10 @@
       >
         <tr
           [ngStyle]="{
-            border: objectKeys(rowData).length == 1 ? '1px solid #e9ecef' : ''
+            border:
+              objectKeys(rowData).length == 1
+                ? '1px solid var(--surface-border)'
+                : ''
           }"
         >
           <ng-container *ngFor="let col of columns; let i = index">
@@ -83,7 +86,7 @@
                 style="
                   text-decoration: underline !important;
                   margin-left: 42px;
-                  color: rgb(36 85 207);
+                  color: var(--primary-color);
                 "
                 (click)="viewBankRouting(rowData)"
                 >{{ rowData[col["field"]] }}</a
@@ -117,7 +120,10 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4" style="font-weight: 400; font-size: 14px">
+          <td
+            [attr.colspan]="cols.length"
+            style="font-weight: 400; font-size: 14px"
+          >
             No Data found.
           </td>
         </tr>

@@ -1,7 +1,7 @@
 <div class="visible-main-section">
   <div class="pagetitle">
     <div class="infoicon">
-      <img height="22px" src="../assets/info.svg" alt="" />
+      <i class="pi pi-info-circle"></i>
       List of taxes.
     </div>
     <div class="addnew">
@@ -41,7 +41,7 @@
           >
             {{ col.header }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <img
+              <!-- <img
                 height="12px"
                 class="pi pi-filter"
                 (click)="toggleFilterVisibility(col.field)"
@@ -51,7 +51,17 @@
                     : '../assets/filter.svg'
                 "
                 alt=""
-              />
+              /> -->
+              <i
+                [ngStyle]="{
+                  color: getSelectedFilterArr(col.field).length
+                    ? 'var(--primary-color)'
+                    : 'rgb(105 105 105)',
+                  fontSize: '11px'
+                }"
+                class="pi pi-filter-fill"
+                (click)="toggleFilterVisibility(col.field)"
+              ></i>
               <p-multiSelect
                 #ms
                 [options]="fieldFilterOptions(col.field)"
@@ -105,7 +115,7 @@
                 *ngIf="i == 0"
                 style="
                   text-decoration: underline !important;
-                  color: rgb(36 85 207);
+                  color: var(--primary-color);
                   cursor: pointer;
                 "
                 >{{ rowData[col["field"]] }}</a
@@ -139,7 +149,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="4">No Data found.</td>
+          <td [attr.colspan]="cols.length">No Data found.</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>

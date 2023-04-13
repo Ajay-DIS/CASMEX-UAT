@@ -9,7 +9,7 @@ import { CoreService } from "src/app/core.service";
 @Component({
   selector: "app-payment-mode",
   templateUrl: "./payment-mode.component.html",
-  styleUrls: ["./payment-mode.component.css"],
+  styleUrls: ["./payment-mode.component.scss"],
 })
 export class PaymentModeComponent implements OnInit {
   @ViewChild("dt") table: Table;

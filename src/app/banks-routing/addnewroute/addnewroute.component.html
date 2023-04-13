@@ -4,7 +4,7 @@
       <ol class="breadcrumb"></ol>
     </nav>
   </div>
-  <div class="py-3" style="background-color: #ffffff; border-radius: 10px">
+  <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
         <img height="35px" src="../assets/description.svg" alt="" />
@@ -37,14 +37,16 @@
           [disabled]="!bankRoutesData.length"
           label="Reset"
           class="p-button-warning"
-          style="background: rgb(250 165 52)"
           (click)="reset()"
         ></button>
       </div>
     </div>
-    <div class="criteria-main-section" style="position: relative">
+    <div
+      class="details-page-card-content criteria-main-section mt-2"
+      style="position: relative"
+    >
       <div class="criteria-bar">
-        <p class="setCriteria">
+        <p class="setCriteria detail-page-section-heading">
           Set Criteria
           <img
             height="15px"
@@ -121,7 +123,7 @@
             #addCriteriaBtn
             pButton
             pRipple
-            style="position: absolute; left: 525px; width: 35px"
+            style="position: absolute; left: 525px; font-size: 1.5rem"
             type="button"
             label="+"
             class="p-button-primary"
@@ -158,7 +160,7 @@
           [ngStyle]="{
             backgroundColor: criteria.includes('!=')
               ? 'rgb(248 253 235)'
-              : 'rgb(234 237 244)'
+              : 'var(--surface-ground)'
           }"
         >
           {{ criteria == "LCY Amount = Slab" ? "" : criteria
@@ -194,12 +196,6 @@
           <button
             pButton
             pRipple
-            style="
-              position: absolute;
-              bottom: 20%;
-              left: 42%;
-              background-color: #2455cf;
-            "
             type="button"
             label="Apply Criteria"
             class="p-button-raised"
@@ -210,13 +206,10 @@
       </div>
     </div>
   </div>
-  <div
-    class="py-3"
-    style="background-color: #ffffff; border-radius: 10px; margin-top: 10px"
-  >
-    <div class="applicable-Routes">
+  <div class="details-page-card mt-2">
+    <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
-        <p class="setCriteria">
+        <p class="setCriteria detail-page-section-heading">
           Applicable Routes
           <img
             height="15px"

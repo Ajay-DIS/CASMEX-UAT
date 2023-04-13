@@ -2,35 +2,16 @@
   display: flex;
   float: right;
 }
-p-dropdown .p-dropdown {
-  width: 100%;
-}
-
-::ng-deep .p-button-primary plus {
-  width: 40px;
-  height: 25px;
-}
 .criteria-main-section {
-  border: 0.5px solid#eaedf4;
-  margin-bottom: 20px;
-  padding: 20px 0;
-  margin: 0 15px;
-  background-color: #ffffff;
-  border-radius: 10px;
   margin-top: 5px;
   height: 240px;
 }
-.applicable-Routes {
-  border: 0.5px solid#eaedf4;
-  margin-bottom: 0px;
-  padding: 5px 0;
+.details-page-card-content {
+  border: 0.5px solid var(--surface-ground);
+  padding: 20px 0;
   margin: 0 15px;
-  background-color: #ffffff;
+  background-color: var(--surface-card);
   border-radius: 10px;
-}
-
-.templates-dropdown::ng-deep .p-dropdown-label {
-  padding-right: 0;
 }
 
 .criteria-bar {
@@ -40,9 +21,6 @@ p-dropdown .p-dropdown {
 }
 
 .setCriteria {
-  color: rgb(36 85 207);
-  font-size: 14px;
-  font-weight: 500;
   width: 55%;
   cursor: pointer;
 }
@@ -56,8 +34,8 @@ p-dropdown .p-dropdown {
 }
 
 .openCriteria a {
-  color: rgb(36 85 207);
-  border-bottom: 1px solid rgb(36 85 207);
+  color: var(--primary-color);
+  border-bottom: 1px solid var(--primary-color);
   font-weight: 500;
   font-size: 12px;
   cursor: pointer;
@@ -71,7 +49,7 @@ p-dropdown .p-dropdown {
 
 .criteria-span {
   color: black;
-  background-color: #eaedf4;
+  background-color: var(--surface-ground);
   padding: 7px;
   font-size: 0.7rem;
   font-weight: 500;
@@ -93,29 +71,6 @@ p-dropdown .p-dropdown {
   justify-content: flex-end;
 }
 
-:host ::ng-deep .p-datatable .p-datatable-tbody tr td {
-  border: 0px !important;
-  border-width: 0px !important ;
-  padding: 0.47rem 0.5rem 0.47rem 1rem;
-  font-family: "IBM Plex Sans", sans-serif;
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 500;
-  height: 48px;
-}
-::ng-deep .p-datatable.p-component {
-  font-size: 12px !important;
-}
-::ng-deep
-  .p-datatable
-  .form-select
-  .ng-pristine
-  .ng-valid
-  .ng-star-inserted
-  .ng-touched {
-  font-size: 12px !important;
-}
-
 :host ::ng-deep .p-dialog .p-dialog-header {
   border-top-right-radius: 15px !important;
   border-top-left-radius: 15px !important;
@@ -126,10 +81,11 @@ p-dropdown .p-dropdown {
   border-bottom-left-radius: 15px !important;
 }
 
-/* .addnewroute-table {
-  max-height: 295px;
-  overflow-y: auto;
-} */
+// .addnewroute-table {
+//   max-height: 295px;
+//   overflow-y: auto;
+// }
+
 .applycriteriabtn {
   background: #f6f6f8;
   position: absolute;
@@ -140,6 +96,11 @@ p-dropdown .p-dropdown {
   margin-bottom: 0px;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+.applycriteriabtn button {
+  position: absolute;
+  bottom: 20%;
+  left: 42%;
 }
 
 .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(1) {
@@ -171,8 +132,13 @@ p-dropdown .p-dropdown {
 .form-select {
   height: 35px;
   font-size: 12px;
-  font-family: IBM Plex Sans, sans-serif;
-  border-color: #e8e9eb;
+  border-color: var(--surface-ground);
   padding: 0.375rem 1.7rem 0.375rem 0.75rem;
   font-weight: 500;
+}
+
+a,
+a:focus,
+a:hover {
+  color: var(--primary-color);
 }

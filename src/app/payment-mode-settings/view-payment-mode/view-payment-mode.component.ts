@@ -5,7 +5,7 @@ import { PaymentModeService } from "../payment-mode-service.service";
 @Component({
   selector: "app-view-payment-mode",
   templateUrl: "./view-payment-mode.component.html",
-  styleUrls: ["./view-payment-mode.component.css"],
+  styleUrls: ["./view-payment-mode.component.scss"],
 })
 export class ViewPaymentModeComponent implements OnInit {
   selectedPaymentData: any;

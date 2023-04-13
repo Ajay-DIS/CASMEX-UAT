@@ -1,5 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
@@ -11,7 +15,7 @@ import { CriteriaSettingsService } from "../criteria-settings.service";
 @Component({
   selector: "app-criteria-settings-detail",
   templateUrl: "./criteria-settings-detail.component.html",
-  styleUrls: ["./criteria-settings-detail.component.css"],
+  styleUrls: ["./criteria-settings-detail.component.scss"],
   providers: [ConfirmationService],
 })
 export class CriteriaSettingsDetailComponent implements OnInit {

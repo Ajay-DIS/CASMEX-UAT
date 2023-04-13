@@ -8,7 +8,7 @@ import { CoreService } from "src/app/core.service";
 @Component({
   selector: "app-tax-listing",
   templateUrl: "./tax-listing.component.html",
-  styleUrls: ["./tax-listing.component.css"],
+  styleUrls: ["./tax-listing.component.scss"],
 })
 export class TaxListingComponent implements OnInit {
   taxListingData: any[];

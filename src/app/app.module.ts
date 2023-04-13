@@ -31,6 +31,7 @@ import { TooltipModule } from "primeng/tooltip";
 import { PickListModule } from "primeng/picklist";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { TreeTableModule } from "primeng/treetable";
+import { CheckboxModule } from "primeng/checkbox";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -45,7 +46,7 @@ import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-m
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
-import { TaxListingComponent } from './tax-settings/tax-listing/tax-listing.component';
+import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -93,6 +94,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     PickListModule,
     ConfirmDialogModule,
     TreeTableModule,
+    CheckboxModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {

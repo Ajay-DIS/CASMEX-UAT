@@ -17,7 +17,7 @@ import { LoginService } from "./login/login.service";
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
-  styleUrls: ["./app.component.css"],
+  styleUrls: ["./app.component.scss"],
   providers: [ConfirmationService],
 })
 export class AppComponent implements OnInit, AfterContentChecked {

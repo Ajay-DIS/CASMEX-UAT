@@ -22,7 +22,7 @@ import { MessageService, TreeNode } from "primeng/api";
 @Component({
   selector: "app-bank-routing",
   templateUrl: "./bank-routing.component.html",
-  styleUrls: ["./bank-routing.component.css"],
+  styleUrls: ["./bank-routing.component.scss"],
   providers: [DialogService, MessageService],
 })
 export class BankRoutingComponent implements OnInit {

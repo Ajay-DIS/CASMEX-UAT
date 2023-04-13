@@ -1,6 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
 import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { take } from "rxjs/operators";
@@ -12,7 +16,7 @@ import { LoginFormData, LoginService } from "./login.service";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"],
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
   loginForm!: UntypedFormGroup;
@@ -61,15 +65,15 @@ export class LoginComponent implements OnInit {
               this.ngxToaster.success("Login Successfull");
             } else {
               data["msg"] && this.ngxToaster.warning(data["msg"]);
+              this.coreService.removeLoadingScreen();
             }
           },
           (err) => {
             console.log(err);
+            this.coreService.removeLoadingScreen();
           }
         )
-        .add(() => {
-          //this.coreService.removeLoadingScreen();
-        });
+        .add(() => {});
     } else {
       this.isFormInvalid = true;
     }

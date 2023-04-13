@@ -13,6 +13,50 @@
 
   <nav class="header-nav ms-auto">
     <ul class="d-flex align-items-center">
+      <li class="nav-item">
+        <p-dropdown
+          #themeOpt
+          class="profile-dropdown"
+          [options]="themeOptions"
+          optionLabel="name"
+          (onChange)="selectTheme(themeOpt.value)"
+          [(ngModel)]="selectedTheme"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="theme-item"
+              style="display: flex; align-items: center; gap: 8px"
+            >
+              <div
+                [ngStyle]="{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: selectedTheme.color
+                }"
+              ></div>
+              <div>{{ selectedTheme.name }}</div>
+            </div>
+          </ng-template>
+
+          <ng-template let-theme pTemplate="item">
+            <div
+              class="theme-item"
+              style="display: flex; align-items: center; gap: 8px"
+            >
+              <div
+                [ngStyle]="{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: theme.color
+                }"
+              ></div>
+              <div>{{ theme.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </li>
       <li class="nav-item notification-alert">
         <a class="nav-link nav-icon" data-bs-toggle="dropdown">
           <img src="../assets/icon/notification icon top navbar.svg" alt="" />
@@ -36,7 +80,7 @@
             [showClear]="false"
           >
           </p-dropdown>
-          <span class="px-2"> ADMIN </span>
+          <span style="padding-left: 0.75rem"> ADMIN </span>
         </div>
       </li>
       <!-- End Profile Nav -->
@@ -73,11 +117,7 @@
     <p-panelMenu styleClass="dynamic-menu" [model]="menuItems"></p-panelMenu>
     <footer class="sidebar-content-footer">
       <div class="help-icon-content">
-        <img
-          src="../assets/icon/Help Center icon.svg"
-          alt=""
-          style="padding-right: 20px"
-        />
+        <i class="pi pi-question-circle"></i>
         <span class="help-content">Help Center</span>
       </div>
       <div class="copyright-version-content mt-3">
