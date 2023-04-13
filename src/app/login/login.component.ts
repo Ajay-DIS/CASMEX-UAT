@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
           }
         )
         .add(() => {
-          this.coreService.removeLoadingScreen();
+          //this.coreService.removeLoadingScreen();
         });
     } else {
       this.isFormInvalid = true;
