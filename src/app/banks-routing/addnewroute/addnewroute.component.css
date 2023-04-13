@@ -126,10 +126,10 @@ p-dropdown .p-dropdown {
   border-bottom-left-radius: 15px !important;
 }
 
-.addnewroute-table {
+/* .addnewroute-table {
   max-height: 295px;
   overflow-y: auto;
-}
+} */
 .applycriteriabtn {
   background: #f6f6f8;
   position: absolute;

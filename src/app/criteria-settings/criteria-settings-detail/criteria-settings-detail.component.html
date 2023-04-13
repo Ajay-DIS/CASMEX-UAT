@@ -42,7 +42,7 @@
           inputId="application"
           [options]="criteriaApplicationOptions"
           placeholder="Select"
-          optionLabel="name"
+          optionLabel="name" 
           formControlName="applications"
           (onChange)="onAppChange($event)"
         ></p-dropdown>
@@ -53,7 +53,7 @@
           inputId="form"
           [options]="criteriaFormsOptions"
           placeholder="Select"
-          optionLabel="name"
+          optionLabel="name" 
           formControlName="forms"
           (onChange)="executeQueries()"
         ></p-dropdown>
@@ -187,11 +187,16 @@
                 />
               </td>
               <td>
-                <input
-                  type="text"
-                  placeholder="{{ product.dependency }}"
-                  [disabled]="true"
-                />
+                <p-multiSelect
+                  id="dependencymulti"
+                  [options]="product.dependencyOptions"
+                  [(ngModel)]="product.dependency"
+                  defaultLabel="Select"
+                  [showHeader]="false"
+                  optionLabel="label"
+                  [maxSelectedLabels]="5"
+                  [appendTo]="'body'"
+                ></p-multiSelect>
               </td>
             </tr>
           </ng-template>

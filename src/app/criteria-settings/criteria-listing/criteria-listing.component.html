@@ -11,7 +11,7 @@
         type="button"
         label="Add New Criteria"
         class="p-button-raised"
-        routerLink="add-criteria-settings"
+        routerLink="add-criteria-settings/add"
       ></button>
     </div>
   </div>
@@ -100,9 +100,9 @@
         let-columns="columns"
         let-index="rowIndex"
       >
-        <tr [pReorderableRow]="index">
+        <tr [pReorderableRow]="index" >
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i + 1 < columns.length" style="border: none">
+            <td *ngIf="i + 1 < columns.length" style="border: none;cursor: pointer;" (click)="openClickForClone(rowData, 'edit')">
               {{ rowData[col["field"]] }}
             </td>
             <td
@@ -115,7 +115,7 @@
                   type="button"
                   icon="pi pi-clone"
                   class="operation-btns mr-2"
-                  (click)="openClickForClone(rowData)"
+                  (click)="openClickForClone(rowData, 'clone')"
                 ></button>
                 <button
                   pButton
