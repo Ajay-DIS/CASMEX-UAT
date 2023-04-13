@@ -17,31 +17,13 @@
   width: 80%;
   height: 35px;
   align-items: center;
-  background-color: rgb(244 246 250);
   border: none !important;
-}
-.select-form-application::ng-deep .p-dropdown-trigger,
-.select-form-application::ng-deep .p-dropdown-label {
-  color: black;
 }
 
 .drag-criteria-fields::ng-deep .p-picklist-list {
   border-radius: 10px;
   min-height: 165px !important;
   max-height: 165px !important;
-}
-
-.drag-criteria-fields::ng-deep .p-picklist-list::-webkit-scrollbar-track {
-  background-color: transparent !important;
-}
-
-.drag-criteria-fields::ng-deep .p-picklist-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.drag-criteria-fields::ng-deep .p-picklist-list::-webkit-scrollbar-thumb {
-  background-color: rgb(195 197 198);
-  border-radius: 15px;
 }
 
 .drag-criteria-fields::ng-deep
@@ -100,11 +82,10 @@
 
 .drag-criteria-fields::ng-deep .field-item {
   width: 140px;
-  border: 1px dashed rgb(191 191 191);
+  border: 1px dashed var(--surface-500);
   padding: 5px 10px;
   border-radius: 5px;
-  background: rgb(244 246 250);
-  font-family: "IBM Plex Sans", sans-serif !important;
+  background: var(--surface-ground);
   font-size: 14px;
 }
 
@@ -113,11 +94,10 @@
 }
 /* suresh start*/
 .application-header {
-  background-color: #f4f6fa;
+  background-color: var(--surface-ground);
   border-radius: 5px;
   padding: 5px;
   width: 420px;
-  font-family: "IBM Plex Sans", sans-serif !important;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -125,35 +105,9 @@
   bottom: 30px;
   left: 15px;
 }
-:host
-  ::ng-deep
-  .criteria-view-table
-  .p-datatable
-  .p-datatable-tbody
-  tr
-  td
-  input {
-  border: none;
-  background-color: #f4f6fa;
-  width: 133px;
-  height: 35px;
-  border-radius: 5px;
-  font-weight: 500;
-  padding-left: 5px;
-}
 
-:host ::ng-deep .criteria-view-table .p-datatable .p-datatable-tbody tr td {
-  padding: 0.47rem 0.5rem 0.47rem 1rem;
-  font-family: "IBM Plex Sans", sans-serif !important;
-  font-style: normal;
-  font-size: 12px;
-  font-weight: 500;
-  border: none;
-  color: #8a9099;
-  height: 48px;
-}
-#operationsmulti ::ng-deep .p-multiselect {
-  background: #f4f6fa;
+#operationsmulti ::ng-deep .p-multiselect,
+#dependencymulti ::ng-deep .p-multiselect {
   font-weight: 500;
   font-size: 12px !important;
   border-radius: 5px;

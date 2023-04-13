@@ -26,7 +26,7 @@ import { CriteriaTemplateData } from "../banks-routing.model";
 @Component({
   selector: "app-addnewroute",
   templateUrl: "./addnewroute.component.html",
-  styleUrls: ["./addnewroute.component.css"],
+  styleUrls: ["./addnewroute.component.scss"],
   providers: [DialogService, MessageService],
 })
 export class AddnewrouteComponent implements OnInit {
@@ -1168,6 +1168,7 @@ export class AddnewrouteComponent implements OnInit {
   }
 
   selectedColumn(column, row, index) {
+    console.log(row);
     switch (column) {
       case "routeToBankName":
         this.mode == "add" &&

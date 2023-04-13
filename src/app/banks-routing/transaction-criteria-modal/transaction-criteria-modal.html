@@ -23,8 +23,8 @@
             <p-inputNumber
               #fromInp
               inputId="integeronly"
-              [style]="{minWidth: '95%'}"
-              [inputStyle]="{minWidth: '95%', background: '#f4f6fa', border: 'none'}"
+              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
+              [inputStyle]="{width: '100%', border: 'none'}"
               formControlName="from"
               (onInput)="changeFrom($event.value, i)"
             >
@@ -34,8 +34,8 @@
             <p-inputNumber
               #toInp
               inputId="integeronly"
-              [style]="{minWidth: '100%'}"
-              [inputStyle]="{minWidth: '100%', background: '#f4f6fa', border: 'none'}"
+              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
+              [inputStyle]="{width: '100%', border: 'none'}"
               formControlName="to"
               (onInput)="changeTo($event.value, i)"
             >

@@ -12,7 +12,7 @@ import { BankRoutingService } from "../bank-routing.service";
 
 @Component({
   templateUrl: "./transaction-criteria-modal.html",
-  styleUrls: ["./transaction-criteria-modal.css"],
+  styleUrls: ["./transaction-criteria-modal.scss"],
 })
 export class TransactionCriteriaModal {
   txnCriteriaRangeForm: UntypedFormGroup = new UntypedFormGroup({
@@ -39,12 +39,13 @@ export class TransactionCriteriaModal {
   ) {}
 
   get allTxnCriteriaRange(): UntypedFormArray {
-    return this.txnCriteriaRangeForm.get("txnCriteriaRange") as UntypedFormArray;
+    return this.txnCriteriaRangeForm.get(
+      "txnCriteriaRange"
+    ) as UntypedFormArray;
   }
 
   ngOnInit() {
     this.txnCriteriaRangeForm.valueChanges.subscribe((x) => {
-
       let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
       let formData = JSON.stringify(x);
       if (savedData == formData) {
@@ -122,9 +123,9 @@ export class TransactionCriteriaModal {
 
   changeTo(e: any, i: any) {
     if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls["to"].setValue(
-        e
-      );
+      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
+        "to"
+      ].setValue(e);
     }
   }
   changeFrom(e: any, i: any) {

@@ -1,4 +1,5 @@
-import { Injectable } from "@angular/core";
+import { DOCUMENT } from "@angular/common";
+import { Inject, Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 @Injectable({
@@ -11,17 +12,40 @@ export class CoreService {
     { label: "Bank Routing", routerLink: "bank-routing" },
   ];
 
-  constructor() {}
+  constructor(@Inject(DOCUMENT) private document: Document) {}
+
+  switchTheme(theme: string) {
+    let themeLink = this.document.getElementById(
+      "app-theme"
+    ) as HTMLLinkElement;
+
+    if (themeLink) {
+      themeLink.href = theme + ".css";
+    }
+
+    console.log(theme);
+
+    if (theme.includes("amber") || theme.includes("pink")) {
+      console.log("light");
+      this.document
+        .querySelectorAll(".sidebar-content .p-menuitem-icon")
+        .forEach((icons) => {
+          (icons as HTMLElement).style.filter = "invert(0%)";
+        });
+    } else {
+      console.log("dark");
+      this.document
+        .querySelectorAll(".sidebar-content .p-menuitem-icon")
+        .forEach((icons) => {
+          (icons as HTMLElement).style.filter = "invert(100%)";
+        });
+    }
+  }
 
   userActionsObs = new BehaviorSubject<any>([
     { name: "Profile" },
     { name: "Logout" },
   ]);
-
-  // $SessionExpired = new BehaviorSubject<boolean>(true);
-  // setSessionExpirationStatus(status:boolean) {
-  //   this.$SessionExpired.next(status);
-  // }
 
   $loadingScreen = new BehaviorSubject<boolean>(false);
   displayLoadingScreen() {

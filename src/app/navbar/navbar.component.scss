@@ -1,0 +1,474 @@
+/*--------------------------------------------------------------
+  # Header
+  --------------------------------------------------------------*/
+.logo {
+  line-height: 1;
+}
+
+.header {
+  width: calc(100% - 270px);
+  margin-left: 270px;
+  height: 80px;
+  transition: all 0.3s;
+  z-index: 998;
+  box-shadow: 0px 3px 30px rgba(1, 41, 112, 0.1);
+  background-color: #fff;
+  padding-left: 20px;
+}
+
+@media (max-width: 815px) {
+  .header {
+    width: 100%;
+    margin-left: 0px;
+    z-index: 998;
+  }
+}
+
+.toggle-sidebar {
+  position: fixed;
+  top: 70px;
+  left: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  width: 2rem;
+  background: var(--primary-color);
+  border-radius: 50%;
+  border: 1.5px solid var(--primary-color-text);
+  transition: 0.3ms;
+  z-index: 999;
+  transition: 0.3s;
+}
+
+.toggle-sidebar i {
+  cursor: pointer;
+  color: var(--primary-color-text) !important;
+}
+
+/*--------------------------------------------------------------
+# Header Nav
+--------------------------------------------------------------*/
+
+.header-bar::ng-deep .p-breadcrumb {
+  padding: 0;
+  border: none;
+}
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link,
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link:hover,
+.header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link:active {
+  box-shadow: none !important;
+}
+
+@media (max-width: 815px) {
+  .header-bar::ng-deep.p-breadcrumb ul li .p-menuitem-link .p-menuitem-text {
+    font-size: 0.8rem;
+  }
+  .profile-icon-name {
+    padding-right: 0 !important;
+  }
+}
+.header-bar::ng-deep .p-breadcrumb ul li .p-menuitem-text {
+  color: var(--surface-500);
+}
+
+.header-bar::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
+  color: var(--primary-color);
+  font-weight: 500;
+}
+.header-bar::ng-deep .p-breadcrumb ul li:nth-last-child(3) .p-menuitem-text {
+  font-weight: 500;
+}
+.header-bar::ng-deep .p-breadcrumb ul li.p-breadcrumb-chevron:before {
+  content: "\002F";
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.notification-alert {
+  border-right: 1.5px solid var(--surface-500);
+  margin-right: 15px;
+}
+.notification-alert .badge {
+  height: 15px;
+  width: 15px;
+  right: 9px;
+  top: 5px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247 68 64);
+}
+
+.header-nav ul {
+  list-style: none;
+}
+
+.header-nav > ul {
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav .nav-icon {
+  font-size: 22px;
+  position: relative;
+}
+
+.header-nav .badge-number {
+  position: absolute;
+  inset: 10px 10px auto auto;
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
+.header-nav .page-heading {
+  margin-bottom: 0 !important;
+}
+
+.profile-dropdown::ng-deep .p-dropdown,
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon {
+  border: none;
+}
+.profile-dropdown::ng-deep .p-dropdown {
+  width: 100px;
+  margin-top: 5px;
+}
+
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger {
+  display: none;
+}
+
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-label {
+  padding-bottom: 0;
+  padding-top: 0;
+  font-weight: 500;
+  color: black;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+}
+.profile-content span {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+}
+
+.profile-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
+
+/*--------------------------------------------------------------
+# Sidebar
+--------------------------------------------------------------*/
+
+// Menu Search
+
+.menu-search {
+  width: 220px;
+  border-radius: 5px;
+}
+
+.p-input-icon-left > .menu-search.p-inputtext {
+  padding-left: 3rem;
+}
+
+.menu-search::placeholder {
+  color: var(--surface-500);
+}
+
+// Menu Search End
+
+.sidebar {
+  position: fixed;
+  top: 0px;
+  left: 0;
+  bottom: 0;
+  width: 95px;
+  z-index: 100;
+  transition: all 0.3s;
+  background-color: var(--primary-color);
+}
+
+.sidebar .sidebar-content {
+  padding: 1.2rem;
+  max-height: calc(100vh - 91px);
+  min-height: calc(100vh - 91px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .sidebar-content::-webkit-scrollbar-thumb {
+  background-color: var(--primary-600);
+}
+
+.sidebar ::ng-deep .p-panelmenu {
+  margin-bottom: 50px;
+}
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a {
+  background: transparent;
+  color: var(--primary-color-text);
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
+  margin-right: 0.7rem;
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-header:not(.p-highlight):not(.p-disabled)
+  > a:hover,
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-header.p-highlight:not(.p-disabled)
+  > a:hover,
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-panel:has(.p-toggleable-content)
+  .p-panelmenu-header.p-highlight {
+  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+  border-color: transparent;
+  color: var(--primary-color-text);
+  border-radius: 5px;
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a:focus {
+  box-shadow: none;
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-content {
+  background: linear-gradient(
+    to right,
+    rgba(147, 159, 254, 0.22),
+    rgba(99, 117, 252, 0.22)
+  );
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link
+  .p-menuitem-text {
+  color: var(--primary-color-text);
+  font-size: 0.82rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sidebar
+  ::ng-deep
+  .p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link:not(.p-disabled):hover {
+  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+}
+
+.sidebar ::ng-deep .p-panelmenu .p-panelmenu-panel .p-panelmenu-header > a {
+  border-radius: 5px;
+}
+
+.sidebar .sidebar-header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  height: 91px;
+  margin-left: 27px;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-header > a .p-panelmenu-icon {
+  margin-right: -0.1rem;
+}
+::ng-deep .p-panelmenu {
+  width: 97%;
+  margin-left: 2%;
+}
+
+::ng-deep .p-panelmenu .p-panelmenu-header > a {
+  padding: 1rem 0.5rem 1rem 0.3rem;
+}
+
+@media (min-width: 1200px) {
+  #main,
+  #footer {
+    margin-left: 270px;
+    transition: 300ms;
+  }
+}
+
+@media (max-width: 1199px) {
+  .toggle-sidebar .sidebar {
+    left: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  .toggle-sidebar #main,
+  .toggle-sidebar #footer {
+    margin-left: 0;
+  }
+
+  .toggle-sidebar .sidebar {
+    left: -300px;
+  }
+}
+
+main {
+  margin-top: 85px;
+  margin-right: 20px;
+  margin-left: 50px;
+  transition: 300ms;
+  z-index: 997;
+  position: relative;
+  background-color: var(--surface-ground);
+  min-height: calc(100vh - 85px);
+}
+
+::ng-deep.dynamic-menu .p-panelmenu-icon {
+  order: 3;
+  margin-left: auto;
+}
+
+::ng-deep.dynamic-menu .p-panelmenu-header-link {
+  display: flex;
+  align-items: center;
+  border: none;
+}
+
+::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link {
+  padding-left: 32px;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: left;
+  font-weight: 500;
+}
+::ng-deep.p-panelmenu
+  .p-panelmenu-content
+  .p-menuitem
+  .p-menuitem-link.p-menuitem-link-active {
+  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+  border-color: transparent;
+  color: var(--primary-color-text);
+  border-radius: 5px;
+}
+
+::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-panelmenu-icon {
+  margin-left: 0;
+  font-size: 0.9rem;
+  color: var(--primary-color-text);
+}
+
+::ng-deep.p-panelmenu .p-panelmenu-content .p-menuitem .p-menuitem-link:focus {
+  box-shadow: none;
+}
+
+::ng-deep.p-panelmenu .p-panelmenu-header > a {
+  border: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+::ng-deep.p-panelmenu .p-panelmenu-icon {
+  font-size: 0.6rem;
+}
+
+.sidebar-content-footer {
+  margin-top: auto;
+  padding: 1.2rem 0.8rem 1.2rem 1rem;
+  border-radius: 5px;
+  background: linear-gradient(to right, var(--primary-600), var(--primary-600));
+}
+.sidebar-content-footer .help-content {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary-color-text);
+}
+.sidebar-content-footer .copyright-version-content {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--primary-color-text);
+}
+.sidebar-content-footer .help-icon-content {
+  display: flex;
+  align-items: center;
+}
+
+.filterInvert100 {
+  filter: invert(100%);
+}
+
+.filterInvert0 {
+  filter: invert(0%) !important;
+}
+
+.sidebar-content-footer .help-icon-content i {
+  padding-right: 15px;
+  color: var(--primary-color-text);
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+:host ::ng-deep .dashboard-icon,
+:host ::ng-deep .rateSetup-icon,
+:host ::ng-deep .forex-icon,
+:host ::ng-deep .beneficiary-icon,
+:host ::ng-deep .remmitance-icon,
+:host ::ng-deep .settings-icon,
+:host ::ng-deep .applicationsettings-icon,
+:host ::ng-deep .reports-icon,
+:host ::ng-deep .Accounts-icon,
+:host ::ng-deep .Incoming-icon,
+:host ::ng-deep .customerDetails-icon {
+  @extend .filterInvert100;
+  width: 1rem;
+  height: 1rem;
+  transform: scale(0.9);
+}
+
+:host ::ng-deep .dashboard-icon {
+  background-image: url("/assets/icon/Dashboard Icon.svg");
+}
+:host ::ng-deep .rateSetup-icon {
+  background-image: url("/assets/icon/Rate Setup icon.svg");
+}
+:host ::ng-deep .customerDetails-icon {
+  background-image: url("/assets/icon/Customer Details icon.svg");
+  @extend .filterInvert0;
+}
+:host ::ng-deep .forex-icon {
+  background-image: url("/assets/icon/Forex icon.svg");
+}
+:host ::ng-deep .beneficiary-icon {
+  background-image: url("/assets/icon/Beneficiary Details icon.svg");
+}
+:host ::ng-deep .remmitance-icon {
+  background-image: url("/assets/icon/Remittance icon.svg");
+}
+:host ::ng-deep .settings-icon {
+  background-image: url("/assets/icon/Settings icon.svg");
+}
+:host ::ng-deep .applicationsettings-icon {
+  background-image: url("/assets/icon/Application Settings Icon.svg");
+}
+:host ::ng-deep .reports-icon {
+  background-image: url("/assets/icon/Reports icon.svg");
+}
+:host ::ng-deep .Accounts-icon {
+  background-image: url("/assets/icon/Accounts icon.svg");
+}
+:host ::ng-deep .Incoming-icon {
+  background-image: url("/assets/icon/Incoming icon.svg");
+}

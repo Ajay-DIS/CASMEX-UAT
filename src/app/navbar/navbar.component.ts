@@ -22,7 +22,7 @@ import { PaymentModeService } from "../payment-mode-settings/payment-mode-servic
 @Component({
   selector: "app-navbar",
   templateUrl: "./navbar.component.html",
-  styleUrls: ["./navbar.component.css"],
+  styleUrls: ["./navbar.component.scss"],
 })
 export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild("toggleSidebar") toggleSidebarBtn: ElementRef;
@@ -93,6 +93,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   get profileOptions() {
     return this.userActions;
   }
+
+  themeOptions = [
+    { name: "Blue", color: "#4759e4" },
+    { name: "Amber", color: "#ffbf00" },
+    { name: "Purple", color: "#570861" },
+    { name: "Pink", color: "#ffc0cb" },
+  ];
+  selectedTheme = { name: "Blue", color: "#4759e4" };
+
   toggleState = "left";
 
   currRoute: any;
@@ -257,7 +266,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         iconName = "dashboard-icon";
         break;
       case "Customer Profile":
-        iconName = "customerDetails-icon";
+        iconName = "beneficiary-icon";
         break;
       case "Rate Setup":
         iconName = "rateSetup-icon";
@@ -272,7 +281,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         iconName = "remmitance-icon";
         break;
       case "Customer Service":
-        iconName = "customerDetails-icon";
+        iconName = "beneficiary-icon";
         break;
       case "Settings":
         iconName = "settings-icon";
@@ -324,6 +333,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
       this.router.navigate(["login"]);
     }
+  }
+
+  selectTheme(data) {
+    console.log(data);
+    this.selectedTheme = data;
+    let theme = "theme-" + data.name.toLowerCase();
+    this.coreService.switchTheme(theme);
   }
 
   filterMenuItems(e: Event) {

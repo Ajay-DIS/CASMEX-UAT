@@ -1,0 +1,30 @@
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+
+.operation-btns {
+  background-color: rgb(85 199 138);
+  color: white !important;
+  border: 1px solid rgb(85 199 138) !important;
+  height: 27px;
+  width: 30px;
+}
+.operation-btns::ng-deep span {
+  font-size: 13px;
+}
+:host ::ng-deep .p-dialog .p-dialog-header {
+  border-top-right-radius: 15px !important;
+  border-top-left-radius: 15px !important;
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  border-bottom-right-radius: 15px !important;
+  border-bottom-left-radius: 15px !important;
+}
+
+:host ::ng-deep.application-header {
+  background-color: var(--surface-ground);
+  border-radius: 5px;
+  padding: 10px;
+}

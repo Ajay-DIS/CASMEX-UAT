@@ -9,7 +9,7 @@ import { MultiSelect } from "primeng/multiselect";
 @Component({
   selector: "app-criteria-listing",
   templateUrl: "./criteria-listing.component.html",
-  styleUrls: ["./criteria-listing.component.css"],
+  styleUrls: ["./criteria-listing.component.scss"],
 })
 export class CriteriaListingComponent implements OnInit {
   noDataMsg: string = "Criteria Setting Data Not Available";
