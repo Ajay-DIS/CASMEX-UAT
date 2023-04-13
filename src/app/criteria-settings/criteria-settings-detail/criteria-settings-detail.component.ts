@@ -21,7 +21,7 @@ import { CriteriaSettingsService } from "../criteria-settings.service";
 export class CriteriaSettingsDetailComponent implements OnInit {
   selectAppForm: any;
   selectFields: any[] = [];
-
+  duplicateCriteria = false;
   restoreSelectFields: any[] = [];
 
   selectedFields: any[] = [];
@@ -119,6 +119,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   params: any;
   isCloneMode = false;
+  criteriaDependancyOptions = [];
+  mode = "add";
 
   constructor(
     private confirmationService: ConfirmationService,
@@ -133,12 +135,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.params = this.activatedRoute.snapshot.params;
+    this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(this.activatedRoute.snapshot.routeConfig.path.lastIndexOf('/') + 1); ;
     this.coreService.displayLoadingScreen();
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.setSelectAppForm();
+    (this.mode == 'edit') && (this.appCtrl.disable()) && (this.formCtrl.disable());
+    (this.mode == 'clone') && (this.formCtrl.enable());
     this.criteriaSettingsService
       .getCriteriaAppFormsList()
       .pipe(take(1))
@@ -160,7 +165,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.isCloneMode = true;
               this.setCloneCriteriaData(params.id);
               this.criteriaId = params.id;
-              this.formCtrl.enable();
+              //this.formCtrl.enable();
             }
           } else if (res["msg"]) {
             this.ngxToaster.warning(res["msg"]);
@@ -237,8 +242,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                   });
                 item["orderID"] = "";
                 item["operations"] = "";
-                item["iSMandatory"] =
-                  item["iSMandatory"] == "yes" ? true : false;
+                item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+                item["dependencyOptions"] = item.dependency?.split(",").map((x) => {
+                  return { label: x, code: x };
+                });
+                item["dependency"] = "";
               });
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
@@ -282,6 +290,25 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["operations"] = this.criteriaSettingtable[index]["operations"];
         }
       }
+      if (!item["dependencyOptions"]) {
+        if(item.dependency) {
+          item["dependencyOptions"] = item["dependency"] ? item["dependency"].split(",").map((opt) => {
+            return { label: opt, value: opt };
+          }) : [];
+        }else{
+          item["dependency"] = "";
+          item["dependencyOptions"] =[];
+        }
+       
+        let index = this.criteriaSettingtable.findIndex(
+          (x) => x.fieldName == item.fieldName
+        );
+        if (index == -1) {
+          item["dependency"] = "";
+        } else {
+          item["dependency"] = this.criteriaSettingtable[index]["dependency"];
+        }
+      }
       item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
     this.criteriaSettingtable = [...this.selectedFields];
@@ -295,18 +322,18 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
-          if (res["appForm"].length) {
-            let duplicateCriteria = false;
+          if (res["appForm"] && res["appForm"].length) {
+            this.duplicateCriteria = false;
             res["appForm"].forEach((appForm) => {
               let app = appForm.split(":")[0];
               let form = appForm.split(":")[1];
               if (
                 this.appCtrl.value.name == app &&
                 this.formCtrl.value.name == form &&
-                !duplicateCriteria
+                !this.duplicateCriteria
               ) {
                 console.log("confirm dialog");
-                duplicateCriteria = true;
+                this.duplicateCriteria = true;
                 this.confirmationService.confirm({
                   message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
@@ -320,11 +347,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 });
               }
             });
-            if (!duplicateCriteria) {
+            if (!this.duplicateCriteria) {
               this.saveCriteriaFields();
             }
           }
-          console.log(res["appForm"]);
+          else{
+            console.log(res["msg"]);
+            this.saveCriteriaFields();
+
+          }
         },
         (err) => {
           console.log(
@@ -351,9 +382,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     console.log("on save", this.criteriaSettingtable);
     this.criteriaSettingtable.forEach((criteria) => {
       let operations = [];
+      let dependency = [];
       criteria["operations"].forEach((op) => {
         operations.push(op["label"]);
       });
+      if(criteria.dependency && criteria.dependency.length) {
+        criteria["dependency"].forEach((op) => {
+          dependency.push(op["label"]);
+        });
+      }
       let criteriaDetails = {
         fieldName: criteria["fieldName"],
         displayName: criteria["displayName"],
@@ -361,7 +398,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         operations: operations.join(","),
         iSMandatory: criteria["iSMandatory"] ? "yes" : "no",
         orderID: criteria["orderID"],
-        dependency: criteria["dependency"],
+        dependency: dependency.length ? dependency.join(",") : null,
       };
       data["cmCriteriaDataDetails"].push(criteriaDetails);
     });
@@ -369,8 +406,26 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingsService.postCriteriaFieldsToSave(data).subscribe(
       (res) => {
         if (res["msg"]) {
+          if(this.mode == 'clone') {
+            if (this.duplicateCriteria){
+              (this.ngxToaster.success("Criteria Details updated Sucessfully."));
+            }else{
+              (this.ngxToaster.success("Criteria Clone created Sucessfully."));
+            }
+          }
+          if(this.mode == 'add') {
+            if (this.duplicateCriteria){
+              (this.ngxToaster.success("Criteria Details updated Sucessfully."));
+            }else{
+              (this.ngxToaster.success("New criteria added Sucessfully."));
+            }
+          }
+                   
+          (this.mode == 'edit') && (this.ngxToaster.success("Criteria Details updated Sucessfully."));
+          // (this.mode == 'clone') && (this.ngxToaster.success("Criteria Clone created Sucessfully."));
+          // (this.mode == 'add') && (this.ngxToaster.success("New criteria added Sucessfully."));
           this.router.navigate(["navbar", "criteria-settings"]);
-          this.ngxToaster.success(res["msg"]);
+          //this.ngxToaster.success(res["msg"]);
         }
       },
       (err) => {
@@ -445,9 +500,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     } else if (emptyPriority) {
       this.ngxToaster.warning("Priority is required.");
     } else {
-      console.log("passed validation");
-      this.checkCriteriaDuplication();
+      console.log("passed validation",this.mode);
+      
+      if(this.mode == 'edit'){
+        this.saveCriteriaFields();
+      }else {
+        (this.checkCriteriaDuplication());
+      }
     }
+  
   }
 
   setCloneCriteriaData(criteriaId: any) {
@@ -476,8 +537,25 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             cloneD["operations"] = selectedOpt.map((opt) => {
               return { label: opt, value: opt };
             });
-            cloneD["iSMandatory"] =
-              cloneD["iSMandatory"] == "yes" ? true : false;
+            cloneD["iSMandatory"] = cloneD["iSMandatory"] == "yes" ? true : false;
+            cloneD["dependencyOptions"] = [];
+            let data = criteriaFieldsData
+              .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"]);
+            console.log("data   vvvv", data)
+            if(data && data["dependency"]) {
+              cloneD["dependencyOptions"] = (/[,]/.test(data["dependency"])) ? data["dependency"].split(",")
+              .map((x) => {
+                return { label: x, value: x };
+              }) : [{label:data["dependency"] , value: data["dependency"]}];
+            }
+              
+            if(cloneD.dependency) {
+              let selectedDep = (/[,]/.test(data["dependency"])) ? cloneD["dependency"].split(",") : [cloneD["dependency"]];
+              cloneD["dependency"] = selectedDep.map((opt) => {
+                return { label: opt, value: opt };
+              });
+            }
+            
           });
           this.isFieldsQueriesData = true;
           this.fieldsQueriesData = [...criteriaFieldsData];
@@ -499,7 +577,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         this.criteriaSettingtable = data["cmCriteriaDataDetails"];
         this.criteriaSettingtable.forEach((item, i) => {
           item["operations"] = this.criteriaSettingtable[i]["operations"];
+          item["dependency"] = this.criteriaSettingtable[i]["dependency"];
         });
+        //this.criteriaSettingtable.forEach((item, i) => {
+         // item["dependency"] = this.criteriaSettingtable[i]["dependency"];
+        //});
 
         const appValue = this.criteriaApplicationOptions.find(
           (value) => value.code === data["applications"]

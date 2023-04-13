@@ -280,6 +280,7 @@ export class CriteriaListingComponent implements OnInit {
         }
       )
       .add(() => {
+        this.loading = false;
         this.coreService.removeLoadingScreen();
       });
 
@@ -337,14 +338,22 @@ export class CriteriaListingComponent implements OnInit {
     this.criteriaDataArrayView["form"] = data["form"];
     this.clickforview = true;
   }
-  openClickForClone(data: any) {
+  openClickForClone(data: any, type: any) {
     this.router.navigate([
       "navbar",
       "criteria-settings",
       "add-criteria-settings",
-      data.id,
+      data.id,type
     ]);
   }
+  // openClickForEdit(data: any) {
+  //   this.router.navigate([
+  //     "navbar",
+  //     "criteria-settings",
+  //     "add-criteria-settings",
+  //     data.id,
+  //   ]);
+  // }
 
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];
