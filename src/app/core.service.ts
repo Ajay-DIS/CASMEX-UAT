@@ -23,17 +23,13 @@ export class CoreService {
       themeLink.href = theme + ".css";
     }
 
-    console.log(theme);
-
     if (theme.includes("amber") || theme.includes("pink")) {
-      console.log("light");
       this.document
         .querySelectorAll(".sidebar-content .p-menuitem-icon")
         .forEach((icons) => {
           (icons as HTMLElement).style.filter = "invert(0%)";
         });
     } else {
-      console.log("dark");
       this.document
         .querySelectorAll(".sidebar-content .p-menuitem-icon")
         .forEach((icons) => {

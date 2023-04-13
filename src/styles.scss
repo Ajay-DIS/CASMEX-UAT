@@ -192,8 +192,8 @@ body.minified-sidebar .toggle-sidebar {
 
 .p-tooltip .p-tooltip-text {
   font-size: 0.8rem !important;
-  background: #fff !important;
-  color: var(--text-color-secondary);
+  color: var(--primary-color) !important;
+  background: var(--primary-color-text);
   font-weight: 500;
 }
 

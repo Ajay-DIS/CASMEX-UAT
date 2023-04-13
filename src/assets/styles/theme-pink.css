@@ -1,6 +1,6 @@
 :root {
   --surface-a: #ffffff;
-  --surface-b: #f0f2fe;
+  --surface-b: #eaedf4;
   --surface-c: #f0f2f3;
   --surface-d: #f4f6fa;
   --surface-e: #ffffff;
@@ -2934,7 +2934,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-width: 0 0 1px 0;
   font-weight: 700;
   color: #343a40;
-  background: #f0f2fe;
+  background: #eaedf4;
   transition: box-shadow 0.2s;
 }
 .p-datatable .p-datatable-tfoot > tr > td {
@@ -4256,7 +4256,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
   border-width: 0 0 1px 0;
   font-weight: 700;
   color: #343a40;
-  background: #f0f2fe;
+  background: #eaedf4;
   transition: box-shadow 0.2s;
 }
 .p-treetable .p-treetable-tfoot > tr > td {
@@ -4871,6 +4871,7 @@ p-treeselect.p-treeselect-clearable .p-treeselect-clear-icon {
 }
 .p-dialog.p-confirm-dialog .p-confirm-dialog-icon {
   font-size: 2rem;
+  color: #000;
 }
 .p-dialog.p-confirm-dialog .p-confirm-dialog-message {
   margin-left: 1rem;
