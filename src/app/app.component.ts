@@ -41,7 +41,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.coreService.$loadingScreen.subscribe((isLoading) => {
       this.blocked = isLoading;
     });
-    this.confirmSessionContinuity(5000);
 
     this.authService.showSessionConfirm.subscribe((res) => {
       if (res.status) {
