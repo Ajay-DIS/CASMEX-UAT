@@ -19,6 +19,8 @@ import { CriteriaSettingsService } from "../criteria-settings.service";
   providers: [ConfirmationService],
 })
 export class CriteriaSettingsDetailComponent implements OnInit {
+  primaryColor = "var(--primary-color)";
+
   selectAppForm: any;
   selectFields: any[] = [];
   duplicateCriteria = false;
@@ -135,15 +137,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.params = this.activatedRoute.snapshot.params;
-    this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(this.activatedRoute.snapshot.routeConfig.path.lastIndexOf('/') + 1); ;
+    this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+      this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+    );
     this.coreService.displayLoadingScreen();
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.setSelectAppForm();
-    (this.mode == 'edit') && (this.appCtrl.disable()) && (this.formCtrl.disable());
-    (this.mode == 'clone') && (this.formCtrl.enable());
+    this.mode == "edit" && this.appCtrl.disable() && this.formCtrl.disable();
+    this.mode == "clone" && this.formCtrl.enable();
     this.criteriaSettingsService
       .getCriteriaAppFormsList()
       .pipe(take(1))
@@ -242,10 +246,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                   });
                 item["orderID"] = "";
                 item["operations"] = "";
-                item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-                item["dependencyOptions"] = item.dependency?.split(",").map((x) => {
-                  return { label: x, code: x };
-                });
+                item["iSMandatory"] =
+                  item["iSMandatory"] == "yes" ? true : false;
+                item["dependencyOptions"] = item.dependency
+                  ?.split(",")
+                  .map((x) => {
+                    return { label: x, code: x };
+                  });
                 item["dependency"] = "";
               });
               console.log("fields Data", this.fieldsQueriesData);
@@ -291,15 +298,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         }
       }
       if (!item["dependencyOptions"]) {
-        if(item.dependency) {
-          item["dependencyOptions"] = item["dependency"] ? item["dependency"].split(",").map((opt) => {
-            return { label: opt, value: opt };
-          }) : [];
-        }else{
+        if (item.dependency) {
+          item["dependencyOptions"] = item["dependency"]
+            ? item["dependency"].split(",").map((opt) => {
+                return { label: opt, value: opt };
+              })
+            : [];
+        } else {
           item["dependency"] = "";
-          item["dependencyOptions"] =[];
+          item["dependencyOptions"] = [];
         }
-       
+
         let index = this.criteriaSettingtable.findIndex(
           (x) => x.fieldName == item.fieldName
         );
@@ -350,11 +359,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             if (!this.duplicateCriteria) {
               this.saveCriteriaFields();
             }
-          }
-          else{
+          } else {
             console.log(res["msg"]);
             this.saveCriteriaFields();
-
           }
         },
         (err) => {
@@ -386,7 +393,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       criteria["operations"].forEach((op) => {
         operations.push(op["label"]);
       });
-      if(criteria.dependency && criteria.dependency.length) {
+      if (criteria.dependency && criteria.dependency.length) {
         criteria["dependency"].forEach((op) => {
           dependency.push(op["label"]);
         });
@@ -406,22 +413,23 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingsService.postCriteriaFieldsToSave(data).subscribe(
       (res) => {
         if (res["msg"]) {
-          if(this.mode == 'clone') {
-            if (this.duplicateCriteria){
-              (this.ngxToaster.success("Criteria Details updated Sucessfully."));
-            }else{
-              (this.ngxToaster.success("Criteria Clone created Sucessfully."));
+          if (this.mode == "clone") {
+            if (this.duplicateCriteria) {
+              this.ngxToaster.success("Criteria Details updated Sucessfully.");
+            } else {
+              this.ngxToaster.success("Criteria Clone created Sucessfully.");
             }
           }
-          if(this.mode == 'add') {
-            if (this.duplicateCriteria){
-              (this.ngxToaster.success("Criteria Details updated Sucessfully."));
-            }else{
-              (this.ngxToaster.success("New criteria added Sucessfully."));
+          if (this.mode == "add") {
+            if (this.duplicateCriteria) {
+              this.ngxToaster.success("Criteria Details updated Sucessfully.");
+            } else {
+              this.ngxToaster.success("New criteria added Sucessfully.");
             }
           }
-                   
-          (this.mode == 'edit') && (this.ngxToaster.success("Criteria Details updated Sucessfully."));
+
+          this.mode == "edit" &&
+            this.ngxToaster.success("Criteria Details updated Sucessfully.");
           // (this.mode == 'clone') && (this.ngxToaster.success("Criteria Clone created Sucessfully."));
           // (this.mode == 'add') && (this.ngxToaster.success("New criteria added Sucessfully."));
           this.router.navigate(["navbar", "criteria-settings"]);
@@ -500,15 +508,14 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     } else if (emptyPriority) {
       this.ngxToaster.warning("Priority is required.");
     } else {
-      console.log("passed validation",this.mode);
-      
-      if(this.mode == 'edit'){
+      console.log("passed validation", this.mode);
+
+      if (this.mode == "edit") {
         this.saveCriteriaFields();
-      }else {
-        (this.checkCriteriaDuplication());
+      } else {
+        this.checkCriteriaDuplication();
       }
     }
-  
   }
 
   setCloneCriteriaData(criteriaId: any) {
@@ -537,25 +544,29 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             cloneD["operations"] = selectedOpt.map((opt) => {
               return { label: opt, value: opt };
             });
-            cloneD["iSMandatory"] = cloneD["iSMandatory"] == "yes" ? true : false;
+            cloneD["iSMandatory"] =
+              cloneD["iSMandatory"] == "yes" ? true : false;
             cloneD["dependencyOptions"] = [];
-            let data = criteriaFieldsData
-              .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"]);
-            console.log("data   vvvv", data)
-            if(data && data["dependency"]) {
-              cloneD["dependencyOptions"] = (/[,]/.test(data["dependency"])) ? data["dependency"].split(",")
-              .map((x) => {
-                return { label: x, value: x };
-              }) : [{label:data["dependency"] , value: data["dependency"]}];
+            let data = criteriaFieldsData.find(
+              (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
+            );
+            console.log("data   vvvv", data);
+            if (data && data["dependency"]) {
+              cloneD["dependencyOptions"] = /[,]/.test(data["dependency"])
+                ? data["dependency"].split(",").map((x) => {
+                    return { label: x, value: x };
+                  })
+                : [{ label: data["dependency"], value: data["dependency"] }];
             }
-              
-            if(cloneD.dependency) {
-              let selectedDep = (/[,]/.test(data["dependency"])) ? cloneD["dependency"].split(",") : [cloneD["dependency"]];
+
+            if (cloneD.dependency) {
+              let selectedDep = /[,]/.test(data["dependency"])
+                ? cloneD["dependency"].split(",")
+                : [cloneD["dependency"]];
               cloneD["dependency"] = selectedDep.map((opt) => {
                 return { label: opt, value: opt };
               });
             }
-            
           });
           this.isFieldsQueriesData = true;
           this.fieldsQueriesData = [...criteriaFieldsData];
@@ -580,7 +591,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["dependency"] = this.criteriaSettingtable[i]["dependency"];
         });
         //this.criteriaSettingtable.forEach((item, i) => {
-         // item["dependency"] = this.criteriaSettingtable[i]["dependency"];
+        // item["dependency"] = this.criteriaSettingtable[i]["dependency"];
         //});
 
         const appValue = this.criteriaApplicationOptions.find(
