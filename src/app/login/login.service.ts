@@ -58,16 +58,10 @@ export class LoginService {
   }
 
   loginUser(data: LoginFormData) {
-    return this.http.post(
-      `${environment.baseUrl}/login/loginController/login`,
-      data
-    );
+    return this.http.post(`/login/loginController/login`, data);
   }
   refreshAuthToken(data: LoginFormData) {
-    return this.http.post(
-      `${environment.baseUrl}/login/loginController/refreshToken`,
-      data
-    );
+    return this.http.post(`/login/loginController/refreshToken`, data);
   }
 }
 

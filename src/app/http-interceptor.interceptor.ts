@@ -27,7 +27,7 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<unknown>> {
     if (
       !this.authService.isLoggedIn() &&
-      request["url"] == `${environment.baseUrl}/login/loginController/login`
+      request["url"] == `/login/loginController/login`
     ) {
       console.log("auth not needed", request);
       return next.handle(request);

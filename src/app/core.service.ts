@@ -23,19 +23,21 @@ export class CoreService {
       themeLink.href = theme + ".css";
     }
 
-    if (theme.includes("amber") || theme.includes("pink")) {
-      this.document
-        .querySelectorAll(".sidebar-content .p-menuitem-icon")
-        .forEach((icons) => {
-          (icons as HTMLElement).style.filter = "invert(0%)";
-        });
-    } else {
-      this.document
-        .querySelectorAll(".sidebar-content .p-menuitem-icon")
-        .forEach((icons) => {
-          (icons as HTMLElement).style.filter = "invert(100%)";
-        });
-    }
+    // % For Light Theme
+    // if (theme.includes("amber") || theme.includes("pink")) {
+    //   this.document
+    //     .querySelectorAll(".sidebar-content .p-menuitem-icon")
+    //     .forEach((icons) => {
+    //       (icons as HTMLElement).style.filter = "invert(0%)";
+    //     });
+    // } else {
+    //   this.document
+    //     .querySelectorAll(".sidebar-content .p-menuitem-icon")
+    //     .forEach((icons) => {
+    //       (icons as HTMLElement).style.filter = "invert(100%)";
+    //     });
+    // }
+    // % For Light Theme End
   }
 
   userActionsObs = new BehaviorSubject<any>([
