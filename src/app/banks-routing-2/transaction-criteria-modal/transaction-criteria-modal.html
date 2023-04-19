@@ -1,0 +1,104 @@
+<div>
+  <div class="modal-body-content" [formGroup]="txnCriteriaRangeForm">
+    <div class="d-flex jc-between">
+      <div class="col-6 pb-0">
+        <label style="font-weight: 500" for="amountFrom">LCY Amount From</label>
+      </div>
+      <div class="col-6 pb-0">
+        <label style="font-weight: 500" for="amountTo">LCY Amount To</label>
+      </div>
+    </div>
+    <div class="all-range-groups">
+      <ng-container
+        formArrayName="txnCriteriaRange"
+        *ngFor="let item of txnCriteriaRangeForm.get('txnCriteriaRange')['controls']; let i = index;"
+      >
+        <div
+          [formGroupName]="i"
+          class="d-flex jc-between"
+          style="position: relative"
+        >
+          <div class="index-range">{{i+1}}.</div>
+          <div class="col-6" style="text-align: right">
+            <p-inputNumber
+              #fromInp
+              inputId="integeronly"
+              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
+              [inputStyle]="{width: '100%', border: 'none'}"
+              formControlName="from"
+              (onInput)="changeFrom($event.value, i)"
+            >
+            </p-inputNumber>
+          </div>
+          <div class="col-6">
+            <p-inputNumber
+              #toInp
+              inputId="integeronly"
+              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
+              [inputStyle]="{width: '100%', border: 'none'}"
+              formControlName="to"
+              (onInput)="changeTo($event.value, i)"
+            >
+            </p-inputNumber>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+    <div
+      class="col-12 justify-content-end d-flex align-items-center rangeOverlapErr"
+      style="font-size: 0.8em"
+      *ngIf="isAnyErrorInRangeMsg"
+    >
+      <i class="pi pi-info-circle mr-2" style="color: red"></i>
+      <span> {{isAnyErrorInRangeMsg}} </span>
+    </div>
+    <div class="d-flex jc-between">
+      <div class="col-12">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="+"
+          [style]="{minWidth: '100%'}"
+          class="p-button-raised addTxnBtn"
+          (click)="addTxnCriteriaRange()"
+        ></button>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="col-6">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Save"
+          [style]="{minWidth: '100%'}"
+          (click)="saveTxnCriteriaRanges()"
+          class="p-button-raised"
+        ></button>
+      </div>
+      <div class="col-6">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Save & Close"
+          (click)="closeModal()"
+          [style]="{minWidth: '100%'}"
+          class="p-button-raised"
+        ></button>
+      </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <div
+        class="col-12 justify-content-end d-flex align-items-center"
+        style="font-size: 0.8em"
+      >
+        <i class="pi pi-info-circle mr-2" style="color: red"></i>
+        <span [ngClass]="{'highlightInfo': showError}"
+          >Maximum 10 Transaction ranges can be added
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
