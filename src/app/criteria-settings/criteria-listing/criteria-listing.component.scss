@@ -26,5 +26,23 @@
 :host ::ng-deep.application-header {
   background-color: var(--surface-ground);
   border-radius: 5px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
   padding: 10px;
+}
+:host ::ng-deep .p-dialog .p-dialog-content .p-datatable {
+  text-align: left;
+    font-style: normal;
+    font-weight: 500;
+    color: #222222;
+    font-size: 12px;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+#criteriaViewTable ::ng-deep .p-dialog input {
+  background-color: #dee3ef;
+  color: #8a9099 !important;
+}
+#criteriaViewTable ::ng-deep .p-dialog input:disabled {
+  color: #8a9099 !important;
 }

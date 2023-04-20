@@ -22,6 +22,7 @@
 
 .drag-criteria-fields::ng-deep .p-picklist-list {
   border-radius: 10px;
+  border: 1px solid #b9b9b9;
   min-height: 165px !important;
   max-height: 165px !important;
 }
@@ -123,5 +124,13 @@
   border: none;
   width: 147px;
   height: 35px;
+}
+:host ::ng-deep .criteria-view-table .p-datatable>.p-datatable-wrapper{
+  height: 325px;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 /* suresh end*/

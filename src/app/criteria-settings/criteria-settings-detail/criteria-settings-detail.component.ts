@@ -309,7 +309,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["dependency"] = this.criteriaSettingtable[index]["dependency"];
         }
       }
-      item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+      // item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
     this.criteriaSettingtable = [...this.selectedFields];
     this.orderIDArray = [];
@@ -487,19 +487,28 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   saveCriteriaSettings() {
     let emptyOperation = false;
     let emptyPriority = false;
+    let emptydependency = false;
     this.criteriaSettingtable.forEach((element) => {
+      console.log('element',element)
       if (element.operations == "") {
         emptyOperation = true;
       }
       if (element.orderID == 0 || element.orderID < 0) {
         emptyPriority = true;
       }
+      if (element.dependencyOptions.length && element.dependency.length == 0) {
+        emptydependency = true;
+      }
     });
     if (emptyOperation) {
       this.ngxToaster.warning("Please select operation.");
     } else if (emptyPriority) {
       this.ngxToaster.warning("Priority is required.");
-    } else {
+    }
+    else if (emptydependency) {
+      this.ngxToaster.warning("Dependency is required.");
+    }
+    else {
       console.log("passed validation",this.mode);
       
       if(this.mode == 'edit'){
@@ -600,6 +609,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   reset() {
+    if(this.mode == "edit") {
+      (this.mode == 'edit') && (this.appCtrl.enable()) && (this.formCtrl.enable());
+    }
+   
     this.isFieldsQueriesData = false;
     this.criteriaSettingtable = [];
     this.selectFields = [];
@@ -607,6 +620,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.appCtrl.reset();
     this.formCtrl.reset();
     this.formCtrl.disable();
+  
   }
   // Suresh end
 }

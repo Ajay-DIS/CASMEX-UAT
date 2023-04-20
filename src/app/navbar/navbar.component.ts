@@ -103,7 +103,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   selectedTheme = { name: "Blue", color: "#4759e4" };
 
   toggleState = "left";
-
+ languages = [
+    { label: "English", value: "en" },
+    { label: "Arabic", value: "ar" },
+    { label: "Germany ", value: "de" },
+  ];
+  selectedLanguage: string;
   currRoute: any;
 
   constructor(
@@ -115,16 +120,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {
-    // this.cities1 = [
-    //   { label: "English", value: "en" },
-    //   { label: "Arabic", value: "ar" },
-    //   { label: "Germany ", value: "de" },
-    // ];
-    // translate.addLangs(["en", "ar", "de"]);
-    // translate.setDefaultLang("en");
+    translate.addLangs(["en", "ar", "de"]);
+    translate.setDefaultLang("en");
 
-    // const browserLang = translate.getBrowserLang();
-    // translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
+    const browserLang = translate.getBrowserLang();
+    translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -134,7 +134,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
   }
 
+
   ngOnInit(): void {
+    this.selectedLanguage = this.translate.currentLang;
     console.log(this.currRoute);
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
@@ -154,7 +156,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
     // this.setSidebarMenu();
   }
-
+  switchLanguage(lang: string) {
+    this.translate.use(lang);
+  }
   setSidebarMenu() {
     if (!!localStorage.getItem("menuItems")) {
       const menuItems = localStorage.getItem("menuItems");
