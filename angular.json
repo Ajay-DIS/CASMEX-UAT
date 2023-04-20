@@ -33,13 +33,13 @@
                 "inject": false
               },
               {
-                "input": "src/assets/styles/theme-amber.css",
-                "bundleName": "theme-amber",
+                "input": "src/assets/styles/theme-green.css",
+                "bundleName": "theme-green",
                 "inject": false
               },
               {
-                "input": "src/assets/styles/theme-pink.css",
-                "bundleName": "theme-pink",
+                "input": "src/assets/styles/theme-magenta.css",
+                "bundleName": "theme-magenta",
                 "inject": false
               },
               {

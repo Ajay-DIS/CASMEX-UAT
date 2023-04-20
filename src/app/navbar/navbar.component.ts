@@ -12,12 +12,9 @@ import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
 import { ToastrService } from "ngx-toastr";
 import { MenuItem } from "primeng/api";
-import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
-import { environment } from "src/environments/environment";
 import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
-import { PaymentModeService } from "../payment-mode-settings/payment-mode-service.service";
 
 @Component({
   selector: "app-navbar",
@@ -28,6 +25,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild("toggleSidebar") toggleSidebarBtn: ElementRef;
   @ViewChild("sidebarDiv") sidebarDiv: ElementRef;
   @ViewChild("logo") logoImg: ElementRef;
+
+  primaryColor = "var(--primary-color)";
 
   breadcrumbsItems: MenuItem[] = [
     { label: "Home", routerLink: "/navbar" },
@@ -96,9 +95,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   themeOptions = [
     { name: "Blue", color: "#4759e4" },
-    { name: "Amber", color: "#ffbf00" },
-    { name: "Purple", color: "#570861" },
-    { name: "Pink", color: "#ffc0cb" },
+    { name: "Green", color: "#029a71" },
+    { name: "Purple", color: "#6a0aa2" },
+    { name: "Magenta", color: "#007491" },
+    // { name: "Amber", color: "#ffbf00" },
+    // { name: "Pink", color: "#ffc0cb" },
   ];
   selectedTheme = { name: "Blue", color: "#4759e4" };
 
@@ -137,6 +138,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.selectedLanguage = this.translate.currentLang;
+    this.selectTheme({ name: "Blue", color: "#4759e4" });
     console.log(this.currRoute);
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
@@ -231,11 +233,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.toggleSidebarBtn.nativeElement.addEventListener("click", () => {
       if (bodyTag.classList.contains("minified-sidebar")) {
         bodyTag.classList.remove("minified-sidebar");
-        this.logoImg.nativeElement.setAttribute("src", bigLogoImgSrc);
+        // this.logoImg.nativeElement.setAttribute("src", bigLogoImgSrc);
         this.toggleState = "left";
       } else {
         bodyTag.classList.add("minified-sidebar");
-        this.logoImg.nativeElement.setAttribute("src", smallLogoImgSrc);
+        // this.logoImg.nativeElement.setAttribute("src", smallLogoImgSrc);
         this.toggleState = "right";
       }
     });

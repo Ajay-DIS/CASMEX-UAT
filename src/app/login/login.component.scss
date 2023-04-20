@@ -10,7 +10,7 @@
   border-bottom: 1px solid var(--surface-border);
 }
 .form-style input:focus {
-  border-bottom: 1px solid var(--primary-color);
+  border-bottom: 1px solid #4759e4;
   box-shadow: none;
   outline: 0;
   background-color: var(--surface-border);
@@ -34,7 +34,12 @@ button {
 a,
 a:focus,
 a:hover {
-  color: var(--primary-color);
+  color: #4759e4;
+}
+
+.form-style ::ng-deep .p-checkbox .p-checkbox-box.p-highlight {
+  border-color: #4759e4;
+  background: #4759e4;
 }
 
 .sideline:before,
@@ -47,4 +52,15 @@ a:hover {
 
 .sideline:after {
   margin: 0 0 0 20px;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #4759e4;
+  border-color: #4759e4;
+}
+.btn-primary:hover {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
 }

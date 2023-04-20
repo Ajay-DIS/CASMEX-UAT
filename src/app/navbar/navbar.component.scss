@@ -131,25 +131,33 @@
 }
 
 .profile-dropdown::ng-deep .p-dropdown,
-.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon {
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon,
+.theme-dropdown::ng-deep .p-dropdown,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon {
   border: none;
 }
-.profile-dropdown::ng-deep .p-dropdown {
-  width: 100px;
+.theme-dropdown::ng-deep .p-dropdown {
+  width: 115px;
   margin-top: 5px;
 }
 
-.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger {
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-trigger {
   display: none;
 }
 
-.profile-dropdown::ng-deep .p-dropdown .p-dropdown-label {
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-label,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-label {
   padding-bottom: 0;
   padding-top: 0;
   font-weight: 500;
   color: black;
 }
 
+.profile-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus,
+.theme-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
 .profile-content {
   display: flex;
   flex-direction: column;
@@ -158,10 +166,6 @@
   font-size: 0.8rem;
   color: var(--text-color-secondary);
   font-weight: 500;
-}
-
-.profile-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus {
-  box-shadow: none;
 }
 
 /*--------------------------------------------------------------
@@ -236,7 +240,7 @@
   .p-panelmenu
   .p-panelmenu-panel:has(.p-toggleable-content)
   .p-panelmenu-header.p-highlight {
-  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+  background: linear-gradient(to right, var(--primary-700), var(--primary-400));
   border-color: transparent;
   color: var(--primary-color-text);
   border-radius: 5px;
@@ -247,11 +251,8 @@
 }
 
 .sidebar ::ng-deep .p-panelmenu .p-panelmenu-content {
-  background: linear-gradient(
-    to right,
-    rgba(147, 159, 254, 0.22),
-    rgba(99, 117, 252, 0.22)
-  );
+  background: linear-gradient(to right, rgba(#000, 0.1), rgba(#fff, 0.1));
+
   padding: 0;
   border: none;
   border-radius: 5px;
@@ -276,7 +277,7 @@
   .p-panelmenu-content
   .p-menuitem
   .p-menuitem-link:not(.p-disabled):hover {
-  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+  background: linear-gradient(to right, var(--primary-700), var(--primary-400));
 }
 
 .sidebar ::ng-deep .p-panelmenu .p-panelmenu-panel .p-panelmenu-header > a {
@@ -361,7 +362,7 @@ main {
   .p-panelmenu-content
   .p-menuitem
   .p-menuitem-link.p-menuitem-link-active {
-  background: linear-gradient(to right, var(--primary-300), var(--primary-400));
+  background: linear-gradient(to right, var(--primary-700), var(--primary-400));
   border-color: transparent;
   color: var(--primary-color-text);
   border-radius: 5px;
@@ -390,7 +391,7 @@ main {
   margin-top: auto;
   padding: 1.2rem 0.8rem 1.2rem 1rem;
   border-radius: 5px;
-  background: linear-gradient(to right, var(--primary-600), var(--primary-600));
+  background: linear-gradient(to right, var(--primary-700), var(--primary-800));
 }
 .sidebar-content-footer .help-content {
   font-size: 0.9rem;

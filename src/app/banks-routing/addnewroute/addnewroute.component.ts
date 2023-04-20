@@ -14,8 +14,6 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
-import { element } from "protractor";
-import { first, take, takeWhile } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 
 import { BankRoutingService } from "../bank-routing.service";
@@ -31,6 +29,8 @@ import { CriteriaTemplateData } from "../banks-routing.model";
 })
 export class AddnewrouteComponent implements OnInit {
   @ViewChild("table", { static: false }) table!: Table;
+
+  primaryColor = 'var(--primary-color)'
 
   dummyTemplateJson = {
     data: [
@@ -187,12 +187,6 @@ export class AddnewrouteComponent implements OnInit {
   criteriaEqualsDdlOptions = [];
   correspondentDdlOptions = [];
   selectedRowCollumn = [];
-  // criteriaMap: any = {
-  //   criteria: "",
-  //   condition: "",
-  //   val: "",
-  // };
-  //data from API
 
   criteriaDataDetailsJson: any = {
     data: {
