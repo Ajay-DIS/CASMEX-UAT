@@ -58,6 +58,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   confirmSessionContinuity(timer: any) {
     this.confirmationService.confirm({
       message: `Your session is expiring in ${timer}, you want to continue ?`,
+      key: "sessionConfirm",
       accept: () => {
         this.login();
       },

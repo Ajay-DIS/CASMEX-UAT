@@ -19,27 +19,42 @@
           style="position: relative"
         >
           <div class="index-range">{{i+1}}.</div>
-          <div class="col-6" style="text-align: right">
+          <div class="col-6 pl-3" style="text-align: right">
             <p-inputNumber
               #fromInp
+              mode="decimal"
+              maxlength="10"
+              maxValue="9999999999"
+              [useGrouping]="false"
               inputId="integeronly"
-              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
-              [inputStyle]="{width: '100%', border: 'none'}"
+              [style]="{width: '95%'}"
+              [inputStyle]="{width: '95%', background: '#f4f6fa', border: 'none'}"
               formControlName="from"
-              (onInput)="changeFrom($event.value, i)"
+              (onInput)="changeFrom($event, i)"
             >
             </p-inputNumber>
           </div>
-          <div class="col-6">
+          <div class="col-6 pr-3">
             <p-inputNumber
               #toInp
+              mode="decimal"
+              maxlength="10"
+              maxValue="9999999999"
+              [useGrouping]="false"
               inputId="integeronly"
-              [style]="{maxWidth: '95%', paddingLeft: '5px'}"
-              [inputStyle]="{width: '100%', border: 'none'}"
+              [style]="{width: '95%'}"
+              [inputStyle]="{width: '95%', background: '#f4f6fa', border: 'none'}"
               formControlName="to"
-              (onInput)="changeTo($event.value, i)"
+              (onInput)="changeTo($event, i)"
             >
             </p-inputNumber>
+          </div>
+          <div
+            *ngIf="i> 0 && i+1 == txnCriteriaRangeForm.get('txnCriteriaRange')['controls'].length"
+            class="delete-range"
+            (click)="deleteRange(i)"
+          >
+            <i class="pi pi-times-circle mr-2"></i>
           </div>
         </div>
       </ng-container>

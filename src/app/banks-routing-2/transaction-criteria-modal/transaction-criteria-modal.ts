@@ -99,6 +99,7 @@ export class TransactionCriteriaModal2 {
     this.isRangeValueLessThanZero = false;
     if (this.txnCriteriaRange && this.txnCriteriaRange?.length) {
       this.txnCriteriaRange.controls.forEach((range) => {
+        console.log(range.value.from, range.value.to);
         if (range.value) {
           if (range.value.from == null || range.value.to == null) {
             this.isRangeEmpty = true;
@@ -122,17 +123,21 @@ export class TransactionCriteriaModal2 {
   }
 
   changeTo(e: any, i: any) {
-    if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
-        "to"
-      ].setValue(e);
+    if (!(e.value > 9999999999)) {
+      if (this.txnCriteriaRange.controls) {
+        (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
+          "to"
+        ].setValue(e.value);
+      }
     }
   }
   changeFrom(e: any, i: any) {
-    if (this.txnCriteriaRange.controls) {
-      (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
-        "from"
-      ].setValue(e);
+    if (!(e.value > 9999999999)) {
+      if (this.txnCriteriaRange.controls) {
+        (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
+          "from"
+        ].setValue(e.value);
+      }
     }
   }
 
@@ -175,6 +180,13 @@ export class TransactionCriteriaModal2 {
         this.txnCriteriaRange.push(this.createTxnCriteriaRange(null, null));
       }
     }
+  }
+
+  deleteRange(i) {
+    this.txnCriteriaRange = this.txnCriteriaRangeForm.get(
+      "txnCriteriaRange"
+    ) as UntypedFormArray;
+    this.txnCriteriaRange.removeAt(i);
   }
 
   saveTxnCriteriaRanges() {

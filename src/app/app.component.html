@@ -1,7 +1,7 @@
 <p-blockUI [styleClass]="'p-blockui-document'" [blocked]="blocked"></p-blockUI>
 <router-outlet></router-outlet>
 
-<p-confirmDialog class="session-confirm" #cd icon="pi pi-exclamation-triangle" [closable]="false">
+<p-confirmDialog key="sessionConfirm" class="session-confirm" #cd icon="pi pi-exclamation-triangle" [closable]="false">
   <p-footer>
     <button
       type="button"

@@ -12,7 +12,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
 import { CoreService } from "src/app/core.service";
 
@@ -22,6 +22,7 @@ import { Table } from "primeng/table";
 import { CriteriaTemplateData } from "../banks-routing.model";
 import { map, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
+import { ConfirmDialog } from "primeng/confirmdialog";
 
 @Component({
   selector: "app-addnewroute",
@@ -180,6 +181,8 @@ export class AddnewrouteComponent2 implements OnInit {
   isSelectedRouteToServiceCategory = false;
   apiResponse: any = {};
   hideValuesDropdown = false;
+  showValueInput = false;
+  isLcyControlSelected = false;
   criteriaText: any[] = [];
   criteriaCodeText: any[] = [];
   testData: any[] = [];
@@ -458,6 +461,7 @@ export class AddnewrouteComponent2 implements OnInit {
   validCriteria = false;
 
   removeAddCriteriaListener: any;
+  AddCriteriaClickListener: boolean = false;
 
   routeToBankNameOption = [];
   routeToServiceCategoryOption = [];
@@ -474,6 +478,8 @@ export class AddnewrouteComponent2 implements OnInit {
   criteriaMasterData: any = {};
   cmCriteriaDependency: any = {};
 
+  independantCriteriaArr: any = [];
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -484,9 +490,11 @@ export class AddnewrouteComponent2 implements OnInit {
     private fb: UntypedFormBuilder,
     private renderer: Renderer2,
     private route: ActivatedRoute,
-    private coreService: CoreService
+    private coreService: CoreService,
+    private confirmationService: ConfirmationService
   ) {}
 
+  @ViewChild("cd") cd: ConfirmDialog;
   @ViewChild("addCriteriaBtn") addCriteriaBtn: ElementRef;
 
   ngOnInit(): void {
@@ -620,21 +628,49 @@ export class AddnewrouteComponent2 implements OnInit {
             this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails;
 
           let crArr = [];
-          this.cmCriteriaDataDetails.forEach((element) => {
-            crArr.push({
-              name: element.displayName,
-              code: element.fieldName,
-            });
-          });
           this.criteriaMapDdlOptions = crArr;
-          this.cmCriteriaDependency =
-            this.criteriaDataDetailsJson.data["dependance"];
           console.log(this.criteriaDataDetailsJson.data);
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
           console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
 
+          console.log(
+            " Dependance",
+            this.criteriaDataDetailsJson.data.dependance
+          );
+          this.cmCriteriaDependency =
+            this.criteriaDataDetailsJson.data.dependance;
+          this.cmCriteriaDataDetails.forEach((element) => {
+            let isMandatory = false;
+            let isDependent = false;
+            let dependencyList = "";
+            let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
+            if (
+              this.cmCriteriaMandatory &&
+              this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
+            ) {
+              isMandatory = true;
+            }
+            if (
+              Object.keys(dependenceObj).length &&
+              dependenceObj[element.fieldName] &&
+              dependenceObj[element.fieldName] != "null"
+            ) {
+              isDependent = true;
+              dependencyList = dependenceObj[element.fieldName];
+            } else {
+              this.independantCriteriaArr.push(element.displayName);
+            }
+
+            crArr.push({
+              name: element.displayName,
+              code: element.fieldName,
+              isMandatory: isMandatory,
+              isDependent: isDependent,
+              dependencyList: dependencyList,
+            });
+          });
           return criteriaMasterData;
         })
       )
@@ -663,18 +699,47 @@ export class AddnewrouteComponent2 implements OnInit {
             this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails;
 
           let crArr = [];
-          this.cmCriteriaDataDetails.forEach((element) => {
-            crArr.push({
-              name: element.displayName,
-              code: element.fieldName,
-            });
-          });
           this.criteriaMapDdlOptions = crArr;
           console.log(this.criteriaDataDetailsJson.data);
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
           console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
+          console.log(
+            " Dependance",
+            this.criteriaDataDetailsJson.data.dependance
+          );
+          this.cmCriteriaDataDetails.forEach((element) => {
+            let isMandatory = false;
+            let isDependent = false;
+            let dependencyList = "";
+            let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
+            if (
+              this.cmCriteriaMandatory &&
+              this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
+            ) {
+              isMandatory = true;
+            }
+            console.log("dependenceObj", dependenceObj[element.fieldName]);
+            if (
+              Object.keys(dependenceObj).length &&
+              dependenceObj[element.fieldName] &&
+              dependenceObj[element.fieldName] != "null"
+            ) {
+              isDependent = true;
+              dependencyList = dependenceObj[element.fieldName];
+            } else {
+              this.independantCriteriaArr.push(element.displayName);
+            }
+
+            crArr.push({
+              name: element.displayName,
+              code: element.fieldName,
+              isMandatory: isMandatory,
+              isDependent: isDependent,
+              dependencyList: dependencyList,
+            });
+          });
         },
         (err) => {
           console.log("::error loading AddBankRouteCriteriaData", err);
@@ -696,22 +761,35 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   addCriteriaMap() {
+    console.log(this.operationCtrl.value);
+    let value = "";
+    let valueCode = "";
+    if (this.criteriaCtrl.value.name == "LCY Amount") {
+      if (this.operationCtrl.value.name == "Slab") {
+        value = "Slab";
+        valueCode = "Slab";
+      } else {
+        value = this.valueCtrl.value;
+        valueCode = this.valueCtrl.value;
+      }
+    } else {
+      value = this.valueCtrl.value.name;
+      valueCode = this.valueCtrl.value.code;
+    }
+
+    console.log(value, valueCode);
     let criteria =
       this.criteriaCtrl.value.name +
       " " +
       this.operationCtrl.value.code +
       " " +
-      (this.criteriaCtrl.value.name == "LCY Amount"
-        ? "Slab"
-        : this.valueCtrl.value.name);
+      value;
     let criteriaCode =
       this.criteriaCtrl.value.name +
       " " +
       this.operationCtrl.value.code +
       " " +
-      (this.criteriaCtrl.value.name == "LCY Amount"
-        ? "Slab"
-        : this.valueCtrl.value.code);
+      valueCode;
     let index = this.criteriaText.indexOf(criteria);
     //validations
     if (this.criteriaText.length && index != -1) {
@@ -811,14 +889,18 @@ export class AddnewrouteComponent2 implements OnInit {
         this.txnCriteriaRangeFormData = res;
 
         if (!!Object.keys(res).length) {
+          console.log("rng data present");
           res["txnCriteriaRange"].forEach((range) => {
             if (Object.values(range).filter((rng) => rng == null).length == 0) {
+              console.log("rng data present not null");
               this.savedLcySlabs = true;
             } else {
+              console.log("rng data present null");
               this.savedLcySlabs = false;
             }
           });
         } else {
+          console.log("rng data absent");
           this.savedLcySlabs = false;
         }
 
@@ -833,12 +915,19 @@ export class AddnewrouteComponent2 implements OnInit {
             this.criteriaCodeText.push(criteriaCode);
             this.resetCriteriaDropdowns();
             this.removeAddCriteriaListener();
+            this.AddCriteriaClickListener = false;
           } else {
             this.removeAddCriteriaListener();
+            this.AddCriteriaClickListener = false;
           }
         } else {
-          console.log("lcy absent");
-          if (!this.removeAddCriteriaListener) {
+          console.log(
+            "lcy absent",
+            this.removeAddCriteriaListener,
+            this.AddCriteriaClickListener
+          );
+          if (!this.AddCriteriaClickListener) {
+            console.log("eventlistener absent");
             this.removeAddCriteriaListener = this.renderer.listen(
               this.addCriteriaBtn.nativeElement,
               "click",
@@ -846,6 +935,7 @@ export class AddnewrouteComponent2 implements OnInit {
                 this.showTransCriteriaModal();
               }
             );
+            this.AddCriteriaClickListener = true;
           }
         }
       });
@@ -862,11 +952,21 @@ export class AddnewrouteComponent2 implements OnInit {
       let formatCrt;
       if (crt.includes("!=")) {
         formatCrt = crt.replace(/[!=]/g, "");
+      } else if (crt.includes(">=")) {
+        formatCrt = crt.replace(/[>=]/g, "");
+      } else if (crt.includes("<=")) {
+        formatCrt = crt.replace(/[<=]/g, "");
+      } else if (crt.includes("<")) {
+        formatCrt = crt.replace(/[<]/g, "");
+      } else if (crt.includes(">")) {
+        formatCrt = crt.replace(/[>]/g, "");
       } else {
         formatCrt = crt.replace(/[=]/g, "");
       }
       return formatCrt.split("  ")[0];
     });
+
+    console.log(formattedCriteriaArr, this.cmCriteriaDependency, event["name"]);
 
     if (Object.keys(this.cmCriteriaDependency).includes(event["name"])) {
       console.log(
@@ -893,8 +993,15 @@ export class AddnewrouteComponent2 implements OnInit {
         return false;
       }
     } else {
-      if (
+      console.log(
+        formattedCriteriaArr.includes(event["name"]),
         formattedCriteriaArr.includes(this.cmCriteriaDependency[event["name"]])
+      );
+      if (
+        formattedCriteriaArr.includes(
+          this.cmCriteriaDependency[event["name"]]
+        ) ||
+        formattedCriteriaArr.includes(event["name"])
       ) {
         this.ngxToaster.warning(
           `${event["name"]} is already added. Select any other Criteria.`
@@ -907,6 +1014,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
   onCriteriaSelect(event: any) {
     console.log("::criteria", event, this.cmCriteriaDependency);
+    this.hideValuesDropdown = false;
+    this.showValueInput = false;
     if (this.isCriteriaSelectable(event)) {
       // this.ngxToaster.success(`${event["name"]} is selectable`);
       this.onChange("criteria", event);
@@ -943,6 +1052,8 @@ export class AddnewrouteComponent2 implements OnInit {
           if (res[fieldName]) {
             this.valueCtrl.enable();
             this.hideValuesDropdown = false;
+            this.showValueInput = false;
+
             console.log(res[fieldName]);
             this.correspondentDdlOptions = res[fieldName].map((val) => {
               return { name: val["codeName"], code: val["code"] };
@@ -961,9 +1072,9 @@ export class AddnewrouteComponent2 implements OnInit {
           this.coreService.removeLoadingScreen();
           console.log("Error in getting values", err);
           this.resetCriteriaDropdowns();
-          this.ngxToaster.warning(
-            `${displayName} is already added. Select any other Criteria.`
-          );
+          // this.ngxToaster.warning(
+          //   `${displayName} is already added. Select any other Criteria.`
+          // );
         }
       );
   }
@@ -984,10 +1095,21 @@ export class AddnewrouteComponent2 implements OnInit {
           (x) => event.code == x.fieldName
         );
         let operations;
+        this.hideValuesDropdown = false;
+        this.showValueInput = false;
         if (selectedCorrespondent[0].fieldName == "LCY Amount") {
+          this.isLcyControlSelected = true;
+          console.log("LCY control selected", this.isLcyControlSelected);
           operations = selectedCorrespondent[0].operations.split(",");
-          // this.hideValuesDropdown = true;
+          this.valueCtrl.reset();
+          this.valueCtrl.disable();
+          this.correspondentDdlOptions = [];
         } else {
+          console.log(
+            "other control selected, is LCY",
+            this.isLcyControlSelected
+          );
+          this.isLcyControlSelected = false;
           this.correspondentDdlOptions = [];
           this.valueCtrl.patchValue("");
           this.getCorrespondentValues(event.name, event.code);
@@ -1054,8 +1176,8 @@ export class AddnewrouteComponent2 implements OnInit {
         break;
 
       case "condition":
-        console.log("slab event", event);
         this.hideValuesDropdown = false;
+        this.showValueInput = false;
         if (
           event.name == "Slab" &&
           !this.criteriaText.filter(
@@ -1065,7 +1187,8 @@ export class AddnewrouteComponent2 implements OnInit {
           this.isLcySlabsCriteria = true;
           this.valueCtrl.disable();
           this.hideValuesDropdown = true;
-          if (!this.removeAddCriteriaListener) {
+          this.showValueInput = false;
+          if (!this.AddCriteriaClickListener) {
             this.removeAddCriteriaListener = this.renderer.listen(
               this.addCriteriaBtn.nativeElement,
               "click",
@@ -1073,16 +1196,33 @@ export class AddnewrouteComponent2 implements OnInit {
                 this.showTransCriteriaModal();
               }
             );
+            this.AddCriteriaClickListener = true;
           }
         } else if (event.name == "Slab") {
+          console.log("listner", this.AddCriteriaClickListener);
+          if (this.AddCriteriaClickListener) {
+            this.removeAddCriteriaListener();
+            this.AddCriteriaClickListener = false;
+          }
           this.isLcySlabsCriteria = true;
           this.valueCtrl.disable();
           this.hideValuesDropdown = true;
-        } else {
-          this.valueCtrl.enable();
+          this.showValueInput = false;
+        } else if (this.isLcyControlSelected) {
           console.log("Insert Input Text for Value");
-          if (this.removeAddCriteriaListener) {
+          this.valueCtrl.enable();
+          this.hideValuesDropdown = true;
+          this.showValueInput = true;
+          if (this.AddCriteriaClickListener) {
             this.removeAddCriteriaListener();
+            this.AddCriteriaClickListener = false;
+          }
+          this.isLcySlabsCriteria = false;
+        } else {
+          this.hideValuesDropdown = false;
+          if (this.AddCriteriaClickListener) {
+            this.removeAddCriteriaListener();
+            this.AddCriteriaClickListener = false;
           }
           this.isLcySlabsCriteria = false;
         }
@@ -1114,18 +1254,137 @@ export class AddnewrouteComponent2 implements OnInit {
             this.showTransCriteriaModal();
           }
         );
+        this.AddCriteriaClickListener = true;
       } else {
         console.log("not LCY criteria current");
       }
     }
 
-    this.criteriaText.splice(i, this.criteriaText.length - i);
-    this.criteriaCodeText.splice(i, this.criteriaCodeText.length - i);
+    let arr2 = [...this.criteriaText];
+    let arr1 = [...this.independantCriteriaArr];
+    let independantIndexes = [];
+
+    arr2.forEach((arr2Item, i) => {
+      console.log(arr1, arr2Item.split(" ")[0], arr1.includes("LCY Amount"));
+      arr1.forEach((arr1Item) => {
+        if (arr1Item.includes(arr2Item.split(" ")[0])) {
+          independantIndexes.push(i);
+          console.log(arr2Item, arr1Item, i);
+        }
+      });
+    });
+
+    let formatCrt = this.criteriaText[i];
+    if (formatCrt.includes("!=")) {
+      formatCrt = formatCrt.replace(/[!=]/g, "");
+    } else {
+      formatCrt = formatCrt.replace(/[=]/g, "");
+    }
+
+    console.log(
+      Object.values(this.cmCriteriaDependency),
+      formatCrt.split("  ")[0],
+      independantIndexes
+    );
+
+    if (
+      Object.values(this.cmCriteriaDependency).includes(
+        formatCrt.split("  ")[0]
+      )
+    ) {
+      console.log("dependant");
+      this.confirmationService.confirm({
+        message: `All dependant criteria will be deleted, you want to delete ?`,
+        key: "criteriaDeleteConfirm",
+        accept: () => {
+          this.deleteCriteria(formatCrt, criteria);
+        },
+      });
+    } else {
+      this.criteriaText.splice(i, 1);
+      this.criteriaCodeText.splice(i, 1);
+    }
+
+    console.log(this.independantCriteriaArr, this.criteriaText);
+
+    this.resetCriteriaDropdowns();
+  }
+
+  deleteCriteria(formatCrt, criteria) {
+    let applicableKeys = [...Object.keys(this.cmCriteriaDependency)];
+    let selectedKeys = [];
+    let allChildDependants = [];
+
+    let childDependants = [formatCrt.split("  ")[0]];
+
+    while (childDependants.length) {
+      selectedKeys = [];
+      selectedKeys = [...childDependants];
+      childDependants = [];
+      selectedKeys.forEach((selcCrit) => {
+        applicableKeys.forEach((applCrit) => {
+          if (this.cmCriteriaDependency[applCrit] === selcCrit) {
+            childDependants.push(applCrit);
+            allChildDependants.push(applCrit);
+          }
+        });
+      });
+    }
+
+    let critTxt = [...this.criteriaText];
+    let critCodeTxt = [...this.criteriaCodeText];
+    let removeCrit = [];
+    let removeCodeCrit = [];
+
+    allChildDependants = [
+      ...Array.from(new Set(allChildDependants)),
+      formatCrt.split("  ")[0],
+    ];
+
+    critTxt.forEach((crtTxt) => {
+      let formatCrt = crtTxt;
+      if (formatCrt.includes("!=")) {
+        formatCrt = formatCrt.replace(/[!=]/g, "");
+      } else {
+        formatCrt = formatCrt.replace(/[=]/g, "");
+      }
+      formatCrt = formatCrt.split("  ")[0];
+      allChildDependants.forEach((deps) => {
+        if (deps == formatCrt) {
+          removeCrit.push(crtTxt);
+        }
+      });
+    });
+
+    critCodeTxt.forEach((crtCodeTxt) => {
+      let formatCrt = crtCodeTxt;
+      if (formatCrt.includes("!=")) {
+        formatCrt = formatCrt.replace(/[!=]/g, "");
+      } else {
+        formatCrt = formatCrt.replace(/[=]/g, "");
+      }
+      formatCrt = formatCrt.split("  ")[0];
+      allChildDependants.forEach((deps) => {
+        if (deps == formatCrt) {
+          removeCodeCrit.push(crtCodeTxt);
+        }
+      });
+    });
+
+    this.criteriaText = this.criteriaText.filter((el) => {
+      return !removeCrit.includes(el);
+    });
+    this.criteriaCodeText = this.criteriaCodeText.filter((el) => {
+      return !removeCodeCrit.includes(el);
+    });
+
+    console.log("::to remove crit", removeCrit);
+
+    console.log("::remaining crit ", this.criteriaText);
+
     this.ngxToaster.warning(
       `All dependent values of ${criteria} has been removed`
     );
-
-    this.resetCriteriaDropdowns();
   }
 
   openClickForSave() {
@@ -1163,11 +1422,10 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   checkDependanceCondition(formattedCriteriaArr: any) {
-    console.log(
-      "apidata",
-      this.criteriaDataDetailsJson.data.dependance["Service Category"]
-    );
     let dependencyCheckPassed = true;
+
+    let containsAll = (arr1, arr2) =>
+      arr2.every((arr2Item) => arr1.includes(arr2Item));
 
     Object.keys(this.criteriaDataDetailsJson.data.dependance).forEach(
       (dependantCrt) => {
@@ -1176,8 +1434,14 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson.data.dependance[dependantCrt] != "null"
         ) {
           if (
-            formattedCriteriaArr.includes(
-              this.criteriaDataDetailsJson.data.dependance[dependantCrt]
+            // formattedCriteriaArr.includes(
+            //   this.criteriaDataDetailsJson.data.dependance[dependantCrt]
+            // )
+            containsAll(
+              formattedCriteriaArr,
+              this.criteriaDataDetailsJson.data.dependance[dependantCrt].split(
+                ","
+              )
             )
           ) {
             console.log(
@@ -1280,8 +1544,6 @@ export class AddnewrouteComponent2 implements OnInit {
       return;
     }
 
-    // const payload;
-
     const formData = new FormData();
     formData.append("userId", this.userId);
     formData.append("criteriaName", this.criteriaName);
@@ -1349,7 +1611,7 @@ export class AddnewrouteComponent2 implements OnInit {
       !this.criteriaText?.filter((criteria) => criteria == "LCY Amount = Slab")
         .length
     ) {
-      if (!this.removeAddCriteriaListener) {
+      if (!this.AddCriteriaClickListener) {
         this.removeAddCriteriaListener = this.renderer.listen(
           this.addCriteriaBtn.nativeElement,
           "click",
@@ -1357,6 +1619,7 @@ export class AddnewrouteComponent2 implements OnInit {
             this.showTransCriteriaModal();
           }
         );
+        this.AddCriteriaClickListener = true;
       }
 
       this.bankRoutingService.setTransactionCriteriaRange({
@@ -1576,6 +1839,17 @@ export class AddnewrouteComponent2 implements OnInit {
       containsAll(arr1, arr2) && containsAll(arr2, arr1);
 
     return sameMembers(arr1, arr2);
+  }
+
+  getTooltip(criteria: any) {
+    let tooltip = `${criteria.isMandatory ? "Mandatory Criteria \n" : ""} ${
+      criteria.isDependent ? "Dependent on " + criteria.dependencyList : ""
+    }`;
+    if (criteria.isMandatory || criteria.isDependent) {
+      return tooltip;
+    } else {
+      return false;
+    }
   }
 
   reset() {
