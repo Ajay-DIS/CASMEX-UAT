@@ -74,6 +74,7 @@
 
 .header-bar::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
   color: var(--primary-color);
+  cursor:default;
   font-weight: 500;
 }
 .header-bar::ng-deep .p-breadcrumb ul li:nth-last-child(3) .p-menuitem-text {

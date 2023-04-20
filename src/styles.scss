@@ -306,9 +306,9 @@ p-paginator .p-paginator-bottom {
   color: black !important;
 }
 
-.p-multiselect:not(.p-disabled).p-focus {
-  box-shadow: none !important;
-}
+// .p-multiselect:not(.p-disabled).p-focus {
+//   //box-shadow: none !important;
+// }
 
 .p-multiselect-panel {
   max-width: 210px !important;
@@ -425,6 +425,9 @@ p-table .filter-icon {
   border-radius: 5px;
   font-weight: 500;
   padding-left: 5px;
+}
+.p-datatable .p-datatable-tbody tr td input::placeholder {
+  color: #8a9099;
 }
 
 .table-search {
@@ -556,7 +559,7 @@ input:checked + .slider:before {
   padding: 0.47rem 0.5rem 0.47rem 1rem !important;
   font-style: normal;
   font-weight: 500;
-  color: var(--text-color-secondary) !important;
+  color: var(--text-color) !important;
   font-size: 12px;
   height: 50px;
 }
@@ -607,3 +610,31 @@ input:checked + .slider:before {
   height: 18px;
 }
 // checkbox style end
+input:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem var(--primary-color);
+}
+.p-datatable.p-datatable-hoverable-rows
+  .p-datatable-tbody
+  > tr:not(.p-highlight):hover {
+  background: #fff;
+  color: #000;
+}
+.p-multiselect .p-multiselect-label.p-placeholder {
+  color: black !important;
+}
+.p-multiselect:not(.p-disabled).p-focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #2455cf;
+  border-color: #2455cf;
+}
+.p-dialog .p-dialog-content {
+  background: #fff;
+  color: #000;
+  padding: 0rem 0rem 1rem 0rem;
+}
+.p-datatable .p-sortable-column:not(.p-highlight):hover,.p-treetable .p-sortable-column:not(.p-highlight):hover {
+  background-color: #eaedf4;
+}

@@ -104,6 +104,7 @@
         [target]="selectedFields"
         [showSourceControls]="false"
         [showTargetControls]="false"
+        [dragdrop]="true"
       >
         <ng-template let-field pTemplate="item">
           <div class="field-item">
@@ -145,10 +146,10 @@
               <th>Field Name</th>
               <th>Display Name</th>
               <th>Field Type</th>
-              <th>Operator</th>
-              <th>Criteria Priority</th>
+              <th>Operator *</th>
+              <th>Criteria Priority *</th>
               <th>Is Mandatory</th>
-              <th>Dependency</th>
+              <th>Dependency *</th>
             </tr>
           </ng-template>
           <ng-template
@@ -203,7 +204,7 @@
                   placeholder="{{ product.orderID }}"
                   [disabled]="false"
                   (input)="criteriaPriorityValidation($event, product)"
-                  style="width: 90px; margin-left: 10px"
+                  style="width: 90px; margin-left: 10px;background-color: #f4f6fa;"
                 />
               </td>
               <td style="text-align: center">
