@@ -6,23 +6,23 @@ import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.
 import { LoginComponent } from "./login/login.component";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payment-mode.component";
-// import { SidebarComponent } from './sidebar/sidebar.component';
 import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
+import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
+import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
-  // { path: 'sidebar', component: SidebarComponent, canActivate: [AuthGuard] },
   { path: "login", component: LoginComponent, canActivate: [AuthGuard] },
   {
     path: "navbar",
     component: NavbarComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: "", redirectTo: "bank-routing", pathMatch: "full" },
+      { path: "", redirectTo: "bank-routing-2", pathMatch: "full" },
       { path: "session-time-out", component: SessionTimeOutComponent },
       {
         path: "payment-mode",
@@ -63,6 +63,38 @@ const routes: Routes = [
           { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing", routerLink: "bank-routing" },
           { label: "Edit Route", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing-2",
+        component: BankRoutingComponent2,
+        data: [
+          { label: "Home", routerLink: "/navbar/bank-routing-2" },
+          { label: "Settings", routerLink: "/navbar/bank-routing-2" },
+          { label: "Bank Routing", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing-2/addnewroute",
+        component: AddnewrouteComponent2,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
+          { label: "Bank Routing-2", routerLink: "bank-routing" },
+          { label: "Add New Route-2", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing-2/addnewroute/:id",
+        component: AddnewrouteComponent2,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
+          { label: "Bank Routing-2", routerLink: "bank-routing" },
+          { label: "Edit Route-2", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -133,7 +165,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

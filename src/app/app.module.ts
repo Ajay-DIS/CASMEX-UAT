@@ -47,6 +47,9 @@ import { SessionTimeOutComponent } from "./session-time-out/session-time-out.com
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
+import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
+import { TransactionCriteriaModal2 } from "./banks-routing-2/transaction-criteria-modal/transaction-criteria-modal";
+import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -59,7 +62,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     NavbarComponent,
     PaymentModeComponent,
     ViewPaymentModeComponent,
-    // NewNavComponent,
     LoginComponent,
     BankRoutingComponent,
     AddnewrouteComponent,
@@ -68,7 +70,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CriteriaListingComponent,
     CriteriaSettingsDetailComponent,
     TaxListingComponent,
-    // SidebarComponent
+    BankRoutingComponent2,
+    AddnewrouteComponent2,
+    TransactionCriteriaModal2,
   ],
   imports: [
     BrowserModule,
