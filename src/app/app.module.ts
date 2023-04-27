@@ -50,7 +50,7 @@ import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.comp
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
 import { TransactionCriteriaModal2 } from "./banks-routing-2/transaction-criteria-modal/transaction-criteria-modal";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
-
+ import { BnNgIdleService } from "bn-ng-idle";
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -111,10 +111,11 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DialogModule,
   ],
   providers: [
+    BnNgIdleService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorInterceptor,
-      multi: true,
+      multi: true, 
     },
     DatePipe,
   ],

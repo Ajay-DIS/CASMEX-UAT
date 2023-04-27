@@ -571,3 +571,125 @@
     of {{ state.totalRecords }}
   </ng-template>
 </p-table>
+<!-- //<p-treeTable
+      #tt
+      [value]="files1"
+      [columns]="cols"
+      styleClass="p-treetable-sm"
+      sortMode="multiple"
+      [rows]="10"
+      [loading]="loading"
+      [paginator]="true"
+      [rowHover]="true"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            [ttSortableColumn]="col.field"
+            [style.width]="col.width"
+          >
+            {{ col.header }}
+          </th>
+        </tr>
+        <tr class="search-row">
+          <th *ngFor="let col of cols">
+            <span style="max-width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                class="p-inputtext table-search"
+                placeholder="Search"
+                (input)="
+                  tt.filter($event.target.value, col.field, col.filterMatchMode)
+                "
+              />
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowNode
+        let-rowData="rowData"
+        let-columns="columns"
+      >
+        <tr
+          [ngStyle]="{
+            border:
+              objectKeys(rowData).length == 1
+                ? '1px solid var(--surface-border)'
+                : ''
+          }"
+        >
+          <ng-container *ngFor="let col of columns; let i = index">
+            <td *ngIf="i + 1 != columns.length">
+              <p-treeTableToggler
+                [rowNode]="rowNode"
+                *ngIf="objectKeys(rowData).length == 1 && i == 0"
+                class="group-row"
+              ></p-treeTableToggler>
+              <div
+                *ngIf="!(objectKeys(rowData).length > 1 && i == 0)"
+                style="display: inline-block"
+                [ngClass]="objectKeys(rowData).length == 1 ? 'expandable' : ''"
+              >
+                {{ rowData[col["field"]] }}
+              </div>
+              <a
+                *ngIf="objectKeys(rowData).length > 1 && i == 0"
+                style="
+                  text-decoration: underline !important;
+                  margin-left: 42px;
+                  color: var(--primary-color);
+                "
+                (click)="viewBankRouting(rowData)"
+                >{{ rowData[col["field"]] }}</a
+              >
+            </td>
+            <td
+              *ngIf="i + 1 == columns.length"
+              style="border: none; text-align: center"
+            >
+              <label
+                *ngIf="objectKeys(rowData).length != 1"
+                class="switch"
+                style="border: none"
+              >
+                <input
+                  #statusInp
+                  type="checkbox"
+                  (click)="updateStatus($event, rowData['routeCode'])"
+                  [checked]="
+                    rowData[col['field']] == 'Active' ||
+                    rowData[col['field']] == 'A'
+                      ? true
+                      : false
+                  "
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td
+            [attr.colspan]="cols.length"
+            style="font-weight: 400; font-size: 14px"
+          >
+            No Data found.
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        {{ state.page * state.rows + 1 }} -
+        {{
+          state.rows * (state.page + 1) > state.totalRecords
+            ? state.totalRecords
+            : state.rows * (state.page + 1)
+        }}
+        of {{ state.totalRecords }}
+      </ng-template>
+   </p-treeTable> -->

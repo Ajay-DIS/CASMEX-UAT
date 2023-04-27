@@ -5,6 +5,7 @@ import {
   OnInit,
   ViewChild,
 } from "@angular/core";
+import { MultiSelect } from "primeng/multiselect";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Table } from "primeng/table";
 import { ToastrService } from "ngx-toastr";
@@ -250,36 +251,36 @@ export class BankRoutingComponent2 implements OnInit {
 
   bankRoutingData: BankRouting[];
 
-  routeCodes: any[] = [
+  routeCode: any[] = [
     { label: "code1", value: "code1" },
     { label: "code2", value: "code2" },
     { label: "code3", value: "code3" },
     { label: "code4", value: "code4" },
   ];
-  countries: any[];
-  routeBankNames: any[];
-  routeServiceTypes: any[];
-  routeServiceCategories: any[];
-  routeToBankNames: any[];
-  routeToServiceTypes: any[];
-  routeToServiceCategories: any[];
-  iSCorrespondents: any[];
-  statuses: any[];
+  country: any[];
+  routeBankName: any[];
+  routeServiceType: any[];
+  routeServiceCategory: any[];
+  routeToBankName: any[];
+  routeToServiceType: any[];
+  routeToServiceCategory: any[];
+  iSCorrespondent: any[];
+  status: any[];
 
   userData: UserData;
 
   noDataMsg: string = "Banks Routing Data Not Available";
 
-  selectedFilterRoutes: any[] = [];
-  selectedFilterCountry: any[] = [];
-  selectedFilterRouteBankName: any[] = [];
-  selectedFilterServiceCategories: any[] = [];
-  selectedFilterServiceType: any[] = [];
-  selectedFilterISCorrespondent: any[] = [];
-  selectedFilterRouteToBank: any[] = [];
-  selectedFilterRouteToServiceCategories: any[] = [];
-  selectedFilterRouteToServiceType: any[] = [];
-  selectedFilterStatus: any[] = [];
+  selectedFilterrouteCode: any[] = [];
+  selectedFiltercountry: any[] = [];
+  selectedFilterrouteBankName: any[] = [];
+  selectedFilterrouteServiceCategory: any[] = [];
+  selectedFilterrouteServiceType: any[] = [];
+  selectedFilteriSCorrespondent: any[] = [];
+  selectedFilterrouteToBankName: any[] = [];
+  selectedFilterrouteToServiceCategory: any[] = [];
+  selectedFilterrouteToServiceType: any[] = [];
+  selectedFilterstatus: any[] = [];
 
   loading = true;
 
@@ -290,19 +291,18 @@ export class BankRoutingComponent2 implements OnInit {
   // treetable
   objectKeys = Object.keys;
   cols = [
-    { field: "routeCode", header: "Route Code" },
-    { field: "country", header: "Country" },
-    { field: "routeBankName", header: "Bank Routing" },
-    { field: "routeServiceCategory", header: "Service Category" },
-    { field: "routeServiceType", header: "Service Type" },
-    { field: "iSCorrespondent", header: "Is Correspondent" },
-    { field: "routeToBankName", header: "Route To" },
-    { field: "routeToServiceCategory", header: "Service Category" },
-    { field: "routeToServiceType", header: "Service Type" },
-    { field: "status", header: "Status", width: "9%" },
+    { field: "routeCode", header: "Route Code" ,width: "4%" },
+    { field: "country", header: "Country",width: "4%"  },
+    { field: "routeBankName", header: "Bank Routing" ,width: "4%" },
+    { field: "routeServiceCategory", header: "Service Category",width: "4%"  },
+    { field: "routeServiceType", header: "Service Type" ,width: "4%" },
+    { field: "iSCorrespondent", header: "Is Correspondent" ,width: "4%"  },
+    { field: "routeToBankName", header: "Route To" ,width: "4%"  },
+    { field: "routeToServiceCategory", header: "Service Category" ,width: "4%" },
+    { field: "routeToServiceType", header: "Service Type" ,width: "4%"  },
+    { field: "status", header: "Status", width: "4%" },
   ];
 
-  files1: TreeNode[] = [];
   // treetable end
 
   ngOnInit(): void {
@@ -366,94 +366,49 @@ export class BankRoutingComponent2 implements OnInit {
             });
 
             // % Before grouping
-            // this.bankRoutingData = [...this.bankRoutingApiData.data];
+            this.bankRoutingData = [...this.bankRoutingApiData.data];
             // % Before grouping end
-            let groups = [];
-            this.bankRoutesGroups = [];
-            this.files1 = [];
-            this.bankRoutingApiData.data.forEach((route) => {
-              if (!groups.includes(route.groupID)) {
-                groups.push(route.groupID);
-              }
-            });
-
-            groups.forEach((g) => {
-              let treeTableGrp = [];
-              let routeGrp: any = this.bankRoutingApiData.data.filter(
-                (route) => {
-                  return route.groupID == g;
-                }
-              );
-
-              this.bankRoutingApiData.data.forEach((route) => {
-                let routeData: any = [];
-                if (route.groupID == g) {
-                  routeData = {
-                    routeCode: route["routeCode"],
-                    country: route["country"],
-                    routeBankName: route["routeBankName"],
-                    routeServiceCategory: route["routeServiceCategory"],
-                    routeServiceType: route["routeServiceType"],
-                    iSCorrespondent: route["iSCorrespondent"],
-                    routeToBankName: route["routeToBankName"],
-                    routeToServiceCategory: route["routeToServiceCategory"],
-                    routeToServiceType: route["routeToServiceType"],
-                    status: route["status"],
-                  };
-                  treeTableGrp.push({ data: routeData });
-                }
-              });
-
-              this.files1.push({
-                data: { routeCode: g },
-                children: treeTableGrp,
-              });
-              this.bankRoutesGroups.push({ groupID: g, routes: routeGrp });
-            });
-
-            console.log(this.bankRoutesGroups);
-            console.log(this.files1);
             // .sort(
             //   (a, b) => a.createdDate - b.createdDate
             // );
-            this.routeCodes = this.bankRoutingApiData.routeCode.map((code) => {
+            this.routeCode = this.bankRoutingApiData.routeCode.map((code) => {
               return { label: code, value: code };
             });
-            this.countries = this.bankRoutingApiData.country.map((code) => {
+            this.country = this.bankRoutingApiData.country.map((code) => {
               return { label: code, value: code };
             });
-            this.routeBankNames = this.bankRoutingApiData.routeBankName.map(
+            this.routeBankName = this.bankRoutingApiData.routeBankName.map(
               (code) => {
                 return { label: code, value: code };
               }
             );
-            this.routeServiceTypes =
+            this.routeServiceType =
               this.bankRoutingApiData.routeServiceType.map((code) => {
                 return { label: code, value: code };
               });
-            this.routeServiceCategories =
+            this.routeServiceCategory =
               this.bankRoutingApiData.routeServiceCategory.map((code) => {
                 return { label: code, value: code };
               });
-            this.routeToBankNames = this.bankRoutingApiData.routeToBankName.map(
+            this.routeToBankName = this.bankRoutingApiData.routeToBankName.map(
               (code) => {
                 return { label: code, value: code };
               }
             );
-            this.routeToServiceTypes =
+            this.routeToServiceType =
               this.bankRoutingApiData.routeToServiceType.map((code) => {
                 return { label: code, value: code };
               });
-            this.routeToServiceCategories =
+            this.routeToServiceCategory =
               this.bankRoutingApiData.routeToServiceCategory.map((code) => {
                 return { label: code, value: code };
               });
-            this.iSCorrespondents = this.bankRoutingApiData.iSCorrespondent.map(
+            this.iSCorrespondent = this.bankRoutingApiData.iSCorrespondent.map(
               (code) => {
                 return { label: code, value: code };
               }
             );
-            this.statuses = this.bankRoutingApiData.status.map((code) => {
+            this.status = this.bankRoutingApiData.status.map((code) => {
               return { label: code, value: code };
             });
           } else {
@@ -469,8 +424,31 @@ export class BankRoutingComponent2 implements OnInit {
         this.coreService.removeLoadingScreen();
       });
   }
-
   addNewRoutePage() {
     this.router.navigate(["navbar", "bank-routing-2", "addnewroute"]);
+  }
+  toggleFilterVisibility(field) {
+    this[`show${field}Options`] = !this[`show${field}Options`];
+  }
+
+  hideFilterVisibility(field) {
+    this[`show${field}Options`] = false;
+  }
+
+  getSelectedFilterArr(field: any) {
+    return this[`selectedFilter${field}`];
+  }
+
+  setSelectedFilter(ms: MultiSelect, field: any) {
+    this[`selectedFilter${field}`] = ms.value;
+    console.log(ms.value, this[`selectedFilter${field}`]);
+  }
+
+  fieldFilterVisible(field: any) {
+    return this[`show${field}Options`];
+  }
+
+  fieldFilterOptions(field: any): [] {
+    return this[field];
   }
 }
