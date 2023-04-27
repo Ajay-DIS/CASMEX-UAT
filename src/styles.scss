@@ -42,6 +42,10 @@ body.minified-sidebar .toggle-sidebar {
   border-radius: 15px;
 }
 
+::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+
 // NEW STYLES
 .p-button-label {
   font-weight: 500;
@@ -630,11 +634,7 @@ input:focus {
   box-shadow: 0 0 0 0.1rem #2455cf;
   border-color: #2455cf;
 }
-.p-dialog .p-dialog-content {
-  background: #fff;
-  color: #000;
-  padding: 0rem 0rem 1rem 0rem;
-}
-.p-datatable .p-sortable-column:not(.p-highlight):hover,.p-treetable .p-sortable-column:not(.p-highlight):hover {
+.p-datatable .p-sortable-column:not(.p-highlight):hover,
+.p-treetable .p-sortable-column:not(.p-highlight):hover {
   background-color: #eaedf4;
 }

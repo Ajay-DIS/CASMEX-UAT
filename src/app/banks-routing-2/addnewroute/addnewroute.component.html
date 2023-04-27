@@ -7,7 +7,6 @@
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
-        <!-- <img height="35px" src="../assets/description.svg" alt="" /> -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="41"
@@ -45,7 +44,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!bankRoutesData || !bankRoutesData.length"
+          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
           label="Save"
           class="p-button-raised"
           (click)="saveAddNewRoute('save')"
@@ -54,7 +53,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!bankRoutesData.length"
+          [disabled]="!appliedCriteriaData.length"
           label="Save & Add New"
           class="p-button-raised"
           (click)="saveAddNewRoute('saveAndAddNew')"
@@ -63,7 +62,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!bankRoutesData.length"
+          [disabled]="!appliedCriteriaData.length"
           label="Reset"
           class="p-button-warning"
           (click)="reset()"
@@ -86,18 +85,19 @@
         </p>
         <div class="openCriteria">
           <p class="clickcriteria">
-            <a (click)="openClickForSave()"
+            <a (click)="saveCriteriaTemplateLink()"
               >Click to save this Criteria as a template</a
             >
           </p>
         </div>
       </div>
       <p-dialog
-        [(visible)]="clickforsave"
+        [(visible)]="saveTemplateDialogOpen"
         [appendTo]="'body'"
         [modal]="true"
         [style]="{ width: '30vw' }"
         class="saveTemplateModal"
+        (onHide)="closeDialog()"
       >
         <ng-template
           pTemplate="header"
@@ -135,7 +135,6 @@
               </div>
             </ng-template>
           </p-dropdown>
-          <!-- (onChange)="onChange('criteria', $event.value)" -->
 
           <p-dropdown
             class="mr-3"
@@ -156,14 +155,17 @@
             formControlName="value"
           ></p-dropdown>
 
-          <input
-            style="width: 160px; height: 35px; font-size: 0.8rem"
+          <p-inputNumber
+            class="value-input"
             *ngIf="hideValuesDropdown && showValueInput"
-            type="text"
             placeholder="Value"
-            pInputText
+            pInputNumber
             formControlName="value"
-          />
+            [useGrouping]="false"
+            [min]="0"
+            [max]="9999999999"
+          >
+          </p-inputNumber>
 
           <button
             #addCriteriaBtn
@@ -198,8 +200,8 @@
         <span
           *ngFor="let criteria of criteriaText; let i = index"
           (click)="
-            savedLcySlabs &&
-              criteria == 'LCY Amount = Slab' &&
+            savedSlabs &&
+              criteria == cmCriteriaSlabType[0] + ' = Slab' &&
               showTransCriteriaModal()
           "
           class="criteria-span"
@@ -209,10 +211,10 @@
               : 'var(--surface-ground)'
           }"
         >
-          {{ criteria == "LCY Amount = Slab" ? "" : criteria
+          {{ criteria == cmCriteriaSlabType[0] + " = Slab" ? "" : criteria
           }}<a
             style="cursor: pointer"
-            *ngIf="criteria == 'LCY Amount = Slab'"
+            *ngIf="criteria == cmCriteriaSlabType[0] + ' = Slab'"
             >{{ criteria }}</a
           >
           <span
@@ -252,7 +254,7 @@
       </div>
     </div>
   </div>
-  <div class="details-page-card mt-2">
+  <div class="details-page-card mt-2" *ngIf="appliedCriteriaData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -266,7 +268,7 @@
         </p>
       </div>
       <div class="mt-1 addnewroute-table">
-        <p-table
+        <!-- <p-table
           #table
           [value]="bankRoutesData"
           editMode="row"
@@ -346,7 +348,75 @@
               </ng-container>
             </tr>
           </ng-template>
-        </p-table>
+        </p-table> -->
+        <div class="ptable">
+          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
+            {{ "noDataMsg" }}
+          </p-card>
+          <div class="appliedCriteriaDataTable">
+            <p-table
+              #dt
+              [columns]="appliedCriteriaDataCols"
+              [value]="appliedCriteriaData"
+              [rows]="10"
+              columnResizeMode="expand"
+              [rowHover]="true"
+            >
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th
+                    *ngFor="let col of columns"
+                    pReorderableColumn
+                    [pSortableColumn]="col?.field"
+                    pResizableColumn
+                    [style.maxWidth]="col?.maxWidth"
+                  >
+                    {{ col.header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-rowData
+                let-columns="columns"
+                let-rowIndex="rowIndex"
+              >
+                <tr [pReorderableRow]="index">
+                  <ng-container *ngFor="let col of columns; let i = index">
+                    <td>
+                      <div
+                        *ngIf="col['isString']"
+                        style="display: inline-block"
+                      >
+                        {{ rowData[col["field"]] }}
+                      </div>
+                      <div
+                        *ngIf="col['isSelect']"
+                        style="display: inline-block"
+                      >
+                      <!-- [(ngModel)]="rowData[col['field'] + 'Option']" -->
+                        <p-dropdown
+                          [options]="rowData[col['field']]"
+                          optionLabel="codeName"
+                          appendTo="body"
+                          placeholder="Select"
+                          (onChange)="
+                            selectedColumn(col['field'], $event.value, rowIndex)
+                          "
+                        ></p-dropdown>
+                      </div>
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="cols.length">No Data found.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -59,7 +59,13 @@ export class BankRoutingService {
     );
   }
 
-  getCorrespondentValuesData(formName: any, appName: any, criteriaMap: any, fieldName: any, displayName: any) {
+  getCorrespondentValuesData(
+    formName: any,
+    appName: any,
+    criteriaMap: any,
+    fieldName: any,
+    displayName: any
+  ) {
     return this.http.get(`/remittance/banksRoutingController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("formName", formName)
@@ -72,10 +78,16 @@ export class BankRoutingService {
 
   postRouteBankCriteriaSearch(data: any) {
     return this.http.post(
-      `/remittance/banksRoutingController/routeBankCriteriaSearch`,
+      `/remittance/banksRoutingController/applyCriteriaSearch`,
       data
     );
   }
+  // postRouteBankCriteriaSearch(data: any) {
+  //   return this.http.post(
+  //     `/remittance/banksRoutingController/routeBankCriteriaSearch`,
+  //     data
+  //   );
+  // }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
@@ -91,9 +103,16 @@ export class BankRoutingService {
     );
   }
 
+  // addNewRoute(data): Observable<any> {
+  //   return this.http.post(
+  //     `/remittance/banksRoutingController/saveBanksRoutings`,
+  //     data
+  //   );
+  // }
+  
   addNewRoute(data): Observable<any> {
     return this.http.post(
-      `/remittance/banksRoutingController/saveBanksRoutings`,
+      `/remittance/banksRoutingController/addCriteriaDetails`,
       data
     );
   }

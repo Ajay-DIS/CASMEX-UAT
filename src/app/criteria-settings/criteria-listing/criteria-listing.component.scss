@@ -23,6 +23,10 @@
   border-bottom-left-radius: 15px !important;
 }
 
+:host ::ng-deep .p-dialog .p-dialog-content {
+  padding: 0rem 0rem 1rem 0rem;
+}
+
 :host ::ng-deep.application-header {
   background-color: var(--surface-ground);
   border-radius: 5px;
@@ -33,11 +37,11 @@
 }
 :host ::ng-deep .p-dialog .p-dialog-content .p-datatable {
   text-align: left;
-    font-style: normal;
-    font-weight: 500;
-    color: #222222;
-    font-size: 12px;
-    font-family: "IBM Plex Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  color: #222222;
+  font-size: 12px;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 #criteriaViewTable ::ng-deep .p-dialog input {
   background-color: #dee3ef;
