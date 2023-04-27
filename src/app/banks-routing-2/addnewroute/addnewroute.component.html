@@ -181,16 +181,17 @@
         </div>
         <div class="right-select">
           <p-dropdown
+            #templatesDropdown
             class="templates-dropdown"
             [options]="criteriaTemplatesDdlOptions"
             optionLabel="name"
             [appendTo]="'body'"
-            placeholder="{{
+            [placeholder]="
               criteriaTemplatesDdlOptions.length
                 ? 'Select Template'
                 : 'No saved templates'
-            }}"
-            [disabled]="!criteriaTemplatesDdlOptions.length"
+            "
+            [disabled]="!criteriaTemplatesDdlOptions.length || isEditMode"
             (onChange)="selectCriteriaTemplate($event.value)"
             [(ngModel)]="selectedTemplate"
           ></p-dropdown>
@@ -247,7 +248,7 @@
             type="button"
             label="Apply Criteria"
             class="p-button-raised"
-            [disabled]="!criteriaText?.length"
+            [disabled]="!criteriaText?.length || isEditMode"
             (click)="applyCriteria()"
           ></button>
         </div>
@@ -394,12 +395,15 @@
                         *ngIf="col['isSelect']"
                         style="display: inline-block"
                       >
-                      <!-- [(ngModel)]="rowData[col['field'] + 'Option']" -->
                         <p-dropdown
                           [options]="rowData[col['field']]"
                           optionLabel="codeName"
                           appendTo="body"
-                          placeholder="Select"
+                          [placeholder]="
+                            rowData[col['field'] + 'Option']
+                              ? rowData[col['field'] + 'Option']
+                              : 'Select'
+                          "
                           (onChange)="
                             selectedColumn(col['field'], $event.value, rowIndex)
                           "
