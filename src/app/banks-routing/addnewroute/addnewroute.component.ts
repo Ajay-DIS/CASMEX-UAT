@@ -30,7 +30,7 @@ import { CriteriaTemplateData } from "../banks-routing.model";
 export class AddnewrouteComponent implements OnInit {
   @ViewChild("table", { static: false }) table!: Table;
 
-  primaryColor = 'var(--primary-color)'
+  primaryColor = "var(--primary-color)";
 
   dummyTemplateJson = {
     data: [
@@ -1097,7 +1097,8 @@ export class AddnewrouteComponent implements OnInit {
             val["lcySlab"] = val["lcySlab"];
           });
         } else {
-          this.ngxToaster.warning(response.msg);
+          // this.ngxToaster.warning(response.msg);
+          console.log(response.msg);
         }
       });
   }

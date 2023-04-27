@@ -103,31 +103,31 @@
   left: 42%;
 }
 
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(1) {
-  width: 7%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(2) {
-  width: 11.5%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(3) {
-  width: 10.5%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(4) {
-  width: 8%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(5) {
-  width: 10.5%;
-}
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(1) {
+//   width: 7%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(2) {
+//   width: 11.5%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(3) {
+//   width: 10.5%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(4) {
+//   width: 8%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(5) {
+//   width: 10.5%;
+// }
 
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(1) {
-  width: 10%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(2) {
-  width: 12%;
-}
-.addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(3) {
-  width: 9%;
-}
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(1) {
+//   width: 10%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(2) {
+//   width: 12%;
+// }
+// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(3) {
+//   width: 9%;
+// }
 
 .form-select {
   height: 35px;
@@ -141,4 +141,15 @@ a,
 a:focus,
 a:hover {
   color: var(--primary-color);
+}
+
+.value-input ::ng-deep input {
+  width: 160px;
+  height: 35px;
+  font-size: 0.8rem;
+}
+
+.appliedCriteriaDataTable ::ng-deep .p-dropdown .p-dropdown-label,
+.p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
 }
