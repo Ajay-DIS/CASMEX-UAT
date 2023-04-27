@@ -1,28 +1,29 @@
-:host ::ng-deep .bank-routing-table .p-multiselect-trigger,
-:host ::ng-deep .bank-routing-table .p-multiselect-label-container {
+
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
   display: none;
 }
 
 /* Grouping */
-.group-row {
-  gap: 5px;
-  align-items: center;
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--primary-color);
-}
-.group-row button {
-  color: var(--primary-color);
-  font-weight: 600;
-}
+// .group-row {
+//   gap: 5px;
+//   align-items: center;
+//   font-weight: 500;
+//   font-size: 12px;
+//   color: var(--primary-color);
+// }
+// .group-row button {
+//   color: var(--primary-color);
+//   font-weight: 600;
+// }
 /* Grouping end */
 
 /* treetable */
-td .expandable {
-  font-weight: 500;
-  font-size: 12px;
-  color: var(--primary-color);
-  text-decoration: underline !important;
-}
+// td .expandable {
+//   font-weight: 500;
+//   font-size: 12px;
+//   color: var(--primary-color);
+//   text-decoration: underline !important;
+// }
 
 /* treetable end */

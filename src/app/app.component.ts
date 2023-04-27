@@ -13,6 +13,7 @@ import { take } from "rxjs/operators";
 import { AuthService } from "./auth/auth.service";
 import { CoreService } from "./core.service";
 import { LoginService } from "./login/login.service";
+import { BnNgIdleService } from "bn-ng-idle";
 
 @Component({
   selector: "app-root",
@@ -28,7 +29,8 @@ export class AppComponent implements OnInit, AfterContentChecked {
     private confirmationService: ConfirmationService,
     private coreService: CoreService,
     private authService: AuthService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private bnidle: BnNgIdleService
   ) {}
   title = "casmex";
 
@@ -41,14 +43,33 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.coreService.$loadingScreen.subscribe((isLoading) => {
       this.blocked = isLoading;
     });
-
     this.authService.showSessionConfirm.subscribe((res) => {
-      if (res.status) {
-        this.confirmSessionContinuity(res.timer);
-      } else {
-        this.cd && this.cd.hide();
-      }
+      let i = 1;
+      console.log( res.status)
+    
+      if(res.status){
+        console.log('expire+movement')
+       this.refreshTokenLogin();
+      } 
+      this.bnidle.startWatching(1500).subscribe((isTimedOut:boolean) => {
+       console.log(isTimedOut , res.status)
+        if (isTimedOut && res.status) {
+          console.log("expire+nomovement")
+          this.confirmSessionContinuity(res.timer);
+          this.bnidle.stopTimer();
+        }
+        else {
+          this.cd && this.cd.hide();
+        }
+      })
+      // if (res.status) {
+      //   this.confirmSessionContinuity(res.timer);
+      // } else {
+      //   this.cd && this.cd.hide();
+      // }
     });
+
+    
   }
 
   ngAfterContentChecked() {
@@ -60,7 +81,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
       message: `Your session is expiring in ${timer}, you want to continue ?`,
       key: "sessionConfirm",
       accept: () => {
-        this.login();
+        this.refreshTokenLogin();
       },
       reject: () => {
         this.logout();
@@ -68,7 +89,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  login() {
+  refreshTokenLogin() {
     this.coreService.displayLoadingScreen();
     this.loginService
       .refreshAuthToken({
