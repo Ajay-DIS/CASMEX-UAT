@@ -37,10 +37,17 @@ export class BankRoutingService {
     );
   }
 
-  getBanksRoutingForEdit(routeCode: any) {
+  // getBanksRoutingForEdit(routeCode: any) {
+  //   return this.http.get(
+  //     `/remittance/banksRoutingController/getBanksRoutingForEdit`,
+  //     { headers: new HttpHeaders().set("routeCode", routeCode) }
+  //   );
+  // }
+
+  getBanksRoutingForEdit(groupID: any) {
     return this.http.get(
-      `/remittance/banksRoutingController/getBanksRoutingForEdit`,
-      { headers: new HttpHeaders().set("routeCode", routeCode) }
+      `/remittance/banksRoutingController/getBanksRoutingCriteriaForEdit`,
+      { headers: new HttpHeaders().set("groupID", groupID) }
     );
   }
 

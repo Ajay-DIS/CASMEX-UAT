@@ -23,6 +23,7 @@ import { CriteriaTemplateData } from "../banks-routing.model";
 import { map, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
 import { ConfirmDialog } from "primeng/confirmdialog";
+import { Dropdown } from "primeng/dropdown";
 
 @Component({
   selector: "app-addnewroute",
@@ -32,6 +33,7 @@ import { ConfirmDialog } from "primeng/confirmdialog";
 })
 export class AddnewrouteComponent2 implements OnInit {
   @ViewChild("table", { static: false }) table!: Table;
+  @ViewChild("templatesDropdown") templatesDropdown: Dropdown;
 
   primaryColor = "var(--primary-color)";
 
@@ -44,6 +46,7 @@ export class AddnewrouteComponent2 implements OnInit {
   appliedCriteriaIsDuplicate: any = null;
   appliedCriteriaDataCols: any = [];
   objectKeys = Object.keys;
+  isEditMode = false;
   //
   bankRoutesData: any = [];
   editBankRouteApiData: any = [];
@@ -154,7 +157,7 @@ export class AddnewrouteComponent2 implements OnInit {
   routeToBankNameOption = [];
   routeToServiceCategoryOption = [];
   routeToServiceTypeOption = [];
-  routeId = "";
+  groupID = "";
 
   $oninitSlabFormSubscription: any;
   mode = "add";
@@ -210,16 +213,8 @@ export class AddnewrouteComponent2 implements OnInit {
           this.savedSlabs = false;
         }
       });
-
-    const params = this.activatedRoute.snapshot.params;
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     this.getAllTemplates();
-
-    if (params && params.id) {
-      this.mode = "edit";
-      this.getBanksRoutingForEditApi(params.id);
-      this.routeId = params.id;
-    }
 
     //check mandatory fieds
     this.bankRoutesColumns.forEach((element) => {
@@ -247,54 +242,83 @@ export class AddnewrouteComponent2 implements OnInit {
     });
   }
 
-  getBanksRoutingForEditApi(routeCode: any) {
-    this.bankRoutingService.getBanksRoutingForEdit(routeCode).subscribe(
-      (res) => {
-        this.editBankRouteApiData = res;
+  getBanksRoutingForEditApi(groupID: any) {
+    this.criteriaCtrl.disable();
+    this.isEditMode = true;
+    this.appliedCriteriaData = [];
+    this.appliedCriteriaDataCols = [];
+    this.bankRoutingService
+      .getBanksRoutingForEdit(groupID)
+      .subscribe(
+        (res) => {
+          if (!res["msg"]) {
+            this.editBankRouteApiData = res;
+            console.log("edit data", res);
 
-        // Ajay code
-        if ((res as any).data[0]["criteriaMap"]) {
-          this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
+            this.criteriaCodeText = this.setCriteriaMap(
+              this.editBankRouteApiData
+            );
+
+            this.criteriaText = this.decodeFormattedCriteria(
+              this.criteriaCodeText
+            );
+
+            this.appliedCriteriaDataOrg = [...res["data"]];
+            this.appliedCriteriaData = [...res["data"]];
+            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+            this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
+          } else {
+            this.ngxToaster.warning(res["msg"]);
+            this.appliedCriteriaData = [];
+            this.appliedCriteriaDataCols = [];
+          }
+
+          // Ajay code
+          // if ((res as any).data[0]["criteriaMap"]) {
+          //   this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
+          // }
+          // let lcySlabForm = {};
+          // let lcySlabArr = [];
+          // if (res["LCY"] == "Yes") {
+          //   (res as any).data[0]["lcySlab"].split("#").forEach((rngTxt) => {
+          //     let fromVal = rngTxt.split("::")[0].split(":")[1];
+          //     let toVal = rngTxt.split("::")[1].split(":")[1];
+          //     lcySlabArr.push({
+          //       from: +fromVal,
+          //       to: +toVal,
+          //     });
+          //   });
+          //   lcySlabForm = {
+          //     txnCriteriaRange: lcySlabArr,
+          //   };
+
+          //   this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
+          // }
+          // // Ajay code end
+
+          // // suresh code
+          // this.bankRoutesData = res["data"];
+          // if (this.editBankRouteApiData.LCY == "Yes") {
+          //   this.bankRoutesColumns.forEach((x) => {
+          //     (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+          //       (x.visible = true);
+          //   });
+          // } else {
+          //   this.bankRoutesColumns.forEach((x) => {
+          //     (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
+          //       (x.visible = false);
+          //   });
+          // }
+
+          // suresh code end
+        },
+        (err) => {
+          console.log("Error in getBanksRoutingForEditApi", err);
         }
-        let lcySlabForm = {};
-        let lcySlabArr = [];
-        if (res["LCY"] == "Yes") {
-          (res as any).data[0]["lcySlab"].split("#").forEach((rngTxt) => {
-            let fromVal = rngTxt.split("::")[0].split(":")[1];
-            let toVal = rngTxt.split("::")[1].split(":")[1];
-            lcySlabArr.push({
-              from: +fromVal,
-              to: +toVal,
-            });
-          });
-          lcySlabForm = {
-            txnCriteriaRange: lcySlabArr,
-          };
-
-          this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
-        }
-        // Ajay code end
-
-        // suresh code
-        this.bankRoutesData = res["data"];
-        if (this.editBankRouteApiData.LCY == "Yes") {
-          this.bankRoutesColumns.forEach((x) => {
-            (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-              (x.visible = true);
-          });
-        } else {
-          this.bankRoutesColumns.forEach((x) => {
-            (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-              (x.visible = false);
-          });
-        }
-
-        // suresh code end
-      },
-      (err) => {
-        console.log("Error in getBanksRoutingForEditApi", err);
-      }
-    );
+      )
+      .add(() => {
+        this.coreService.removeLoadingScreen();
+      });
   }
 
   getCriteriaMasterData() {
@@ -370,14 +394,20 @@ export class AddnewrouteComponent2 implements OnInit {
         (res) => {
           console.log(res);
           this.criteriaMasterData = res;
+          const params = this.activatedRoute.snapshot.params;
+          if (params && params.id) {
+            this.mode = "edit";
+            this.getBanksRoutingForEditApi(params.id);
+            this.groupID = params.id;
+          } else {
+            this.coreService.removeLoadingScreen();
+          }
         },
         (err) => {
+          this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
         }
-      )
-      .add(() => {
-        this.coreService.removeLoadingScreen();
-      });
+      );
   }
 
   // getAddBankRouteCriteriaData() {
@@ -1370,8 +1400,8 @@ export class AddnewrouteComponent2 implements OnInit {
     return formattedCriteriaArr;
   }
 
-  decodeFormattedCriteria() {
-    let decodedFormattedCriteriaArr = this.criteriaCodeText.map((crt) => {
+  decodeFormattedCriteria(criteriaCodeText: any) {
+    let decodedFormattedCriteriaArr = criteriaCodeText.map((crt) => {
       let formatCrt;
       let opr;
       if (crt.includes("!=")) {
@@ -1417,7 +1447,6 @@ export class AddnewrouteComponent2 implements OnInit {
       // }
       return decodeCriteriaText;
     });
-
     return decodedFormattedCriteriaArr;
   }
 
@@ -1710,12 +1739,18 @@ export class AddnewrouteComponent2 implements OnInit {
         return x.criteriaName == item.criteriaName;
       })[0];
 
+    this.criteriaCodeText = this.setCriteriaMap(selectedData);
+
+    this.criteriaText = this.decodeFormattedCriteria(this.criteriaCodeText);
+  }
+
+  setCriteriaMap(criteriaData: any) {
     let criteriaMapFirstSplit = null;
     let criteriaMapSecSplit = null;
 
-    if (selectedData["criteriaMap"].includes("&&&&")) {
-      criteriaMapFirstSplit = selectedData["criteriaMap"].split("&&&&")[0];
-      criteriaMapSecSplit = selectedData["criteriaMap"].split("&&&&")[1];
+    if (criteriaData["criteriaMap"].includes("&&&&")) {
+      criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+      criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
 
       if (criteriaMapSecSplit.includes("from:")) {
         let lcySlabForm = {};
@@ -1734,20 +1769,19 @@ export class AddnewrouteComponent2 implements OnInit {
         console.log("::setting form LCYYYYYYYY", lcySlabForm);
         this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
 
-        criteriaMapFirstSplit += `;${selectedData["lcySlab"]} = Slab`;
+        criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
       } else {
         criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
       }
     } else {
-      criteriaMapFirstSplit = selectedData["criteriaMap"];
+      criteriaMapFirstSplit = criteriaData["criteriaMap"];
 
       this.bankRoutingService.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
       });
     }
-    this.criteriaCodeText = criteriaMapFirstSplit.split(";");
 
-    this.criteriaText = this.decodeFormattedCriteria();
+    return criteriaMapFirstSplit.split(";");
   }
 
   showTransCriteriaModal() {
@@ -1863,6 +1897,7 @@ export class AddnewrouteComponent2 implements OnInit {
       function isNullValue(arr) {
         return arr.some((el) => el == null);
       }
+      console.log("::::", element);
       if (isNullValue(Object.values(element))) {
         isRequiredFields = true;
       }
@@ -1873,16 +1908,19 @@ export class AddnewrouteComponent2 implements OnInit {
     } else {
       this.coreService.displayLoadingScreen();
       let service;
-      if (this.routeId != "") {
-        service = this.bankRoutingService.updateRoute(
-          this.routeId,
-          this.userId,
-          {
-            data: this.appliedCriteriaData,
-            duplicate: this.appliedCriteriaIsDuplicate,
-            criteriaMap: this.appliedCriteriaCriteriaMap,
-          }
-        );
+      if (this.groupID != "") {
+        // service = this.bankRoutingService.updateRoute(
+        //   this.groupID,
+        //   this.userId,
+        //   {
+        //     data: this.appliedCriteriaData,
+        //     duplicate: this.appliedCriteriaIsDuplicate,
+        //     criteriaMap: this.appliedCriteriaCriteriaMap,
+        //   }
+        // );
+        service = null;
+        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+        this.coreService.removeLoadingScreen();
       } else {
         service = this.bankRoutingService.addNewRoute({
           data: this.appliedCriteriaData,
@@ -1890,26 +1928,29 @@ export class AddnewrouteComponent2 implements OnInit {
           criteriaMap: this.appliedCriteriaCriteriaMap,
         });
       }
-      service
-        .subscribe(
-          (res) => {
-            if (res["msg"]) {
-              this.ngxToaster.success(res.msg);
-              if (action == "save") {
-                this.router.navigate([`navbar/bank-routing-2`]);
-              } else if (action == "saveAndAddNew") {
-                this.router.navigate([`navbar/bank-routing-2/addnewroute`]);
-                this.reset();
+
+      if (service) {
+        service
+          .subscribe(
+            (res) => {
+              if (res["msg"]) {
+                this.ngxToaster.success(res.msg);
+                if (action == "save") {
+                  this.router.navigate([`navbar/bank-routing-2`]);
+                } else if (action == "saveAndAddNew") {
+                  this.router.navigate([`navbar/bank-routing-2/addnewroute`]);
+                  this.reset();
+                }
               }
+            },
+            (err) => {
+              console.log("error in saveAddNewRoute", err);
             }
-          },
-          (err) => {
-            console.log("error in saveAddNewRoute", err);
-          }
-        )
-        .add(() => {
-          this.coreService.removeLoadingScreen();
-        });
+          )
+          .add(() => {
+            this.coreService.removeLoadingScreen();
+          });
+      }
     }
 
     // if (
@@ -1989,6 +2030,10 @@ export class AddnewrouteComponent2 implements OnInit {
     return slabText;
   }
 
+  getSelectedOption() {
+    return [];
+  }
+
   checkArrSimilarity(arr1: any[], arr2: any[]) {
     console.log(arr1, arr2);
     const containsAll = (arr1, arr2) =>
@@ -2023,6 +2068,7 @@ export class AddnewrouteComponent2 implements OnInit {
     this.criteriaCodeText = [];
     this.appliedCriteriaCriteriaMap = null;
     this.appliedCriteriaIsDuplicate = null;
+    this.selectedTemplate = "";
     // this.bankRoutesData[0]["criteriaMap"] = [];
   }
 

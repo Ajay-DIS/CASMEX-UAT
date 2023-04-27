@@ -291,15 +291,19 @@ export class BankRoutingComponent2 implements OnInit {
   // treetable
   objectKeys = Object.keys;
   cols = [
-    { field: "routeCode", header: "Route Code" ,width: "4%" },
-    { field: "country", header: "Country",width: "4%"  },
-    { field: "routeBankName", header: "Bank Routing" ,width: "4%" },
-    { field: "routeServiceCategory", header: "Service Category",width: "4%"  },
-    { field: "routeServiceType", header: "Service Type" ,width: "4%" },
-    { field: "iSCorrespondent", header: "Is Correspondent" ,width: "4%"  },
-    { field: "routeToBankName", header: "Route To" ,width: "4%"  },
-    { field: "routeToServiceCategory", header: "Service Category" ,width: "4%" },
-    { field: "routeToServiceType", header: "Service Type" ,width: "4%"  },
+    { field: "routeCode", header: "Route Code", width: "4%" },
+    { field: "country", header: "Country", width: "4%" },
+    { field: "routeBankName", header: "Bank Routing", width: "4%" },
+    { field: "routeServiceCategory", header: "Service Category", width: "4%" },
+    { field: "routeServiceType", header: "Service Type", width: "4%" },
+    { field: "iSCorrespondent", header: "Is Correspondent", width: "4%" },
+    { field: "routeToBankName", header: "Route To", width: "4%" },
+    {
+      field: "routeToServiceCategory",
+      header: "Service Category",
+      width: "4%",
+    },
+    { field: "routeToServiceType", header: "Service Type", width: "4%" },
     { field: "status", header: "Status", width: "4%" },
   ];
 
@@ -321,7 +325,7 @@ export class BankRoutingComponent2 implements OnInit {
       "navbar",
       "bank-routing-2",
       "addnewroute",
-      data.routeCode,
+      data.groupID,
     ]);
   }
 
