@@ -191,7 +191,7 @@
                 ? 'Select Template'
                 : 'No saved templates'
             "
-            [disabled]="!criteriaTemplatesDdlOptions.length || isEditMode"
+            [disabled]="!criteriaTemplatesDdlOptions.length"
             (onChange)="selectCriteriaTemplate($event.value)"
             [(ngModel)]="selectedTemplate"
           ></p-dropdown>
@@ -248,7 +248,7 @@
             type="button"
             label="Apply Criteria"
             class="p-button-raised"
-            [disabled]="!criteriaText?.length || isEditMode"
+            [disabled]="!criteriaText?.length"
             (click)="applyCriteria()"
           ></button>
         </div>

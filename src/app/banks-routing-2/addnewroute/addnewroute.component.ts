@@ -243,7 +243,7 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   getBanksRoutingForEditApi(groupID: any) {
-    this.criteriaCtrl.disable();
+    // this.criteriaCtrl.disable();
     this.isEditMode = true;
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
@@ -1380,7 +1380,14 @@ export class AddnewrouteComponent2 implements OnInit {
         Object.keys(this.criteriaMasterData).forEach((field) => {
           if (field == formatCrt.split("  ")[0]) {
             this.criteriaMasterData[field].forEach((val) => {
-              if (val["codeName"] == formatCrt.split("  ")[1]) {
+              if (formatCrt.split("  ")[1] == "Any") {
+                formatCodeText =
+                  formatCrt.split("  ")[0] +
+                  " " +
+                  opr +
+                  " " +
+                  formatCrt.split("  ")[1];
+              } else if (val["codeName"] == formatCrt.split("  ")[1]) {
                 formatCodeText =
                   formatCrt.split("  ")[0] + " " + opr + " " + val["code"];
               }
@@ -1431,7 +1438,14 @@ export class AddnewrouteComponent2 implements OnInit {
         Object.keys(this.criteriaMasterData).forEach((field) => {
           if (field == formatCrt.split("  ")[0]) {
             this.criteriaMasterData[field].forEach((val) => {
-              if (val["code"] == formatCrt.split("  ")[1]) {
+              if (formatCrt.split("  ")[1] == "Any") {
+                decodeCriteriaText =
+                  formatCrt.split("  ")[0] +
+                  " " +
+                  opr +
+                  " " +
+                  formatCrt.split("  ")[1];
+              } else if (val["code"] == formatCrt.split("  ")[1]) {
                 decodeCriteriaText =
                   formatCrt.split("  ")[0] + " " + opr + " " + val["codeName"];
               }
@@ -1874,6 +1888,7 @@ export class AddnewrouteComponent2 implements OnInit {
   // }
 
   saveAddNewRoute(action) {
+    this.coreService.displayLoadingScreen();
     let isRequiredFields = false;
     this.appliedCriteriaData.forEach((element) => {
       // if (
@@ -1904,52 +1919,46 @@ export class AddnewrouteComponent2 implements OnInit {
     });
 
     if (isRequiredFields) {
+      this.coreService.removeLoadingScreen();
       this.ngxToaster.warning("Please Select required fields.");
     } else {
-      this.coreService.displayLoadingScreen();
       let service;
       if (this.groupID != "") {
-        // service = this.bankRoutingService.updateRoute(
-        //   this.groupID,
-        //   this.userId,
-        //   {
-        //     data: this.appliedCriteriaData,
-        //     duplicate: this.appliedCriteriaIsDuplicate,
-        //     criteriaMap: this.appliedCriteriaCriteriaMap,
-        //   }
-        // );
-        service = null;
-        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
-        this.coreService.removeLoadingScreen();
-      } else {
-        service = this.bankRoutingService.addNewRoute({
+        let data = {
           data: this.appliedCriteriaData,
           duplicate: this.appliedCriteriaIsDuplicate,
           criteriaMap: this.appliedCriteriaCriteriaMap,
-        });
+          groupID: this.groupID,
+        };
+        service = this.bankRoutingService.updateRoute(this.userId, data);
+        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+      } else {
+        let data = {
+          data: this.appliedCriteriaData,
+          duplicate: this.appliedCriteriaIsDuplicate,
+          criteriaMap: this.appliedCriteriaCriteriaMap,
+        };
+        service = this.bankRoutingService.addNewRoute(data);
       }
 
       if (service) {
-        service
-          .subscribe(
-            (res) => {
-              if (res["msg"]) {
-                this.ngxToaster.success(res.msg);
-                if (action == "save") {
-                  this.router.navigate([`navbar/bank-routing-2`]);
-                } else if (action == "saveAndAddNew") {
-                  this.router.navigate([`navbar/bank-routing-2/addnewroute`]);
-                  this.reset();
-                }
+        service.subscribe(
+          (res) => {
+            if (res["msg"]) {
+              this.ngxToaster.success(res.msg);
+              if (action == "save") {
+                this.router.navigate([`navbar/bank-routing-2`]);
+              } else if (action == "saveAndAddNew") {
+                this.router.navigate([`navbar/bank-routing-2/addnewroute`]);
+                this.reset();
               }
-            },
-            (err) => {
-              console.log("error in saveAddNewRoute", err);
             }
-          )
-          .add(() => {
+          },
+          (err) => {
             this.coreService.removeLoadingScreen();
-          });
+            console.log("error in saveAddNewRoute", err);
+          }
+        );
       }
     }
 

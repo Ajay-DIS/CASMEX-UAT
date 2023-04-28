@@ -9,6 +9,7 @@ import {
 import { ToastrService } from "ngx-toastr";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { BankRoutingService } from "../bank-routing.service";
+import { take } from "rxjs/operators";
 
 @Component({
   templateUrl: "./transaction-criteria-modal.html",
@@ -68,7 +69,7 @@ export class TransactionCriteriaModal2 {
       this.addTxnCriteriaRange();
     }
 
-    this.ref.onClose.subscribe((res) => {
+    this.ref.onClose.pipe(take(1)).subscribe((res) => {
       if (this.isTxnCriteriaRangesSaved) {
         this.ngxToaster.success("Transaction ranges saved");
       } else {
