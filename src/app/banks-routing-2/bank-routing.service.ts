@@ -116,7 +116,7 @@ export class BankRoutingService {
   //     data
   //   );
   // }
-  
+
   addNewRoute(data): Observable<any> {
     return this.http.post(
       `/remittance/banksRoutingController/addCriteriaDetails`,
@@ -124,14 +124,24 @@ export class BankRoutingService {
     );
   }
 
-  updateRoute(routeCode, userId, data): Observable<any> {
+  // updateRoute(routeCode, userId, data): Observable<any> {
+  //   return this.http.put(
+  //     `/remittance/banksRoutingController/updateBanksRoutingsDeatils/`,
+  //     data,
+  //     {
+  //       headers: new HttpHeaders()
+  //         .set("userId", userId)
+  //         .set("routeCode", routeCode),
+  //     }
+  //   );
+  // }
+  updateRoute(userId, data): Observable<any> {
     return this.http.put(
-      `/remittance/banksRoutingController/updateBanksRoutingsDeatils/`,
+      `/remittance/banksRoutingController/updateBanksRoutingsCriteria`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("routeCode", routeCode),
       }
     );
   }
