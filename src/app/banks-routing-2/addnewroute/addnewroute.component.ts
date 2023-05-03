@@ -1947,10 +1947,11 @@ export class AddnewrouteComponent2 implements OnInit {
             if (res["msg"]) {
               this.ngxToaster.success(res.msg);
               if (action == "save") {
-                this.router.navigate([`navbar/bank-routing-2`]);
+                this.router.navigate([`navbar/bank-routing`]);
               } else if (action == "saveAndAddNew") {
-                this.router.navigate([`navbar/bank-routing-2/addnewroute`]);
+                this.router.navigate([`navbar/bank-routing/addnewroute`]);
                 this.reset();
+                this.coreService.removeLoadingScreen();
               }
             }
           },

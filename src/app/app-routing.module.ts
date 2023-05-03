@@ -22,7 +22,7 @@ const routes: Routes = [
     component: NavbarComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: "", redirectTo: "bank-routing-2", pathMatch: "full" },
+      { path: "", redirectTo: "bank-routing", pathMatch: "full" },
       { path: "session-time-out", component: SessionTimeOutComponent },
       {
         path: "payment-mode",
@@ -36,7 +36,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing",
-        component: BankRoutingComponent,
+        component: BankRoutingComponent2,
         data: [
           { label: "Home", routerLink: "/navbar/bank-routing" },
           { label: "Settings", routerLink: "/navbar/bank-routing" },
@@ -46,7 +46,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing/addnewroute",
-        component: AddnewrouteComponent,
+        component: AddnewrouteComponent2,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
@@ -57,7 +57,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing/addnewroute/:id",
-        component: AddnewrouteComponent,
+        component: AddnewrouteComponent2,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
@@ -68,7 +68,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing-2",
-        component: BankRoutingComponent2,
+        component: BankRoutingComponent,
         data: [
           { label: "Home", routerLink: "/navbar/bank-routing-2" },
           { label: "Settings", routerLink: "/navbar/bank-routing-2" },
@@ -78,7 +78,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing-2/addnewroute",
-        component: AddnewrouteComponent2,
+        component: AddnewrouteComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing-2" },
           { label: "Settings", routerLink: "../navbar/bank-routing-2" },
@@ -89,7 +89,7 @@ const routes: Routes = [
       },
       {
         path: "bank-routing-2/addnewroute/:id",
-        component: AddnewrouteComponent2,
+        component: AddnewrouteComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing-2" },
           { label: "Settings", routerLink: "../navbar/bank-routing-2" },
