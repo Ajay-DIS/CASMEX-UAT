@@ -95,6 +95,47 @@ body.minified-sidebar .toggle-sidebar {
 .p-multiselect .p-multiselect-label {
   padding: 0.5rem 0.75rem;
 }
+
+// Tree Select start
+.p-treeselect-panel .p-treeselect-items-wrapper .p-tree {
+  padding: 0.5rem 0;
+  width: 200px;
+}
+.p-treeselect-panel .p-treeselect-items-wrapper .p-tree .p-tree-toggler-icon {
+  color: black;
+  font-weight: 600;
+}
+.p-treeselect-panel .p-treeselect-items-wrapper .p-tree .p-tree-toggler {
+  height: 1.5rem !important;
+  width: 1.2rem !important;
+}
+.p-treeselect-panel
+  .p-treeselect-items-wrapper
+  .p-tree
+  .p-treenode-leaf
+  > .p-treenode-content
+  .p-tree-toggler {
+  visibility: hidden;
+  width: 0px !important;
+}
+
+.p-treenode-leaf > .p-treenode-content .p-tree-toggler {
+  visibility: hidden;
+  width: 0px !important;
+}
+
+.p-treeselect-panel .p-treeselect-items-wrapper .p-tree .p-treenode-label span {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.p-treeselect .p-treeselect-label {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+// Tree Select end
+
 // NEW STYLES END
 
 /* text icon sizing */
@@ -120,10 +161,11 @@ body.minified-sidebar .toggle-sidebar {
   color: black;
 }
 
-.dropdowns-select-container .p-dropdown {
+.dropdowns-select-container .p-dropdown,
+.dropdowns-select-container .p-treeselect {
   height: 35px;
   border: none;
-  width: 160px;
+  width: 200px;
   border-radius: 5px;
 }
 .dropdowns-select-container .p-dropdown .p-dropdown-label {
