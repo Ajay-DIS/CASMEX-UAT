@@ -9,7 +9,6 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
-import { BankRoutingService } from "../banks-routing/bank-routing.service";
 import { CoreService } from "../core.service";
 import { LoginFormData, LoginService } from "./login.service";
 
