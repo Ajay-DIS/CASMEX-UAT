@@ -24,6 +24,7 @@ import { map, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
 import { ConfirmDialog } from "primeng/confirmdialog";
 import { Dropdown } from "primeng/dropdown";
+import { Tooltip } from "primeng/tooltip";
 
 @Component({
   selector: "app-addnewroute",
@@ -50,63 +51,7 @@ export class AddnewrouteComponent2 implements OnInit {
   //
   bankRoutesData: any = [];
   editBankRouteApiData: any = [];
-  bankRoutesColumns = [
-    { field: "country", header: "Country", editable: false, visible: true },
-    {
-      field: "routeBankName",
-      header: "Route Bank Name",
-      editable: false,
-      visible: true,
-    },
-    {
-      field: "routeServiceCategory",
-      header: "Service Category",
-      editable: false,
-      visible: true,
-    },
-    {
-      field: "routeServiceType",
-      header: "Service type",
-      editable: false,
-      visible: true,
-    },
-    {
-      field: "isCorrespondent",
-      header: "Is Correspondent",
-      editable: false,
-      visible: true,
-    },
-    {
-      field: "lcyAmountFrom",
-      header: "LCY Amount From",
-      editable: false,
-      visible: false,
-    },
-    {
-      field: "lcyAmountTo",
-      header: "LCY Amount To",
-      editable: false,
-      visible: false,
-    },
-    {
-      field: "routeToBankName",
-      header: "Route to *",
-      editable: true,
-      visible: true,
-    },
-    {
-      field: "routeToServiceCategory",
-      header: "Service Category *",
-      editable: true,
-      visible: true,
-    },
-    {
-      field: "routeToServiceType",
-      header: "Service type *",
-      editable: true,
-      visible: true,
-    },
-  ];
+
   lcySlab = null;
   isSelectedRouteToBankName = false;
   isSelectedRouteToServiceCategory = false;
@@ -190,7 +135,6 @@ export class AddnewrouteComponent2 implements OnInit {
 
   ngOnInit(): void {
     this.mode = "add";
-    // this.getAddBankRouteCriteriaData();
     this.getCriteriaMasterData();
     this.setSelectAppForm1();
     this.route.data.subscribe((data) => {
@@ -215,16 +159,6 @@ export class AddnewrouteComponent2 implements OnInit {
       });
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     this.getAllTemplates();
-
-    //check mandatory fieds
-    this.bankRoutesColumns.forEach((element) => {
-      this.cmCriteriaMandatory.forEach((item) => {
-        element.header == item && (element.header = element.header + " *");
-        item == "Organization" &&
-          element.field == "routeBankName" &&
-          (element.header = element.header + " *");
-      });
-    });
   }
   setSelectAppForm1() {
     this.selectCriteriaForm = this.fb.group({
@@ -243,7 +177,6 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   getBanksRoutingForEditApi(groupID: any) {
-    // this.criteriaCtrl.disable();
     this.isEditMode = true;
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
@@ -272,45 +205,6 @@ export class AddnewrouteComponent2 implements OnInit {
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
-
-          // Ajay code
-          // if ((res as any).data[0]["criteriaMap"]) {
-          //   this.criteriaText = (res as any).data[0]["criteriaMap"].split(";");
-          // }
-          // let lcySlabForm = {};
-          // let lcySlabArr = [];
-          // if (res["LCY"] == "Yes") {
-          //   (res as any).data[0]["lcySlab"].split("#").forEach((rngTxt) => {
-          //     let fromVal = rngTxt.split("::")[0].split(":")[1];
-          //     let toVal = rngTxt.split("::")[1].split(":")[1];
-          //     lcySlabArr.push({
-          //       from: +fromVal,
-          //       to: +toVal,
-          //     });
-          //   });
-          //   lcySlabForm = {
-          //     txnCriteriaRange: lcySlabArr,
-          //   };
-
-          //   this.bankRoutingService.setTransactionCriteriaRange(lcySlabForm);
-          // }
-          // // Ajay code end
-
-          // // suresh code
-          // this.bankRoutesData = res["data"];
-          // if (this.editBankRouteApiData.LCY == "Yes") {
-          //   this.bankRoutesColumns.forEach((x) => {
-          //     (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-          //       (x.visible = true);
-          //   });
-          // } else {
-          //   this.bankRoutesColumns.forEach((x) => {
-          //     (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-          //       (x.visible = false);
-          //   });
-          // }
-
-          // suresh code end
         },
         (err) => {
           console.log("Error in getBanksRoutingForEditApi", err);
@@ -343,25 +237,36 @@ export class AddnewrouteComponent2 implements OnInit {
               }
             }
           );
+          console.log(" Slabs fields", this.cmCriteriaSlabType);
+
           this.cmCriteriaDataDetails =
             this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails;
+          console.log(
+            "this.criteriaDataDetailsJson.data",
+            this.criteriaDataDetailsJson.data
+          );
 
-          let crArr = [];
-          this.criteriaMapDdlOptions = crArr;
-          console.log(this.criteriaDataDetailsJson.data);
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
           console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
 
-          console.log(" Slabs fields", this.cmCriteriaSlabType);
           this.cmCriteriaDependency =
             this.criteriaDataDetailsJson.data.dependance;
+          console.log(
+            ":::this.cmCriteriaDependency",
+            this.cmCriteriaDependency
+          );
+
+          let crArr = [];
+          this.criteriaMapDdlOptions = crArr;
+
           this.cmCriteriaDataDetails.forEach((element) => {
             let isMandatory = false;
             let isDependent = false;
             let dependencyList = "";
             let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
+
             if (
               this.cmCriteriaMandatory &&
               this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
@@ -379,13 +284,88 @@ export class AddnewrouteComponent2 implements OnInit {
               this.independantCriteriaArr.push(element.displayName);
             }
 
-            crArr.push({
-              name: element.displayName,
-              code: element.fieldName,
-              isMandatory: isMandatory,
-              isDependent: isDependent,
-              dependencyList: dependencyList,
-            });
+            if (!isDependent) {
+              let selectedKeys = [];
+              let allChildDependants = [];
+
+              let childDependants = [element.fieldName];
+
+              let obj: any = {};
+
+              while (childDependants.length) {
+                selectedKeys = [];
+                selectedKeys = [...childDependants];
+                childDependants = [];
+                selectedKeys.forEach((selcCrit) => {
+                  let filteredKeys = Object.keys(
+                    this.cmCriteriaDependency
+                  ).filter((key) => this.cmCriteriaDependency[key] == selcCrit);
+
+                  console.log(filteredKeys);
+                  let depValues = [];
+                  filteredKeys.forEach((filtKey) => {
+                    depValues.push(filtKey);
+                    console.log(filtKey, element.displayName, selcCrit);
+                    childDependants.push(filtKey);
+                    obj[this.cmCriteriaDependency[filtKey]] = depValues;
+                    allChildDependants.push(selcCrit);
+                  });
+                });
+              }
+
+              let crElm = {
+                label: element.displayName,
+                data: element.fieldName,
+                isMandatory: isMandatory,
+                isDependent: isDependent,
+                dependencyList: dependencyList,
+                children: null,
+              };
+              crArr.push(crElm);
+
+              if (Object.keys(obj).length) {
+                for (const [key, value] of Object.entries(obj)) {
+                  let childArr = [];
+                  console.log(key, value);
+                  (value as []).forEach((deps) => {
+                    let isMandatoryC = false;
+                    let isDependentC = false;
+                    let dependencyListC = "";
+                    let dependenceObjC =
+                      this.criteriaDataDetailsJson.data.dependance;
+
+                    if (
+                      this.cmCriteriaMandatory &&
+                      this.cmCriteriaMandatory.indexOf(deps) >= 0
+                    ) {
+                      isMandatoryC = true;
+                    }
+                    if (
+                      Object.keys(dependenceObjC).length &&
+                      dependenceObjC[deps] &&
+                      dependenceObjC[deps] != "null"
+                    ) {
+                      isDependentC = true;
+                      dependencyListC = dependenceObjC[deps];
+                    }
+
+                    console.log("deps", deps);
+                    let crElmChild = {
+                      label: deps,
+                      data: deps,
+                      isMandatory: isMandatoryC,
+                      isDependent: isDependentC,
+                      dependencyList: dependencyListC,
+                      children: null,
+                    };
+                    childArr.push(crElmChild);
+                  });
+
+                  this.findNestedObj(crArr, "label", key)["children"] =
+                    childArr;
+                }
+              }
+            }
           });
           return criteriaMasterData;
         })
@@ -410,67 +390,16 @@ export class AddnewrouteComponent2 implements OnInit {
       );
   }
 
-  // getAddBankRouteCriteriaData() {
-  //   this.coreService.displayLoadingScreen();
-  //   this.bankRoutingService
-  //     .getAddBankRouteCriteriaData()
-  //     .subscribe(
-  //       (res) => {
-  //         this.criteriaDataDetailsJson = res;
-  //         this.cmCriteriaDataDetails =
-  //           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails;
-
-  //         let crArr = [];
-  //         this.criteriaMapDdlOptions = crArr;
-  //         console.log(this.criteriaDataDetailsJson.data);
-  //         this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-  //           .replace(/["|\[|\]]/g, "")
-  //           .split(", ");
-  //         console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
-  //         console.log(
-  //           " Dependance",
-  //           this.criteriaDataDetailsJson.data.dependance
-  //         );
-  //         this.cmCriteriaDataDetails.forEach((element) => {
-  //           let isMandatory = false;
-  //           let isDependent = false;
-  //           let dependencyList = "";
-  //           let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
-  //           if (
-  //             this.cmCriteriaMandatory &&
-  //             this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
-  //           ) {
-  //             isMandatory = true;
-  //           }
-  //           console.log("dependenceObj", dependenceObj[element.fieldName]);
-  //           if (
-  //             Object.keys(dependenceObj).length &&
-  //             dependenceObj[element.fieldName] &&
-  //             dependenceObj[element.fieldName] != "null"
-  //           ) {
-  //             isDependent = true;
-  //             dependencyList = dependenceObj[element.fieldName];
-  //           } else {
-  //             this.independantCriteriaArr.push(element.displayName);
-  //           }
-
-  //           crArr.push({
-  //             name: element.displayName,
-  //             code: element.fieldName,
-  //             isMandatory: isMandatory,
-  //             isDependent: isDependent,
-  //             dependencyList: dependencyList,
-  //           });
-  //         });
-  //       },
-  //       (err) => {
-  //         console.log("::error loading AddBankRouteCriteriaData", err);
-  //       }
-  //     )
-  //     .add(() => {
-  //       this.coreService.removeLoadingScreen();
-  //     });
-  // }
+  findNestedObj(entireObj, keyToFind, valToFind) {
+    let foundObj;
+    JSON.stringify(entireObj, (_, nestedValue) => {
+      if (nestedValue && nestedValue[keyToFind] === valToFind) {
+        foundObj = nestedValue;
+      }
+      return nestedValue;
+    });
+    return foundObj;
+  }
 
   get criteriaCtrl() {
     return this.selectCriteriaForm.get("criteria");
@@ -486,7 +415,7 @@ export class AddnewrouteComponent2 implements OnInit {
     console.log(this.operationCtrl.value);
     let value = "";
     let valueCode = "";
-    if (this.cmCriteriaSlabType.includes(this.criteriaCtrl.value.name)) {
+    if (this.cmCriteriaSlabType.includes(this.criteriaCtrl.value.label)) {
       if (this.operationCtrl.value.name == "Slab") {
         value = "Slab";
         valueCode = "Slab";
@@ -501,13 +430,13 @@ export class AddnewrouteComponent2 implements OnInit {
 
     console.log(value, valueCode);
     let criteria =
-      this.criteriaCtrl.value.name +
+      this.criteriaCtrl.value.label +
       " " +
       this.operationCtrl.value.code +
       " " +
       value;
     let criteriaCode =
-      this.criteriaCtrl.value.name +
+      this.criteriaCtrl.value.label +
       " " +
       this.operationCtrl.value.code +
       " " +
@@ -815,21 +744,21 @@ export class AddnewrouteComponent2 implements OnInit {
       return formatCrt.split("  ")[0];
     });
 
-    console.log(formattedCriteriaArr, this.cmCriteriaDependency, event["name"]);
+    console.log(
+      formattedCriteriaArr,
+      this.cmCriteriaDependency,
+      event["label"]
+    );
 
-    if (Object.keys(this.cmCriteriaDependency).includes(event["name"])) {
+    if (Object.keys(this.cmCriteriaDependency).includes(event["label"])) {
       console.log(
         formattedCriteriaArr,
-        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["name"]])
+        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["label"]])
       );
       if (
-        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["name"]])
+        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["label"]])
       ) {
-        if (formattedCriteriaArr.includes(event["name"])) {
-          // this.ngxToaster.warning(
-          //   `${event["name"]} is already added. Select any other Criteria.`
-          // );
-          // return false;
+        if (formattedCriteriaArr.includes(event["label"])) {
           console.log("Dependant, same criteria present");
           return true;
         } else {
@@ -837,27 +766,23 @@ export class AddnewrouteComponent2 implements OnInit {
         }
       } else {
         this.ngxToaster.warning(
-          `${event["name"]} is dependant on ${
-            this.cmCriteriaDependency[event["name"]]
+          `${event["label"]} is dependant on ${
+            this.cmCriteriaDependency[event["label"]]
           }, Select it first.`
         );
         return false;
       }
     } else {
       console.log(
-        formattedCriteriaArr.includes(event["name"]),
-        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["name"]])
+        formattedCriteriaArr.includes(event["label"]),
+        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["label"]])
       );
       if (
         formattedCriteriaArr.includes(
-          this.cmCriteriaDependency[event["name"]]
+          this.cmCriteriaDependency[event["label"]]
         ) ||
-        formattedCriteriaArr.includes(event["name"])
+        formattedCriteriaArr.includes(event["label"])
       ) {
-        // this.ngxToaster.warning(
-        //   `${event["name"]} is already added. Select any other Criteria.`
-        // );
-        // return false;
         console.log("Indepandant, same criteria present");
         return true;
       }
@@ -870,7 +795,6 @@ export class AddnewrouteComponent2 implements OnInit {
     this.hideValuesDropdown = false;
     this.showValueInput = false;
     if (this.isCriteriaSelectable(event)) {
-      // this.ngxToaster.success(`${event["name"]} is selectable`);
       this.onChange("criteria", event);
     } else {
       this.resetCriteriaDropdowns();
@@ -925,9 +849,6 @@ export class AddnewrouteComponent2 implements OnInit {
           this.coreService.removeLoadingScreen();
           console.log("Error in getting values", err);
           this.resetCriteriaDropdowns();
-          // this.ngxToaster.warning(
-          //   `${displayName} is already added. Select any other Criteria.`
-          // );
         }
       );
   }
@@ -949,7 +870,7 @@ export class AddnewrouteComponent2 implements OnInit {
     switch (controlId) {
       case "criteria":
         let selectedCorrespondent = this.cmCriteriaDataDetails.filter(
-          (x) => event.code == x.fieldName
+          (x) => event.data == x.fieldName
         );
         let operations;
         this.hideValuesDropdown = false;
@@ -971,7 +892,7 @@ export class AddnewrouteComponent2 implements OnInit {
           this.isSlabControlSelected = false;
           this.correspondentDdlOptions = [];
           this.valueCtrl.patchValue("");
-          this.getCorrespondentValues(event.name, event.code);
+          this.getCorrespondentValues(event.label, event.data);
           operations = selectedCorrespondent[0].operations.split(",");
         }
         this.criteriaEqualsDdlOptions = [];
@@ -1004,7 +925,6 @@ export class AddnewrouteComponent2 implements OnInit {
                 oprCode = "=";
                 break;
             }
-            // let oprCode = opr == "Is Equal To" || opr == "Slab" ? "=" : "!=";
             this.criteriaEqualsDdlOptions.push({
               name: opr,
               code: oprCode,
@@ -1321,9 +1241,6 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson.data.dependance[dependantCrt] != "null"
         ) {
           if (
-            // formattedCriteriaArr.includes(
-            //   this.criteriaDataDetailsJson.data.dependance[dependantCrt]
-            // )
             containsAll(
               formattedCriteriaArr,
               this.criteriaDataDetailsJson.data.dependance[dependantCrt].split(
@@ -1456,9 +1373,6 @@ export class AddnewrouteComponent2 implements OnInit {
         decodeCriteriaText =
           formatCrt.split("  ")[0] + " " + opr + " " + formatCrt.split("  ")[1];
       }
-      // if (decodeCriteriaText) {
-      //   this.finalCriteriaCodeText.push(decodeCriteriaText);
-      // }
       return decodeCriteriaText;
     });
     return decodedFormattedCriteriaArr;
@@ -1466,54 +1380,6 @@ export class AddnewrouteComponent2 implements OnInit {
 
   applyCriteria() {
     this.resetCriteriaDropdowns();
-
-    // this.finalCriteriaCodeText = [];
-    // let formattedCriteriaArr = this.criteriaText.map((crt) => {
-    //   let formatCrt;
-    //   let opr;
-    //   if (crt.includes("!=")) {
-    //     formatCrt = crt.replace(/[!=]/g, "");
-    //     opr = "!=";
-    //   } else if (crt.includes(">=")) {
-    //     formatCrt = crt.replace(/[>=]/g, "");
-    //     opr = ">=";
-    //   } else if (crt.includes("<=")) {
-    //     formatCrt = crt.replace(/[<=]/g, "");
-    //     opr = "<=";
-    //   } else if (crt.includes("<")) {
-    //     formatCrt = crt.replace(/[<]/g, "");
-    //     opr = "<";
-    //   } else if (crt.includes(">")) {
-    //     formatCrt = crt.replace(/[>]/g, "");
-    //     opr = ">";
-    //   } else {
-    //     formatCrt = crt.replace(/[=]/g, "");
-    //     opr = "=";
-    //   }
-
-    //   let formatCodeText;
-    //   if (
-    //     Object.keys(this.criteriaMasterData).includes(formatCrt.split("  ")[0])
-    //   ) {
-    //     Object.keys(this.criteriaMasterData).forEach((field) => {
-    //       if (field == formatCrt.split("  ")[0]) {
-    //         this.criteriaMasterData[field].forEach((val) => {
-    //           if (val["codeName"] == formatCrt.split("  ")[1]) {
-    //             formatCodeText =
-    //               formatCrt.split("  ")[0] + " " + opr + " " + val["code"];
-    //           }
-    //         });
-    //       }
-    //     });
-    //   } else {
-    //     formatCodeText =
-    //       formatCrt.split("  ")[0] + " " + opr + " " + formatCrt.split("  ")[1];
-    //   }
-    //   if (formatCodeText) {
-    //     this.finalCriteriaCodeText.push(formatCodeText);
-    //   }
-    //   return formatCrt.split("  ")[0];
-    // });
 
     let formattedCriteriaArr = this.createFormattedCriteria();
 
@@ -1569,13 +1435,8 @@ export class AddnewrouteComponent2 implements OnInit {
         postDataCriteria.append("criteriaMap", NEWcriteriaMap);
         postDataCriteria.append("userId", this.userId);
 
-        // console.log("::: criteriaMap", criteriaMap);
-        // console.log("::: lcySlab", slabText);
-        // console.log("::: lcy operations", lcyOpr);
-        // console.log("::: NEWcriteriaMap", NEWcriteriaMap);
-
         // this.lcySlab = slabText;
-        //    // postDataCriteria.set("lcySlab", slabText);
+        // postDataCriteria.set("lcySlab", slabText);
         this.routeBankCriteriaSearchApi(postDataCriteria);
       } else {
         this.appliedCriteriaData = [];
@@ -1603,8 +1464,6 @@ export class AddnewrouteComponent2 implements OnInit {
               ];
               console.log(":::cols", this.appliedCriteriaDataCols);
               this.ngxToaster.success(`Criteria Applied Successfully`);
-              // this.apiResponse = res;
-              // this.getBanksRoutingData(this.userId);
             } else {
               this.appliedCriteriaData = [];
               this.appliedCriteriaCriteriaMap = null;
@@ -1664,10 +1523,8 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaTemplatesDdlOptions.forEach((val) => {
             val["name"] = val["criteriaName"];
             val["code"] = val["criteriaName"];
-            // val["lcySlab"] = val["lcySlab"];
           });
         } else {
-          // this.ngxToaster.warning(response.msg);
           console.log(response.msg);
         }
       });
@@ -1817,98 +1674,12 @@ export class AddnewrouteComponent2 implements OnInit {
     console.log(column, value, index);
     let selectedColField = column + "Option";
     this.appliedCriteriaData[index][selectedColField] = value["codeName"];
-
-    // if (!this.selectedRowColumn[index]) {
-    //   let item = {
-    //     routeToBankName: false,
-    //     routeToServiceCategory: false,
-    //     routeToServiceType: false,
-    //   };
-    //   this.selectedRowColumn.splice(index, 0, item);
-    // }
-    // switch (column) {
-    //   case "routeToBankName":
-    //     this.mode == "add" &&
-    //       (this.selectedRowColumn[index].routeToBankName = true);
-    //     // this.appliedCriteriaData[index]["routeToServiceCategory"] = "";
-    //     break;
-    //   case "routeToServiceCategory":
-    //     if (this.mode == "add") {
-    //       // this.appliedCriteriaData[index]["routeToServiceType"] = "";
-    //       if (!this.selectedRowColumn[index].routeToBankName) {
-    //         this.ngxToaster.warning("Please select the route to bank first");
-    //         this.selectedRowColumn[index].routeToServiceCategory = false;
-    //       } else {
-    //         this.selectedRowColumn[index].routeToServiceCategory = true;
-    //       }
-    //     }
-    //     break;
-    //   case "routeToServiceType":
-    //     if (this.mode == "add") {
-    //       if (!this.selectedRowColumn[index].routeToServiceCategory) {
-    //         this.ngxToaster.warning("Please select the service category first");
-    //         this.selectedRowColumn[index].routeToServiceType = false;
-    //       } else {
-    //         this.selectedRowColumn[index].routeToServiceType = true;
-    //       }
-    //     }
-
-    //     break;
-    //   default:
-    //     break;
-    // }
   }
-
-  // getBanksRoutingData(id: string) {
-  //   this.bankRoutesData = this.apiResponse.data;
-  //   this.bankRoutesData.forEach((element) => {
-  //     element.routeToBankNameOption = element.routeToBankName;
-  //     element.routeToServiceCategoryOption = element.routeToServiceCategory;
-  //     element.routeToServiceTypeOption = element.routeToServiceType;
-  //     element.routeToBankName = "";
-  //     element.routeToServiceType = "";
-  //     element.routeToServiceCategory = "";
-  //     this.selectedRowColumn.push({
-  //       routeToBank: false,
-  //       routeToServiceCategory: false,
-  //       routeToServiceType: false,
-  //     });
-  //   });
-  //   if (this.apiResponse.LCY == "Yes") {
-  //     this.bankRoutesColumns.forEach((x) => {
-  //       (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-  //         (x.visible = true);
-  //     });
-  //   } else {
-  //     this.bankRoutesColumns.forEach((x) => {
-  //       (x.field == "lcyAmountFrom" || x.field == "lcyAmountTo") &&
-  //         (x.visible = false);
-  //     });
-  //   }
-  // }
 
   saveAddNewRoute(action) {
     this.coreService.displayLoadingScreen();
     let isRequiredFields = false;
     this.appliedCriteriaData.forEach((element) => {
-      // if (
-      //   element.routeToBankName == "" ||
-      //   element.routeToServiceCategory == "" ||
-      //   element.routeToServiceType == ""
-      // ) {
-      //   isRequiredFields = true;
-      // } else {
-      //   element["userId"] = this.userId;
-      //   element["routeDesc"] =
-      //     "Based on the critetria selected banks will be routed to preferred routing bank";
-      //   element["lcyAmountTo"] = element.lcyAmountTo
-      //     ? element.lcyAmountTo
-      //     : null;
-      //   element["lcyAmountFrom"] = element.lcyAmountFrom
-      //     ? element.lcyAmountFrom
-      //     : null;
-      //   payload.push(element);
-      // }
       function isNullValue(arr) {
         return arr.some((el) => el == null);
       }
@@ -1962,68 +1733,6 @@ export class AddnewrouteComponent2 implements OnInit {
         );
       }
     }
-
-    // if (
-    //   this.bankRoutesData[0]["criteriaMap"] &&
-    //   this.checkArrSimilarity(
-    //     this.criteriaText,
-    //     this.bankRoutesData[0]["criteriaMap"].split(";")
-    //   )
-    // ) {
-    //   if (
-    //     !this.bankRoutesData[0]["lcySlab"] ||
-    //     this.bankRoutesData[0]["lcySlab"] == "null" ||
-    //     this.getSlabCriteriaText(
-    //       this.txnCriteriaRangeFormData["txnCriteriaRange"]
-    //     ) == this.bankRoutesData[0]["lcySlab"]
-    //   ) {
-    //     console.log("Payload", { data: payload });
-    //     if (isRequiredFields) {
-    //       this.ngxToaster.warning("Please Select required fields.");
-    //     } else {
-    //       this.coreService.displayLoadingScreen();
-    //       let service;
-    //       if (this.routeId != "") {
-    //         service = this.bankRoutingService.updateRoute(
-    //           this.routeId,
-    //           this.userId,
-    //           {
-    //             data: payload,
-    //           }
-    //         );
-    //       } else {
-    //         service = this.bankRoutingService.addNewRoute({ data: payload });
-    //       }
-    //       service
-    //         .subscribe(
-    //           (res) => {
-    //             if (res["msg"]) {
-    //               this.ngxToaster.success(res.msg);
-    //               if (action == "save") {
-    //                 this.router.navigate([`navbar/bank-routing`]);
-    //               } else if (action == "saveAndAddNew") {
-    //                 this.router.navigate([`navbar/bank-routing/addnewroute`]);
-    //               }
-    //             }
-    //           },
-    //           (err) => {
-    //             console.log("error in saveAddNewRoute", err);
-    //           }
-    //         )
-    //         .add(() => {
-    //           this.coreService.removeLoadingScreen();
-    //         });
-    //     }
-    //   } else {
-    //     this.ngxToaster.warning(
-    //       "LCY Criteria has been modified, Please apply it first"
-    //     );
-    //   }
-    // } else {
-    //   this.ngxToaster.warning(
-    //     "Criterias has been modified, Please apply them first"
-    //   );
-    // }
   }
 
   getSlabCriteriaText(slabs: any[]) {
@@ -2040,10 +1749,6 @@ export class AddnewrouteComponent2 implements OnInit {
     return slabText;
   }
 
-  getSelectedOption() {
-    return [];
-  }
-
   checkArrSimilarity(arr1: any[], arr2: any[]) {
     console.log(arr1, arr2);
     const containsAll = (arr1, arr2) =>
@@ -2055,14 +1760,20 @@ export class AddnewrouteComponent2 implements OnInit {
     return sameMembers(arr1, arr2);
   }
 
-  getTooltip(criteria: any) {
-    let tooltip = `${criteria.isMandatory ? "Mandatory Criteria \n" : ""} ${
-      criteria.isDependent ? "Dependent on " + criteria.dependencyList : ""
+  getTooltip(isMandatory, isDependent, dependencyList) {
+    let tooltip = `${isMandatory ? "Mandatory Criteria \n" : ""} ${
+      isDependent ? "Dependent on " + dependencyList : ""
     }`;
-    if (criteria.isMandatory || criteria.isDependent) {
+    if (isMandatory || isDependent) {
       return tooltip;
     } else {
-      return false;
+      return "";
+    }
+  }
+
+  changeValueInput(e: any) {
+    if (!(e.value > 9999999999)) {
+      this.valueCtrl.setValue(e.value);
     }
   }
 
@@ -2079,7 +1790,6 @@ export class AddnewrouteComponent2 implements OnInit {
     this.appliedCriteriaCriteriaMap = null;
     this.appliedCriteriaIsDuplicate = null;
     this.selectedTemplate = "";
-    // this.bankRoutesData[0]["criteriaMap"] = [];
   }
 
   ngOnDestroy() {

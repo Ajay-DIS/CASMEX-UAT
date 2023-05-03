@@ -32,6 +32,9 @@ import { PickListModule } from "primeng/picklist";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { TreeTableModule } from "primeng/treetable";
 import { CheckboxModule } from "primeng/checkbox";
+import { TreeSelectModule } from "primeng/treeselect";
+
+import { BnNgIdleService } from "bn-ng-idle";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -47,7 +50,6 @@ import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.comp
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
 import { TransactionCriteriaModal2 } from "./banks-routing-2/transaction-criteria-modal/transaction-criteria-modal";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
- import { BnNgIdleService } from "bn-ng-idle";
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -93,6 +95,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     ConfirmDialogModule,
     TreeTableModule,
     CheckboxModule,
+    TreeSelectModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -109,7 +112,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpInterceptorInterceptor,
-      multi: true, 
+      multi: true,
     },
     DatePipe,
   ],
