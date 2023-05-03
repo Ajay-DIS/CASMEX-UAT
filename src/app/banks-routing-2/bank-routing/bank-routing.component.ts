@@ -323,7 +323,7 @@ export class BankRoutingComponent2 implements OnInit {
   viewBankRouting(data: any) {
     this.router.navigate([
       "navbar",
-      "bank-routing-2",
+      "bank-routing",
       "addnewroute",
       data.groupID,
     ]);
@@ -429,7 +429,7 @@ export class BankRoutingComponent2 implements OnInit {
       });
   }
   addNewRoutePage() {
-    this.router.navigate(["navbar", "bank-routing-2", "addnewroute"]);
+    this.router.navigate(["navbar", "bank-routing", "addnewroute"]);
   }
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];

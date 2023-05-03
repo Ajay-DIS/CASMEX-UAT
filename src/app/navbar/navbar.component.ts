@@ -222,10 +222,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        case "Form Rules":
-          item["routerLink"] = "/navbar/bank-routing-2";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
+        // case "Form Rules":
+        //   item["routerLink"] = "/navbar/bank-routing-2";
+        //   item["routerLinkActiveOptions"] = { subset: true };
+        //   break;
       }
     });
     return menu;
@@ -300,8 +300,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/bank-routing",
           "/navbar/tax-settings",
           "/navbar/bank-routing/addnewroute",
-          "/navbar/bank-routing-2",
-          "/navbar/bank-routing-2/addnewroute",
+          // "/navbar/bank-routing-2",
+          // "/navbar/bank-routing-2/addnewroute",
         ];
         routeName = "/navbar/bank-routing";
         break;

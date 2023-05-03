@@ -10,7 +10,7 @@
         pRipple
         type="button"
         (click)="addNewRoutePage()"
-        label="Add New Route 2"
+        label="Add New Route"
         class="p-button-raised"
       ></button>
     </div>
@@ -80,7 +80,7 @@
         </tr>
         <tr class="search-row">
           <th *ngFor="let col of cols">
-            <span style="width: 91px;" class="p-input-icon-left">
+            <span style="width: 91px" class="p-input-icon-left">
               <i class="pi pi-search"></i>
               <input
                 type="text"
@@ -124,22 +124,22 @@
               *ngIf="i + 1 == columns.length"
               style="border: none; text-align: center"
             >
-            <label
-            *ngIf="objectKeys(rowData).length != 1"
-            class="switch"
-            style="border: none"
-          >
-            <input
-              #statusInp
-              type="checkbox"
-              (click)="updateStatus($event, rowData['routeCode'])"
-              [checked]="
-                rowData[col['field']] == 'Active' ||
-                rowData[col['field']] == 'A'
-                  ? true
-                  : false
-              "
-            />
+              <label
+                *ngIf="objectKeys(rowData).length != 1"
+                class="switch"
+                style="border: none"
+              >
+                <input
+                  #statusInp
+                  type="checkbox"
+                  (click)="updateStatus($event, rowData['routeCode'])"
+                  [checked]="
+                    rowData[col['field']] == 'Active' ||
+                    rowData[col['field']] == 'A'
+                      ? true
+                      : false
+                  "
+                />
                 <span class="slider round"></span>
               </label>
             </td>
