@@ -40,9 +40,6 @@ import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payme
 import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { LoginComponent } from "./login/login.component";
 import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
-import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
-import { AddnewrouteComponent } from "./banks-routing/addnewroute/addnewroute.component";
-import { TransactionCriteriaModal } from "./banks-routing/transaction-criteria-modal/transaction-criteria-modal";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
@@ -63,9 +60,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     PaymentModeComponent,
     ViewPaymentModeComponent,
     LoginComponent,
-    BankRoutingComponent,
-    AddnewrouteComponent,
-    TransactionCriteriaModal,
     SessionTimeOutComponent,
     CriteriaListingComponent,
     CriteriaSettingsDetailComponent,

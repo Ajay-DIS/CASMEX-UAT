@@ -1,8 +1,6 @@
 import { Component, NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
-import { AddnewrouteComponent } from "./banks-routing/addnewroute/addnewroute.component";
 import { AuthGuard } from "./auth/auth.guard";
-import { BankRoutingComponent } from "./banks-routing/bank-routing/bank-routing.component";
 import { LoginComponent } from "./login/login.component";
 import { NavbarComponent } from "./navbar/navbar.component";
 import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payment-mode.component";
@@ -63,38 +61,6 @@ const routes: Routes = [
           { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing", routerLink: "bank-routing" },
           { label: "Edit Route", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "bank-routing-2",
-        component: BankRoutingComponent,
-        data: [
-          { label: "Home", routerLink: "/navbar/bank-routing-2" },
-          { label: "Settings", routerLink: "/navbar/bank-routing-2" },
-          { label: "Bank Routing", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "bank-routing-2/addnewroute",
-        component: AddnewrouteComponent,
-        data: [
-          { label: "Home", routerLink: "../navbar/bank-routing-2" },
-          { label: "Settings", routerLink: "../navbar/bank-routing-2" },
-          { label: "Bank Routing-2", routerLink: "bank-routing-2" },
-          { label: "Add New Route-2", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "bank-routing-2/addnewroute/:id",
-        component: AddnewrouteComponent,
-        data: [
-          { label: "Home", routerLink: "../navbar/bank-routing-2" },
-          { label: "Settings", routerLink: "../navbar/bank-routing-2" },
-          { label: "Bank Routing-2", routerLink: "bank-routing-2" },
-          { label: "Edit Route-2", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
