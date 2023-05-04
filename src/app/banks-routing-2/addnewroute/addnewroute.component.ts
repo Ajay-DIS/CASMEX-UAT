@@ -1049,11 +1049,20 @@ export class AddnewrouteComponent2 implements OnInit {
       });
     });
 
-    let formatCrt = this.criteriaText[i];
-    if (formatCrt.includes("!=")) {
-      formatCrt = formatCrt.replace(/[!=]/g, "");
+    let formatCrt;
+
+    if (this.criteriaText[i].includes("!=")) {
+      formatCrt = this.criteriaText[i].replace(/[!=]/g, "");
+    } else if (this.criteriaText[i].includes(">=")) {
+      formatCrt = this.criteriaText[i].replace(/[>=]/g, "");
+    } else if (this.criteriaText[i].includes("<=")) {
+      formatCrt = this.criteriaText[i].replace(/[<=]/g, "");
+    } else if (this.criteriaText[i].includes("<")) {
+      formatCrt = this.criteriaText[i].replace(/[<]/g, "");
+    } else if (this.criteriaText[i].includes(">")) {
+      formatCrt = this.criteriaText[i].replace(/[>]/g, "");
     } else {
-      formatCrt = formatCrt.replace(/[=]/g, "");
+      formatCrt = this.criteriaText[i].replace(/[=]/g, "");
     }
 
     console.log(
@@ -1117,27 +1126,50 @@ export class AddnewrouteComponent2 implements OnInit {
     ];
 
     critTxt.forEach((crtTxt) => {
-      let formatCrt = crtTxt;
-      if (formatCrt.includes("!=")) {
-        formatCrt = formatCrt.replace(/[!=]/g, "");
+      let formatCrt;
+
+      if (crtTxt.includes("!=")) {
+        formatCrt = crtTxt.replace(/[!=]/g, "");
+      } else if (crtTxt.includes(">=")) {
+        formatCrt = crtTxt.replace(/[>=]/g, "");
+      } else if (crtTxt.includes("<=")) {
+        formatCrt = crtTxt.replace(/[<=]/g, "");
+      } else if (crtTxt.includes("<")) {
+        formatCrt = crtTxt.replace(/[<]/g, "");
+      } else if (crtTxt.includes(">")) {
+        formatCrt = crtTxt.replace(/[>]/g, "");
       } else {
-        formatCrt = formatCrt.replace(/[=]/g, "");
+        formatCrt = crtTxt.replace(/[=]/g, "");
       }
+
       formatCrt = formatCrt.split("  ")[0];
       allChildDependants.forEach((deps) => {
-        if (deps == formatCrt) {
+        let displayName = this.cmCriteriaDataDetails.filter((data) => {
+          return data["fieldName"] == formatCrt.split("  ")[0];
+        })[0]["displayName"];
+        if (deps == displayName) {
           removeCrit.push(crtTxt);
         }
       });
     });
 
     critCodeTxt.forEach((crtCodeTxt) => {
-      let formatCrt = crtCodeTxt;
-      if (formatCrt.includes("!=")) {
-        formatCrt = formatCrt.replace(/[!=]/g, "");
+      let formatCrt;
+
+      if (crtCodeTxt.includes("!=")) {
+        formatCrt = crtCodeTxt.replace(/[!=]/g, "");
+      } else if (crtCodeTxt.includes(">=")) {
+        formatCrt = crtCodeTxt.replace(/[>=]/g, "");
+      } else if (crtCodeTxt.includes("<=")) {
+        formatCrt = crtCodeTxt.replace(/[<=]/g, "");
+      } else if (crtCodeTxt.includes("<")) {
+        formatCrt = crtCodeTxt.replace(/[<]/g, "");
+      } else if (crtCodeTxt.includes(">")) {
+        formatCrt = crtCodeTxt.replace(/[>]/g, "");
       } else {
-        formatCrt = formatCrt.replace(/[=]/g, "");
+        formatCrt = crtCodeTxt.replace(/[=]/g, "");
       }
+
       formatCrt = formatCrt.split("  ")[0];
       allChildDependants.forEach((deps) => {
         if (deps == formatCrt) {
@@ -1350,6 +1382,9 @@ export class AddnewrouteComponent2 implements OnInit {
       }
 
       let decodeCriteriaText;
+      let displayName = this.cmCriteriaDataDetails.filter((data) => {
+        return data["fieldName"] == formatCrt.split("  ")[0];
+      })[0]["displayName"];
       if (
         Object.keys(this.criteriaMasterData).includes(formatCrt.split("  ")[0])
       ) {
@@ -1358,21 +1393,17 @@ export class AddnewrouteComponent2 implements OnInit {
             this.criteriaMasterData[field].forEach((val) => {
               if (formatCrt.split("  ")[1] == "Any") {
                 decodeCriteriaText =
-                  formatCrt.split("  ")[0] +
-                  " " +
-                  opr +
-                  " " +
-                  formatCrt.split("  ")[1];
+                  displayName + " " + opr + " " + formatCrt.split("  ")[1];
               } else if (val["code"] == formatCrt.split("  ")[1]) {
                 decodeCriteriaText =
-                  formatCrt.split("  ")[0] + " " + opr + " " + val["codeName"];
+                  displayName + " " + opr + " " + val["codeName"];
               }
             });
           }
         });
       } else {
         decodeCriteriaText =
-          formatCrt.split("  ")[0] + " " + opr + " " + formatCrt.split("  ")[1];
+          displayName + " " + opr + " " + formatCrt.split("  ")[1];
       }
       return decodeCriteriaText;
     });
