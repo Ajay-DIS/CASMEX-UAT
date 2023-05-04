@@ -318,7 +318,7 @@
                       [style.minWidth]="col?.minWidth"
                       alignFrozen="right"
                       pFrozenColumn
-                      [frozen]="c >= columns.length - 3"
+                      [frozen]="col['isSelect']"
                       style="right: 121px !important"
                     >
                       {{ col.header }}
@@ -337,7 +337,7 @@
                     <td
                       alignFrozen="right"
                       pFrozenColumn
-                      [frozen]="i >= columns.length - 3"
+                      [frozen]="col['isSelect']"
                     >
                       <div
                         *ngIf="col['isString']"
