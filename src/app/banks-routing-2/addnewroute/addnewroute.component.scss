@@ -103,32 +103,6 @@
   left: 42%;
 }
 
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(1) {
-//   width: 7%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(2) {
-//   width: 11.5%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(3) {
-//   width: 10.5%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(4) {
-//   width: 8%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-child(5) {
-//   width: 10.5%;
-// }
-
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(1) {
-//   width: 10%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(2) {
-//   width: 12%;
-// }
-// .addnewroute-table ::ng-deep .p-datatable-thead th:nth-last-child(3) {
-//   width: 9%;
-// }
-
 .form-select {
   height: 35px;
   font-size: 12px;
@@ -158,4 +132,23 @@ a:hover {
 .p-dropdown .p-dropdown-label.p-placeholder {
   font-size: 12px;
   color: #000;
+}
+
+.appliedCriteriaDataTable ::ng-deep td.p-frozen-column {
+  background: rgb(248 248 248);
+}
+
+.appliedCriteriaSelect ::ng-deep p-dropdown {
+  max-width: 100%;
+}
+.appliedCriteriaSelect ::ng-deep .p-dropdown {
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+}
+
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-datatable-wrapper::-webkit-scrollbar-track {
+  background-color: rgb(234 237 244) !important;
 }

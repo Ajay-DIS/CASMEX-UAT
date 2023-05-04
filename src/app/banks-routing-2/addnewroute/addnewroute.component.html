@@ -299,6 +299,7 @@
             {{ "noDataMsg" }}
           </p-card>
           <div class="appliedCriteriaDataTable">
+            <!-- [frozenColumns]="appliedCriteriaDataFrozenCols" -->
             <p-table
               #dt
               [columns]="appliedCriteriaDataCols"
@@ -306,18 +307,23 @@
               [rows]="10"
               columnResizeMode="expand"
               [rowHover]="true"
+              [scrollable]="true"
             >
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th
-                    *ngFor="let col of columns"
-                    pReorderableColumn
-                    [pSortableColumn]="col?.field"
-                    pResizableColumn
-                    [style.maxWidth]="col?.maxWidth"
-                  >
-                    {{ col.header }}
-                  </th>
+                  <ng-container *ngFor="let col of columns; let c = index">
+                    <th
+                      [pSortableColumn]="col?.field"
+                      [style.maxWidth]="col?.maxWidth"
+                      [style.minWidth]="col?.minWidth"
+                      alignFrozen="right"
+                      pFrozenColumn
+                      [frozen]="col['isSelect']"
+                      style="right: 121px !important"
+                    >
+                      {{ col.header }}
+                    </th>
+                  </ng-container>
                 </tr>
               </ng-template>
               <ng-template
@@ -326,9 +332,13 @@
                 let-columns="columns"
                 let-rowIndex="rowIndex"
               >
-                <tr [pReorderableRow]="index">
+                <tr>
                   <ng-container *ngFor="let col of columns; let i = index">
-                    <td>
+                    <td
+                      alignFrozen="right"
+                      pFrozenColumn
+                      [frozen]="col['isSelect']"
+                    >
                       <div
                         *ngIf="col['isString']"
                         style="display: inline-block"
@@ -337,7 +347,8 @@
                       </div>
                       <div
                         *ngIf="col['isSelect']"
-                        style="display: inline-block"
+                        class="appliedCriteriaSelect"
+                        style="display: inline-block; width: 90%"
                       >
                         <p-dropdown
                           [options]="rowData[col['field']]"
@@ -357,6 +368,7 @@
                   </ng-container>
                 </tr>
               </ng-template>
+
               <ng-template pTemplate="emptymessage">
                 <tr>
                   <td [attr.colspan]="cols.length">No Data found.</td>
