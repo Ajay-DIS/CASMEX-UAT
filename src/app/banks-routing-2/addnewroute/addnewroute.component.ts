@@ -211,7 +211,9 @@ export class AddnewrouteComponent2 implements OnInit {
         }
       )
       .add(() => {
-        this.coreService.removeLoadingScreen();
+        setTimeout(() => {
+          this.coreService.removeLoadingScreen();
+        }, 1000);
       });
   }
 
@@ -233,7 +235,7 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType.push(data["displayName"]);
+                this.cmCriteriaSlabType.push(data["fieldName"]);
               }
             }
           );
@@ -281,7 +283,7 @@ export class AddnewrouteComponent2 implements OnInit {
               isDependent = true;
               dependencyList = dependenceObj[element.fieldName];
             } else {
-              this.independantCriteriaArr.push(element.displayName);
+              this.independantCriteriaArr.push(element.fieldName);
             }
 
             if (!isDependent) {
@@ -305,7 +307,6 @@ export class AddnewrouteComponent2 implements OnInit {
                   let depValues = [];
                   filteredKeys.forEach((filtKey) => {
                     depValues.push(filtKey);
-                    console.log(filtKey, element.displayName, selcCrit);
                     childDependants.push(filtKey);
                     obj[this.cmCriteriaDependency[filtKey]] = depValues;
                     allChildDependants.push(selcCrit);
@@ -314,8 +315,8 @@ export class AddnewrouteComponent2 implements OnInit {
               }
 
               let crElm = {
-                label: element.displayName,
-                data: element.fieldName,
+                label: element.fieldName,
+                data: element.displayName,
                 isMandatory: isMandatory,
                 isDependent: isDependent,
                 dependencyList: dependencyList,
@@ -349,10 +350,18 @@ export class AddnewrouteComponent2 implements OnInit {
                       dependencyListC = dependenceObjC[deps];
                     }
 
-                    console.log("deps", deps);
+                    let fieldName = deps;
+                    let displayName = this.cmCriteriaDataDetails.filter(
+                      (data) => {
+                        return data["fieldName"] == deps;
+                      }
+                    )[0]["displayName"];
+
+                    console.log("::::fieldName", fieldName);
+                    console.log("::::displayName", displayName);
                     let crElmChild = {
-                      label: deps,
-                      data: deps,
+                      label: fieldName,
+                      data: displayName,
                       isMandatory: isMandatoryC,
                       isDependent: isDependentC,
                       dependencyList: dependencyListC,
@@ -805,14 +814,6 @@ export class AddnewrouteComponent2 implements OnInit {
     // let criteriaMapValue = "Country = IND;Organization = SBI;State = Any;State != MH";
     let criteriaMapValue = this.criteriaCodeText.join(";");
 
-    console.log(criteriaMapValue);
-    console.log(
-      this.formName,
-      this.applicationName,
-      criteriaMapValue,
-      fieldName,
-      displayName
-    );
     this.coreService.displayLoadingScreen();
     this.bankRoutingService
       .getCorrespondentValuesData(
@@ -1462,7 +1463,6 @@ export class AddnewrouteComponent2 implements OnInit {
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
               ];
-              console.log(":::cols", this.appliedCriteriaDataCols);
               this.ngxToaster.success(`Criteria Applied Successfully`);
             } else {
               this.appliedCriteriaData = [];
@@ -1481,35 +1481,45 @@ export class AddnewrouteComponent2 implements OnInit {
         }
       )
       .add(() => {
-        this.coreService.removeLoadingScreen();
+        setTimeout(() => {
+          this.coreService.removeLoadingScreen();
+        }, 1000);
       });
   }
 
   getColumns(colData: any) {
     let tableCols = [];
-    for (const [key, value] of Object.entries(colData)) {
+    Object.entries(colData).forEach(([key, value], index) => {
+      let tableCol = {};
       let stringType = false;
       let selectType = false;
       let formatVal = "";
+      let maxWidth = null;
+      let minWidth = null;
       if ((value as string).includes("::")) {
         formatVal = (value as string).split("::")[0];
         stringType = false;
         selectType =
           (value as string).split("::")[1] == "select" ? true : false;
+        maxWidth = "145px";
+        minWidth = "145px";
       } else {
         formatVal = value as string;
         stringType = true;
         selectType = false;
       }
-      let tableCol = {
+      tableCol = {
         field: formatVal,
         header: key,
         isString: stringType,
         isSelect: selectType,
-        maxWidth: "15%",
+        minWidth: minWidth ? minWidth : "125px",
       };
+      if (maxWidth) {
+        tableCol["maxWidth"] = maxWidth;
+      }
       tableCols.push(tableCol);
-    }
+    });
     return tableCols;
   }
 
