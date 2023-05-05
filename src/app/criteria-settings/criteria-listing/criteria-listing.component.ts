@@ -336,6 +336,8 @@ export class CriteriaListingComponent implements OnInit {
     this.criteriaDataArrayView = data.cmCriteriaDataDetails;
     this.criteriaDataArrayView["applications"] = data["applications"];
     this.criteriaDataArrayView["form"] = data["form"];
+    this.coreService.setHeaderStickyStyle(false);
+    this.coreService.setSidebarBtnFixedStyle(false);
     this.clickforview = true;
   }
   openClickForClone(data: any, type: any) {
@@ -343,8 +345,20 @@ export class CriteriaListingComponent implements OnInit {
       "navbar",
       "criteria-settings",
       "add-criteria-settings",
-      data.id,type
+      data.id,
+      type,
     ]);
+  }
+
+  closeDialog() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
   // openClickForEdit(data: any) {
   //   this.router.navigate([

@@ -1,9 +1,4 @@
 <div class="visible-main-section">
-  <div class="pagetitle detail-page">
-    <nav>
-      <ol class="breadcrumb"></ol>
-    </nav>
-  </div>
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
@@ -204,7 +199,11 @@
                   placeholder="{{ product.orderID }}"
                   [disabled]="false"
                   (blur)="criteriaPriorityValidation($event, product)"
-                  style="width: 90px; margin-left: 10px;background-color: #f4f6fa;"
+                  style="
+                    width: 90px;
+                    margin-left: 10px;
+                    background-color: #f4f6fa;
+                  "
                 />
               </td>
               <td style="text-align: center">

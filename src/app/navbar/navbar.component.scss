@@ -11,9 +11,18 @@
   height: 80px;
   transition: all 0.3s;
   z-index: 998;
-  box-shadow: 0px 3px 30px rgba(1, 41, 112, 0.1);
+  box-shadow: 0px 3px 10px rgba(1, 41, 112, 0.1);
   background-color: #fff;
   padding-left: 20px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+}
+
+.notFixed {
+  position: static !important;
 }
 
 @media (max-width: 815px) {
@@ -74,7 +83,7 @@
 
 .header-bar::ng-deep .p-breadcrumb ul li:last-child .p-menuitem-text {
   color: var(--primary-color);
-  cursor:default;
+  cursor: default;
   font-weight: 500;
 }
 .header-bar::ng-deep .p-breadcrumb ul li:nth-last-child(3) .p-menuitem-text {
@@ -330,7 +339,7 @@
 }
 
 main {
-  margin-top: 85px;
+  margin-top: 10px;
   margin-right: 20px;
   margin-left: 50px;
   transition: 300ms;

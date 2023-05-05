@@ -1,9 +1,4 @@
 <div class="visible-main-section">
-  <div class="pagetitle detail-page">
-    <nav>
-      <ol class="breadcrumb"></ol>
-    </nav>
-  </div>
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
@@ -93,11 +88,13 @@
       </div>
       <p-dialog
         [(visible)]="saveTemplateDialogOpen"
-        [appendTo]="'body'"
+        [contentStyle]="{ overflow: 'visible' }"
         [modal]="true"
-        [style]="{ width: '30vw' }"
-        class="saveTemplateModal"
+        [style]="{ width: '615px', height: '230px' }"
+        [class]="{ saveTemplateModal: true }"
         (onHide)="closeDialog()"
+        [draggable]="false"
+        [resizable]="false"
       >
         <ng-template
           pTemplate="header"
@@ -105,17 +102,32 @@
         >
           Save Template
         </ng-template>
-        <p>Name</p>
-        <input type="text" class="form-control" [(ngModel)]="criteriaName" />
-        <ng-template pTemplate="footer" style="text-align: center">
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="Save"
-            (click)="saveCriteriaAsTemplate()"
-            class="p-button-raised"
-          ></button>
+        <p class="mb-2" style="font-weight: 500">Name</p>
+        <input
+          class="w-100"
+          type="text"
+          pInputText
+          [(ngModel)]="criteriaName"
+        />
+        <div
+          *ngIf="savingCriteriaTemplateError"
+          class="saving-criteria-template-error"
+        >
+          <i class="red-dot pi pi-circle-fill"></i>
+          {{ savingCriteriaTemplateError }}
+        </div>
+        <ng-template pTemplate="footer">
+          <div style="text-align: center">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Save"
+              (click)="saveCriteriaAsTemplate()"
+              class="p-button-raised"
+              [style]="{ width: '92px' }"
+            ></button>
+          </div>
         </ng-template>
       </p-dialog>
 
@@ -321,7 +333,10 @@
                       [frozen]="col['isSelect']"
                       style="right: 121px !important"
                     >
-                      {{ col.header }}
+                      {{ col.header.split("*")[0] }}
+                      <span *ngIf="isMandatoryCol(col.header)" class="red-star"
+                        >*</span
+                      >
                     </th>
                   </ng-container>
                 </tr>
