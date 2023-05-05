@@ -7,6 +7,10 @@
 // @import url("assets/styles/theme-blue.css");
 // @import url("assets/styles/theme-amber.css");
 
+:root {
+  --maskbg: rgba(0, 0, 0, 0.89);
+}
+
 body {
   background-color: var(--surface-ground);
   font-family: "IBM Plex Sans", sans-serif !important;
@@ -380,7 +384,7 @@ p-paginator .p-paginator-bottom {
 
 /* Overlays */
 .p-dialog-mask.p-component-overlay {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.95);
 }
 .p-treetable-loading-overlay.p-component-overlay,
 .p-datatable-loading-overlay.p-component-overlay {

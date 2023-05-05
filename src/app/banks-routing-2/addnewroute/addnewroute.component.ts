@@ -116,6 +116,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
   independantCriteriaArr: any = [];
 
+  savingCriteriaTemplateError = null;
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -1196,6 +1198,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
   saveCriteriaTemplateLink() {
     if (this.criteriaText.length) {
+      this.coreService.setHeaderStickyStyle(false);
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.saveTemplateDialogOpen = true;
     } else {
       this.ngxToaster.warning("Please add criteria.");
@@ -1573,74 +1577,80 @@ export class AddnewrouteComponent2 implements OnInit {
 
   saveCriteriaAsTemplate() {
     if (this.criteriaName == "") {
-      this.ngxToaster.warning("Name of Criteria Template cannot be Empty");
-      return;
-    }
-
-    let formattedCriteriaArr = this.createFormattedCriteria();
-    console.log("::: finalCriteriaCodeText", this.finalCriteriaCodeText);
-    let finalCriteriaMapObj: any = this.createFormattedCriteriaMap();
-
-    console.log(finalCriteriaMapObj);
-
-    let criteriaMap = finalCriteriaMapObj.criteriaMap;
-    let slabText = null;
-    let lcyOpr = null;
-    let NEWcriteriaMap = null;
-    this.lcySlab = null;
-
-    if (finalCriteriaMapObj.slabs) {
-      let slabs = finalCriteriaMapObj.slabs;
-      let slabArr = [];
-      slabs.forEach((slab) => {
-        let rngArr = [];
-        Object.entries(slab).forEach((rng) => {
-          rngArr.push(rng.join(":"));
-        });
-        slabArr.push(rngArr.join("::"));
-      });
-      slabText = slabArr.join("#");
-      NEWcriteriaMap = criteriaMap + "&&&&" + slabText;
-      this.lcySlab = this.cmCriteriaSlabType[0];
-    } else if (finalCriteriaMapObj.lcyOpr) {
-      lcyOpr = finalCriteriaMapObj.lcyOpr;
-      NEWcriteriaMap = criteriaMap + "&&&&" + lcyOpr;
+      // this.ngxToaster.warning("Name of Criteria Template cannot be Empty");
+      this.savingCriteriaTemplateError =
+        "Name of Criteria Template cannot be Empty";
+      // return;
     } else {
-      NEWcriteriaMap = criteriaMap;
-    }
+      this.savingCriteriaTemplateError = null;
+      let formattedCriteriaArr = this.createFormattedCriteria();
+      console.log("::: finalCriteriaCodeText", this.finalCriteriaCodeText);
+      let finalCriteriaMapObj: any = this.createFormattedCriteriaMap();
 
-    const formData = new FormData();
-    formData.append("userId", this.userId);
-    formData.append("criteriaName", this.criteriaName);
-    formData.append("criteriaMap", NEWcriteriaMap);
+      console.log(finalCriteriaMapObj);
 
-    console.log("userId", this.userId);
-    console.log("criteriaName", this.criteriaName);
-    console.log("criteriaMap", NEWcriteriaMap);
+      let criteriaMap = finalCriteriaMapObj.criteriaMap;
+      let slabText = null;
+      let lcyOpr = null;
+      let NEWcriteriaMap = null;
+      this.lcySlab = null;
 
-    formData.append("lcySlab", this.lcySlab);
-
-    this.coreService.displayLoadingScreen();
-    this.bankRoutingService.currentCriteriaSaveAsTemplate(formData).subscribe(
-      (response) => {
-        this.coreService.removeLoadingScreen();
-        if (response.msg == "Criteria Template already exists.") {
-          this.saveTemplateDialogOpen = false;
-          this.criteriaName = "";
-          this.ngxToaster.warning(response.msg);
-        } else {
-          this.selectedTemplate = this.criteriaName;
-          this.ngxToaster.success(response.msg);
-          this.saveTemplateDialogOpen = false;
-          this.criteriaName = "";
-          this.getAllTemplates();
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        console.log(":: Error in saving criteria template", err);
+      if (finalCriteriaMapObj.slabs) {
+        let slabs = finalCriteriaMapObj.slabs;
+        let slabArr = [];
+        slabs.forEach((slab) => {
+          let rngArr = [];
+          Object.entries(slab).forEach((rng) => {
+            rngArr.push(rng.join(":"));
+          });
+          slabArr.push(rngArr.join("::"));
+        });
+        slabText = slabArr.join("#");
+        NEWcriteriaMap = criteriaMap + "&&&&" + slabText;
+        this.lcySlab = this.cmCriteriaSlabType[0];
+      } else if (finalCriteriaMapObj.lcyOpr) {
+        lcyOpr = finalCriteriaMapObj.lcyOpr;
+        NEWcriteriaMap = criteriaMap + "&&&&" + lcyOpr;
+      } else {
+        NEWcriteriaMap = criteriaMap;
       }
-    );
+
+      const formData = new FormData();
+      formData.append("userId", this.userId);
+      formData.append("criteriaName", this.criteriaName);
+      formData.append("criteriaMap", NEWcriteriaMap);
+
+      console.log("userId", this.userId);
+      console.log("criteriaName", this.criteriaName);
+      console.log("criteriaMap", NEWcriteriaMap);
+
+      formData.append("lcySlab", this.lcySlab);
+
+      this.coreService.displayLoadingScreen();
+      this.bankRoutingService.currentCriteriaSaveAsTemplate(formData).subscribe(
+        (response) => {
+          this.coreService.removeLoadingScreen();
+          if (response.msg == "Criteria Template already exists.") {
+            // this.saveTemplateDialogOpen = false;
+            // this.criteriaName = "";
+            // this.ngxToaster.warning(response.msg);
+            this.savingCriteriaTemplateError =
+              "Criteria Template already exists.";
+          } else {
+            this.savingCriteriaTemplateError = null;
+            this.selectedTemplate = this.criteriaName;
+            this.ngxToaster.success(response.msg);
+            this.saveTemplateDialogOpen = false;
+            this.criteriaName = "";
+            this.getAllTemplates();
+          }
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          console.log(":: Error in saving criteria template", err);
+        }
+      );
+    }
   }
 
   selectCriteriaTemplate(item: any) {
@@ -1818,8 +1828,21 @@ export class AddnewrouteComponent2 implements OnInit {
     }
   }
 
+  isMandatoryCol(heading: any) {
+    return heading.includes("*") ? true : false;
+  }
+
   closeDialog() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
     this.criteriaName = "";
+    this.savingCriteriaTemplateError = null;
   }
 
   reset() {

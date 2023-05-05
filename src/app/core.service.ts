@@ -61,4 +61,13 @@ export class CoreService {
   setBreadCrumbMenu(val: any) {
     this.$breadCrumbMenu.next(val);
   }
+
+  $headerSticky = new BehaviorSubject<boolean>(false);
+  $sidebarBtnFixed = new BehaviorSubject<boolean>(true);
+  setHeaderStickyStyle(val: any) {
+    this.$headerSticky.next(val);
+  }
+  setSidebarBtnFixedStyle(val: any) {
+    this.$sidebarBtnFixed.next(val);
+  }
 }

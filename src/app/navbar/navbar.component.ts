@@ -40,53 +40,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   isviewPaymentMode: boolean = false;
   menuItems: MenuItem[] = [];
   $MenuItems: MenuItem[] = [];
-  menuItemTree = {
-    // Dashboard: [],
-    // "Customer Profile": [],
-    // "Rate Setup": [
-    //   "Rate & Margin Setup",
-    //   "Rate & Margin Settings",
-    //   "Rate Heirarchy Settings",
-    // ],
-    // Forex: [],
-    // "Beneficiary Profile": [],
-    // Remmitance: [
-    //   "Transaction ",
-    //   "Payment For Customer",
-    //   "Amendment",
-    //   "Cancellation",
-    //   "Payment to Customer",
-    // ],
-    // "Customer Service": [
-    //   "Transaction Enquiry ( Receipt Reprint)",
-    //   "Complaints",
-    //   "Rate View",
-    // ],
-    // "Approval & Authorization": [],
-    // Settings: [
-    //   "Tax",
-    //   "Charge",
-    //   "Payment Mode",
-    //   "Bank Routing",
-    //   "Discount",
-    //   "Block Transaction",
-    //   "Purpose",
-    //   "Document",
-    //   "Source",
-    //   "Form Rules",
-    // ],
-    // "Application Settings": [
-    //   "Custom Fields",
-    //   "Group Settings",
-    //   "Search Settings",
-    //   "Authorization Page Setting",
-    // ],
-    // "User Roles Management": ["User Roles & Permissions"],
-    // Reports: [],
-    // Accounts: [],
-    // Incoming: [],
-    // "Alerts & Notification": [],
-  };
+  menuItemTree = {};
 
   userActions = [{ name: "Profile" }, { name: "Logout" }];
   get profileOptions() {
@@ -104,13 +58,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   selectedTheme = { name: "Blue", color: "#4759e4" };
 
   toggleState = "left";
- languages = [
+  languages = [
     { label: "English", value: "en" },
     { label: "Arabic", value: "ar" },
     { label: "Germany ", value: "de" },
   ];
   selectedLanguage: string;
   currRoute: any;
+
+  isStickyHeader = false;
 
   constructor(
     public translate: TranslateService,
@@ -135,7 +91,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
   }
 
-
   ngOnInit(): void {
     this.selectedLanguage = this.translate.currentLang;
     this.selectTheme({ name: "Blue", color: "#4759e4" });
@@ -146,6 +101,23 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
     this.coreService.userActionsObs.subscribe((opt) => {
       this.userActions = opt;
+    });
+
+    this.coreService.$headerSticky.subscribe((isStickyHeader) => {
+      let headerElm = document.getElementById("header");
+      if (isStickyHeader && this.isStickyHeader) {
+        headerElm.classList.add("sticky");
+      } else {
+        headerElm.classList.remove("sticky");
+      }
+    });
+    this.coreService.$sidebarBtnFixed.subscribe((isFixedSidebarBtn) => {
+      let sidebarBtnElm = document.getElementById("toggleSidebarBtn");
+      if (isFixedSidebarBtn) {
+        sidebarBtnElm.classList.remove("notFixed");
+      } else {
+        sidebarBtnElm.classList.add("notFixed");
+      }
     });
 
     this.authService.userDataSub.pipe(take(1)).subscribe((user) => {
@@ -265,6 +237,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     ) {
       bodyTag.classList.add("minified-sidebar");
       this.toggleState = "right";
+    }
+  }
+
+  @HostListener("window:scroll", ["$event"])
+  onWindowScroll(e) {
+    if (window.pageYOffset > 15) {
+      this.isStickyHeader = true;
+      let element = document.getElementById("header");
+      element.classList.add("sticky");
+    } else {
+      this.isStickyHeader = false;
+      let element = document.getElementById("header");
+      element.classList.remove("sticky");
     }
   }
 

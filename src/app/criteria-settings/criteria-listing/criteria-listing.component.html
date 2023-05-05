@@ -161,6 +161,7 @@
     [(visible)]="clickforview"
     [modal]="true"
     [style]="{ width: '70vw', left: '50px' }"
+    (onHide)="closeDialog()"
   >
     <ng-template pTemplate="header">
       <div class="application-header">
