@@ -80,7 +80,7 @@
         </tr>
         <tr class="search-row">
           <th *ngFor="let col of cols">
-            <span style="width: 91px" class="p-input-icon-left">
+            <span style="width: 91px" class="p-input-icon-left" *ngIf="col.field!='status'">
               <i class="pi pi-search"></i>
               <input
                 type="text"
