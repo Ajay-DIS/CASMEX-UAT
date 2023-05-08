@@ -16,7 +16,6 @@ export class TaxListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "15%" },
-    { field: "taxType", header: "Tax Type", width: "15%" },
     { field: "taxDescription", header: "Tax Description", width: "30%" },
     { field: "criteria", header: "Criteria", width: "30%" },
     { field: "status", header: "Status", width: "10%" },
