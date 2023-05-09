@@ -215,7 +215,7 @@ export class AddnewrouteComponent2 implements OnInit {
       .add(() => {
         setTimeout(() => {
           this.coreService.removeLoadingScreen();
-        }, 1000);
+        }, 250);
       });
   }
 
@@ -236,6 +236,7 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
+              console.log(data["criteriaType"]);
               if (data["criteriaType"] == "Slab") {
                 this.cmCriteriaSlabType.push(data["fieldName"]);
               }
@@ -243,24 +244,18 @@ export class AddnewrouteComponent2 implements OnInit {
           );
           console.log(" Slabs fields", this.cmCriteriaSlabType);
 
-          this.cmCriteriaDataDetails =
-            this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails;
-          console.log(
-            "this.criteriaDataDetailsJson.data",
-            this.criteriaDataDetailsJson.data
-          );
+          this.cmCriteriaDataDetails = [
+            ...this.criteriaDataDetailsJson.data.listCriteria
+              .cmCriteriaDataDetails,
+          ];
+          console.log("this.cmCriteriaDataDetails", this.cmCriteriaDataDetails);
 
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
             .split(", ");
-          console.log(" this.cmCriteriaMandatory", this.cmCriteriaMandatory);
 
           this.cmCriteriaDependency =
             this.criteriaDataDetailsJson.data.dependance;
-          console.log(
-            ":::this.cmCriteriaDependency",
-            this.cmCriteriaDependency
-          );
 
           let crArr = [];
           this.criteriaMapDdlOptions = crArr;
@@ -352,28 +347,49 @@ export class AddnewrouteComponent2 implements OnInit {
                       dependencyListC = dependenceObjC[deps];
                     }
 
-                    let fieldName = deps;
-                    let displayName = this.cmCriteriaDataDetails.filter(
-                      (data) => {
-                        return data["fieldName"] == deps;
-                      }
-                    )[0]["displayName"];
+                    if (
+                      this.cmCriteriaDataDetails.filter(
+                        (data: { displayName: string; fieldName: string }) => {
+                          return data["fieldName"] == deps;
+                        }
+                      ).length
+                    ) {
+                      let fieldName = deps;
+                      // let displayName = this.cmCriteriaDataDetails.filter(
+                      //   (data: { displayName: string; fieldName: string }) => {
+                      //     return data["fieldName"] == deps;
+                      //   }
+                      // )[0]["displayName"];
+                      let displayName = null;
 
-                    console.log("::::fieldName", fieldName);
-                    console.log("::::displayName", displayName);
-                    let crElmChild = {
-                      label: fieldName,
-                      data: displayName,
-                      isMandatory: isMandatoryC,
-                      isDependent: isDependentC,
-                      dependencyList: dependencyListC,
-                      children: null,
-                    };
-                    childArr.push(crElmChild);
+                      displayName = Object.keys(criteriaMasterData).filter(
+                        (data) => {
+                          return data == deps;
+                        }
+                      )[0];
+                      if (!displayName) {
+                        if (this.cmCriteriaSlabType.includes(deps)) {
+                          displayName = this.cmCriteriaSlabType[0];
+                        }
+                      }
+
+                      let crElmChild = {
+                        label: fieldName,
+                        data: displayName,
+                        isMandatory: isMandatoryC,
+                        isDependent: isDependentC,
+                        dependencyList: dependencyListC,
+                        children: null,
+                      };
+                      childArr.push(crElmChild);
+                    }
                   });
 
-                  this.findNestedObj(crArr, "label", key)["children"] =
-                    childArr;
+                  console.log(":::::", childArr);
+                  if (childArr.length) {
+                    this.findNestedObj(crArr, "label", key)["children"] =
+                      childArr;
+                  }
                 }
               }
             }
@@ -539,6 +555,9 @@ export class AddnewrouteComponent2 implements OnInit {
               element
             );
             this.validCriteria = true;
+            return true;
+          }
+          else {
             return true;
           }
         });
@@ -1386,9 +1405,16 @@ export class AddnewrouteComponent2 implements OnInit {
       }
 
       let decodeCriteriaText;
-      let displayName = this.cmCriteriaDataDetails.filter((data) => {
-        return data["fieldName"] == formatCrt.split("  ")[0];
-      })[0]["displayName"];
+      let displayName = null;
+
+      displayName = Object.keys(this.criteriaMasterData).filter((data) => {
+        return data == formatCrt.split("  ")[0];
+      })[0];
+      if (!displayName) {
+        if (this.cmCriteriaSlabType.includes(formatCrt.split("  ")[0])) {
+          displayName = this.cmCriteriaSlabType[0];
+        }
+      }
       if (
         Object.keys(this.criteriaMasterData).includes(formatCrt.split("  ")[0])
       ) {
@@ -1518,7 +1544,7 @@ export class AddnewrouteComponent2 implements OnInit {
       .add(() => {
         setTimeout(() => {
           this.coreService.removeLoadingScreen();
-        }, 1000);
+        }, 250);
       });
   }
 
@@ -1837,10 +1863,10 @@ export class AddnewrouteComponent2 implements OnInit {
     setTimeout(() => {
       this.coreService.setHeaderStickyStyle(true);
       this.coreService.setSidebarBtnFixedStyle(true);
-    }, 500);
+    }, 250);
     setTimeout(() => {
       this.coreService.removeLoadingScreen();
-    }, 1000);
+    }, 250);
     this.criteriaName = "";
     this.savingCriteriaTemplateError = null;
   }
