@@ -284,7 +284,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   executeBtnClick() {
     this.selectedFields.forEach((item) => {
       console.log(item);
-      this.criteriaTypeOp = item["criteriaType"];
+      // this.criteriaTypeOp = item["criteriaType"];
       item["orderID"] = "";
       if (!item["operationOption"]) {
         item["operationOption"] = item["operations"].split(",").map((opt) => {
@@ -401,7 +401,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         });
       }console.log("data",criteria)
       let criteriaDetails = {
-        criteriaType: this.criteriaTypeOp,
+        criteriaType: criteria["criteriaType"],
         fieldName: criteria["fieldName"],
         displayName: criteria["displayName"],
         fieldType: criteria["fieldType"],
@@ -563,7 +563,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
             );
             console.log("data   vvvv", data);
-            this.criteriaTypeOp = data["criteriaType"];
+            // this.criteriaTypeOp = data["criteriaType"];
             if (data && data["dependency"]) {
               cloneD["dependencyOptions"] = /[,]/.test(data["dependency"])
                 ? data["dependency"].split(",").map((x) => {
@@ -599,6 +599,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       )
       .subscribe((data) => {
         this.criteriaSettingtable = data["cmCriteriaDataDetails"];
+        console.log(this.criteriaSettingtable);
         this.criteriaSettingtable.forEach((item, i) => {
           item["operations"] = this.criteriaSettingtable[i]["operations"];
           item["dependency"] = this.criteriaSettingtable[i]["dependency"];

@@ -37,7 +37,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   @ViewChild("cd") cd: ConfirmDialog;
 
   blocked: boolean;
-
+  
   ngOnInit() {
     this.authService.autoLogin();
     this.coreService.$loadingScreen.subscribe((isLoading) => {
