@@ -129,7 +129,7 @@ export class AddnewrouteComponent2 implements OnInit {
       .add(() => {
         setTimeout(() => {
           this.coreService.removeLoadingScreen();
-        }, 1000);
+        }, 250);
       });
   }
 
@@ -435,7 +435,7 @@ export class AddnewrouteComponent2 implements OnInit {
       .add(() => {
         setTimeout(() => {
           this.coreService.removeLoadingScreen();
-        }, 1000);
+        }, 250);
       });
   }
 
