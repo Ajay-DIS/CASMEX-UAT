@@ -1,0 +1,157 @@
+.clickcriteria {
+    display: flex;
+    float: right;
+  }
+  .criteria-main-section {
+    margin-top: 5px;
+    height: 240px;
+  }
+  .details-page-card-content {
+    border: 0.5px solid var(--surface-ground);
+    padding: 20px 0;
+    margin: 0 15px;
+    background-color: var(--surface-card);
+    border-radius: 10px;
+  }
+  
+  .criteria-bar {
+    display: flex;
+    padding: 0 1rem;
+    margin-top: 5px;
+  }
+  
+  .setCriteria {
+    width: 55%;
+  }
+  .setCriteria img{
+    cursor: pointer;
+  }
+  
+  .openCriteria {
+    width: 45%;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    font-size: 14px;
+  }
+  
+  .openCriteria a {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--primary-color);
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .dropdowns-select-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+  
+  .criteria-span {
+    color: black;
+    background-color: var(--surface-ground);
+    padding: 7px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .left-dropdowns {
+    width: 80%;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .right-select {
+    width: 20%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .saveTemplateModal ::ng-deep .p-dialog .p-dialog-header {
+    border-top-right-radius: 15px !important;
+    border-top-left-radius: 15px !important;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--primary-color);
+    padding-bottom: 0.8rem;
+  }
+  
+  .saveTemplateModal ::ng-deep .p-dialog .p-dialog-content {
+    padding-bottom: 1.5rem;
+  }
+  .saveTemplateModal
+    ::ng-deep
+    .p-dialog
+    .p-dialog-content
+    .saving-criteria-template-error {
+    height: 35px;
+    width: 100%;
+    border: 1px solid rgb(247 68 64);
+    background-color: rgb(255 212 211);
+    margin-top: 15px;
+    border-radius: 5px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+  }
+  .saveTemplateModal
+    ::ng-deep
+    .p-dialog
+    .p-dialog-content
+    .saving-criteria-template-error
+    .red-dot {
+    font-size: 5px;
+    margin-right: 5px;
+    color: rgb(175 22 18);
+  }
+  
+  .saveTemplateModal ::ng-deep .p-dialog .p-dialog-footer {
+    border-bottom-right-radius: 15px !important;
+    border-bottom-left-radius: 15px !important;
+  }
+  
+  .applycriteriabtn {
+    background: #f6f6f8;
+    position: absolute;
+    height: 50px;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    margin-bottom: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .applycriteriabtn button {
+    position: absolute;
+    bottom: 15%;
+    left: 42%;
+  }
+  
+  .form-select {
+    height: 35px;
+    font-size: 12px;
+    border-color: var(--surface-ground);
+    padding: 0.375rem 1.7rem 0.375rem 0.75rem;
+    font-weight: 500;
+  }
+  
+  a,
+  a:focus,
+  a:hover {
+    color: var(--primary-color);
+  }
+  
+  .value-input ::ng-deep input {
+    width: 160px;
+    height: 35px;
+    font-size: 0.8rem;
+  }
+  
+  

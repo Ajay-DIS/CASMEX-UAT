@@ -1,0 +1,222 @@
+<div
+  class="details-page-card-content criteria-main-section mt-2"
+  style="position: relative"
+>
+  <div class="criteria-bar">
+    <p class="setCriteria detail-page-section-heading">
+      Set Criteria
+      <img
+        height="15px"
+        src="../assets/Icon-info.svg"
+        alt=""
+        pTooltip="Based on the selected criteria banks will be routed."
+      />
+    </p>
+    <div class="openCriteria">
+      <p class="clickcriteria">
+        <a (click)="saveCriteriaTemplateLink()"
+          >Click to save this Criteria as a template</a
+        >
+      </p>
+    </div>
+  </div>
+  <p-dialog
+    [(visible)]="saveTemplateDialogOpen"
+    [contentStyle]="{ overflow: 'visible' }"
+    [modal]="true"
+    [style]="{ width: '615px', height: '230px' }"
+    [class]="{ saveTemplateModal: true }"
+    (onHide)="closeDialog()"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <ng-template
+      pTemplate="header"
+      style="border-top-right-radius: 10px !important"
+    >
+      Save Template
+    </ng-template>
+    <p class="mb-2" style="font-weight: 500">Name</p>
+    <input class="w-100" type="text" pInputText [(ngModel)]="criteriaName" />
+    <div
+      *ngIf="savingCriteriaTemplateError"
+      class="saving-criteria-template-error"
+    >
+      <i class="red-dot pi pi-circle-fill"></i>
+      {{ savingCriteriaTemplateError }}
+    </div>
+    <ng-template pTemplate="footer">
+      <div style="text-align: center">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Save"
+          (click)="savingCriteriaTemplate()"
+          class="p-button-raised"
+          [style]="{ width: '92px' }"
+        ></button>
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <div class="dropdowns-select-container mb-3">
+    <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
+      <!-- <p-dropdown
+            class="mr-3"
+            [options]="criteriaMapDdlOptions"
+            optionLabel="name"
+            placeholder="Select Criteria"
+            (onChange)="onCriteriaSelect($event.value)"
+            formControlName="criteria"
+          >
+            <ng-template let-criteria pTemplate="item">
+              <div [pTooltip]="getTooltip(criteria)">
+                {{ criteria.name }}
+              </div>
+            </ng-template>
+          </p-dropdown> -->
+
+      <p-treeSelect
+        class="mr-3"
+        scrollHeight="300px"
+        [options]="criteriaMapDdlOptions"
+        placeholder="Select Criteria"
+        formControlName="criteria"
+        (onNodeSelect)="onCriteriaSelect($event.node)"
+      >
+        <ng-template let-criteria pTemplate="default">
+          <div
+            [pTooltip]="
+              getTooltip(
+                criteria['isMandatory'],
+                criteria['isDependent'],
+                criteria['dependencyList']
+              )
+            "
+          >
+            {{ criteria.label }}
+          </div>
+        </ng-template>
+      </p-treeSelect>
+
+      <p-dropdown
+        class="mr-3"
+        [options]="criteriaEqualsDdlOptions"
+        optionLabel="name"
+        placeholder="Select Operator"
+        (onChange)="onChange('condition', $event.value)"
+        formControlName="operation"
+      ></p-dropdown>
+
+      <p-dropdown
+        *ngIf="!hideValuesDropdown"
+        class="mr-1"
+        [options]="correspondentDdlOptions"
+        optionLabel="name"
+        placeholder="Value"
+        (onChange)="onChange('val', $event.value)"
+        formControlName="value"
+      ></p-dropdown>
+
+      <p-inputNumber
+        class="value-input"
+        *ngIf="hideValuesDropdown && showValueInput"
+        placeholder="Value"
+        pInputNumber
+        formControlName="value"
+        [useGrouping]="false"
+        [min]="0"
+        maxlength="10"
+        maxValue="9999999999"
+        (onInput)="changeValueInput($event)"
+      >
+      </p-inputNumber>
+
+      <button
+        #addCriteriaBtn
+        pButton
+        pRipple
+        style="position: absolute; left: 645px; font-size: 1.5rem"
+        type="button"
+        label="+"
+        class="p-button-primary"
+        [disabled]="!selectCriteriaForm.valid"
+        (click)="addCriteriaMap()"
+      ></button>
+    </div>
+    <div class="right-select">
+      <p-dropdown
+        #templatesDropdown
+        class="templates-dropdown"
+        [options]="criteriaTemplatesDdlOptions"
+        optionLabel="name"
+        [appendTo]="'body'"
+        [placeholder]="
+          criteriaTemplatesDdlOptions.length
+            ? 'Select Template'
+            : 'No saved templates'
+        "
+        [disabled]="!criteriaTemplatesDdlOptions.length"
+        (onChange)="selectCriteriaTemplate($event.value)"
+        [(ngModel)]="selectedTemplate"
+      ></p-dropdown>
+    </div>
+  </div>
+  <div style="padding: 0 1rem; display: flex; flex-wrap: wrap">
+    <span
+      *ngFor="let criteria of criteriaText; let i = index"
+      (click)="
+        savedSlabs &&
+          criteria == cmCriteriaSlabType[0] + ' = Slab' &&
+          showTransCriteriaModal()
+      "
+      class="criteria-span"
+      [ngStyle]="{
+        backgroundColor: criteria?.includes('!=')
+          ? 'rgb(248 253 235)'
+          : 'var(--surface-ground)'
+      }"
+    >
+      {{ criteria == cmCriteriaSlabType[0] + " = Slab" ? "" : criteria
+      }}<a
+        style="cursor: pointer"
+        *ngIf="criteria == cmCriteriaSlabType[0] + ' = Slab'"
+        >{{ criteria }}</a
+      >
+      <span
+        role="button"
+        style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
+        (click)="ondeletecriteria(i, criteria)"
+      >
+        <svg
+          style="margin-bottom: 4px"
+          xmlns="http://www.w3.org/2000/svg"
+          width="12.6"
+          height="12.6"
+          fill="#dc3545"
+          class="bi bi-x-circle"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+          />
+          <path
+            d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+          />
+        </svg>
+      </span>
+    </span>
+    <div class="applycriteriabtn">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Apply Criteria"
+        class="p-button-raised"
+        [disabled]="!criteriaText?.length"
+        (click)="applyCriteria()"
+      ></button>
+    </div>
+  </div>
+</div>

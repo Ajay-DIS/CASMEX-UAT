@@ -48,8 +48,9 @@ import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/c
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
 import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
-import { TransactionCriteriaModal2 } from "./banks-routing-2/transaction-criteria-modal/transaction-criteria-modal";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
+import { SetCriteriaComponent } from './shared/components/set-criteria/set-criteria.component';
+import { TransactionCriteriaModal } from "./shared/modals/transaction-criteria-modal/transaction-criteria-modal";
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -68,7 +69,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TaxListingComponent,
     BankRoutingComponent2,
     AddnewrouteComponent2,
-    TransactionCriteriaModal2,
+    TransactionCriteriaModal,
+    SetCriteriaComponent,
   ],
   imports: [
     BrowserModule,

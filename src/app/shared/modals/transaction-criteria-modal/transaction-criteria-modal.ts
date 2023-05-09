@@ -1,21 +1,19 @@
-import { Component, OnInit } from "@angular/core";
+import { Component} from "@angular/core";
 import {
   UntypedFormArray,
   UntypedFormBuilder,
-  FormControl,
   UntypedFormGroup,
-  Validators,
 } from "@angular/forms";
 import { ToastrService } from "ngx-toastr";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
-import { BankRoutingService } from "../bank-routing.service";
 import { take } from "rxjs/operators";
+import { SetCriteriaService } from "../../components/set-criteria/set-criteria.service";
 
 @Component({
   templateUrl: "./transaction-criteria-modal.html",
   styleUrls: ["./transaction-criteria-modal.scss"],
 })
-export class TransactionCriteriaModal2 {
+export class TransactionCriteriaModal {
   txnCriteriaRangeForm: UntypedFormGroup = new UntypedFormGroup({
     txnCriteriaRange: new UntypedFormArray([]),
   });
@@ -36,7 +34,7 @@ export class TransactionCriteriaModal2 {
     private ref: DynamicDialogRef,
     private ngxToaster: ToastrService,
     public config: DynamicDialogConfig,
-    private bankRoutingService: BankRoutingService
+    private setCriteriaService: SetCriteriaService
   ) {}
 
   get allTxnCriteriaRange(): UntypedFormArray {
@@ -228,7 +226,7 @@ export class TransactionCriteriaModal2 {
         });
 
         this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
-        this.bankRoutingService.setTransactionCriteriaRange(
+        this.setCriteriaService.setTransactionCriteriaRange(
           this.TransactionCriteriaRange
         );
       }

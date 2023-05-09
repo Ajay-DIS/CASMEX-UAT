@@ -23,7 +23,7 @@
 .setCriteria {
   width: 55%;
 }
-.setCriteria img{
+.setCriteria img {
   cursor: pointer;
 }
 
@@ -172,6 +172,11 @@ a:hover {
 
 .appliedCriteriaDataTable ::ng-deep td.p-frozen-column {
   background: rgb(248 248 248);
+}
+
+.appliedCriteriaSelect {
+  display: inline-block;
+  width: 115px;
 }
 
 .appliedCriteriaSelect ::ng-deep p-dropdown {
