@@ -183,6 +183,10 @@ export class TaxListingComponent implements OnInit {
     ];
   }
 
+  addNewTaxPage() {
+    this.router.navigate(["navbar", "tax-settings", "add-new-tax"]);
+  }
+
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];
   }

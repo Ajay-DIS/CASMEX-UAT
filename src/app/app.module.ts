@@ -51,6 +51,7 @@ import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routi
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
 import { SetCriteriaComponent } from './shared/components/set-criteria/set-criteria.component';
 import { TransactionCriteriaModal } from "./shared/modals/transaction-criteria-modal/transaction-criteria-modal";
+import { AddNewTaxComponent } from './tax-settings/add-new-tax/add-new-tax.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -71,6 +72,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddnewrouteComponent2,
     TransactionCriteriaModal,
     SetCriteriaComponent,
+    AddNewTaxComponent,
   ],
   imports: [
     BrowserModule,
