@@ -1,2 +1,79 @@
  // suresh Work start -->
+ .clickcriteria {
+    display: flex;
+    float: right;
+  }
+  .criteria-main-section {
+    margin-top: 5px;
+    height: 240px;
+  }
+  .details-page-card {
+    margin-left: 10px;
+  }
+  .details-page-card-content {
+    border: 0.5px solid var(--surface-ground);
+    padding: 20px 0;
+    margin: 0 15px;
+    background-color: var(--surface-card);
+    border-radius: 10px;
+  }
+  
+.criteria-bar {
+  display: flex;
+  padding: 0 1rem;
+  margin-top: 5px;
+}
+  .appliedCriteriaDataTable ::ng-deep .p-dropdown .p-dropdown-label,
+  .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 12px;
+  }
+  
+  .appliedCriteriaDataTable ::ng-deep .p-dropdown .p-dropdown-label,
+  .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 12px;
+    color: #000;
+  }
+  
+  .appliedCriteriaDataTable ::ng-deep td.p-frozen-column {
+    background: rgb(248 248 248);
+  }
+  
+  .appliedCriteriaSelect {
+    display: inline-block;
+    width: 115px;
+  }
+  
+  .appliedCriteriaSelect ::ng-deep p-dropdown {
+    max-width: 100%;
+  }
+  .appliedCriteriaSelect ::ng-deep .p-dropdown {
+    width: 100%;
+    max-width: 100%;
+    background:#f4f6fa;
+  }
+  
+  .appliedCriteriaDataTable
+    ::ng-deep
+    .p-datatable-wrapper::-webkit-scrollbar-track {
+    background-color: rgb(248 248 248) !important;
+  }
+  
+  .appliedCriteriaDataTable ::ng-deep .red-star {
+    font-size: 18px;
+    color: red;
+    font-weight: 500;
+    position: absolute;
+    top: 8px;
+  }
+  .operation-btns {
+    background-color: rgb(85 199 138);
+    color: white !important;
+    border: 1px solid rgb(85 199 138) !important;
+    height: 27px;
+    width: 30px;
+  }
+  .operation-btns::ng-deep span {
+    font-size: 13px;
+  }
+  
  // suresh Work end -->
