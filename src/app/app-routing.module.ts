@@ -122,7 +122,7 @@ const routes: Routes = [
         component: TaxListingComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Settings", routerLink: "tax-settings" },
+          { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -139,7 +139,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "tax-settings/edit-new-tax",
+        path: "tax-settings/add-new-tax/:id/edit",
         component: AddNewTaxComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
