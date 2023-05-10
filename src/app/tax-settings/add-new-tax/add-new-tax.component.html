@@ -1,2 +1,113 @@
 <!-- // suresh Work start -->
+<div class="details-page-card mt-2" *ngIf="appliedTaxCriteriaData.length">
+    <div class="details-page-card-content mt-1">
+      <div class="criteria-bar">
+        <p class="setCriteria detail-page-section-heading">
+          Applicable Taxes
+          <!-- <img
+            height="15px"
+            src="../assets/Icon-info.svg"
+            alt=""
+            pTooltip="On selected criteria routes below routes will be applied."
+          /> -->
+        </p>
+      </div>
+      <div class="mt-1 addnewroute-table">
+        <!-- <div class="ptable">
+          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
+            {{ "noDataMsg" }}
+          </p-card> -->
+          <div class="appliedCriteriaDataTable">
+            <p-table
+              #dt
+              [columns]="appliedTaxCriteriaDataCols"
+              [value]="appliedTaxCriteriaData"
+              [rows]="10"
+              columnResizeMode="expand"
+              [rowHover]="true"
+              [scrollable]="true"
+            >
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <ng-container *ngFor="let col of columns; let c = index">
+                    <th
+                      [pSortableColumn]="col?.field"
+                      [style.maxWidth]="col?.maxWidth"
+                      [style.minWidth]="col?.minWidth"
+                      style="right: 121px !important"
+                    >
+                      {{ col.header.split("*")[0] }}
+                      <span *ngIf="isMandatoryCol(col.header)" class="red-star"
+                        >*</span
+                      >
+                    </th>
+                  </ng-container>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-rowData
+                let-columns="columns"
+                let-rowIndex="rowIndex"
+              >
+                <tr>
+                  <ng-container *ngFor="let col of columns; let i = index">
+                    <td>
+                      <div
+                        *ngIf="col['isString']"
+                        style="display: inline-block"
+                      >
+                        {{ rowData[col["field"]] }}
+                      </div>
+                      <div
+                        *ngIf="col['isSelect']"
+                        class="appliedCriteriaSelect"
+                      >
+                        <p-dropdown
+                          [options]="rowData[col['field']]"
+                          optionLabel="codeName"
+                          appendTo="body"
+                          [placeholder]="
+                            rowData[col['field'] + 'Option']
+                              ? rowData[col['field'] + 'Option']
+                              : 'Select'
+                          "
+                          (onChange)="
+                            selectedColumn(col['field'], $event.value, rowIndex)
+                          "
+                        ></p-dropdown>
+                      </div>
+                      <div *ngIf="col['isInput']" class="appliedtaxInput">
+                      <input type="text" pInputText />
+                      </div>
+                      <div *ngIf="col['isButton']" class="appliedtaxInput">
+                        <button
+                        pButton
+                        type="button"
+                        icon="pi pi-clone"
+                        class="operation-btns mr-2"
+                      ></button>
+                        <button
+                        pButton
+                        type="button"
+                        icon="pi pi-trash"
+                        class="operation-btns mr-2"
+                      ></button>
+                      </div>
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <!-- <tr>
+                  <td [attr.colspan]="cols.length">No Data found.</td>
+                </tr> -->
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  
 <!-- // suresh Work end -->
