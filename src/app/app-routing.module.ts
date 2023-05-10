@@ -11,6 +11,7 @@ import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-se
 import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
+import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -123,6 +124,28 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "tax-settings" },
           { label: "Tax Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "tax-settings/add-new-tax",
+        component: AddNewTaxComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/tax-settings" },
+          { label: "Tax Settings", routerLink: "tax-settings" },
+          { label: "Add New Tax", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "tax-settings/edit-new-tax",
+        component: AddNewTaxComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/tax-settings" },
+          { label: "Tax Settings", routerLink: "tax-settings" },
+          { label: "Edit New Tax", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
