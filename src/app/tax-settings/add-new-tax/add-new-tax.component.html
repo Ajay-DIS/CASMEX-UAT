@@ -63,7 +63,7 @@
         <input type="text" pInputText [(ngModel)]="taxCode" disabled />
       </div>
       <div class="taxDesc">
-        <p>Tax Code</p>
+        <p>Tax Description</p>
         <input type="text" pInputText [(ngModel)]="taxDescription" />
       </div>
     </div>
@@ -95,24 +95,24 @@
     ></app-set-criteria>
   </div>
   <!-- // suresh Work start -->
-<div class="details-page-card mt-2" *ngIf="appliedTaxCriteriaData.length">
+  <div class="details-page-card mt-2" *ngIf="appliedTaxCriteriaData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
           Applicable Taxes
-          <!-- <img
+          <img
             height="15px"
             src="../assets/Icon-info.svg"
             alt=""
-            pTooltip="On selected criteria routes below routes will be applied."
-          /> -->
+            pTooltip="On selected criteria taxes below taxes will be applied."
+          />
         </p>
       </div>
       <div class="mt-1 addnewroute-table">
-        <!-- <div class="ptable">
-          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
+        <div class="ptable">
+          <p-card class="p-col-12" *ngIf="!appliedTaxCriteriaData">
             {{ "noDataMsg" }}
-          </p-card> -->
+          </p-card>
           <div class="appliedCriteriaDataTable">
             <p-table
               #dt
@@ -174,21 +174,21 @@
                         ></p-dropdown>
                       </div>
                       <div *ngIf="col['isInput']" class="appliedtaxInput">
-                      <input type="text" pInputText />
+                        <input type="text" pInputText />
                       </div>
                       <div *ngIf="col['isButton']" class="appliedtaxInput">
                         <button
-                        pButton
-                        type="button"
-                        icon="pi pi-clone"
-                        class="operation-btns mr-2"
-                      ></button>
+                          pButton
+                          type="button"
+                          icon="pi pi-clone"
+                          class="operation-btns mr-2"
+                        ></button>
                         <button
-                        pButton
-                        type="button"
-                        icon="pi pi-trash"
-                        class="operation-btns mr-2"
-                      ></button>
+                          pButton
+                          type="button"
+                          icon="pi pi-trash"
+                          class="operation-btns mr-2"
+                        ></button>
                       </div>
                     </td>
                   </ng-container>
@@ -196,14 +196,15 @@
               </ng-template>
 
               <ng-template pTemplate="emptymessage">
-                <!-- <tr>
+                <tr>
                   <td [attr.colspan]="cols.length">No Data found.</td>
-                </tr> -->
+                </tr>
               </ng-template>
             </p-table>
           </div>
         </div>
       </div>
     </div>
+  </div>
   <!-- // suresh Work end -->
 </div>

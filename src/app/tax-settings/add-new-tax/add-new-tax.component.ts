@@ -10,7 +10,6 @@ import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { TaxSettingsService } from "../tax-settings.service";
 
-
 @Component({
   selector: "app-add-new-tax",
   templateUrl: "./add-new-tax.component.html",
@@ -50,127 +49,127 @@ export class AddNewTaxComponent implements OnInit {
 
   // suresh Work start -->
   appliedTaxCriteriaDataCols = [];
-  appliedTaxCriteriaData=[];
-  
-  appliedTaxCriteriaDatajson =
-    {
-      "data": [
-        {
-          "country": "India",
-          "routeCode": "R0009",
-          "groupID": "G0004",
-          "state": "Andhra",
-          "to": "100",
-          "from": "1",
-          "Tax": "25%",
-          "lcyAmountFrom": "1",
-          "lcyAmountTo": "3",
-          "taxType": [
-            {
-              "id": 1,
-              "code": "GST",
-              "routeFrom": 1,
-              "codeName": "GST",
-              "status": "A"
-            },
-            {
-              "id": 2,
-              "code": "VAT",
-              "routeFrom": 1,
-              "codeName": "VAT",
-              "status": "A"
-            },
-            {
-              "id": 3,
-              "code": "SGST",
-              "routeFrom": 1,
-              "codeName": "SGST",
-              "status": "A"
-            }
-          ],
-          "setAs": [
-            {
-              "id": 1,
-              "code": "Percentage",
-              "codeName": "Percentage",
-              "status": "A"
-            },
-            {
-              "id": 2,
-              "code": "Amount",
-              "codeName": "Amount",
-              "status": "A"
-            }
-          ],
-          "taxTypeOption": "VAT",
-          "setAsOption": "Amount",
-          "userId": "yogeshm"
-        },
-        {
-          "country": "India",
-          "routeCode": "R0009",
-          "groupID": "G0004",
-          "state": "Andhra",
-          "to": "100",
-          "from": "1",
-          "Tax": "15%",
-          "lcyAmountFrom": "4",
-          "lcyAmountTo": "6",
-          "taxType": [
-            {
-              "id": 1,
-              "code": "GST",
-              "routeFrom": 1,
-              "codeName": "GST",
-              "status": "A"
-            },
-            {
-              "id": 2,
-              "code": "VAT",
-              "routeFrom": 1,
-              "codeName": "VAT",
-              "status": "A"
-            },
-            {
-              "id": 3,
-              "code": "SGST",
-              "routeFrom": 1,
-              "codeName": "SGST",
-              "status": "A"
-            }
-          ],
-          "setAs": [
-            {
-              "id": 1,
-              "code": "Percentage",
-              "codeName": "Percentage",
-              "status": "A"
-            },
-            {
-              "id": 2,
-              "code": "Amount",
-              "codeName": "Amount",
-              "status": "A"
-            }
-          ],
-          "taxTypeOption": "GST",
-          "setAsOption": "Percentage",
-          "userId": "yogeshm"
-        }
-      ],
-      "column": {
-        "Country": "country",
-        "State": "state",
-        "From": "from",
-        "To": "to",
-        "Tax Type": "taxType::select",
-        "Set As": "setAs::select",
-        "Tax": "tax::input",
-        "Action": "action::button"
+  appliedTaxCriteriaData = [];
+
+  appliedTaxCriteriaDatajson = {
+    data: [
+      {
+        country: "India",
+        routeCode: "R0009",
+        groupID: "G0004",
+        state: "Andhra",
+        to: "100",
+        from: "1",
+        Tax: "25%",
+        lcyAmountFrom: "1",
+        lcyAmountTo: "3",
+        taxType: [
+          {
+            id: 1,
+            code: "GST",
+            routeFrom: 1,
+            codeName: "GST",
+            status: "A",
+          },
+          {
+            id: 2,
+            code: "VAT",
+            routeFrom: 1,
+            codeName: "VAT",
+            status: "A",
+          },
+          {
+            id: 3,
+            code: "SGST",
+            routeFrom: 1,
+            codeName: "SGST",
+            status: "A",
+          },
+        ],
+        setAs: [
+          {
+            id: 1,
+            code: "Percentage",
+            codeName: "Percentage",
+            status: "A",
+          },
+          {
+            id: 2,
+            code: "Amount",
+            codeName: "Amount",
+            status: "A",
+          },
+        ],
+        taxTypeOption: "VAT",
+        setAsOption: "Amount",
+        userId: "yogeshm",
       },
-      "lcySlab": "LCY Amount",
-      "criteriaMap": "Country = IND;Organization = SBI;Service Category = Bank;Service Type = Any&&&&from:1::to:3#from:4::to:6"
-    };
+      {
+        country: "India",
+        routeCode: "R0009",
+        groupID: "G0004",
+        state: "Andhra",
+        to: "100",
+        from: "1",
+        Tax: "15%",
+        lcyAmountFrom: "4",
+        lcyAmountTo: "6",
+        taxType: [
+          {
+            id: 1,
+            code: "GST",
+            routeFrom: 1,
+            codeName: "GST",
+            status: "A",
+          },
+          {
+            id: 2,
+            code: "VAT",
+            routeFrom: 1,
+            codeName: "VAT",
+            status: "A",
+          },
+          {
+            id: 3,
+            code: "SGST",
+            routeFrom: 1,
+            codeName: "SGST",
+            status: "A",
+          },
+        ],
+        setAs: [
+          {
+            id: 1,
+            code: "Percentage",
+            codeName: "Percentage",
+            status: "A",
+          },
+          {
+            id: 2,
+            code: "Amount",
+            codeName: "Amount",
+            status: "A",
+          },
+        ],
+        taxTypeOption: "GST",
+        setAsOption: "Percentage",
+        userId: "yogeshm",
+      },
+    ],
+    column: {
+      Country: "country",
+      State: "state",
+      From: "from",
+      To: "to",
+      "Tax Type": "taxType::select",
+      "Set As": "setAs::select",
+      Tax: "tax::input",
+      Action: "action::button",
+    },
+    lcySlab: "LCY Amount",
+    criteriaMap:
+      "Country = IND;Organization = SBI;Service Category = Bank;Service Type = Any&&&&from:1::to:3#from:4::to:6",
+  };
   // suresh Work end -->
 
   constructor(
@@ -188,7 +187,6 @@ export class AddNewTaxComponent implements OnInit {
   @ViewChild(SetCriteriaComponent)
   setCriteriaSharedComponent!: SetCriteriaComponent;
 
-
   ngOnInit(): void {
     this.mode = "add";
     this.getCriteriaMasterData();
@@ -198,8 +196,10 @@ export class AddNewTaxComponent implements OnInit {
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     // suresh Work start -->
-    this.appliedTaxCriteriaData= this.appliedTaxCriteriaDatajson.data;
-    this.appliedTaxCriteriaDataCols = [...this.getColumns(this.appliedTaxCriteriaDatajson.column)];
+    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
+    this.appliedTaxCriteriaDataCols = [
+      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    ];
     // suresh Work end -->
   }
 
@@ -264,7 +264,6 @@ export class AddNewTaxComponent implements OnInit {
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
-              console.log(data["criteriaType"]);
               if (data["criteriaType"] == "Slab") {
                 this.cmCriteriaSlabType.push(data["fieldName"]);
               }
@@ -331,7 +330,6 @@ export class AddNewTaxComponent implements OnInit {
                     this.cmCriteriaDependency
                   ).filter((key) => this.cmCriteriaDependency[key] == selcCrit);
 
-                  console.log(filteredKeys);
                   let depValues = [];
                   filteredKeys.forEach((filtKey) => {
                     depValues.push(filtKey);
@@ -341,7 +339,6 @@ export class AddNewTaxComponent implements OnInit {
                   });
                 });
               }
-
               let crElm = {
                 label: element.fieldName,
                 data: element.displayName,
@@ -355,7 +352,6 @@ export class AddNewTaxComponent implements OnInit {
               if (Object.keys(obj).length) {
                 for (const [key, value] of Object.entries(obj)) {
                   let childArr = [];
-                  console.log(key, value);
                   (value as []).forEach((deps) => {
                     let isMandatoryC = false;
                     let isDependentC = false;
@@ -416,7 +412,6 @@ export class AddNewTaxComponent implements OnInit {
                     }
                   });
 
-                  console.log(":::::", childArr);
                   if (childArr.length) {
                     this.findNestedObj(crArr, "label", key)["children"] =
                       childArr;
@@ -611,11 +606,8 @@ export class AddNewTaxComponent implements OnInit {
 
   getColumns(colData: any) {
     let tableCols = [];
-    console.log(colData);
-
 
     Object.entries(colData).forEach(([key, value], index) => {
-      console.log(colData);
       let tableCol = {};
       let stringType = false;
       let selectType = false;
@@ -629,8 +621,7 @@ export class AddNewTaxComponent implements OnInit {
         stringType = false;
         selectType =
           (value as string).split("::")[1] == "select" ? true : false;
-        inputType =
-          (value as string).split("::")[1] == "input" ? true : false;
+        inputType = (value as string).split("::")[1] == "input" ? true : false;
         buttonType =
           (value as string).split("::")[1] == "button" ? true : false;
         maxWidth = "145px";
@@ -656,7 +647,6 @@ export class AddNewTaxComponent implements OnInit {
       }
       tableCols.push(tableCol);
     });
-    console.log(tableCols)
     return tableCols;
   }
   // suresh Work end -->

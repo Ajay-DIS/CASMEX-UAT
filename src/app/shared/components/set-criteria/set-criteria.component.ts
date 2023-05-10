@@ -558,6 +558,7 @@ export class SetCriteriaComponent implements OnInit {
         let selectedCorrespondent = this.cmCriteriaDataDetails.filter(
           (x) => event.data == x.fieldName
         );
+        console.log(event, this.cmCriteriaDataDetails, selectedCorrespondent);
         let operations;
         this.hideValuesDropdown = false;
         this.showValueInput = false;
