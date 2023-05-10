@@ -1,28 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-import {
-  BankRoutingApiData,
-  UpdateBankRouteStatusApiRequest,
-  UserData,
-} from "./banks-routing.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class BankRoutingService {
   constructor(private http: HttpClient) {}
-
-  $TransactionCriteriaRange = new BehaviorSubject<any>({
-    txnCriteriaRange: [{ from: null, to: null }],
-  });
-
-  setTransactionCriteriaRange(value: any) {
-    this.$TransactionCriteriaRange.next(value);
-  }
-  getTransactionCriteriaRange() {
-    return this.$TransactionCriteriaRange;
-  }
 
   getBankRoutingData(id: string) {
     return this.http.get(

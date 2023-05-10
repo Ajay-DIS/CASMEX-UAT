@@ -1,13 +1,23 @@
- // suresh Work start -->
- .clickcriteria {
-    display: flex;
-    float: right;
-  }
-  .criteria-main-section {
-    margin-top: 5px;
-    height: 240px;
-  }
-  .details-page-card {
+.tax-code-desc-section {
+  font-size: 0.8rem;
+  font-weight: 500;
+  gap: 17px;
+}
+.tax-code-desc-section p {
+  margin-bottom: 0.5rem;
+}
+.tax-code-desc-section input {
+  height: 35px;
+  font-size: 0.8rem;
+}
+.tax-code-desc-section .taxCode input {
+  width: 235px;
+}
+.tax-code-desc-section .taxDesc input {
+  width: 398px;
+}
+// suresh Work start -->
+.details-page-card {
     margin-left: 10px;
   }
   .details-page-card-content {
@@ -75,5 +85,4 @@
   .operation-btns::ng-deep span {
     font-size: 13px;
   }
-  
- // suresh Work end -->
+// suresh Work end -->
