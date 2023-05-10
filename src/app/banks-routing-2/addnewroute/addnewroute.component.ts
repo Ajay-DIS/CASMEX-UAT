@@ -9,7 +9,6 @@ import { BankRoutingService } from "../bank-routing.service";
 import { Table } from "primeng/table";
 import { map, take } from "rxjs/operators";
 import { forkJoin } from "rxjs";
-import { ConfirmDialog } from "primeng/confirmdialog";
 import { Dropdown } from "primeng/dropdown";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
@@ -72,9 +71,6 @@ export class AddnewrouteComponent2 implements OnInit {
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService
   ) {}
-
-  @ViewChild("cd") cd: ConfirmDialog;
-  @ViewChild("addCriteriaBtn") addCriteriaBtn: ElementRef;
 
   @ViewChild(SetCriteriaComponent)
   setCriteriaSharedComponent!: SetCriteriaComponent;
