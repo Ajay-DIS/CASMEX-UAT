@@ -55,14 +55,12 @@ export class AddNewTaxComponent implements OnInit {
     data: [
       {
         country: "India",
-        routeCode: "R0009",
-        groupID: "G0004",
+        taxCode: "T0001",
         state: "Andhra",
         to: "100",
         from: "1",
-        Tax: "25%",
-        lcyAmountFrom: "1",
-        lcyAmountTo: "3",
+        tax: "250",
+        action: "clone",
         taxType: [
           {
             id: 1,
@@ -106,14 +104,12 @@ export class AddNewTaxComponent implements OnInit {
       },
       {
         country: "India",
-        routeCode: "R0009",
-        groupID: "G0004",
+        taxCode: "T0001",
         state: "Andhra",
         to: "100",
         from: "1",
-        Tax: "15%",
-        lcyAmountFrom: "4",
-        lcyAmountTo: "6",
+        tax: "15%",
+        action: "clone,delete",
         taxType: [
           {
             id: 1,
@@ -647,6 +643,7 @@ export class AddNewTaxComponent implements OnInit {
       }
       tableCols.push(tableCol);
     });
+    console.log(tableCols);
     return tableCols;
   }
   // suresh Work end -->

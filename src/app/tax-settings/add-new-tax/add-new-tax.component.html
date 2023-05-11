@@ -151,7 +151,7 @@
                     <td>
                       <div
                         *ngIf="col['isString']"
-                        style="display: inline-block"
+                        class="appliedCriteriaString"
                       >
                         {{ rowData[col["field"]] }}
                       </div>
@@ -174,21 +174,25 @@
                         ></p-dropdown>
                       </div>
                       <div *ngIf="col['isInput']" class="appliedtaxInput">
-                        <input type="text" pInputText />
+                        <input
+                          type="text"
+                          pInputText
+                          [(ngModel)]="rowData[col['field']]"
+                        />
                       </div>
                       <div *ngIf="col['isButton']" class="appliedtaxInput">
-                        <button
-                          pButton
-                          type="button"
-                          icon="pi pi-clone"
-                          class="operation-btns mr-2"
-                        ></button>
-                        <button
-                          pButton
-                          type="button"
-                          icon="pi pi-trash"
-                          class="operation-btns mr-2"
-                        ></button>
+                        <ng-container
+                          *ngFor="let btn of rowData[col['field']].split(',')"
+                        >
+                          <button
+                            pButton
+                            type="button"
+                            [icon]="
+                              'pi pi-' + (btn == 'delete' ? 'trash' : btn)
+                            "
+                            class="operation-btns mr-2"
+                          ></button>
+                        </ng-container>
                       </div>
                     </td>
                   </ng-container>
