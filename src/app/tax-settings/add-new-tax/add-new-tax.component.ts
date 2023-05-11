@@ -108,7 +108,7 @@ export class AddNewTaxComponent implements OnInit {
         state: "Andhra",
         to: "100",
         from: "1",
-        tax: "15%",
+        tax: "15",
         action: "clone,delete",
         taxType: [
           {
@@ -192,10 +192,10 @@ export class AddNewTaxComponent implements OnInit {
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     // suresh Work start -->
-    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
-    this.appliedTaxCriteriaDataCols = [
-      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
-    ];
+    // // this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
+    // // this.appliedTaxCriteriaDataCols = [
+    // //   ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    // ];
     // suresh Work end -->
   }
 
@@ -506,6 +506,10 @@ export class AddNewTaxComponent implements OnInit {
       console.log(key + " : " + val);
     });
     console.log(this.taxDescription);
+    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
+    this.appliedTaxCriteriaDataCols = [
+      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),]
+    
     // this.routeBankCriteriaSearchApi(postDataCriteria);
   }
 
@@ -645,6 +649,10 @@ export class AddNewTaxComponent implements OnInit {
     });
     console.log(tableCols);
     return tableCols;
+  }
+  selectedColumn(inputCol, value, index) {
+    console.log(inputCol, value, index);
+    this.appliedTaxCriteriaData[index][inputCol] = 0;
   }
   // suresh Work end -->
 }

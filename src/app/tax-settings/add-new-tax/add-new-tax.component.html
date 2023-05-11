@@ -172,16 +172,18 @@
                               : 'Select'
                           "
                           (onChange)="
-                            selectedColumn(col['field'], $event.value, rowIndex)
+                            selectedColumn(columns[i+1]['field'], $event.value, rowIndex)
                           "
                         ></p-dropdown>
                       </div>
                       <div *ngIf="col['isInput']" class="appliedtaxInput">
-                        <input
+                        <!-- <input
                           type="text"
                           pInputText
                           [(ngModel)]="rowData[col['field']]"
-                        />
+                        /> -->
+                        <p-inputNumber (onInput)="changeValueInput(columns[i-1]['field'], $event, rowIndex)" [(ngModel)]="rowData[col['field']]" [useGrouping]="false"
+                         mode="decimal" [maxFractionDigits]="1" ></p-inputNumber>
                       </div>
                       <div *ngIf="col['isButton']" class="appliedtaxInput">
                         <ng-container
