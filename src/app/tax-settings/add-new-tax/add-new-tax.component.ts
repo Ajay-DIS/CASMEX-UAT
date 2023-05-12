@@ -196,10 +196,10 @@ export class AddNewTaxComponent implements OnInit {
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     // suresh Work start -->
-    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
-    this.appliedTaxCriteriaDataCols = [
-      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
-    ];
+    // // this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
+    // // this.appliedTaxCriteriaDataCols = [
+    // //   ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    // ];
     // suresh Work end -->
   }
 
