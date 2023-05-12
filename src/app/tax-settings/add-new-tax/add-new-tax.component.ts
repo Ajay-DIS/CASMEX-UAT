@@ -171,7 +171,6 @@ export class AddNewTaxComponent implements OnInit {
   };
   // suresh Work end -->
 
-
   constructor(
     private activatedRoute: ActivatedRoute,
     private ngxToaster: ToastrService,
@@ -196,10 +195,10 @@ export class AddNewTaxComponent implements OnInit {
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     // suresh Work start -->
-    // // this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
-    // // this.appliedTaxCriteriaDataCols = [
-    // //   ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
-    // ];
+    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
+    this.appliedTaxCriteriaDataCols = [
+      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    ];
     // suresh Work end -->
   }
 
@@ -512,8 +511,9 @@ export class AddNewTaxComponent implements OnInit {
     console.log(this.taxDescription);
     this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
     this.appliedTaxCriteriaDataCols = [
-      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),]
-    
+      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    ];
+
     // this.routeBankCriteriaSearchApi(postDataCriteria);
   }
 
@@ -656,46 +656,69 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    this.appliedTaxCriteriaData[index]['tax'] = 0;
-    this.appliedTaxCriteriaData[index][selectCol+'Option'] = value.codeName;
-    console.log('this.appliedTaxCriteriaData',this.appliedTaxCriteriaData[index] )
+    this.appliedTaxCriteriaData[index]["tax"] = 0;
+    this.appliedTaxCriteriaData[index][selectCol + "Option"] = value.codeName;
+    console.log(
+      "this.appliedTaxCriteriaData",
+      this.appliedTaxCriteriaData[index]
+    );
   }
 
-  changeValueInput(selectCol: any,inputCol: any,event: any,index: any, valueInputElm: any) {
-    console.log("selectCol", this.appliedTaxCriteriaData[index][selectCol +"Option"])
-     let max = 0;
-     if((this.appliedTaxCriteriaData[index][selectCol +"Option"] == 'Percentage')) {
-       max=100;
-      }
-      else if ((this.appliedTaxCriteriaData[index][selectCol +"Option"] == 'Amount')){
-        max=1000000;
-      }
-    if (event.value <= max){
-      this.appliedTaxCriteriaData[index][inputCol] = event.value
-    }else{
-      let lastValueEntered = valueInputElm.lastValue
-      valueInputElm.input.nativeElement.value = lastValueEntered
+  changeValueInput(
+    selectCol: any,
+    inputCol: any,
+    event: any,
+    index: any,
+    valueInputElm: any
+  ) {
+    console.log(
+      "selectCol",
+      this.appliedTaxCriteriaData[index][selectCol + "Option"]
+    );
+    let max = 0;
+    let min = 0;
+    if (
+      this.appliedTaxCriteriaData[index][selectCol + "Option"] == "Percentage"
+    ) {
+      max = 100;
+    } else if (
+      this.appliedTaxCriteriaData[index][selectCol + "Option"] == "Amount"
+    ) {
+      max = 1000000;
     }
-  } 
-
-  checkOperation(operation: any, index: any, selectRow: any){
-    if(operation == 'delete'){
-      this.delete(index, selectRow)
-    }else if(operation == 'clone'){
-      this.clone(index, selectRow)
-    }else{
-      console.log("Nor Clone neither Delete")
+    if (event.value <= max) {
+      this.appliedTaxCriteriaData[index][inputCol] = event.value;
+    } else {
+      let lastValueEntered = valueInputElm.lastValue;
+      valueInputElm.input.nativeElement.value = lastValueEntered;
     }
   }
 
-  clone(index: any, selectRow: any){
-    console.log('clone', index, selectRow)
-    this.appliedTaxCriteriaData.splice(index + 1, 0, selectRow);
+  checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {
+    if (operation == "delete") {
+      this.delete(index);
+    } else if (operation == "clone") {
+      this.clone(index, selectRow, fieldName);
+    } else {
+      console.log("Nor Clone neither Delete");
+    }
   }
-  delete(index: any, selectRow: any){
+
+  clone(index: any, selectRow: any, fieldName: any) {
+    console.log("clone", index, selectRow);
+    let clonedRow = {
+      ...selectRow,
+    };
+    clonedRow[fieldName] = "clone,delete";
+    this.appliedTaxCriteriaData.splice(index + 1, 0, clonedRow);
+    setTimeout(() => {
+      console.log(this.appliedTaxCriteriaData[index]);
+      console.log(this.appliedTaxCriteriaData[index + 1]);
+    }, 100);
+  }
+  delete(index: any) {
     this.appliedTaxCriteriaData.splice(index, 1);
-    console.log('delete',index)
+    console.log("delete", index);
   }
   // suresh Work end -->
 }
-
