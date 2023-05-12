@@ -50,6 +50,9 @@ export class AddNewTaxComponent implements OnInit {
   // suresh Work start -->
   appliedTaxCriteriaDataCols = [];
   appliedTaxCriteriaData = [];
+  taxMin = 0;
+  taxPerMax = 100;
+  taxAmountMax = 100000;
 
   appliedTaxCriteriaDatajson = {
     data: [
@@ -167,6 +170,7 @@ export class AddNewTaxComponent implements OnInit {
       "Country = IND;Organization = SBI;Service Category = Bank;Service Type = Any&&&&from:1::to:3#from:4::to:6",
   };
   // suresh Work end -->
+
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -650,9 +654,48 @@ export class AddNewTaxComponent implements OnInit {
     console.log(tableCols);
     return tableCols;
   }
-  selectedColumn(inputCol, value, index) {
-    console.log(inputCol, value, index);
-    this.appliedTaxCriteriaData[index][inputCol] = 0;
+  selectedColumn(selectCol: any, value: any, index: any) {
+    console.log(selectCol, value, index);
+    this.appliedTaxCriteriaData[index]['tax'] = 0;
+    this.appliedTaxCriteriaData[index][selectCol+'Option'] = value.codeName;
+    console.log('this.appliedTaxCriteriaData',this.appliedTaxCriteriaData[index] )
+  }
+
+  changeValueInput(selectCol: any,inputCol: any,event: any,index: any, valueInputElm: any) {
+    console.log("selectCol", this.appliedTaxCriteriaData[index][selectCol +"Option"])
+     let max = 0;
+     if((this.appliedTaxCriteriaData[index][selectCol +"Option"] == 'Percentage')) {
+       max=100;
+      }
+      else if ((this.appliedTaxCriteriaData[index][selectCol +"Option"] == 'Amount')){
+        max=1000000;
+      }
+    if (event.value <= max){
+      this.appliedTaxCriteriaData[index][inputCol] = event.value
+    }else{
+      let lastValueEntered = valueInputElm.lastValue
+      valueInputElm.input.nativeElement.value = lastValueEntered
+    }
+  } 
+
+  checkOperation(operation: any, index: any, selectRow: any){
+    if(operation == 'delete'){
+      this.delete(index, selectRow)
+    }else if(operation == 'clone'){
+      this.clone(index, selectRow)
+    }else{
+      console.log("Nor Clone neither Delete")
+    }
+  }
+
+  clone(index: any, selectRow: any){
+    console.log('clone', index, selectRow)
+    this.appliedTaxCriteriaData.splice(index + 1, 0, selectRow);
+  }
+  delete(index: any, selectRow: any){
+    this.appliedTaxCriteriaData.splice(index, 1);
+    console.log('delete',index)
   }
   // suresh Work end -->
 }
+
