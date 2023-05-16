@@ -62,12 +62,12 @@ export class TaxSettingsService {
     });
   }
 
-  // postRouteBankCriteriaSearch(data: any) {
-  //   return this.http.post(
-  //     `/remittance/banksRoutingController/applyCriteriaSearch`,
-  //     data
-  //   );
-  // }
+  postTaxCriteriaSearch(data: any) {
+    return this.http.post(
+      `/remittance/taxSettingCriteriaController/applyCriteriaSearch`,
+      data
+    );
+  }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
