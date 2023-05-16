@@ -28,6 +28,10 @@ export class AddNewTaxComponent implements OnInit {
   taxCode = "No Data";
   taxDescription = "";
 
+  appliedCriteriaDataOrg: any = [];
+  appliedCriteriaCriteriaMap: any = null;
+  appliedCriteriaIsDuplicate: any = null;
+
   editBankRouteApiData: any = [];
 
   criteriaMasterData: any = {};
@@ -48,13 +52,13 @@ export class AddNewTaxComponent implements OnInit {
   savingCriteriaTemplateError = null;
 
   // suresh Work start -->
-  appliedTaxCriteriaDataCols = [];
-  appliedTaxCriteriaData = [];
+  appliedCriteriaDataCols = [];
+  appliedCriteriaData = [];
   taxMin = 0;
   taxPerMax = 100;
   taxAmountMax = 100000;
 
-  appliedTaxCriteriaDatajson = {
+  appliedCriteriaDatajson = {
     data: [
       {
         country: "India",
@@ -195,10 +199,10 @@ export class AddNewTaxComponent implements OnInit {
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     // suresh Work start -->
-    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
-    this.appliedTaxCriteriaDataCols = [
-      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
-    ];
+    // this.appliedCriteriaData = this.appliedCriteriaDatajson.data;
+    // this.appliedCriteriaDataCols = [
+    //   ...this.getColumns(this.appliedCriteriaDatajson.column),
+    // ];
     // suresh Work end -->
   }
 
@@ -514,55 +518,55 @@ export class AddNewTaxComponent implements OnInit {
       console.log(key + " : " + val);
     });
     console.log(this.taxDescription);
-    this.appliedTaxCriteriaData = this.appliedTaxCriteriaDatajson.data;
-    this.appliedTaxCriteriaDataCols = [
-      ...this.getColumns(this.appliedTaxCriteriaDatajson.column),
+    this.appliedCriteriaData = this.appliedCriteriaDatajson.data;
+    this.appliedCriteriaDataCols = [
+      ...this.getColumns(this.appliedCriteriaDatajson.column),
     ];
 
-    // this.routeBankCriteriaSearchApi(postDataCriteria);
+    this.taxCriteriaSearchApi(postDataCriteria);
   }
 
-  // routeBankCriteriaSearchApi(formData: any) {
-  //   // this.appliedCriteriaData = [];
-  //   // this.appliedCriteriaDataCols = [];
-  //   this.coreService.displayLoadingScreen();
-  //   this.taxSettingsService
-  //     .postRouteBankCriteriaSearch(formData)
-  //     .subscribe(
-  //       (res) => {
-  //         console.log("criteriasearch DATA", res);
-  //         if (!res["msg"]) {
-  //           if (!res["duplicate"]) {
-  //             // this.appliedCriteriaDataOrg = [...res["data"]];
-  //             // this.appliedCriteriaData = [...res["data"]];
-  //             // this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-  //             // this.appliedCriteriaIsDuplicate = res["duplicate"];
-  //             // this.appliedCriteriaDataCols = [
-  //             //   ...this.getColumns(res["column"]),
-  //             // ];
-  //             this.ngxToaster.success(`Criteria Applied Successfully`);
-  //           } else {
-  //             // this.appliedCriteriaData = [];
-  //             // this.appliedCriteriaCriteriaMap = null;
-  //             // this.appliedCriteriaIsDuplicate = null;
-  //             // this.appliedCriteriaDataCols = [];
-  //             this.ngxToaster.warning("Applied criteria already exists.");
-  //           }
-  //         } else {
-  //           this.ngxToaster.warning(res["msg"]);
-  //           // this.appliedCriteriaData = [];
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log("error in BankCriteriaSearchApi", err);
-  //       }
-  //     )
-  //     .add(() => {
-  //       setTimeout(() => {
-  //         this.coreService.removeLoadingScreen();
-  //       }, 250);
-  //     });
-  // }
+  taxCriteriaSearchApi(formData: any) {
+    this.appliedCriteriaData = [];
+    this.appliedCriteriaDataCols = [];
+    this.coreService.displayLoadingScreen();
+    this.taxSettingsService
+      .postTaxCriteriaSearch(formData)
+      .subscribe(
+        (res) => {
+          console.log("criteriasearch DATA", res);
+          if (!res["msg"]) {
+            if (!res["duplicate"]) {
+              this.appliedCriteriaDataOrg = [...res["data"]];
+              this.appliedCriteriaData = [...res["data"]];
+              this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+              this.appliedCriteriaIsDuplicate = res["duplicate"];
+              this.appliedCriteriaDataCols = [
+                ...this.getColumns(res["column"]),
+               ];
+              this.ngxToaster.success(`Criteria Applied Successfully`);
+            } else {
+              this.appliedCriteriaData = [];
+              this.appliedCriteriaCriteriaMap = null;
+              this.appliedCriteriaIsDuplicate = null;
+              this.appliedCriteriaDataCols = [];
+              this.ngxToaster.warning("Applied criteria already exists.");
+            }
+          } else {
+            this.ngxToaster.warning(res["msg"]);
+            this.appliedCriteriaData = [];
+          }
+        },
+        (err) => {
+          console.log("error in BankCriteriaSearchApi", err);
+        }
+      )
+      .add(() => {
+        setTimeout(() => {
+          this.coreService.removeLoadingScreen();
+        }, 250);
+      });
+  }
 
   saveCriteriaAsTemplate(templateFormData: any) {
     this.coreService.displayLoadingScreen();
@@ -661,11 +665,11 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    this.appliedTaxCriteriaData[index]["tax"] = 0;
-    this.appliedTaxCriteriaData[index][selectCol + "Option"] = value.codeName;
+    this.appliedCriteriaData[index]["tax"] = 0;
+    this.appliedCriteriaData[index][selectCol + "Option"] = value.codeName;
     console.log(
-      "this.appliedTaxCriteriaData",
-      this.appliedTaxCriteriaData[index]
+      "this.appliedCriteriaData",
+      this.appliedCriteriaData[index]
     );
   }
 
@@ -678,21 +682,21 @@ export class AddNewTaxComponent implements OnInit {
   ) {
     console.log(
       "selectCol",
-      this.appliedTaxCriteriaData[index][selectCol + "Option"]
+      this.appliedCriteriaData[index][selectCol + "Option"]
     );
     let max = 0;
     let min = 0;
     if (
-      this.appliedTaxCriteriaData[index][selectCol + "Option"] == "Percentage"
+      this.appliedCriteriaData[index][selectCol + "Option"] == "Percentage"
     ) {
       max = 100;
     } else if (
-      this.appliedTaxCriteriaData[index][selectCol + "Option"] == "Amount"
+      this.appliedCriteriaData[index][selectCol + "Option"] == "Amount"
     ) {
       max = 1000000;
     }
     if (event.value <= max) {
-      this.appliedTaxCriteriaData[index][inputCol] = event.value;
+      this.appliedCriteriaData[index][inputCol] = event.value;
     } else {
       let lastValueEntered = valueInputElm.lastValue;
       valueInputElm.input.nativeElement.value = lastValueEntered;
@@ -715,14 +719,14 @@ export class AddNewTaxComponent implements OnInit {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
-    this.appliedTaxCriteriaData.splice(index + 1, 0, clonedRow);
+    this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
     setTimeout(() => {
-      console.log(this.appliedTaxCriteriaData[index]);
-      console.log(this.appliedTaxCriteriaData[index + 1]);
+      console.log(this.appliedCriteriaData[index]);
+      console.log(this.appliedCriteriaData[index + 1]);
     }, 100);
   }
   delete(index: any) {
-    this.appliedTaxCriteriaData.splice(index, 1);
+    this.appliedCriteriaData.splice(index, 1);
     console.log("delete", index);
   }
   // suresh Work end -->

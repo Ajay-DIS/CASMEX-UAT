@@ -98,7 +98,7 @@
     ></app-set-criteria>
   </div>
   <!-- // suresh Work start -->
-  <div class="details-page-card mt-2" *ngIf="appliedTaxCriteriaData.length">
+  <div class="details-page-card mt-2" *ngIf="appliedCriteriaData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -113,14 +113,14 @@
       </div>
       <div class="mt-1 addnewroute-table">
         <div class="ptable">
-          <p-card class="p-col-12" *ngIf="!appliedTaxCriteriaData">
+          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
             {{ "noDataMsg" }}
           </p-card>
           <div class="appliedCriteriaDataTable">
             <p-table
               #dt
-              [columns]="appliedTaxCriteriaDataCols"
-              [value]="appliedTaxCriteriaData"
+              [columns]="appliedCriteriaDataCols"
+              [value]="appliedCriteriaData"
               [rows]="10"
               columnResizeMode="expand"
               [rowHover]="true"
