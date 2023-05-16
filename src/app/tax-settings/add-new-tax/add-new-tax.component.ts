@@ -381,12 +381,15 @@ export class AddNewTaxComponent implements OnInit {
                       ).length
                     ) {
                       let fieldName = deps;
-                      // let displayName = this.cmCriteriaDataDetails.filter(
+                      let displayName = null;
+
+                      //% this needs to be updated when displayName fieldName point arises
+
+                      // displayName = this.cmCriteriaDataDetails.filter(
                       //   (data: { displayName: string; fieldName: string }) => {
-                      //     return data["fieldName"] == deps;
+                      //       return data["fieldName"] == deps;
                       //   }
                       // )[0]["displayName"];
-                      let displayName = null;
 
                       displayName = Object.keys(criteriaMasterData).filter(
                         (data) => {
@@ -398,6 +401,7 @@ export class AddNewTaxComponent implements OnInit {
                           displayName = this.cmCriteriaSlabType[0];
                         }
                       }
+                      //% this needs to be updated when displayName fieldName point arises ENDS
 
                       let crElmChild = {
                         label: fieldName,
@@ -419,6 +423,7 @@ export class AddNewTaxComponent implements OnInit {
               }
             }
           });
+          console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
       )

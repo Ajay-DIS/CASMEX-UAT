@@ -529,6 +529,7 @@ export class SetCriteriaComponent implements OnInit {
   }
 
   onCriteriaSelect(event: any) {
+    console.log("::criteria tree data", this.criteriaMapDdlOptions);
     console.log("::criteria", event, this.cmCriteriaDependency);
     this.hideValuesDropdown = false;
     this.showValueInput = false;
@@ -562,67 +563,74 @@ export class SetCriteriaComponent implements OnInit {
         let operations;
         this.hideValuesDropdown = false;
         this.showValueInput = false;
-        if (
-          this.cmCriteriaSlabType.includes(selectedCorrespondent[0].fieldName)
-        ) {
-          this.isSlabControlSelected = true;
-          console.log("LCY control selected", this.isSlabControlSelected);
-          operations = selectedCorrespondent[0].operations.split(",");
-          this.valueCtrl.reset();
-          this.valueCtrl.disable();
-          this.correspondentDdlOptions = [];
-        } else {
-          console.log(
-            "other control selected, is LCY",
-            this.isSlabControlSelected
-          );
-          this.isSlabControlSelected = false;
-          this.correspondentDdlOptions = [];
-          this.valueCtrl.patchValue("");
-          this.getCorrespondentValues.emit({
-            fieldName: event.label,
-            displayName: event.data,
-            criteriaCodeText: this.criteriaCodeText,
-          });
-          operations = selectedCorrespondent[0].operations.split(",");
-        }
-        this.criteriaEqualsDdlOptions = [];
-        console.log("corres", selectedCorrespondent);
-        this.operationCtrl.patchValue("");
-        if (operations.length) {
-          this.operationCtrl.enable();
-          operations.forEach((opr) => {
-            let oprCode = "=";
-            switch (opr) {
-              case "Is Equal To":
-                oprCode = "=";
-                break;
-              case "Is Not Equal To":
-                oprCode = "!=";
-                break;
-              case "Is Greater Than":
-                oprCode = ">";
-                break;
-              case "Is Greater Than Equal To":
-                oprCode = ">=";
-                break;
-              case "Is Less Than":
-                oprCode = "<";
-                break;
-              case "Is Less Than Equal To":
-                oprCode = "<=";
-                break;
-              case "Slab":
-                oprCode = "=";
-                break;
-            }
-            this.criteriaEqualsDdlOptions.push({
-              name: opr,
-              code: oprCode,
+        if (selectedCorrespondent.length) {
+          if (
+            this.cmCriteriaSlabType.includes(selectedCorrespondent[0].fieldName)
+          ) {
+            this.isSlabControlSelected = true;
+            console.log("LCY control selected", this.isSlabControlSelected);
+            operations = selectedCorrespondent[0].operations.split(",");
+            this.valueCtrl.reset();
+            this.valueCtrl.disable();
+            this.correspondentDdlOptions = [];
+          } else {
+            console.log(
+              "other control selected, is LCY",
+              this.isSlabControlSelected
+            );
+            this.isSlabControlSelected = false;
+            this.correspondentDdlOptions = [];
+            this.valueCtrl.patchValue("");
+            this.getCorrespondentValues.emit({
+              fieldName: event.label,
+              displayName: event.data,
+              criteriaCodeText: this.criteriaCodeText,
             });
-          });
+            operations = selectedCorrespondent[0].operations.split(",");
+          }
+          this.criteriaEqualsDdlOptions = [];
+          console.log("corres", selectedCorrespondent);
+          this.operationCtrl.patchValue("");
+          if (operations.length) {
+            this.operationCtrl.enable();
+            operations.forEach((opr) => {
+              let oprCode = "=";
+              switch (opr) {
+                case "Is Equal To":
+                  oprCode = "=";
+                  break;
+                case "Is Not Equal To":
+                  oprCode = "!=";
+                  break;
+                case "Is Greater Than":
+                  oprCode = ">";
+                  break;
+                case "Is Greater Than Equal To":
+                  oprCode = ">=";
+                  break;
+                case "Is Less Than":
+                  oprCode = "<";
+                  break;
+                case "Is Less Than Equal To":
+                  oprCode = "<=";
+                  break;
+                case "Slab":
+                  oprCode = "=";
+                  break;
+              }
+              this.criteriaEqualsDdlOptions.push({
+                name: opr,
+                code: oprCode,
+              });
+            });
+          } else {
+            this.operationCtrl.disable();
+          }
         } else {
-          this.operationCtrl.disable();
+          this.operationCtrl.enable();
+          this.valueCtrl.enable();
+          this.criteriaEqualsDdlOptions = [];
+          this.correspondentDdlOptions = [];
         }
         break;
 
@@ -776,6 +784,7 @@ export class SetCriteriaComponent implements OnInit {
         },
       });
     } else {
+      console.log("else in delete");
       this.criteriaText.splice(i, 1);
       this.criteriaCodeText.splice(i, 1);
       // this.deleteCriteriaText.emit(i);
@@ -788,6 +797,7 @@ export class SetCriteriaComponent implements OnInit {
   }
 
   deleteCriteria(formatCrt, criteria) {
+    console.log("delete called");
     let applicableKeys = [...Object.keys(this.cmCriteriaDependency)];
     let selectedKeys = [];
     let allChildDependants = [];
@@ -837,11 +847,9 @@ export class SetCriteriaComponent implements OnInit {
 
       formatCrt = formatCrt.split("  ")[0];
       allChildDependants.forEach((deps) => {
-        // let displayName = this.cmCriteriaDataDetails.filter((data) => {
-        //   return data["fieldName"] == formatCrt.split("  ")[0];
-        // })[0]["displayName"];
-
         let displayName = null;
+
+        //% this needs to be updated when displayName fieldName point arises
 
         displayName = Object.keys(this.criteriaMasterData).filter((data) => {
           return data == formatCrt.split("  ")[0];
@@ -851,6 +859,21 @@ export class SetCriteriaComponent implements OnInit {
             displayName = this.cmCriteriaSlabType[0];
           }
         }
+
+        // let fieldNames = this.cmCriteriaDataDetails.map((critData) => {
+        //   return critData["fieldName"];
+        // });
+
+        // if (fieldNames.includes(formatCrt.split("  ")[0])) {
+        //   displayName = this.cmCriteriaDataDetails.filter(
+        //     (data: { displayName: string; fieldName: string }) => {
+        //       return data["fieldName"] == formatCrt.split("  ")[0];
+        //     }
+        //   )[0]["displayName"];
+        // } else {
+        //   displayName = formatCrt.split("  ")[0];
+        // }
+        //% this needs to be updated when displayName fieldName point arises ENDS
 
         if (deps == displayName) {
           removeCrit.push(crtTxt);
@@ -1089,8 +1112,6 @@ export class SetCriteriaComponent implements OnInit {
       txnCriteriaRange: [{ from: null, to: null }],
     });
   }
-
-  // Need to update for shared comp
 
   createFormattedCriteriaMap() {
     console.log(this.finalCriteriaCodeText);

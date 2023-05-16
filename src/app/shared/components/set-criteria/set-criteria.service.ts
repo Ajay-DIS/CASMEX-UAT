@@ -93,11 +93,9 @@ export class SetCriteriaService {
         criteriaMasterData,
         cmCriteriaSlabType
       );
-      // let displayName = cmCriteriaDataDetails.filter((data) => {
-      //   return data["fieldName"] == formatCrt.split("  ")[0];
-      // })[0]["displayName"];
-
       let displayName = null;
+
+      //% this needs to be updated when displayName fieldName point arises
 
       displayName = Object.keys(criteriaMasterData).filter((data) => {
         return data == formatCrt.split("  ")[0];
@@ -107,6 +105,21 @@ export class SetCriteriaService {
           displayName = cmCriteriaSlabType[0];
         }
       }
+
+      // let fieldNames = cmCriteriaDataDetails.map((critData) => {
+      //   return critData["fieldName"];
+      // });
+
+      // if (fieldNames.includes(formatCrt.split("  ")[0])) {
+      //   displayName = cmCriteriaDataDetails.filter(
+      //     (data: { displayName: string; fieldName: string }) => {
+      //       return data["fieldName"] == formatCrt.split("  ")[0];
+      //     }
+      //   )[0]["displayName"];
+      // } else {
+      //   displayName = formatCrt.split("  ")[0];
+      // }
+      //% this needs to be updated when displayName fieldName point arises ENDS
 
       if (Object.keys(criteriaMasterData).includes(formatCrt.split("  ")[0])) {
         Object.keys(criteriaMasterData).forEach((field) => {

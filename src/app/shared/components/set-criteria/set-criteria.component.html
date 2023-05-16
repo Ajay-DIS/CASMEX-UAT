@@ -95,7 +95,7 @@
               )
             "
           >
-            {{ criteria.label }}
+            {{ criteria.data }}
           </div>
         </ng-template>
       </p-treeSelect>
@@ -220,3 +220,30 @@
     </div>
   </div>
 </div>
+
+<p-confirmDialog
+  key="criteriaDeleteConfirm"
+  class="criteria-delete-confirm"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  appendTo="body"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd.reject()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Delete"
+      (click)="cd.accept()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
