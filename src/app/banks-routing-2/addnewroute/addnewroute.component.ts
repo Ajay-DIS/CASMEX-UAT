@@ -12,6 +12,7 @@ import { forkJoin } from "rxjs";
 import { Dropdown } from "primeng/dropdown";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
+import { CriteriaDataService } from "src/app/shared/criteria-data.service";
 
 @Component({
   selector: "app-addnewroute",
@@ -69,7 +70,8 @@ export class AddnewrouteComponent2 implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private coreService: CoreService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private criteriaDataService: CriteriaDataService
   ) {}
 
   @ViewChild(SetCriteriaComponent)
@@ -167,147 +169,21 @@ export class AddnewrouteComponent2 implements OnInit {
           this.cmCriteriaDependency =
             this.criteriaDataDetailsJson.data.dependance;
 
-          let crArr = [];
-          this.criteriaMapDdlOptions = crArr;
+          let criteriaDependencyTreeData =
+            this.criteriaDataService.setDependencyTree(
+              this.criteriaDataDetailsJson,
+              this.cmCriteriaDataDetails,
+              criteriaMasterData,
+              this.cmCriteriaMandatory,
+              this.cmCriteriaDependency,
+              this.cmCriteriaSlabType
+            );
 
-          this.cmCriteriaDataDetails.forEach((element) => {
-            let isMandatory = false;
-            let isDependent = false;
-            let dependencyList = "";
-            let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
-
-            if (
-              this.cmCriteriaMandatory &&
-              this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
-            ) {
-              isMandatory = true;
-            }
-            if (
-              Object.keys(dependenceObj).length &&
-              dependenceObj[element.fieldName] &&
-              dependenceObj[element.fieldName] != "null"
-            ) {
-              isDependent = true;
-              dependencyList = dependenceObj[element.fieldName];
-            } else {
-              this.independantCriteriaArr.push(element.fieldName);
-            }
-
-            if (!isDependent) {
-              let selectedKeys = [];
-              let allChildDependants = [];
-
-              let childDependants = [element.fieldName];
-
-              let obj: any = {};
-
-              while (childDependants.length) {
-                selectedKeys = [];
-                selectedKeys = [...childDependants];
-                childDependants = [];
-                selectedKeys.forEach((selcCrit) => {
-                  let filteredKeys = Object.keys(
-                    this.cmCriteriaDependency
-                  ).filter((key) => this.cmCriteriaDependency[key] == selcCrit);
-
-                  console.log(filteredKeys);
-                  let depValues = [];
-                  filteredKeys.forEach((filtKey) => {
-                    depValues.push(filtKey);
-                    childDependants.push(filtKey);
-                    obj[this.cmCriteriaDependency[filtKey]] = depValues;
-                    allChildDependants.push(selcCrit);
-                  });
-                });
-              }
-
-              let crElm = {
-                label: element.fieldName,
-                data: element.displayName,
-                isMandatory: isMandatory,
-                isDependent: isDependent,
-                dependencyList: dependencyList,
-                children: null,
-              };
-              crArr.push(crElm);
-
-              if (Object.keys(obj).length) {
-                for (const [key, value] of Object.entries(obj)) {
-                  let childArr = [];
-                  console.log(key, value);
-                  (value as []).forEach((deps) => {
-                    let isMandatoryC = false;
-                    let isDependentC = false;
-                    let dependencyListC = "";
-                    let dependenceObjC =
-                      this.criteriaDataDetailsJson.data.dependance;
-
-                    if (
-                      this.cmCriteriaMandatory &&
-                      this.cmCriteriaMandatory.indexOf(deps) >= 0
-                    ) {
-                      isMandatoryC = true;
-                    }
-                    if (
-                      Object.keys(dependenceObjC).length &&
-                      dependenceObjC[deps] &&
-                      dependenceObjC[deps] != "null"
-                    ) {
-                      isDependentC = true;
-                      dependencyListC = dependenceObjC[deps];
-                    }
-
-                    if (
-                      this.cmCriteriaDataDetails.filter(
-                        (data: { displayName: string; fieldName: string }) => {
-                          return data["fieldName"] == deps;
-                        }
-                      ).length
-                    ) {
-                      let fieldName = deps;
-                      let displayName = null;
-
-                      //% this needs to be updated when displayName fieldName point arises
-
-                      // displayName = this.cmCriteriaDataDetails.filter(
-                      //   (data: { displayName: string; fieldName: string }) => {
-                      //       return data["fieldName"] == deps;
-                      //   }
-                      // )[0]["displayName"];
-
-                      displayName = Object.keys(criteriaMasterData).filter(
-                        (data) => {
-                          return data == deps;
-                        }
-                      )[0];
-                      if (!displayName) {
-                        if (this.cmCriteriaSlabType.includes(deps)) {
-                          displayName = this.cmCriteriaSlabType[0];
-                        }
-                      }
-                      //% this needs to be updated when displayName fieldName point arises ENDS
-
-                      let crElmChild = {
-                        label: fieldName,
-                        data: displayName,
-                        isMandatory: isMandatoryC,
-                        isDependent: isDependentC,
-                        dependencyList: dependencyListC,
-                        children: null,
-                      };
-                      childArr.push(crElmChild);
-                    }
-                  });
-
-                  console.log(":::::", childArr);
-                  if (childArr.length) {
-                    this.findNestedObj(crArr, "label", key)["children"] =
-                      childArr;
-                  }
-                }
-              }
-            }
-          });
+          this.criteriaMapDdlOptions =
+            criteriaDependencyTreeData["criteriaMapDdlOptions"];
+          this.independantCriteriaArr =
+            criteriaDependencyTreeData["independantCriteriaArr"];
+          console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
       )
@@ -329,17 +205,6 @@ export class AddnewrouteComponent2 implements OnInit {
           console.log("Error in Initiating dropdown values", err);
         }
       );
-  }
-
-  findNestedObj(entireObj, keyToFind, valToFind) {
-    let foundObj;
-    JSON.stringify(entireObj, (_, nestedValue) => {
-      if (nestedValue && nestedValue[keyToFind] === valToFind) {
-        foundObj = nestedValue;
-      }
-      return nestedValue;
-    });
-    return foundObj;
   }
 
   getCorrespondentValues(
@@ -484,39 +349,7 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   getColumns(colData: any) {
-    let tableCols = [];
-    Object.entries(colData).forEach(([key, value], index) => {
-      let tableCol = {};
-      let stringType = false;
-      let selectType = false;
-      let formatVal = "";
-      let maxWidth = null;
-      let minWidth = null;
-      if ((value as string).includes("::")) {
-        formatVal = (value as string).split("::")[0];
-        stringType = false;
-        selectType =
-          (value as string).split("::")[1] == "select" ? true : false;
-        maxWidth = "145px";
-        minWidth = "145px";
-      } else {
-        formatVal = value as string;
-        stringType = true;
-        selectType = false;
-      }
-      tableCol = {
-        field: formatVal,
-        header: key,
-        isString: stringType,
-        isSelect: selectType,
-        minWidth: minWidth ? minWidth : "125px",
-      };
-      if (maxWidth) {
-        tableCol["maxWidth"] = maxWidth;
-      }
-      tableCols.push(tableCol);
-    });
-    return tableCols;
+    return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
 
   selectedColumn(column, value, index) {
