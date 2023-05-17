@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MultiSelect } from "primeng/multiselect";
 import { CoreService } from "src/app/core.service";
+import { TaxSettingsService } from "../tax-settings.service";
 
 @Component({
   selector: "app-tax-listing",
@@ -16,171 +17,117 @@ export class TaxListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "15%" },
-    { field: "taxDescription", header: "Tax Description", width: "30%" },
-    { field: "criteria", header: "Criteria", width: "30%" },
+    { field: "taxCodeDesc", header: "Tax Description", width: "35%" },
+    { field: "criteriaMap", header: "Criteria", width: "40%" },
     { field: "status", header: "Status", width: "10%" },
   ];
 
   showtaxCodeOptions: boolean = false;
-  showtaxTypeOptions: boolean = false;
-  showtaxDescriptionOptions: boolean = false;
-  showcriteriaOptions: boolean = false;
+  showtaxCodeDescOptions: boolean = false;
+  showcriteriaMapOptions: boolean = false;
   showstatusOptions: boolean = false;
 
-  taxCode = [
-    { label: "T0001", value: "T0001" },
-    { label: "T0002", value: "T0002" },
-    { label: "T0003", value: "T0003" },
-    { label: "T0004", value: "T0004" },
-    { label: "T0005", value: "T0005" },
-    { label: "T0006", value: "T0006" },
-    { label: "T0007", value: "T0007" },
-    { label: "T0008", value: "T0008" },
-    { label: "T0009", value: "T0009" },
-    { label: "T0010", value: "T0010" },
-    { label: "T0011", value: "T0011" },
-    { label: "T0012", value: "T0012" },
-  ];
-  taxType = [
-    { label: "VAT", value: "VAT" },
-    { label: "GST", value: "GST" },
-  ];
-  taxDescription = [
-    { label: "Applicable as 5% in UAE", value: "Applicable as 5% in UAE" },
-    { label: "Applicable as 7% in Oman", value: "Applicable as 7% in Oman" },
-    {
-      label: "Applicable as 18% in India",
-      value: "Applicable as 18% in India",
-    },
-  ];
-  criteria = [
-    {
-      label: "Country = UAE Module = Remittance",
-      value: "Country = UAE Module = Remittance",
-    },
-    {
-      label: "Country = Oman Moduel = All",
-      value: "Country = Oman Moduel = All",
-    },
-    {
-      label: "Country = India Module = Remittance",
-      value: "Country = India Module = Remittance",
-    },
-  ];
-  status = [
-    { label: "Active", value: "Active" },
-    { label: "Inactive", value: "Inactive" },
-  ];
+  taxCode = [];
+  taxCodeDesc = [];
+  criteriaMap = [];
+  status = [];
 
+  userData: any={};
   selectedFiltertaxCode: any[] = [];
-  selectedFiltertaxType: any[] = [];
-  selectedFiltertaxDescription: any[] = [];
-  selectedFiltercriteria: any[] = [];
+  selectedFiltertaxCodeDesc: any[] = [];
+  selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
-
+  taxListingApiData: any={};
   loading: boolean = true;
+
+
+  noDataMsg: string = "Tax Setting Data Not Available";
 
   constructor(
     private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private ngxToaster: ToastrService
+    private ngxToaster: ToastrService,
+    private taxSettingsService: TaxSettingsService,
   ) {}
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
-      this.coreService.removeLoadingScreen();
     });
-
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+    console.log("userData", localStorage.getItem("userData"));
+    this.getTaxCodeListData(this.userData.userId);
     this.loading = false;
-    this.taxListingData = [
-      {
-        taxCode: "T0001",
-        taxType: "VAT",
-        taxDescription: "Applicable as 5% in UAE",
-        criteria: "Country = UAE Module = Remittance",
-        status: "Active",
+  }
+
+  getTaxCodeListData(id: string) {
+    this.taxSettingsService.getTaxCodeData(id).subscribe(
+      (res) => {
+        console.log("::taxListingDataApi", res);
+        if (res["data"]) {
+          this.coreService.removeLoadingScreen();
+          this.loading = false;
+          this.taxListingApiData = res;
+          this.taxListingApiData.data.forEach((tax) => {
+            tax.createdDate = new Date(tax.createdDate);
+          });
+          this.taxListingData = [...this.taxListingApiData.data];
+          this.taxCode = this.taxListingApiData.taxCode.map((code) => {
+            return { label: code, value: code };
+          });
+          this.taxCodeDesc = this.taxListingApiData.taxCodeDesc.map((code) => {
+            return { label: code, value: code };
+          });
+          this.criteriaMap = this.taxListingApiData.criteriaMap.map(
+            (code) => {
+              return { label: code, value: code };
+            }
+          );
+          this.status = this.taxListingApiData.status.map((code) => {
+            return { label: code, value: code };
+          });
+        } else {
+          this.noDataMsg = res["msg"];
+          this.loading = false;
+          this.coreService.removeLoadingScreen();
+        }
       },
-      {
-        taxCode: "T0002",
-        taxType: "VAT",
-        taxDescription: "Applicable as 7% in Oman",
-        criteria: "Country = Oman Moduel = All",
-        status: "Active",
-      },
-      {
-        taxCode: "T0003",
-        taxType: "GST",
-        taxDescription: "Applicable as 18% in India",
-        criteria: "Country = India Module = Remittance",
-        status: "Inactive",
-      },
-      {
-        taxCode: "T0004",
-        taxType: "VAT",
-        taxDescription: "Applicable as 5% in UAE",
-        criteria: "Country = UAE Module = Remittance",
-        status: "Active",
-      },
-      {
-        taxCode: "T0005",
-        taxType: "VAT",
-        taxDescription: "Applicable as 7% in Oman",
-        criteria: "Country = Oman Moduel = All",
-        status: "Active",
-      },
-      {
-        taxCode: "T0006",
-        taxType: "GST",
-        taxDescription: "Applicable as 18% in India",
-        criteria: "Country = India Module = Remittance",
-        status: "Active",
-      },
-      {
-        taxCode: "T0007",
-        taxType: "VAT",
-        taxDescription: "Applicable as 5% in UAE",
-        criteria: "Country = UAE Module = Remittance",
-        status: "Active",
-      },
-      {
-        taxCode: "T0008",
-        taxType: "VAT",
-        taxDescription: "Applicable as 7% in Oman",
-        criteria: "Country = Oman Moduel = All",
-        status: "Active",
-      },
-      {
-        taxCode: "T0009",
-        taxType: "GST",
-        taxDescription: "Applicable as 18% in India",
-        criteria: "Country = India Module = Remittance",
-        status: "Active",
-      },
-      {
-        taxCode: "T0010",
-        taxType: "VAT",
-        taxDescription: "Applicable as 5% in UAE",
-        criteria: "Country = UAE Module = Remittance",
-        status: "Active",
-      },
-      {
-        taxCode: "T0011",
-        taxType: "VAT",
-        taxDescription: "Applicable as 7% in Oman",
-        criteria: "Country = Oman Moduel = All",
-        status: "Active",
-      },
-      {
-        taxCode: "T0012",
-        taxType: "GST",
-        taxDescription: "Applicable as 18% in India",
-        criteria: "Country = India Module = Remittance",
-        status: "Active",
-      },
-    ];
+      (err) => {
+        console.log(err);
+        this.loading = false;
+        this.coreService.removeLoadingScreen();
+      }
+    );
+  }
+
+  updateStatus(e: any, tax: string) {
+    this.coreService.displayLoadingScreen();
+    e.preventDefault();
+
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Active";
+    } else {
+      reqStatus = "Inactive";
+    }
+
+    const formData = new FormData();
+    formData.append("userId", this.userData.userId);
+    formData.append("taxCode", tax);
+    formData.append("status", reqStatus);
+    this.updateTaxCodeStatus(formData, e.target);
+  }
+
+  updateTaxCodeStatus(data: any, sliderElm: any) {
+    this.taxSettingsService.updateTaxSettingsStatus(data).subscribe((res) => {
+      if (res["msg"]) {
+        sliderElm.checked = sliderElm!.checked;
+        this.ngxToaster.success(res["msg"]);
+        this.getTaxCodeListData(this.userData.userId);
+      }
+    });
   }
 
   addNewTaxPage() {
