@@ -9,6 +9,7 @@ import { CoreService } from "src/app/core.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { TaxSettingsService } from "../tax-settings.service";
+import { CriteriaDataService } from "src/app/shared/criteria-data.service";
 
 @Component({
   selector: "app-add-new-tax",
@@ -53,126 +54,12 @@ export class AddNewTaxComponent implements OnInit {
 
   // suresh Work start -->
   appliedCriteriaDataCols = [];
-  appliedCriteriaData = [];
+  appliedCriteriaData: any = [];
   taxMin = 0;
   taxPerMax = 100;
   taxAmountMax = 100000;
 
-  appliedCriteriaDatajson = {
-    data: [
-      {
-        country: "India",
-        taxCode: "T0001",
-        state: "Andhra",
-        to: "100",
-        from: "1",
-        tax: "250",
-        action: "clone",
-        taxType: [
-          {
-            id: 1,
-            code: "GST",
-            routeFrom: 1,
-            codeName: "GST",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "VAT",
-            routeFrom: 1,
-            codeName: "VAT",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "SGST",
-            routeFrom: 1,
-            codeName: "SGST",
-            status: "A",
-          },
-        ],
-        setAs: [
-          {
-            id: 1,
-            code: "Percentage",
-            codeName: "Percentage",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "Amount",
-            codeName: "Amount",
-            status: "A",
-          },
-        ],
-        taxTypeOption: "VAT",
-        setAsOption: "Amount",
-        userId: "yogeshm",
-      },
-      {
-        country: "India",
-        taxCode: "T0001",
-        state: "Andhra",
-        to: "100",
-        from: "1",
-        tax: "15",
-        action: "clone,delete",
-        taxType: [
-          {
-            id: 1,
-            code: "GST",
-            routeFrom: 1,
-            codeName: "GST",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "VAT",
-            routeFrom: 1,
-            codeName: "VAT",
-            status: "A",
-          },
-          {
-            id: 3,
-            code: "SGST",
-            routeFrom: 1,
-            codeName: "SGST",
-            status: "A",
-          },
-        ],
-        setAs: [
-          {
-            id: 1,
-            code: "Percentage",
-            codeName: "Percentage",
-            status: "A",
-          },
-          {
-            id: 2,
-            code: "Amount",
-            codeName: "Amount",
-            status: "A",
-          },
-        ],
-        taxTypeOption: "GST",
-        setAsOption: "Percentage",
-        userId: "yogeshm",
-      },
-    ],
-    column: {
-      Country: "country",
-      State: "state",
-      From: "from",
-      To: "to",
-      "Tax Type": "taxType::select",
-      "Set As": "setAs::select",
-      Tax: "tax::input",
-      Action: "action::button",
-    },
-    lcySlab: "LCY Amount",
-    criteriaMap:
-      "Country = IND;Organization = SBI;Service Category = Bank;Service Type = Any&&&&from:1::to:3#from:4::to:6",
-  };
+  appliedCriteriaDatajson: any = {};
   // suresh Work end -->
 
   constructor(
@@ -184,7 +71,8 @@ export class AddNewTaxComponent implements OnInit {
     private route: ActivatedRoute,
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService,
-    private taxSettingsService: TaxSettingsService
+    private taxSettingsService: TaxSettingsService,
+    private criteriaDataService: CriteriaDataService
   ) {}
 
   @ViewChild(SetCriteriaComponent)
@@ -290,143 +178,20 @@ export class AddNewTaxComponent implements OnInit {
           this.cmCriteriaDependency =
             this.criteriaDataDetailsJson.data.dependance;
 
-          let crArr = [];
-          this.criteriaMapDdlOptions = crArr;
+          let criteriaDependencyTreeData =
+            this.criteriaDataService.setDependencyTree(
+              this.criteriaDataDetailsJson,
+              this.cmCriteriaDataDetails,
+              criteriaMasterData,
+              this.cmCriteriaMandatory,
+              this.cmCriteriaDependency,
+              this.cmCriteriaSlabType
+            );
 
-          this.cmCriteriaDataDetails.forEach((element) => {
-            let isMandatory = false;
-            let isDependent = false;
-            let dependencyList = "";
-            let dependenceObj = this.criteriaDataDetailsJson.data.dependance;
-
-            if (
-              this.cmCriteriaMandatory &&
-              this.cmCriteriaMandatory.indexOf(element.fieldName) >= 0
-            ) {
-              isMandatory = true;
-            }
-            if (
-              Object.keys(dependenceObj).length &&
-              dependenceObj[element.fieldName] &&
-              dependenceObj[element.fieldName] != "null"
-            ) {
-              isDependent = true;
-              dependencyList = dependenceObj[element.fieldName];
-            } else {
-              this.independantCriteriaArr.push(element.fieldName);
-            }
-
-            if (!isDependent) {
-              let selectedKeys = [];
-              let allChildDependants = [];
-
-              let childDependants = [element.fieldName];
-
-              let obj: any = {};
-
-              while (childDependants.length) {
-                selectedKeys = [];
-                selectedKeys = [...childDependants];
-                childDependants = [];
-                selectedKeys.forEach((selcCrit) => {
-                  let filteredKeys = Object.keys(
-                    this.cmCriteriaDependency
-                  ).filter((key) => this.cmCriteriaDependency[key] == selcCrit);
-
-                  let depValues = [];
-                  filteredKeys.forEach((filtKey) => {
-                    depValues.push(filtKey);
-                    childDependants.push(filtKey);
-                    obj[this.cmCriteriaDependency[filtKey]] = depValues;
-                    allChildDependants.push(selcCrit);
-                  });
-                });
-              }
-              let crElm = {
-                label: element.fieldName,
-                data: element.displayName,
-                isMandatory: isMandatory,
-                isDependent: isDependent,
-                dependencyList: dependencyList,
-                children: null,
-              };
-              crArr.push(crElm);
-
-              if (Object.keys(obj).length) {
-                for (const [key, value] of Object.entries(obj)) {
-                  let childArr = [];
-                  (value as []).forEach((deps) => {
-                    let isMandatoryC = false;
-                    let isDependentC = false;
-                    let dependencyListC = "";
-                    let dependenceObjC =
-                      this.criteriaDataDetailsJson.data.dependance;
-
-                    if (
-                      this.cmCriteriaMandatory &&
-                      this.cmCriteriaMandatory.indexOf(deps) >= 0
-                    ) {
-                      isMandatoryC = true;
-                    }
-                    if (
-                      Object.keys(dependenceObjC).length &&
-                      dependenceObjC[deps] &&
-                      dependenceObjC[deps] != "null"
-                    ) {
-                      isDependentC = true;
-                      dependencyListC = dependenceObjC[deps];
-                    }
-
-                    if (
-                      this.cmCriteriaDataDetails.filter(
-                        (data: { displayName: string; fieldName: string }) => {
-                          return data["fieldName"] == deps;
-                        }
-                      ).length
-                    ) {
-                      let fieldName = deps;
-                      let displayName = null;
-
-                      //% this needs to be updated when displayName fieldName point arises
-
-                      // displayName = this.cmCriteriaDataDetails.filter(
-                      //   (data: { displayName: string; fieldName: string }) => {
-                      //       return data["fieldName"] == deps;
-                      //   }
-                      // )[0]["displayName"];
-
-                      displayName = Object.keys(criteriaMasterData).filter(
-                        (data) => {
-                          return data == deps;
-                        }
-                      )[0];
-                      if (!displayName) {
-                        if (this.cmCriteriaSlabType.includes(deps)) {
-                          displayName = this.cmCriteriaSlabType[0];
-                        }
-                      }
-                      //% this needs to be updated when displayName fieldName point arises ENDS
-
-                      let crElmChild = {
-                        label: fieldName,
-                        data: displayName,
-                        isMandatory: isMandatoryC,
-                        isDependent: isDependentC,
-                        dependencyList: dependencyListC,
-                        children: null,
-                      };
-                      childArr.push(crElmChild);
-                    }
-                  });
-
-                  if (childArr.length) {
-                    this.findNestedObj(crArr, "label", key)["children"] =
-                      childArr;
-                  }
-                }
-              }
-            }
-          });
+          this.criteriaMapDdlOptions =
+            criteriaDependencyTreeData["criteriaMapDdlOptions"];
+          this.independantCriteriaArr =
+            criteriaDependencyTreeData["independantCriteriaArr"];
           console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
@@ -449,17 +214,6 @@ export class AddNewTaxComponent implements OnInit {
           console.log("Error in Initiating dropdown values", err);
         }
       );
-  }
-
-  findNestedObj(entireObj, keyToFind, valToFind) {
-    let foundObj;
-    JSON.stringify(entireObj, (_, nestedValue) => {
-      if (nestedValue && nestedValue[keyToFind] === valToFind) {
-        foundObj = nestedValue;
-      }
-      return nestedValue;
-    });
-    return foundObj;
   }
 
   getCorrespondentValues(
@@ -518,10 +272,6 @@ export class AddNewTaxComponent implements OnInit {
       console.log(key + " : " + val);
     });
     console.log(this.taxDescription);
-    this.appliedCriteriaData = this.appliedCriteriaDatajson.data;
-    this.appliedCriteriaDataCols = [
-      ...this.getColumns(this.appliedCriteriaDatajson.column),
-    ];
 
     this.taxCriteriaSearchApi(postDataCriteria);
   }
@@ -543,7 +293,7 @@ export class AddNewTaxComponent implements OnInit {
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
-               ];
+              ];
               this.ngxToaster.success(`Criteria Applied Successfully`);
             } else {
               this.appliedCriteriaData = [];
@@ -618,59 +368,13 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   getColumns(colData: any) {
-    let tableCols = [];
-
-    Object.entries(colData).forEach(([key, value], index) => {
-      let tableCol = {};
-      let stringType = false;
-      let selectType = false;
-      let formatVal = "";
-      let maxWidth = null;
-      let minWidth = null;
-      let buttonType = false;
-      let inputType = false;
-      if ((value as string).includes("::")) {
-        formatVal = (value as string).split("::")[0];
-        stringType = false;
-        selectType =
-          (value as string).split("::")[1] == "select" ? true : false;
-        inputType = (value as string).split("::")[1] == "input" ? true : false;
-        buttonType =
-          (value as string).split("::")[1] == "button" ? true : false;
-        maxWidth = "145px";
-        minWidth = "145px";
-      } else {
-        formatVal = value as string;
-        stringType = true;
-        selectType = false;
-        inputType = false;
-        buttonType = false;
-      }
-      tableCol = {
-        field: formatVal,
-        header: key,
-        isString: stringType,
-        isSelect: selectType,
-        isInput: inputType,
-        isButton: buttonType,
-        minWidth: minWidth ? minWidth : "125px",
-      };
-      if (maxWidth) {
-        tableCol["maxWidth"] = maxWidth;
-      }
-      tableCols.push(tableCol);
-    });
-    console.log(tableCols);
-    return tableCols;
+    return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
     this.appliedCriteriaData[index]["tax"] = 0;
     this.appliedCriteriaData[index][selectCol + "Option"] = value.codeName;
-    console.log(
-      "this.appliedCriteriaData",
-      this.appliedCriteriaData[index]
-    );
+    console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
   }
 
   changeValueInput(
@@ -686,9 +390,7 @@ export class AddNewTaxComponent implements OnInit {
     );
     let max = 0;
     let min = 0;
-    if (
-      this.appliedCriteriaData[index][selectCol + "Option"] == "Percentage"
-    ) {
+    if (this.appliedCriteriaData[index][selectCol + "Option"] == "Percentage") {
       max = 100;
     } else if (
       this.appliedCriteriaData[index][selectCol + "Option"] == "Amount"

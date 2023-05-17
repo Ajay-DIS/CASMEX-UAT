@@ -123,13 +123,15 @@
                 <tr>
                   <ng-container *ngFor="let col of columns; let c = index">
                     <th
+                      alignFrozen="right"
+                      pFrozenColumn
+                      [frozen]="!col['isString']"
                       [pSortableColumn]="col?.field"
                       [style.maxWidth]="col?.maxWidth"
                       [style.minWidth]="col?.minWidth"
-                      alignFrozen="right"
-                      pFrozenColumn
-                      [frozen]="col['isSelect']"
-                      style="right: 121px !important"
+                      [ngStyle]="{
+                        right: 145 * (columns.length - (c + 1)) + 'px'
+                      }"
                     >
                       {{ col.header.split("*")[0] }}
                       <span *ngIf="isMandatoryCol(col.header)" class="red-star"
@@ -150,7 +152,10 @@
                     <td
                       alignFrozen="right"
                       pFrozenColumn
-                      [frozen]="col['isSelect']"
+                      [frozen]="!col['isString']"
+                      [ngStyle]="{
+                        right: 145 * (columns.length - (i + 1)) + 'px'
+                      }"
                     >
                       <div
                         *ngIf="col['isString']"

@@ -277,7 +277,60 @@ button.p-button {
 .p-inputtext:enabled:focus {
   box-shadow: none !important;
 }
+
+.appliedCriteriaInput input {
+  max-width: 115px !important ;
+}
 /* INPUT END */
+
+/* Applied set criteria table style START */
+.appliedCriteriaString {
+  display: inline-block;
+  color: rgb(138 144 153);
+}
+.appliedCriteriaSelect {
+  display: inline-block;
+  width: 115px;
+}
+
+.appliedCriteriaSelect p-dropdown {
+  max-width: 100%;
+}
+.appliedCriteriaSelect .p-dropdown,
+.appliedCriteriaInput input {
+  width: 100%;
+  max-width: 100%;
+  background: #fff;
+}
+
+.appliedCriteriaDataTable .p-dropdown .p-dropdown-label,
+.p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
+}
+
+.appliedCriteriaDataTable .p-dropdown .p-dropdown-label,
+.p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
+  color: #000;
+}
+
+.appliedCriteriaDataTable td.p-frozen-column {
+  background: rgb(248 248 248);
+}
+
+.appliedCriteriaDataTable .p-datatable-wrapper::-webkit-scrollbar-track {
+  background-color: rgb(248 248 248) !important;
+}
+
+.appliedCriteriaDataTable .red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: 8px;
+}
+
+/* Applied set criteria table style END */
 
 /* picklist */
 
