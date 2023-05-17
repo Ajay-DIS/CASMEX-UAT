@@ -42,17 +42,6 @@
           >
             {{ col.header }}
             <div (click)="$event.stopPropagation()" class="filter-icon">
-              <!-- <img
-                height="12px"
-                class="pi pi-filter"
-                (click)="toggleFilterVisibility(col.field)"
-                [src]="
-                  getSelectedFilterArr(col.field).length
-                    ? '../assets/ActiveFilter.svg'
-                    : '../assets/filter.svg'
-                "
-                alt=""
-              /> -->
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length
@@ -135,7 +124,7 @@
                 <input
                   #statusInp
                   type="checkbox"
-                  [checked]="
+                  (click)="updateStatus($event, rowData['taxCode'])"[checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
                       ? true
@@ -150,7 +139,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td [attr.colspan]="cols.length">No Data found.</td>
+          <td [attr.colspan]="cols.length">{{ noDataMsg }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>

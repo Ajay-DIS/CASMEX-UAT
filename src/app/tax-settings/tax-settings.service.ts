@@ -8,18 +8,18 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 export class TaxSettingsService {
   constructor(private http: HttpClient) {}
 
-  // getBankRoutingData(id: string) {
-  //   return this.http.get(
-  //     `/remittance/banksRoutingController/getBanksRoutingList`,
-  //     { headers: new HttpHeaders().set("userId", id) }
-  //   );
-  // }
-  // updateBankRouteStatus(data: any) {
-  //   return this.http.post(
-  //     `/remittance/banksRoutingController/updateBanksRoutingStatus`,
-  //     data
-  //   );
-  // }
+  getTaxCodeData(id: string) {
+    return this.http.get(
+      `/remittance/taxSettingCriteriaController/getTaxCodeList`,
+      { headers: new HttpHeaders().set("userId", id) }
+    );
+  }
+  updateTaxSettingsStatus(data: any) {
+    return this.http.post(
+      `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
+      data
+    );
+  }
 
   // getBanksRoutingForEdit(groupID: any) {
   //   return this.http.get(
