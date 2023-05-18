@@ -21,12 +21,12 @@ export class TaxSettingsService {
     );
   }
 
-  // getBanksRoutingForEdit(groupID: any) {
-  //   return this.http.get(
-  //     `/remittance/banksRoutingController/getBanksRoutingCriteriaForEdit`,
-  //     { headers: new HttpHeaders().set("groupID", groupID) }
-  //   );
-  // }
+  getTaxSettingForEdit(taxCode: any) {
+    return this.http.get(
+      `/remittance/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
+      { headers: new HttpHeaders().set("taxCode", taxCode) }
+    );
+  }
 
   getAddTaxSettingsCriteriaData() {
     return this.http.get(

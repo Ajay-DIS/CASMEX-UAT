@@ -16,6 +16,20 @@
 .tax-code-desc-section .taxDesc input {
   width: 398px;
 }
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.description.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: 9%;
+  margin-left: 2px;
+}
+
 // suresh Work start -->
 .details-page-card-content {
   border: 0.5px solid var(--surface-ground);

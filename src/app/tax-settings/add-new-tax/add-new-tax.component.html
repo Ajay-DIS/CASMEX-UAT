@@ -64,13 +64,17 @@
     <div class="d-flex m-3 tax-code-desc-section">
       <div
         class="taxCode"
-        pTooltip="Tax Code is automatically generated, It may get changed in saving process."
+        [pTooltip]="
+          this.mode == 'add'
+            ? 'Tax Code is automatically generated, It may get changed in saving process.'
+            : ''
+        "
       >
         <p>Tax Code</p>
         <input type="text" pInputText [(ngModel)]="taxCode" disabled />
       </div>
       <div class="taxDesc">
-        <p>Tax Description</p>
+        <p>Tax Description <span class="description red-star">*</span></p>
         <input type="text" pInputText [(ngModel)]="taxDescription" />
       </div>
     </div>
@@ -194,6 +198,9 @@
                               rowIndex
                             )
                           "
+                          [disabled]="
+                            !rowData['action'].split(',').includes('delete')
+                          "
                         ></p-dropdown>
                       </div>
                       <div *ngIf="col['isInput']" class="appliedCriteriaInput">
@@ -213,6 +220,9 @@
                               valInp
                             )
                           "
+                          [disabled]="
+                            !rowData['action'].split(',').includes('delete')
+                          "
                         ></p-inputNumber>
                       </div>
                       <div
@@ -223,6 +233,7 @@
                           *ngFor="let btn of rowData[col['field']].split(',')"
                         >
                           <button
+                            *ngIf="!isTaxSettingLinked"
                             pButton
                             type="button"
                             [icon]="
@@ -258,3 +269,21 @@
   </div>
   <!-- // suresh Work end -->
 </div>
+
+<p-confirmDialog
+  key="taxSettingLinkedWarning"
+  class="linked-confirm confirm-popup"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Ok"
+      (click)="cd.accept()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

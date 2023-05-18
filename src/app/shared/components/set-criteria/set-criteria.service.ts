@@ -40,7 +40,6 @@ export class SetCriteriaService {
         lcySlabForm = {
           txnCriteriaRange: lcySlabArr,
         };
-        console.log("::setting form LCYYYYYYYY", lcySlabForm);
         this.setTransactionCriteriaRange(lcySlabForm);
 
         criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
@@ -87,11 +86,6 @@ export class SetCriteriaService {
       }
 
       let decodeCriteriaText;
-      console.log(
-        formatCrt.split("  ")[0],
-        criteriaMasterData,
-        cmCriteriaSlabType
-      );
       let displayName = null;
 
       //% this needs to be updated when displayName fieldName point arises
