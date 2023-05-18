@@ -26,8 +26,8 @@ export class TaxListingComponent implements OnInit {
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "10%" },
     { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
-    { field: "criteriaMap", header: "Criteria", width: "60%" },
-    { field: "status", header: "Status", width: "5%" },
+    { field: "criteriaMap", header: "Criteria", width: "55%" },
+    { field: "status", header: "Status", width: "10%" },
   ];
 
   showtaxCodeOptions: boolean = false;
@@ -59,7 +59,7 @@ export class TaxListingComponent implements OnInit {
     private ngxToaster: ToastrService,
     private taxSettingsService: TaxSettingsService,
     private setCriteriaService: SetCriteriaService,
-    private confirmationService: ConfirmationService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -99,7 +99,7 @@ export class TaxListingComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   criteriaCodeText,
                   criteriaMasterData,
-                  ["LCY Amount"]
+                  [""]
                 ) as []
               ).join(", ");
 
@@ -115,8 +115,23 @@ export class TaxListingComponent implements OnInit {
                 return { label: code, value: code };
               }
             );
+            // this.criteriaMap = this.taxListingApiData.criteriaMap.map(
+            //   (code) => {
+            //     return { label: code, value: code };
+            //   }
+            // );
             this.criteriaMap = this.taxListingApiData.criteriaMap.map(
-              (code) => {
+              (criteriaMap) => {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: criteriaMap.split("&&&&")[0],
+                });
+                let code = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
                 return { label: code, value: code };
               }
             );
@@ -153,9 +168,9 @@ export class TaxListingComponent implements OnInit {
     return this.linkedTaxCode.includes(id);
   }
 
-  confirmStatus(e:any, taxCode: any, status) {
+  confirmStatus(e: any, taxCode: any, status) {
     e.preventDefault();
-    console.log('codeeeeee', status)
+    console.log("codeeeeee", status);
     let type = "";
     let reqStatus = "";
     if (e.target.checked) {
@@ -165,27 +180,30 @@ export class TaxListingComponent implements OnInit {
       reqStatus = "Inactive";
       type = "deactivate";
     }
+    this.coreService.setSidebarBtnFixedStyle(false);
     this.confirmationService.confirm({
-      message: `Do you wish to `+type+` Tax Code: ${taxCode}?`,
+      message: `Do you wish to ` + type + ` Tax Code: ${taxCode}?`,
       key: "activeDeactiveStatus",
       accept: () => {
-        this.updateStatus(e,reqStatus, taxCode);
+        this.updateStatus(e, reqStatus, taxCode);
+        this.coreService.setSidebarBtnFixedStyle(true);
       },
       reject: () => {
         this.confirmationService.close;
+        this.coreService.setSidebarBtnFixedStyle(true);
       },
     });
   }
 
-  updateStatus(e: any,reqStatus:any, tax: string) {
-    console.log(e.target,reqStatus);
+  updateStatus(e: any, reqStatus: any, tax: string) {
+    console.log(e.target, reqStatus);
     if (this.linkedTaxCode.includes(tax)) {
       this.ngxToaster.warning(
         "This Tax Setting is already in transaction state"
       );
     } else {
       this.coreService.displayLoadingScreen();
-     
+
       const formData = new FormData();
       formData.append("userId", this.userData.userId);
       formData.append("taxCode", tax);
