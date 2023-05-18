@@ -94,13 +94,13 @@ export class TaxSettingsService {
     );
   }
 
-  // updateRoute(userId, data): Observable<any> {
-  //   return this.http.put(
-  //     `/remittance/banksRoutingController/updateBanksRoutingsCriteria`,
-  //     data,
-  //     {
-  //       headers: new HttpHeaders().set("userId", userId),
-  //     }
-  //   );
-  // }
+  updateTaxSetting(userId, data): Observable<any> {
+    return this.http.put(
+      `/remittance/taxSettingCriteriaController/updateTaxSettingsCriteria`,
+      data,
+      {
+        headers: new HttpHeaders().set("userId", userId),
+      }
+    );
+  }
 }
