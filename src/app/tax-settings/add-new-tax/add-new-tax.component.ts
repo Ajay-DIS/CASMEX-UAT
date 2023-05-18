@@ -9,7 +9,7 @@ import { CoreService } from "src/app/core.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { TaxSettingsService } from "../tax-settings.service";
-import { CriteriaDataService } from "src/app/shared/criteria-data.service";
+import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
 
 @Component({
   selector: "app-add-new-tax",
@@ -112,7 +112,6 @@ export class AddNewTaxComponent implements OnInit {
 
   //           this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
   //             this.criteriaCodeText,
-  //             this.cmCriteriaDataDetails,
   //             this.criteriaMasterData,
   //             this.cmCriteriaSlabType
   //           );
@@ -268,11 +267,6 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   applyCriteria(postDataCriteria: FormData) {
-    postDataCriteria.forEach((val, key) => {
-      console.log(key + " : " + val);
-    });
-    console.log(this.taxDescription);
-
     this.taxCriteriaSearchApi(postDataCriteria);
   }
 
@@ -360,6 +354,76 @@ export class AddNewTaxComponent implements OnInit {
           console.log(response.msg);
         }
       });
+  }
+
+  saveAddNewRoute(action) {
+    this.coreService.displayLoadingScreen();
+    let isRequiredFields = false;
+    this.appliedCriteriaData.forEach((element) => {
+      function isNullValue(arr) {
+        return arr.some((el) => el == null);
+      }
+      console.log("::::", element);
+      if (isNullValue(Object.values(element))) {
+        isRequiredFields = true;
+      }
+    });
+
+    if (isRequiredFields) {
+      this.coreService.removeLoadingScreen();
+      this.ngxToaster.warning("Please Fill required fields.");
+    } else {
+      let service;
+      this.appliedCriteriaData.forEach((element) => {
+        element["taxCodeDesc"] = this.taxDescription ? this.taxDescription : "";
+      });
+      if (this.groupID != "") {
+        let data = {
+          data: this.appliedCriteriaData,
+          duplicate: this.appliedCriteriaIsDuplicate,
+          criteriaMap: this.appliedCriteriaCriteriaMap,
+          groupID: this.groupID,
+        };
+        // service = this.taxSettingsService.updateRoute(this.userId, data);
+        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+      } else {
+        let data = {
+          data: this.appliedCriteriaData,
+          duplicate: this.appliedCriteriaIsDuplicate,
+          criteriaMap: this.appliedCriteriaCriteriaMap,
+        };
+        service = this.taxSettingsService.addNewTax(data);
+      }
+
+      if (service) {
+        service.subscribe(
+          (res) => {
+            if (res["msg"]) {
+              this.ngxToaster.success(res.msg);
+              if (action == "save") {
+                this.router.navigate([`navbar/tax-settings`]);
+              } else if (action == "saveAndAddNew") {
+                this.reset();
+                this.coreService.removeLoadingScreen();
+              }
+            }
+          },
+          (err) => {
+            this.coreService.removeLoadingScreen();
+            console.log("error in saveAddNewRoute", err);
+          }
+        );
+      }
+    }
+  }
+
+  reset() {
+    this.appliedCriteriaData = [];
+    this.appliedCriteriaCriteriaMap = null;
+    this.appliedCriteriaIsDuplicate = null;
+    this.taxDescription = "";
+
+    this.setCriteriaSharedComponent.resetSetCriteria();
   }
 
   // suresh Work start -->

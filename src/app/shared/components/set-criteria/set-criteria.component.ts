@@ -1276,7 +1276,6 @@ export class SetCriteriaComponent implements OnInit {
     console.log(":::::", this.criteriaCodeText);
     this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
       this.criteriaCodeText,
-      this.cmCriteriaDataDetails,
       this.criteriaMasterData,
       this.cmCriteriaSlabType
     );

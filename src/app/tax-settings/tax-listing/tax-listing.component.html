@@ -16,9 +16,9 @@
     </div>
   </div>
   <div class="ptable">
-    <p-card class="p-col-12" *ngIf="!taxListingData">
+    <!-- <p-card class="p-col-12" *ngIf="!taxListingData">
       {{ "noDataMsg" }}
-    </p-card>
+    </p-card> -->
 
     <p-table
       #dt
@@ -103,11 +103,16 @@
               </div>
               <a
                 *ngIf="i == 0"
-                style="
-                  text-decoration: underline !important;
-                  color: var(--primary-color);
-                  cursor: pointer;
-                "
+                style="text-decoration: underline !important"
+                [ngStyle]="{
+                  color: isLinked(rowData[col['field']])
+                    ? '#f89406'
+                    : 'var(--primary-color)',
+                  fontSize: '11px',
+                  cursor: 'pointer'
+                }"
+                [pTooltip]="'This Tax Setting is already in transaction state'"
+                [tooltipDisabled]="!isLinked(rowData[col['field']])"
                 >{{ rowData[col["field"]] }}</a
               >
             </td>
@@ -124,7 +129,8 @@
                 <input
                   #statusInp
                   type="checkbox"
-                  (click)="updateStatus($event, rowData['taxCode'])"[checked]="
+                  (click)="updateStatus($event, rowData['taxCode'])"
+                  [checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
                       ? true

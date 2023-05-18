@@ -52,14 +52,17 @@ export class TaxSettingsService {
     fieldName: any,
     displayName: any
   ) {
-    return this.http.get(`/remittance/taxSettingCriteriaController/getCriteriaData`, {
-      headers: new HttpHeaders()
-        .set("formName", formName)
-        .set("applicationName", appName)
-        .set("criteriaMap", criteriaMap)
-        .set("fieldName", fieldName)
-        .set("displayName", displayName),
-    });
+    return this.http.get(
+      `/remittance/taxSettingCriteriaController/getCriteriaData`,
+      {
+        headers: new HttpHeaders()
+          .set("formName", formName)
+          .set("applicationName", appName)
+          .set("criteriaMap", criteriaMap)
+          .set("fieldName", fieldName)
+          .set("displayName", displayName),
+      }
+    );
   }
 
   postTaxCriteriaSearch(data: any) {
@@ -84,12 +87,12 @@ export class TaxSettingsService {
     );
   }
 
-  // addNewRoute(data): Observable<any> {
-  //   return this.http.post(
-  //     `/remittance/banksRoutingController/addCriteriaDetails`,
-  //     data
-  //   );
-  // }
+  addNewTax(data): Observable<any> {
+    return this.http.post(
+      `/remittance/taxSettingCriteriaController/addCriteriaDetails`,
+      data
+    );
+  }
 
   // updateRoute(userId, data): Observable<any> {
   //   return this.http.put(

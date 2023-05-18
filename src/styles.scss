@@ -429,9 +429,10 @@ p-paginator .p-paginator-bottom {
   max-width: 210px !important;
 }
 
-.p-multiselect-panel .p-multiselect-items .p-multiselect-item {
-  max-width: 210px;
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item span {
+  max-width: 150px;
   white-space: normal;
+  word-wrap: break-word;
 }
 
 .p-multiselect-panel .p-multiselect-items {

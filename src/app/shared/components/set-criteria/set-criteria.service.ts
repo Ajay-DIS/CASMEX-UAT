@@ -60,7 +60,6 @@ export class SetCriteriaService {
 
   decodeFormattedCriteria(
     criteriaCodeText: any,
-    cmCriteriaDataDetails: any,
     criteriaMasterData: any,
     cmCriteriaSlabType: any
   ) {
