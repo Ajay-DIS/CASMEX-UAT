@@ -408,9 +408,9 @@ export class AddNewTaxComponent implements OnInit {
           data: this.appliedCriteriaData,
           duplicate: this.appliedCriteriaIsDuplicate,
           criteriaMap: this.appliedCriteriaCriteriaMap,
-          groupID: this.groupID,
+          taxCode: this.groupID,
         };
-        // service = this.taxSettingsService.updateRoute(this.userId, data);
+        service = this.taxSettingsService.updateTaxSetting(this.userId, data);
         console.log("EDIT MODE - UPDATE TAX SERVICE");
       } else {
         let data = {
