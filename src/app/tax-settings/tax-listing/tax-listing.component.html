@@ -72,8 +72,12 @@
           </th>
         </tr>
         <tr class="search-row">
-          <th *ngFor="let col of cols">
-            <span style="max-width: 100%" class="p-input-icon-left">
+          <th *ngFor="let col of cols" [style.width]="col.width">
+            <span
+              style="width: 100%"
+              class="p-input-icon-left"
+              *ngIf="col.field != 'status'"
+            >
               <i class="pi pi-search"></i>
               <input
                 type="text"
@@ -117,8 +121,12 @@
               >
               <span
                 *ngIf="i == 2"
-                [pTooltip]="rowData[col['field']].split(',').slice(3).join()"
-                >{{ rowData[col["field"]].split(',').slice(0, 3).join() }}..</span>
+                [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
+                >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
+                {{
+                  rowData[col["field"]].split(",").length > 4 ? ".." : ""
+                }}</span
+              >
             </td>
 
             <td
@@ -131,9 +139,16 @@
                 style="border: none"
               >
                 <input
-                  #statusInp [value]="rowData[col['field']]"
+                  #statusInp
+                  [value]="rowData[col['field']]"
                   type="checkbox"
-                  (click)="confirmStatus($event, rowData['taxCode'], rowData[col['field']])"
+                  (click)="
+                    confirmStatus(
+                      $event,
+                      rowData['taxCode'],
+                      rowData[col['field']]
+                    )
+                  "
                   [checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
@@ -164,9 +179,14 @@
     </p-table>
   </div>
 </div>
-<p-confirmDialog key="activeDeactiveStatus" class="session-confirm" #cd icon="pi pi-exclamation-triangle" [closable]="false">
+<p-confirmDialog
+  key="activeDeactiveStatus"
+  class="session-confirm"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
   <p-footer>
-
     <button
       type="button"
       pButton
@@ -174,7 +194,7 @@
       label="Yes"
       (click)="cd.accept()"
     ></button>
-    
+
     <button
       type="button"
       pButton
