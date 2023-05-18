@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
@@ -29,11 +29,13 @@ export class AddNewTaxComponent implements OnInit {
   taxCode = "No Data";
   taxDescription = "";
 
+  isTaxSettingLinked: boolean = false;
+
   appliedCriteriaDataOrg: any = [];
   appliedCriteriaCriteriaMap: any = null;
   appliedCriteriaIsDuplicate: any = null;
 
-  editBankRouteApiData: any = [];
+  editTaxSettingApiData: any = [];
 
   criteriaMasterData: any = {};
   criteriaDataDetailsJson: any = {};
@@ -51,6 +53,8 @@ export class AddNewTaxComponent implements OnInit {
   criteriaCodeText: any[] = [];
 
   savingCriteriaTemplateError = null;
+
+  isEditMode = false;
 
   // suresh Work start -->
   appliedCriteriaDataCols = [];
@@ -70,6 +74,7 @@ export class AddNewTaxComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private coreService: CoreService,
+    private confirmationService: ConfirmationService,
     private setCriteriaService: SetCriteriaService,
     private taxSettingsService: TaxSettingsService,
     private criteriaDataService: CriteriaDataService
@@ -86,56 +91,60 @@ export class AddNewTaxComponent implements OnInit {
     });
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
-    // suresh Work start -->
-    // this.appliedCriteriaData = this.appliedCriteriaDatajson.data;
-    // this.appliedCriteriaDataCols = [
-    //   ...this.getColumns(this.appliedCriteriaDatajson.column),
-    // ];
-    // suresh Work end -->
+    const params = this.activatedRoute.snapshot.params;
+    if (params && params.id) {
+      this.mode = "edit";
+      this.groupID = params.id;
+    }
   }
 
-  // getBanksRoutingForEditApi(groupID: any) {
-  //   // this.isEditMode = true;
-  //   // this.appliedCriteriaData = [];
-  //   // this.appliedCriteriaDataCols = [];
-  //   this.taxSettingsService
-  //     .getBanksRoutingForEdit(groupID)
-  //     .subscribe(
-  //       (res) => {
-  //         if (!res["msg"]) {
-  //           this.editBankRouteApiData = res;
-  //           console.log("edit data", res);
+  getBanksRoutingForEditApi(taxCode: any) {
+    this.appliedCriteriaData = [];
+    this.appliedCriteriaDataCols = [];
+    this.taxSettingsService
+      .getTaxSettingForEdit(taxCode)
+      .subscribe(
+        (res) => {
+          if (!res["msg"]) {
+            this.editTaxSettingApiData = res;
+            console.log("edit data", res);
 
-  //           this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-  //             this.editBankRouteApiData
-  //           );
+            this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+              this.editTaxSettingApiData
+            );
 
-  //           this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
-  //             this.criteriaCodeText,
-  //             this.criteriaMasterData,
-  //             this.cmCriteriaSlabType
-  //           );
+            this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
+              this.criteriaCodeText,
+              this.criteriaMasterData,
+              this.cmCriteriaSlabType
+            );
 
-  //           // this.appliedCriteriaDataOrg = [...res["data"]];
-  //           // this.appliedCriteriaData = [...res["data"]];
-  //           // this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-  //           // this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
-  //         } else {
-  //           this.ngxToaster.warning(res["msg"]);
-  //           // this.appliedCriteriaData = [];
-  //           // this.appliedCriteriaDataCols = [];
-  //         }
-  //       },
-  //       (err) => {
-  //         console.log("Error in getBanksRoutingForEditApi", err);
-  //       }
-  //     )
-  //     .add(() => {
-  //       setTimeout(() => {
-  //         this.coreService.removeLoadingScreen();
-  //       }, 250);
-  //     });
-  // }
+            this.taxCode = res["data"][0]["taxCode"];
+            if (res["data"][0]["taxCodeDesc"]) {
+              this.taxDescription = res["data"][0]["taxCodeDesc"];
+            }
+            this.isTaxSettingLinked = !res["criteriaUpdate"];
+
+            this.appliedCriteriaDataOrg = [...res["data"]];
+            this.appliedCriteriaData = [...res["data"]];
+            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+            this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
+          } else {
+            this.ngxToaster.warning(res["msg"]);
+            this.appliedCriteriaData = [];
+            this.appliedCriteriaDataCols = [];
+          }
+        },
+        (err) => {
+          console.log("Error in getBanksRoutingForEditApi", err);
+        }
+      )
+      .add(() => {
+        setTimeout(() => {
+          this.coreService.removeLoadingScreen();
+        }, 250);
+      });
+  }
 
   getCriteriaMasterData() {
     this.coreService.displayLoadingScreen();
@@ -161,8 +170,10 @@ export class AddNewTaxComponent implements OnInit {
           );
           console.log(" Slabs fields", this.cmCriteriaSlabType);
 
-          this.taxCode = this.criteriaDataDetailsJson.data.taxCode;
-          this.taxDescription = this.criteriaDataDetailsJson.data.taxCodeDesc;
+          if (this.mode == "add") {
+            this.taxCode = this.criteriaDataDetailsJson.data.taxCode;
+            this.taxDescription = this.criteriaDataDetailsJson.data.taxCodeDesc;
+          }
 
           this.cmCriteriaDataDetails = [
             ...this.criteriaDataDetailsJson.data.listCriteria
@@ -199,11 +210,8 @@ export class AddNewTaxComponent implements OnInit {
         (res) => {
           console.log(res);
           this.criteriaMasterData = res;
-          const params = this.activatedRoute.snapshot.params;
-          if (params && params.id) {
-            this.mode = "edit";
-            // this.getBanksRoutingForEditApi(params.id);
-            this.groupID = params.id;
+          if (this.mode == "edit") {
+            this.getBanksRoutingForEditApi(this.groupID);
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -267,7 +275,27 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   applyCriteria(postDataCriteria: FormData) {
-    this.taxCriteriaSearchApi(postDataCriteria);
+    if (!this.isTaxSettingLinked) {
+      this.taxCriteriaSearchApi(postDataCriteria);
+    } else {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: `You can not edit the current criteria, as it is already used in transaction.<br/> Kindly disable the current record and add new.`,
+        key: "taxSettingLinkedWarning",
+        accept: () => {
+          this.coreService.displayLoadingScreen();
+          setTimeout(() => {
+            this.coreService.setHeaderStickyStyle(true);
+            this.coreService.setSidebarBtnFixedStyle(true);
+          }, 500);
+          setTimeout(() => {
+            this.coreService.removeLoadingScreen();
+          }, 1000);
+        },
+      });
+      console.log("CANNNNOT UPDATE ITTT");
+    }
   }
 
   taxCriteriaSearchApi(formData: any) {
@@ -360,6 +388,7 @@ export class AddNewTaxComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     let isRequiredFields = false;
     this.appliedCriteriaData.forEach((element) => {
+      element["taxCodeDesc"] = this.taxDescription ? this.taxDescription : null;
       function isNullValue(arr) {
         return arr.some((el) => el == null);
       }
@@ -374,9 +403,6 @@ export class AddNewTaxComponent implements OnInit {
       this.ngxToaster.warning("Please Fill required fields.");
     } else {
       let service;
-      this.appliedCriteriaData.forEach((element) => {
-        element["taxCodeDesc"] = this.taxDescription ? this.taxDescription : "";
-      });
       if (this.groupID != "") {
         let data = {
           data: this.appliedCriteriaData,
@@ -385,13 +411,14 @@ export class AddNewTaxComponent implements OnInit {
           groupID: this.groupID,
         };
         // service = this.taxSettingsService.updateRoute(this.userId, data);
-        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+        console.log("EDIT MODE - UPDATE TAX SERVICE");
       } else {
         let data = {
           data: this.appliedCriteriaData,
           duplicate: this.appliedCriteriaIsDuplicate,
           criteriaMap: this.appliedCriteriaCriteriaMap,
         };
+        console.log("ADD MODE - ADD NEW TAX SERVICE");
         service = this.taxSettingsService.addNewTax(data);
       }
 

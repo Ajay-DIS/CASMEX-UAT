@@ -498,6 +498,49 @@ p-paginator .p-paginator-bottom {
 }
 /* P DIALOG END*/
 
+/* Confirm POPUP START*/
+.confirm-popup .p-dialog-header {
+  display: none;
+}
+.confirm-popup .p-dialog-mask {
+  z-index: 999999 !important;
+}
+.confirm-popup .p-confirm-dialog {
+  border-radius: 15px;
+}
+.confirm-popup .p-dialog-content {
+  flex-direction: column;
+  padding: 1rem 3rem !important;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  gap: 10px;
+}
+.confirm-popup .p-dialog-content .p-confirm-dialog-icon {
+  color: rgb(250 192 43);
+  font-size: 4rem;
+}
+.confirm-popup .p-dialog-content .p-confirm-dialog-message {
+  font-size: 16px;
+  font-weight: 500;
+  margin-left: 0;
+}
+.confirm-popup .p-dialog-footer {
+  text-align: center;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+.confirm-popup .p-dialog-footer button {
+  margin: 0 0.5rem;
+  width: 110px !important;
+  font-weight: 500;
+  font-size: 14px;
+}
+.confirm-popup .p-dialog-footer button .p-button-icon {
+  display: none;
+}
+/* Confirm POPUP END*/
+
 /* table filter style */
 
 p-table .filter-icon {

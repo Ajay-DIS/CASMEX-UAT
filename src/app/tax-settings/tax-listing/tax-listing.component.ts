@@ -164,6 +164,16 @@ export class TaxListingComponent implements OnInit {
     this.getDecodedDataForListing(this.userData.userId);
   }
 
+  viewTaxSetting(data: any) {
+    this.router.navigate([
+      "navbar",
+      "tax-settings",
+      "add-tax",
+      data.taxCode,
+      "edit",
+    ]);
+  }
+
   isLinked(id: any) {
     return this.linkedTaxCode.includes(id);
   }
@@ -181,18 +191,30 @@ export class TaxListingComponent implements OnInit {
       type = "deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
     this.confirmationService.confirm({
       message: `Do you wish to ` + type + ` Tax Code: ${taxCode}?`,
       key: "activeDeactiveStatus",
       accept: () => {
         this.updateStatus(e, reqStatus, taxCode);
-        this.coreService.setSidebarBtnFixedStyle(true);
+        this.setHeaderSidebarBtn();
       },
       reject: () => {
         this.confirmationService.close;
-        this.coreService.setSidebarBtnFixedStyle(true);
+        this.setHeaderSidebarBtn();
       },
     });
+  }
+
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 
   updateStatus(e: any, reqStatus: any, tax: string) {
@@ -223,7 +245,7 @@ export class TaxListingComponent implements OnInit {
   }
 
   addNewTaxPage() {
-    this.router.navigate(["navbar", "tax-settings", "add-new-tax"]);
+    this.router.navigate(["navbar", "tax-settings", "add-tax"]);
   }
 
   toggleFilterVisibility(field) {
