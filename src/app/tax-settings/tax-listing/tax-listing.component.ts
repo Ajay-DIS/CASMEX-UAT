@@ -4,6 +4,9 @@ import { ToastrService } from "ngx-toastr";
 import { MultiSelect } from "primeng/multiselect";
 import { CoreService } from "src/app/core.service";
 import { TaxSettingsService } from "../tax-settings.service";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 
 @Component({
   selector: "app-tax-listing",
@@ -11,14 +14,16 @@ import { TaxSettingsService } from "../tax-settings.service";
   styleUrls: ["./tax-listing.component.scss"],
 })
 export class TaxListingComponent implements OnInit {
+  formName = "Tax Settings";
+  applicationName = "Web Application";
   taxListingData: any[];
 
   objectKeys = Object.keys;
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "15%" },
-    { field: "taxCodeDesc", header: "Tax Description", width: "35%" },
-    { field: "criteriaMap", header: "Criteria", width: "40%" },
+    { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
+    { field: "criteriaMap", header: "Criteria", width: "50%" },
     { field: "status", header: "Status", width: "10%" },
   ];
 
@@ -32,16 +37,17 @@ export class TaxListingComponent implements OnInit {
   criteriaMap = [];
   status = [];
 
-  userData: any={};
+  userData: any = {};
   selectedFiltertaxCode: any[] = [];
   selectedFiltertaxCodeDesc: any[] = [];
   selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
-  taxListingApiData: any={};
+  taxListingApiData: any = {};
   loading: boolean = true;
 
-
   noDataMsg: string = "Tax Setting Data Not Available";
+
+  linkedTaxCode: any = [];
 
   constructor(
     private router: Router,
@@ -49,6 +55,7 @@ export class TaxListingComponent implements OnInit {
     private route: ActivatedRoute,
     private ngxToaster: ToastrService,
     private taxSettingsService: TaxSettingsService,
+    private setCriteriaService: SetCriteriaService
   ) {}
 
   ngOnInit(): void {
@@ -62,62 +69,106 @@ export class TaxListingComponent implements OnInit {
     this.loading = false;
   }
 
-  getTaxCodeListData(id: string) {
-    this.taxSettingsService.getTaxCodeData(id).subscribe(
-      (res) => {
-        console.log("::taxListingDataApi", res);
-        if (res["data"]) {
-          this.coreService.removeLoadingScreen();
-          this.loading = false;
-          this.taxListingApiData = res;
-          this.taxListingApiData.data.forEach((tax) => {
-            tax.createdDate = new Date(tax.createdDate);
-          });
-          this.taxListingData = [...this.taxListingApiData.data];
-          this.taxCode = this.taxListingApiData.taxCode.map((code) => {
-            return { label: code, value: code };
-          });
-          this.taxCodeDesc = this.taxListingApiData.taxCodeDesc.map((code) => {
-            return { label: code, value: code };
-          });
-          this.criteriaMap = this.taxListingApiData.criteriaMap.map(
-            (code) => {
+  getDecodedDataForListing(userId: any) {
+    this.coreService.displayLoadingScreen();
+    forkJoin({
+      criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
+        this.formName,
+        this.applicationName
+      ),
+      taxSettingListingData: this.taxSettingsService.getTaxCodeData(userId),
+    })
+      .pipe(
+        take(1),
+        map((response) => {
+          const criteriaMasterData = response.criteriaMasterData;
+          const taxSettingListingData = response.taxSettingListingData;
+
+          console.log("::taxListingDataApi", taxSettingListingData);
+          if (taxSettingListingData["data"]) {
+            this.taxListingApiData = taxSettingListingData;
+            this.taxListingApiData.data.forEach((tax) => {
+              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                criteriaMap: tax.criteriaMap.split("&&&&")[0],
+              });
+              tax.criteriaMap = (
+                this.setCriteriaService.decodeFormattedCriteria(
+                  criteriaCodeText,
+                  criteriaMasterData,
+                  ["LCY Amount"]
+                ) as []
+              ).join(", ");
+
+              // tax.criteriaMap = tax.criteriaMap.split("&&&&")[0];
+            });
+            this.taxListingData = [...this.taxListingApiData.data];
+            this.linkedTaxCode = [...this.taxListingApiData.linkedTaxCode];
+            this.taxCode = this.taxListingApiData.taxCode.map((code) => {
               return { label: code, value: code };
-            }
-          );
-          this.status = this.taxListingApiData.status.map((code) => {
-            return { label: code, value: code };
-          });
-        } else {
-          this.noDataMsg = res["msg"];
-          this.loading = false;
+            });
+            this.taxCodeDesc = this.taxListingApiData.taxCodeDesc.map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            this.criteriaMap = this.taxListingApiData.criteriaMap.map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            this.status = this.taxListingApiData.status.map((code) => {
+              return { label: code, value: code };
+            });
+          } else {
+            this.noDataMsg = taxSettingListingData["msg"];
+          }
+          return taxSettingListingData;
+        })
+      )
+      .subscribe(
+        (res) => {
+          if (!res["data"]) {
+            console.log("No data Found");
+          }
           this.coreService.removeLoadingScreen();
+          this.loading = false;
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          this.loading = false;
+          console.log("Error in getting tax seting list data", err);
         }
-      },
-      (err) => {
-        console.log(err);
-        this.loading = false;
-        this.coreService.removeLoadingScreen();
-      }
-    );
+      );
+  }
+
+  getTaxCodeListData(id: string) {
+    this.getDecodedDataForListing(this.userData.userId);
+  }
+
+  isLinked(id: any) {
+    return this.linkedTaxCode.includes(id);
   }
 
   updateStatus(e: any, tax: string) {
-    this.coreService.displayLoadingScreen();
     e.preventDefault();
-
-    let reqStatus = "";
-    if (e.target.checked) {
-      reqStatus = "Active";
+    if (this.linkedTaxCode.includes(tax)) {
+      this.ngxToaster.warning(
+        "This Tax Setting is already in transaction state"
+      );
     } else {
-      reqStatus = "Inactive";
+      this.coreService.displayLoadingScreen();
+      let reqStatus = "";
+      if (e.target.checked) {
+        reqStatus = "Active";
+      } else {
+        reqStatus = "Inactive";
+      }
+      const formData = new FormData();
+      formData.append("userId", this.userData.userId);
+      formData.append("taxCode", tax);
+      formData.append("status", reqStatus);
+      this.updateTaxCodeStatus(formData, e.target);
     }
-
-    const formData = new FormData();
-    formData.append("userId", this.userData.userId);
-    formData.append("taxCode", tax);
-    formData.append("status", reqStatus);
-    this.updateTaxCodeStatus(formData, e.target);
   }
 
   updateTaxCodeStatus(data: any, sliderElm: any) {

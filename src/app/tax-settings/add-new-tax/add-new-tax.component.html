@@ -37,23 +37,27 @@
         <button
           pButton
           pRipple
+          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
           type="button"
           label="Save"
           class="p-button-raised"
+          (click)="saveAddNewRoute('save')"
         ></button>
-        <button
+        <!-- <button
           pButton
           pRipple
           type="button"
           label="Save & Add New"
           class="p-button-raised"
-        ></button>
+          (click)="saveAddNewRoute('saveAndAddNew')"
+        ></button> -->
         <button
           pButton
           pRipple
           type="button"
           label="Reset"
           class="p-button-warning"
+          (click)="reset()"
         ></button>
       </div>
     </div>
@@ -211,7 +215,10 @@
                           "
                         ></p-inputNumber>
                       </div>
-                      <div *ngIf="col['isButton']" class="appliedCriteriaButton">
+                      <div
+                        *ngIf="col['isButton']"
+                        class="appliedCriteriaButton"
+                      >
                         <ng-container
                           *ngFor="let btn of rowData[col['field']].split(',')"
                         >

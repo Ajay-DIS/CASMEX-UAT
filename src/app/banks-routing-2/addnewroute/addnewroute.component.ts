@@ -12,7 +12,7 @@ import { forkJoin } from "rxjs";
 import { Dropdown } from "primeng/dropdown";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
-import { CriteriaDataService } from "src/app/shared/criteria-data.service";
+import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
 
 @Component({
   selector: "app-addnewroute",
@@ -105,7 +105,6 @@ export class AddnewrouteComponent2 implements OnInit {
 
             this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
               this.criteriaCodeText,
-              this.cmCriteriaDataDetails,
               this.criteriaMasterData,
               this.cmCriteriaSlabType
             );
