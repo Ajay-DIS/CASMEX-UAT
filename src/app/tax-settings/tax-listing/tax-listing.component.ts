@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { MultiSelect } from "primeng/multiselect";
@@ -7,6 +7,8 @@ import { TaxSettingsService } from "../tax-settings.service";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
+import { ConfirmationService } from "primeng/api";
+import { ConfirmDialog } from "primeng/confirmdialog";
 
 @Component({
   selector: "app-tax-listing",
@@ -19,12 +21,13 @@ export class TaxListingComponent implements OnInit {
   taxListingData: any[];
 
   objectKeys = Object.keys;
+  @ViewChild("cd") cd: ConfirmDialog;
 
   cols: any[] = [
-    { field: "taxCode", header: "Tax Code", width: "15%" },
+    { field: "taxCode", header: "Tax Code", width: "10%" },
     { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
-    { field: "criteriaMap", header: "Criteria", width: "50%" },
-    { field: "status", header: "Status", width: "10%" },
+    { field: "criteriaMap", header: "Criteria", width: "60%" },
+    { field: "status", header: "Status", width: "5%" },
   ];
 
   showtaxCodeOptions: boolean = false;
@@ -55,7 +58,8 @@ export class TaxListingComponent implements OnInit {
     private route: ActivatedRoute,
     private ngxToaster: ToastrService,
     private taxSettingsService: TaxSettingsService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private confirmationService: ConfirmationService,
   ) {}
 
   ngOnInit(): void {
@@ -149,20 +153,39 @@ export class TaxListingComponent implements OnInit {
     return this.linkedTaxCode.includes(id);
   }
 
-  updateStatus(e: any, tax: string) {
+  confirmStatus(e:any, taxCode: any, status) {
     e.preventDefault();
+    console.log('codeeeeee', status)
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.confirmationService.confirm({
+      message: `Do you wish to `+type+` Tax Code: ${taxCode}?`,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        this.updateStatus(e,reqStatus, taxCode);
+      },
+      reject: () => {
+        this.confirmationService.close;
+      },
+    });
+  }
+
+  updateStatus(e: any,reqStatus:any, tax: string) {
+    console.log(e.target,reqStatus);
     if (this.linkedTaxCode.includes(tax)) {
       this.ngxToaster.warning(
         "This Tax Setting is already in transaction state"
       );
     } else {
       this.coreService.displayLoadingScreen();
-      let reqStatus = "";
-      if (e.target.checked) {
-        reqStatus = "Active";
-      } else {
-        reqStatus = "Inactive";
-      }
+     
       const formData = new FormData();
       formData.append("userId", this.userData.userId);
       formData.append("taxCode", tax);
