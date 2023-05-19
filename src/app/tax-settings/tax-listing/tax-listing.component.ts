@@ -7,7 +7,7 @@ import { TaxSettingsService } from "../tax-settings.service";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
-import { ConfirmationService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { ConfirmDialog } from "primeng/confirmdialog";
 
 @Component({
@@ -59,7 +59,8 @@ export class TaxListingComponent implements OnInit {
     private ngxToaster: ToastrService,
     private taxSettingsService: TaxSettingsService,
     private setCriteriaService: SetCriteriaService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
@@ -220,7 +221,10 @@ export class TaxListingComponent implements OnInit {
   updateStatus(e: any, reqStatus: any, tax: string) {
     console.log(e.target, reqStatus);
     if (this.linkedTaxCode.includes(tax)) {
-      this.ngxToaster.warning(
+      // this.ngxToaster.warning(
+      //   "This Tax Setting is already in transaction state"
+      // );
+      this.coreService.showWarningToast(
         "This Tax Setting is already in transaction state"
       );
     } else {
