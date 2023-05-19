@@ -33,6 +33,7 @@ import { ConfirmDialogModule } from "primeng/confirmdialog";
 import { TreeTableModule } from "primeng/treetable";
 import { CheckboxModule } from "primeng/checkbox";
 import { TreeSelectModule } from "primeng/treeselect";
+import { ToastModule } from "primeng/toast";
 
 import { BnNgIdleService } from "bn-ng-idle";
 
@@ -49,9 +50,10 @@ import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-se
 import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.component";
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
-import { SetCriteriaComponent } from './shared/components/set-criteria/set-criteria.component';
+import { SetCriteriaComponent } from "./shared/components/set-criteria/set-criteria.component";
 import { TransactionCriteriaModal } from "./shared/modals/transaction-criteria-modal/transaction-criteria-modal";
-import { AddNewTaxComponent } from './tax-settings/add-new-tax/add-new-tax.component';
+import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
+import { MessageService } from "primeng/api";
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -100,6 +102,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TreeTableModule,
     CheckboxModule,
     TreeSelectModule,
+    ToastModule,
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -119,6 +122,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
       multi: true,
     },
     DatePipe,
+    MessageService,
   ],
   bootstrap: [AppComponent],
 })

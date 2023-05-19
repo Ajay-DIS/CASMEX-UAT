@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { MessageService } from "primeng/api";
 import { BehaviorSubject } from "rxjs";
 
 @Injectable({
@@ -12,7 +13,25 @@ export class CoreService {
     { label: "Bank Routing", routerLink: "bank-routing" },
   ];
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private messageService: MessageService
+  ) {}
+
+  showSuccessToast(description: any) {
+    this.messageService.add({
+      severity: "success",
+      summary: "Success",
+      detail: description,
+    });
+  }
+  showWarningToast(description: any) {
+    this.messageService.add({
+      severity: "warn",
+      summary: "Warning",
+      detail: description,
+    });
+  }
 
   switchTheme(theme: string) {
     let themeLink = this.document.getElementById(
