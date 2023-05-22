@@ -234,8 +234,8 @@
                         <ng-container
                           *ngFor="let btn of rowData[col['field']].split(',')"
                         >
+                          <!-- *ngIf="!isTaxSettingLinked" -->
                           <button
-                            *ngIf="!isTaxSettingLinked"
                             pButton
                             type="button"
                             [icon]="

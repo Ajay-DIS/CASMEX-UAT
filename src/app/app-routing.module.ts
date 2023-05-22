@@ -149,6 +149,17 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "tax-settings/add-tax/:id/clone",
+        component: AddNewTaxComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/tax-settings" },
+          { label: "Tax Settings", routerLink: "tax-settings" },
+          { label: "Clone Tax", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];

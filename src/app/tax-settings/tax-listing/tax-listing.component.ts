@@ -25,9 +25,10 @@ export class TaxListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "10%" },
-    { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
+    { field: "taxCodeDesc", header: "Tax Description", width: "20%" },
     { field: "criteriaMap", header: "Criteria", width: "55%" },
-    { field: "status", header: "Status", width: "10%" },
+    { field: "status", header: "Status", width: "7%" },
+    { field: "operation", header: "Operations", width: "8%" },
   ];
 
   showtaxCodeOptions: boolean = false;
@@ -193,49 +194,60 @@ export class TaxListingComponent implements OnInit {
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    let isLinkedMsg = `Active Transactions Exist. </br>`;
+    console.log(reqStatus, this.linkedTaxCode, taxCode);
+    if (reqStatus == "Inactive" && this.linkedTaxCode.includes(taxCode)) {
+      completeMsg =
+        isLinkedMsg + `Do you wish to ` + type + ` the Tax Record: ${taxCode}?`;
+    } else {
+      completeMsg = `Do you wish to ` + type + ` the Tax Record: ${taxCode}?`;
+    }
     this.confirmationService.confirm({
-      message: `Do you wish to ` + type + ` Tax Code: ${taxCode}?`,
+      message: completeMsg,
       key: "activeDeactiveStatus",
       accept: () => {
         this.updateStatus(e, reqStatus, taxCode);
-        this.setHeaderSidebarBtn();
+        this.setHeaderSidebarBtn(true);
       },
       reject: () => {
         this.confirmationService.close;
-        this.setHeaderSidebarBtn();
+        this.setHeaderSidebarBtn(false);
       },
     });
   }
 
-  setHeaderSidebarBtn() {
+  setHeaderSidebarBtn(accept: boolean) {
     this.coreService.displayLoadingScreen();
     setTimeout(() => {
       this.coreService.setHeaderStickyStyle(true);
       this.coreService.setSidebarBtnFixedStyle(true);
     }, 500);
-    setTimeout(() => {
-      this.coreService.removeLoadingScreen();
-    }, 1000);
+    if (!accept) {
+      setTimeout(() => {
+        this.coreService.removeLoadingScreen();
+      }, 1000);
+    }
   }
 
   updateStatus(e: any, reqStatus: any, tax: string) {
     console.log(e.target, reqStatus);
-    if (this.linkedTaxCode.includes(tax)) {
-      // this.ngxToaster.warning(
-      //   "This Tax Setting is already in transaction state"
-      // );
-      this.coreService.showWarningToast(
-        "This Tax Setting is already in transaction state"
-      );
-    } else {
-      this.coreService.displayLoadingScreen();
+    // if (this.linkedTaxCode.includes(tax)) {
+    //   // this.ngxToaster.warning(
+    //   //   "This Tax Setting is already in transaction state"
+    //   // );
+    //   this.coreService.showWarningToast(
+    //     "This Tax Setting is already in transaction state"
+    //   );
+    // } else {
+    this.coreService.displayLoadingScreen();
 
-      const formData = new FormData();
-      formData.append("userId", this.userData.userId);
-      formData.append("taxCode", tax);
-      formData.append("status", reqStatus);
-      this.updateTaxCodeStatus(formData, e.target);
-    }
+    const formData = new FormData();
+    formData.append("userId", this.userData.userId);
+    formData.append("taxCode", tax);
+    formData.append("status", reqStatus);
+    this.updateTaxCodeStatus(formData, e.target);
+    // }
   }
 
   updateTaxCodeStatus(data: any, sliderElm: any) {
@@ -246,6 +258,16 @@ export class TaxListingComponent implements OnInit {
         this.getTaxCodeListData(this.userData.userId);
       }
     });
+  }
+
+  cloneTax(data: any) {
+    this.router.navigate([
+      "navbar",
+      "tax-settings",
+      "add-tax",
+      data.taxCode,
+      "clone",
+    ]);
   }
 
   addNewTaxPage() {
