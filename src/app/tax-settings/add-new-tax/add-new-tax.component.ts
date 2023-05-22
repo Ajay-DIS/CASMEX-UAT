@@ -53,8 +53,6 @@ export class AddNewTaxComponent implements OnInit {
 
   savingCriteriaTemplateError = null;
 
-  isEditMode = false;
-
   // suresh Work start -->
   appliedCriteriaDataCols = [];
   appliedCriteriaData: any = [];
@@ -91,16 +89,20 @@ export class AddNewTaxComponent implements OnInit {
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
-      this.mode = "edit";
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      // this.mode = "edit";
       this.groupID = params.id;
     }
+    console.log(this.mode);
   }
 
-  getBanksRoutingForEditApi(taxCode: any) {
+  getTaxSettingForEditApi(taxCode: any, operation: any) {
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.taxSettingsService
-      .getTaxSettingForEdit(taxCode)
+      .getTaxSettingForEdit(taxCode, operation)
       .subscribe(
         (res) => {
           if (!res["msg"]) {
@@ -134,7 +136,7 @@ export class AddNewTaxComponent implements OnInit {
           }
         },
         (err) => {
-          console.log("Error in getBanksRoutingForEditApi", err);
+          console.log("Error in getTaxSettingForEditApi", err);
         }
       )
       .add(() => {
@@ -209,7 +211,9 @@ export class AddNewTaxComponent implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getBanksRoutingForEditApi(this.groupID);
+            this.getTaxSettingForEditApi(this.groupID, "edit");
+          } else if (this.mode == "clone") {
+            this.getTaxSettingForEditApi(this.groupID, "clone");
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -273,9 +277,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   applyCriteria(postDataCriteria: FormData) {
-    if (!this.isTaxSettingLinked) {
-      this.taxCriteriaSearchApi(postDataCriteria);
-    } else {
+    if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
@@ -293,6 +295,8 @@ export class AddNewTaxComponent implements OnInit {
         },
       });
       console.log("CANNNNOT UPDATE ITTT");
+    } else {
+      this.taxCriteriaSearchApi(postDataCriteria);
     }
   }
 
@@ -404,7 +408,7 @@ export class AddNewTaxComponent implements OnInit {
 
     } else {
       let service;
-      if (this.groupID != "") {
+      if (this.mode == "edit") {
         let data = {
           data: this.appliedCriteriaData,
           duplicate: this.appliedCriteriaIsDuplicate,
@@ -513,6 +517,7 @@ export class AddNewTaxComponent implements OnInit {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
+    console.log(clonedRow);
     this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
     setTimeout(() => {
       console.log(this.appliedCriteriaData[index]);

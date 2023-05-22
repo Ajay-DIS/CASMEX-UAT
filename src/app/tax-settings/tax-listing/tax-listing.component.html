@@ -41,7 +41,11 @@
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              *ngIf="!(col.field == 'operation')"
+              (click)="$event.stopPropagation()"
+              class="filter-icon"
+            >
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length
@@ -76,7 +80,7 @@
             <span
               style="width: 100%"
               class="p-input-icon-left"
-              *ngIf="col.field != 'status'"
+              *ngIf="col.field != 'status' && col.field != 'operation'"
             >
               <i class="pi pi-search"></i>
               <input
@@ -97,12 +101,8 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i + 1 != columns.length">
-              <div
-                *ngIf="i != 0 && i != 2"
-                style="display: inline-block"
-                [ngClass]="objectKeys(rowData).length == 1 ? 'expandable' : ''"
-              >
+            <td *ngIf="col.field != 'status' && col.field != 'operation'">
+              <div *ngIf="i != 0 && i != 2" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>
               <a
@@ -115,7 +115,7 @@
                   fontSize: '11px',
                   cursor: 'pointer'
                 }"
-                [pTooltip]="'This Tax Setting is already in transaction state'"
+                [pTooltip]="'Active Transactions Exist.'"
                 [tooltipDisabled]="!isLinked(rowData[col['field']])"
                 (click)="viewTaxSetting(rowData)"
                 >{{ rowData[col["field"]] }}</a
@@ -131,14 +131,10 @@
             </td>
 
             <td
-              *ngIf="i + 1 == columns.length"
+              *ngIf="col.field == 'status'"
               style="border: none; text-align: center"
             >
-              <label
-                *ngIf="objectKeys(rowData).length != 1"
-                class="switch"
-                style="border: none"
-              >
+              <label class="switch" style="border: none">
                 <input
                   #statusInp
                   [value]="rowData[col['field']]"
@@ -159,6 +155,20 @@
                 />
                 <span class="slider round"></span>
               </label>
+            </td>
+            <td
+              *ngIf="col.field == 'operation'"
+              style="border: none; text-align: center"
+            >
+              <span class="image-text">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-clone"
+                  class="operation-btns mr-2"
+                  (click)="cloneTax(rowData)"
+                ></button>
+              </span>
             </td>
           </ng-container>
         </tr>

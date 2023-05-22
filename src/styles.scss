@@ -58,6 +58,10 @@ body.minified-sidebar .toggle-sidebar {
 
 // NEW STYLES
 
+.p-dialog-mask.p-component-overlay.p-dialog-mask-scrollblocker {
+  background-color: var(--maskbg);
+}
+
 input {
   font-size: 0.8rem !important;
 }
@@ -441,9 +445,9 @@ p-paginator .p-paginator-bottom {
 // Multiselect style end
 
 /* Overlays */
-.p-dialog-mask.p-component-overlay {
-  background-color: rgba(0, 0, 0, 0.95);
-}
+// .p-dialog-mask.p-component-overlay {
+//   background-color: rgba(0, 0, 0, 0.95);
+// }
 .p-treetable-loading-overlay.p-component-overlay,
 .p-datatable-loading-overlay.p-component-overlay {
   background-color: rgba(0, 0, 0, 0);
