@@ -16,7 +16,6 @@ import { DialogModule } from "primeng/dialog";
 import { SidebarModule } from "primeng/sidebar";
 import { ButtonModule } from "primeng/button";
 import { TreeModule } from "primeng/tree";
-import { ToastrModule } from "ngx-toastr";
 import { PanelMenuModule } from "primeng/panelmenu";
 import { InputTextModule } from "primeng/inputtext";
 import { DropdownModule } from "primeng/dropdown";
@@ -103,7 +102,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CheckboxModule,
     TreeSelectModule,
     ToastModule,
-    ToastrModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

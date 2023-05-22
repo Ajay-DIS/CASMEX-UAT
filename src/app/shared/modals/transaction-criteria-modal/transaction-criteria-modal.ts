@@ -4,10 +4,10 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from "@angular/forms";
-import { ToastrService } from "ngx-toastr";
 import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 import { take } from "rxjs/operators";
 import { SetCriteriaService } from "../../components/set-criteria/set-criteria.service";
+import { CoreService } from "src/app/core.service";
 
 @Component({
   templateUrl: "./transaction-criteria-modal.html",
@@ -32,9 +32,9 @@ export class TransactionCriteriaModal {
   constructor(
     private formBuilder: UntypedFormBuilder,
     private ref: DynamicDialogRef,
-    private ngxToaster: ToastrService,
     public config: DynamicDialogConfig,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private coreService: CoreService
   ) {}
 
   get allTxnCriteriaRange(): UntypedFormArray {
@@ -69,10 +69,10 @@ export class TransactionCriteriaModal {
 
     this.ref.onClose.pipe(take(1)).subscribe((res) => {
       if (this.isTxnCriteriaRangesSaved) {
-        this.ngxToaster.success("Transaction ranges saved");
+        this.coreService.showSuccessToast("Transaction ranges saved");
       } else {
         if (this.isFormDataChanged) {
-          this.ngxToaster.warning("Transaction ranges not saved properly");
+          this.coreService.showWarningToast("Transaction ranges not saved properly");
         }
       }
     });

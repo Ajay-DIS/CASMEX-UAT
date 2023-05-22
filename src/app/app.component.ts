@@ -6,7 +6,6 @@ import {
   ViewChild,
 } from "@angular/core";
 import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
 import { ConfirmDialog } from "primeng/confirmdialog";
 import { take } from "rxjs/operators";
@@ -24,7 +23,6 @@ import { BnNgIdleService } from "bn-ng-idle";
 export class AppComponent implements OnInit, AfterContentChecked {
   constructor(
     private router: Router,
-    private ngxToaster: ToastrService,
     private ref: ChangeDetectorRef,
     private confirmationService: ConfirmationService,
     private coreService: CoreService,
@@ -109,9 +107,9 @@ export class AppComponent implements OnInit, AfterContentChecked {
               clearTimeout(this.authService.clearWarningTimer);
             }
             this.loginService.refreshUserSessionToken(data.jwt);
-            this.ngxToaster.success("Session extended successfully");
+            this.coreService.showSuccessToast("Session extended successfully");
           } else {
-            data["msg"] && this.ngxToaster.warning(data["msg"]);
+            data["msg"] && this.coreService.showWarningToast(data["msg"]);
           }
         },
         (err) => {
@@ -133,7 +131,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.authService.userDataSub.next(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
-    this.ngxToaster.success("Logged Out Successfully.");
+    this.coreService.showSuccessToast("Logged Out Successfully.");
     this.router.navigate(["login"]);
   }
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { MultiSelect } from "primeng/multiselect";
 import { CoreService } from "src/app/core.service";
 import { TaxSettingsService } from "../tax-settings.service";
@@ -57,7 +56,6 @@ export class TaxListingComponent implements OnInit {
     private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private ngxToaster: ToastrService,
     private taxSettingsService: TaxSettingsService,
     private setCriteriaService: SetCriteriaService,
     private confirmationService: ConfirmationService,
@@ -232,14 +230,6 @@ export class TaxListingComponent implements OnInit {
 
   updateStatus(e: any, reqStatus: any, tax: string) {
     console.log(e.target, reqStatus);
-    // if (this.linkedTaxCode.includes(tax)) {
-    //   // this.ngxToaster.warning(
-    //   //   "This Tax Setting is already in transaction state"
-    //   // );
-    //   this.coreService.showWarningToast(
-    //     "This Tax Setting is already in transaction state"
-    //   );
-    // } else {
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
@@ -254,7 +244,7 @@ export class TaxListingComponent implements OnInit {
     this.taxSettingsService.updateTaxSettingsStatus(data).subscribe((res) => {
       if (res["msg"]) {
         sliderElm.checked = sliderElm!.checked;
-        this.ngxToaster.success(res["msg"]);
+        this.coreService.showSuccessToast(res["msg"]);
         this.getTaxCodeListData(this.userData.userId);
       }
     });

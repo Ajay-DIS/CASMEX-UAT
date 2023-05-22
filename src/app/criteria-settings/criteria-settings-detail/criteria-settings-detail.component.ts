@@ -5,7 +5,6 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { ConfirmationService } from "primeng/api";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
@@ -57,7 +56,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private ngxToaster: ToastrService,
     private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService,
     private activatedRoute: ActivatedRoute
@@ -100,7 +98,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               //this.formCtrl.enable();
             }
           } else if (res["msg"]) {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
             this.appCtrl.disable();
             this.formCtrl.disable();
           }
@@ -186,7 +184,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               console.log("fields Data", this.fieldsQueriesData);
             } else if (res["msg"]) {
               this.isFieldsQueriesData = false;
-              this.ngxToaster.warning(res["msg"]);
+              this.coreService.showWarningToast(res["msg"]);
             }
           },
           (err) => {
@@ -279,7 +277,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                     console.log("Update it -- call save method API");
                   },
                   reject: () => {
-                    this.ngxToaster.warning("Criteria saving revoked");
+                    this.coreService.showWarningToast("Criteria saving revoked");
                     console.log("Dont update it -- reject");
                   },
                 });
@@ -346,25 +344,22 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         if (res["msg"]) {
           if (this.mode == "clone") {
             if (this.duplicateCriteria) {
-              this.ngxToaster.success("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
             } else {
-              this.ngxToaster.success("Criteria Clone created Sucessfully.");
+              this.coreService.showSuccessToast("Criteria Clone created Sucessfully.");
             }
           }
           if (this.mode == "add") {
             if (this.duplicateCriteria) {
-              this.ngxToaster.success("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
             } else {
-              this.ngxToaster.success("New criteria added Sucessfully.");
+              this.coreService.showSuccessToast("New criteria added Sucessfully.");
             }
           }
 
           this.mode == "edit" &&
-            this.ngxToaster.success("Criteria Details updated Sucessfully.");
-          // (this.mode == 'clone') && (this.ngxToaster.success("Criteria Clone created Sucessfully."));
-          // (this.mode == 'add') && (this.ngxToaster.success("New criteria added Sucessfully."));
+            this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
           this.router.navigate(["navbar", "criteria-settings"]);
-          //this.ngxToaster.success(res["msg"]);
         }
       },
       (err) => {
@@ -387,13 +382,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         (this.criteriaSettingtable.length == 1
           ? "as 1 only"
           : "between 1 to " + this.criteriaSettingtable.length);
-      this.ngxToaster.warning(msg);
+      this.coreService.showWarningToast(msg);
       this.invalidForSave = true;
     } else {
       let index = this.orderIDArray.indexOf(orderID);
       console.log(index, this.criteriaSettingtable.indexOf(field), orderID);
       if (orderID <= 0) {
-        this.ngxToaster.warning("Priority is required and should be atleast 1");
+        this.coreService.showWarningToast("Priority is required and should be atleast 1");
         this.orderIDArray[this.criteriaSettingtable.indexOf(field)] = orderID;
         this.invalidForSave = true;
       } else {
@@ -403,7 +398,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               orderID);
           this.invalidForSave = false;
         } else {
-          this.ngxToaster.warning(
+          this.coreService.showWarningToast(
             "Entered priority is already exist please try with different."
           );
           this.invalidForSave = true;
@@ -440,15 +435,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       }
     });
     if (emptyOperation) {
-      this.ngxToaster.warning("Please select operation.");
+      this.coreService.showWarningToast("Please select operation.");
     } else if (emptyPriority) {
-      this.ngxToaster.warning("Priority is required.");
-    } else if (emptydependency) {
-      this.ngxToaster.warning("Dependency is required.");
-    } else {
-      console.log("passed validation", this.mode);
-
-      if (this.mode == "edit") {
+      this.coreService.showWarningToast("Priority is required.");
+    }
+    else if (emptydependency) {
+      this.coreService.showWarningToast("Dependency is required.");
+    }
+    else {
+      console.log("passed validation",this.mode);
+      
+      if(this.mode == 'edit'){
         this.saveCriteriaFields();
       } else {
         this.checkCriteriaDuplication();
