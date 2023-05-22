@@ -13,7 +13,6 @@ import {
   UntypedFormControl,
   Validators,
 } from "@angular/forms";
-import { ToastrService } from "ngx-toastr";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ConfirmDialog } from "primeng/confirmdialog";
 import { DialogService, DynamicDialogRef } from "primeng/dynamicdialog";
@@ -81,7 +80,6 @@ export class SetCriteriaComponent implements OnInit {
     : "No saved templates";
 
   constructor(
-    private ngxToaster: ToastrService,
     public dialogService: DialogService,
     public messageService: MessageService,
     private fb: UntypedFormBuilder,
@@ -175,7 +173,7 @@ export class SetCriteriaComponent implements OnInit {
     let index = this.criteriaText.indexOf(criteria);
     //validations
     if (this.criteriaText.length && index != -1) {
-      this.ngxToaster.warning(
+      this.coreService.showWarningToast(
         criteria + " already added, please add different case"
       );
     } else if (this.criteriaText.length) {
@@ -227,7 +225,7 @@ export class SetCriteriaComponent implements OnInit {
             splitdata.split("  ")[1] == "Slab"
           ) {
             console.log("greater less condition slab");
-            this.ngxToaster.warning(
+            this.coreService.showWarningToast(
               "Please delete existing criteria " +
                 element +
                 ", then add " +
@@ -242,7 +240,7 @@ export class SetCriteriaComponent implements OnInit {
             splitText.split("  ")[1] == "Slab"
           ) {
             console.log("greater less condition not slab but slab present");
-            this.ngxToaster.warning(
+            this.coreService.showWarningToast(
               "Please delete existing criteria " +
                 element +
                 ", then add " +
@@ -293,7 +291,7 @@ export class SetCriteriaComponent implements OnInit {
 
           if (splitText.split("  ")[0] == splitdata.split("  ")[0]) {
             if (splitText.split("  ")[1] == splitdata.split("  ")[1]) {
-              this.ngxToaster.warning(
+              this.coreService.showWarningToast(
                 " Please select different criteria for " +
                   splitdata.split("  ")[0]
               );
@@ -305,7 +303,7 @@ export class SetCriteriaComponent implements OnInit {
                 this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
               ) {
                 console.log("adding one slab but lcy other than slab present ");
-                this.ngxToaster.warning(
+                this.coreService.showWarningToast(
                   "Please delete existing criteria " +
                     element +
                     ", then add " +
@@ -328,8 +326,7 @@ export class SetCriteriaComponent implements OnInit {
                 isCurrentCriteriaEqualCondition &&
                 isAlreadyCriteriaEqualCondition
               ) {
-                console.log("adding one more equal crit ");
-                this.ngxToaster.warning(
+                this.coreService.showWarningToast(
                   "Please delete existing criteria " +
                     element +
                     ", then add " +
@@ -346,7 +343,7 @@ export class SetCriteriaComponent implements OnInit {
                 if (
                   this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
                 ) {
-                  this.ngxToaster.warning(
+                  this.coreService.showWarningToast(
                     "Please delete existing criteria " +
                       element +
                       ", then add " +
@@ -364,7 +361,7 @@ export class SetCriteriaComponent implements OnInit {
                     splitdata.split("  ")[1] != "Any"
                   )
                 ) {
-                  this.ngxToaster.warning(
+                  this.coreService.showWarningToast(
                     "Please delete existing criteria " +
                       element +
                       ", then add " +
@@ -503,7 +500,7 @@ export class SetCriteriaComponent implements OnInit {
           return true;
         }
       } else {
-        this.ngxToaster.warning(
+        this.coreService.showWarningToast(
           `${event["label"]} is dependant on ${
             this.cmCriteriaDependency[event["label"]]
           }, Select it first.`
@@ -928,7 +925,7 @@ export class SetCriteriaComponent implements OnInit {
 
     console.log("::remaining crit ", this.criteriaText);
 
-    this.ngxToaster.warning(
+    this.coreService.showWarningToast(
       `All dependent values of ${criteria} has been removed`
     );
   }
@@ -941,7 +938,7 @@ export class SetCriteriaComponent implements OnInit {
       let finalFormattedCriteriaObj = this.createFormattedCriteriaMap();
       return finalFormattedCriteriaObj;
     } else {
-      this.ngxToaster.warning(
+      this.coreService.showWarningToast(
         `Please add all mandatory criteria for applying the criteria. Mandatory criteria are ${this.cmCriteriaMandatory.join(
           ", "
         )}`
@@ -976,7 +973,7 @@ export class SetCriteriaComponent implements OnInit {
             );
           } else {
             dependencyCheckPassed = false;
-            this.ngxToaster.warning(
+            this.coreService.showWarningToast(
               `${dependantCrt} is dependant on ${this.criteriaDataDetailsJson.data.dependance[dependantCrt]}, Please select that also`
             );
             return dependencyCheckPassed;
@@ -1288,7 +1285,7 @@ export class SetCriteriaComponent implements OnInit {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.saveTemplateDialogOpen = true;
     } else {
-      this.ngxToaster.warning("Please add criteria.");
+      this.coreService.showWarningToast("Please add criteria.");
     }
   }
 }

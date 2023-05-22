@@ -8,7 +8,6 @@ import {
 import { EMPTY, Observable, of } from "rxjs";
 import { AuthService } from "./auth/auth.service";
 import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { CoreService } from "./core.service";
 import { environment } from "src/environments/environment";
 
@@ -17,7 +16,6 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private ngxToaster: ToastrService,
     private coreService: CoreService
   ) {}
 
@@ -34,7 +32,7 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
     } else if (!this.authService.isLoggedIn()) {
       this.coreService.userActionsObs.next([{ name: "Login" }]);
       console.log("not authorized", request);
-      this.ngxToaster.warning(
+      this.coreService.showWarningToast(
         "Your session has timed out. Please log in again to continue."
       );
       this.router.navigate(["navbar/session-time-out"]);

@@ -6,7 +6,6 @@ import {
   Validators,
 } from "@angular/forms";
 import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
@@ -28,7 +27,6 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: UntypedFormBuilder,
     private router: Router,
-    private ngxToaster: ToastrService,
     private loginService: LoginService,
     private coreService: CoreService,
     private authService: AuthService
@@ -61,9 +59,10 @@ export class LoginComponent implements OnInit {
               console.log("::user", data);
               this.loginService.saveLoggedUserInfo(data);
               this.router.navigate(["/navbar"]);
-              this.ngxToaster.success("Login Successfull");
+              this.coreService.showSuccessToast("Login Successfull");
             } else {
-              data["msg"] && this.ngxToaster.warning(data["msg"]);
+              data["msg"] && this.coreService.showWarningToast(data["msg"]);
+
               this.coreService.removeLoadingScreen();
             }
           },

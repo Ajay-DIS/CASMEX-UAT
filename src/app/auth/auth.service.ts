@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { BehaviorSubject } from "rxjs";
 import { CoreService } from "../core.service";
 import { User } from "./user.model";
@@ -10,7 +9,6 @@ import { User } from "./user.model";
 })
 export class AuthService {
   constructor(
-    private ngxToaster: ToastrService,
     private router: Router,
     private coreService: CoreService
   ) {}
@@ -39,7 +37,7 @@ export class AuthService {
     this.userDataSub.next(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
-    this.ngxToaster.warning(
+    this.coreService.showWarningToast(
       "Your session has timed out. Please log in again to continue."
     );
     this.router.navigate(["navbar/session-time-out"]);

@@ -8,7 +8,6 @@ import {
 import { MultiSelect } from "primeng/multiselect";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Table } from "primeng/table";
-import { ToastrService } from "ngx-toastr";
 
 import {
   BankRouting,
@@ -30,7 +29,6 @@ export class BankRoutingComponent2 implements OnInit {
   constructor(
     private router: Router,
     private bankRoutingService: BankRoutingService,
-    private ngxToaster: ToastrService,
     private coreService: CoreService,
     public dialogService: DialogService,
     public messageService: MessageService,
@@ -154,7 +152,7 @@ export class BankRoutingComponent2 implements OnInit {
     this.bankRoutingService.updateBankRouteStatus(data).subscribe((res) => {
       if (res["msg"]) {
         sliderElm.checked = sliderElm!.checked;
-        this.ngxToaster.success(res["msg"]);
+        this.coreService.showSuccessToast(res["msg"]);
         this.getBanksRoutingData(this.userData.userId);
       }
     });

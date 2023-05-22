@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { CoreService } from "src/app/core.service";
@@ -64,7 +63,6 @@ export class AddnewrouteComponent2 implements OnInit {
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
-    private ngxToaster: ToastrService,
     public dialogService: DialogService,
     public messageService: MessageService,
     private router: Router,
@@ -114,7 +112,7 @@ export class AddnewrouteComponent2 implements OnInit {
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
@@ -237,10 +235,10 @@ export class AddnewrouteComponent2 implements OnInit {
             });
           } else {
             if (res["message"]) {
-              this.ngxToaster.warning(res["message"]);
+              this.coreService.showWarningToast(res["message"]);
               this.resetCriteriaDropdowns();
             } else {
-              this.ngxToaster.warning("Criteria Map is not proper");
+              this.coreService.showWarningToast("Criteria Map is not proper");
               this.resetCriteriaDropdowns();
             }
           }
@@ -279,16 +277,16 @@ export class AddnewrouteComponent2 implements OnInit {
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
               ];
-              this.ngxToaster.success(`Criteria Applied Successfully`);
+              this.coreService.showSuccessToast(`Criteria Applied Successfully`);
             } else {
               this.appliedCriteriaData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
               this.appliedCriteriaDataCols = [];
-              this.ngxToaster.warning("Applied criteria already exists.");
+              this.coreService.showWarningToast("Applied criteria already exists.");
             }
           } else {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
             this.appliedCriteriaData = [];
           }
         },
@@ -317,7 +315,7 @@ export class AddnewrouteComponent2 implements OnInit {
             this.savingCriteriaTemplateError = null;
             this.setCriteriaSharedComponent.selectedTemplate =
               this.setCriteriaSharedComponent.criteriaName;
-            this.ngxToaster.success(response.msg);
+            this.coreService.showSuccessToast(response.msg);
             this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
             this.setCriteriaSharedComponent.criteriaName = "";
             this.getAllTemplates();
@@ -384,7 +382,7 @@ export class AddnewrouteComponent2 implements OnInit {
 
     if (isRequiredFields) {
       this.coreService.removeLoadingScreen();
-      this.ngxToaster.warning("Please Select required fields.");
+      this.coreService.showWarningToast("Please Select required fields.");
     } else {
       let service;
       if (this.groupID != "") {
@@ -409,7 +407,7 @@ export class AddnewrouteComponent2 implements OnInit {
         service.subscribe(
           (res) => {
             if (res["msg"]) {
-              this.ngxToaster.success(res.msg);
+              this.coreService.showSuccessToast(res.msg);
               if (action == "save") {
                 this.router.navigate([`navbar/bank-routing`]);
               } else if (action == "saveAndAddNew") {

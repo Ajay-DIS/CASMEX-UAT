@@ -6,7 +6,6 @@ import {
   UrlTree,
   Router,
 } from "@angular/router";
-import { Toast, ToastrService } from "ngx-toastr";
 import { Observable } from "rxjs";
 import { take } from "rxjs/operators";
 import { CoreService } from "../core.service";
@@ -19,7 +18,6 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private ngxToaster: ToastrService,
     private coreService: CoreService
   ) {}
   canActivate(
@@ -50,7 +48,7 @@ export class AuthGuard implements CanActivate {
       } else {
         console.log("unauthorized");
         this.coreService.userActionsObs.next([{ name: "Login" }]);
-        this.ngxToaster.warning(
+        this.coreService.showWarningToast(
           "Your session has timed out. Please log in again to continue."
         );
         this.router.navigate(["navbar/session-time-out"]);

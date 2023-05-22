@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { forkJoin } from "rxjs";
@@ -68,7 +67,6 @@ export class AddNewTaxComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private ngxToaster: ToastrService,
     public dialogService: DialogService,
     public messageService: MessageService,
     private router: Router,
@@ -130,7 +128,7 @@ export class AddNewTaxComponent implements OnInit {
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
@@ -254,10 +252,10 @@ export class AddNewTaxComponent implements OnInit {
             });
           } else {
             if (res["message"]) {
-              this.ngxToaster.warning(res["message"]);
+              this.coreService.showWarningToast(res["msg"]);
               this.resetCriteriaDropdowns();
             } else {
-              this.ngxToaster.warning("Criteria Map is not proper");
+              this.coreService.showWarningToast("Criteria Map is not proper");
               this.resetCriteriaDropdowns();
             }
           }
@@ -316,16 +314,18 @@ export class AddNewTaxComponent implements OnInit {
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
               ];
-              this.ngxToaster.success(`Criteria Applied Successfully`);
+              this.coreService.showSuccessToast(`Criteria Applied Successfully`);
             } else {
               this.appliedCriteriaData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
               this.appliedCriteriaDataCols = [];
-              this.ngxToaster.warning("Applied criteria already exists.");
+              this.coreService.showWarningToast("Applied criteria already exists.");
+
             }
           } else {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
+
             this.appliedCriteriaData = [];
           }
         },
@@ -353,8 +353,8 @@ export class AddNewTaxComponent implements OnInit {
           } else {
             this.savingCriteriaTemplateError = null;
             this.setCriteriaSharedComponent.selectedTemplate =
-              this.setCriteriaSharedComponent.criteriaName;
-            this.ngxToaster.success(response.msg);
+            this.setCriteriaSharedComponent.criteriaName;
+            this.coreService.showSuccessToast(response.msg);
             this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
             this.setCriteriaSharedComponent.criteriaName = "";
             this.getAllTemplates();
@@ -400,7 +400,8 @@ export class AddNewTaxComponent implements OnInit {
 
     if (isRequiredFields) {
       this.coreService.removeLoadingScreen();
-      this.ngxToaster.warning("Please Fill required fields.");
+      this.coreService.showWarningToast("Please Fill required fields.");
+
     } else {
       let service;
       if (this.groupID != "") {
@@ -426,7 +427,7 @@ export class AddNewTaxComponent implements OnInit {
         service.subscribe(
           (res) => {
             if (res["msg"]) {
-              this.ngxToaster.success(res.msg);
+              this.coreService.showSuccessToast(res.msg);
               if (action == "save") {
                 this.router.navigate([`navbar/tax-settings`]);
               } else if (action == "saveAndAddNew") {

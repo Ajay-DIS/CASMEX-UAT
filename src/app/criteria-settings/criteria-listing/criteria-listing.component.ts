@@ -1,7 +1,6 @@
 import { DatePipe } from "@angular/common";
 import { Component, InjectionToken, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { ToastrService } from "ngx-toastr";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
 import { MultiSelect } from "primeng/multiselect";
@@ -251,7 +250,6 @@ export class CriteriaListingComponent implements OnInit {
     private route: ActivatedRoute,
     private datePipe: DatePipe,
     private criterisSettingsService: CriteriaSettingsService,
-    private ngxToaster: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -272,7 +270,7 @@ export class CriteriaListingComponent implements OnInit {
             this.formatApiData();
             this.setFilterOptions();
           } else {
-            this.ngxToaster.warning(res["msg"]);
+            this.coreService.showWarningToast(res["msg"]);
           }
         },
         (err) => {

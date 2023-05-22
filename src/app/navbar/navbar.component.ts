@@ -10,7 +10,6 @@ import {
 } from "@angular/core";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
 import { TranslateService } from "@ngx-translate/core";
-import { ToastrService } from "ngx-toastr";
 import { MenuItem } from "primeng/api";
 import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
@@ -72,7 +71,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     public translate: TranslateService,
     private el: ElementRef,
     private router: Router,
-    private ngxToaster: ToastrService,
     private coreService: CoreService,
     private route: ActivatedRoute,
     private authService: AuthService
@@ -327,7 +325,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
       if (data.name == "Logout") {
-        this.ngxToaster.success("Logged Out Successfully.");
+        this.coreService.showSuccessToast("Logged Out Successfully.");
       }
       this.router.navigate(["login"]);
     }
