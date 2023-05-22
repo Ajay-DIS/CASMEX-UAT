@@ -166,6 +166,7 @@
                   type="button"
                   icon="pi pi-clone"
                   class="operation-btns mr-2"
+                  [disabled]="rowData['status'] == 'Inactive'"
                   (click)="cloneTax(rowData)"
                 ></button>
               </span>
