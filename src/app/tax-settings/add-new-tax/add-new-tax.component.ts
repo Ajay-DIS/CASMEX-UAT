@@ -418,7 +418,6 @@ export class AddNewTaxComponent implements OnInit {
           isRequiredFields = true;
         }
       });
-
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
