@@ -797,3 +797,15 @@ input:focus {
 .p-treetable .p-sortable-column:not(.p-highlight):hover {
   background-color: #eaedf4;
 }
+// listing action buttons start
+.operation-btns {
+  background-color: rgb(85 199 138);
+  color: white !important;
+  border: 1px solid rgb(85 199 138) !important;
+  height: 27px !important;
+  width: 30px !important;
+}
+.operation-btns span {
+  font-size: 12px;
+}
+// listing action buttons end

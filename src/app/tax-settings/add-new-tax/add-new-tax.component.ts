@@ -256,7 +256,7 @@ export class AddNewTaxComponent implements OnInit {
             });
           } else {
             if (res["message"]) {
-              this.coreService.showWarningToast(res["msg"]);
+              this.coreService.showWarningToast(res["message"]);
               this.resetCriteriaDropdowns();
             } else {
               this.coreService.showWarningToast("Criteria Map is not proper");
@@ -388,7 +388,7 @@ export class AddNewTaxComponent implements OnInit {
       });
   }
 
-  saveAddNewRoute(action) {
+  saveAddNewTax(action) {
     this.coreService.displayLoadingScreen();
     let isRequiredFields = false;
     this.appliedCriteriaData.forEach((element) => {
@@ -442,7 +442,7 @@ export class AddNewTaxComponent implements OnInit {
           },
           (err) => {
             this.coreService.removeLoadingScreen();
-            console.log("error in saveAddNewRoute", err);
+            console.log("error in saveAddNewTax", err);
           }
         );
       }
