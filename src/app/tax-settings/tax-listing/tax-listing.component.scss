@@ -9,14 +9,3 @@
 .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
   text-align: center;
 }
-
-.operation-btns {
-  background-color: rgb(85 199 138);
-  color: white !important;
-  border: 1px solid rgb(85 199 138) !important;
-  height: 27px;
-  width: 30px;
-}
-.operation-btns::ng-deep span {
-  font-size: 13px;
-}

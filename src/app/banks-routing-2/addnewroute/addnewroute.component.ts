@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { DialogService } from "primeng/dynamicdialog";
 import { CoreService } from "src/app/core.service";
 
@@ -60,6 +60,14 @@ export class AddnewrouteComponent2 implements OnInit {
 
   savingCriteriaTemplateError = null;
 
+  routeCode: any = "No Data";
+  routeDescription: any = "";
+
+  isBankRoutingLinked: boolean = false;
+
+  inactiveData: boolean = false;
+  isApplyCriteriaClicked: boolean = false;
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -69,7 +77,8 @@ export class AddnewrouteComponent2 implements OnInit {
     private route: ActivatedRoute,
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService,
-    private criteriaDataService: CriteriaDataService
+    private criteriaDataService: CriteriaDataService,
+    private confirmationService: ConfirmationService
   ) {}
 
   @ViewChild(SetCriteriaComponent)
@@ -83,14 +92,21 @@ export class AddnewrouteComponent2 implements OnInit {
     });
     this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+    const params = this.activatedRoute.snapshot.params;
+    if (params && params.id) {
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      this.groupID = params.id;
+    }
   }
 
-  getBanksRoutingForEditApi(groupID: any) {
+  getBanksRoutingForEditApi(routeCode: any, operation: any) {
     this.isEditMode = true;
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.bankRoutingService
-      .getBanksRoutingForEdit(groupID)
+      .getBanksRoutingForEdit(routeCode, operation)
       .subscribe(
         (res) => {
           if (!res["msg"]) {
@@ -107,12 +123,22 @@ export class AddnewrouteComponent2 implements OnInit {
               this.cmCriteriaSlabType
             );
 
+            this.routeCode = res["data"][0]["routeCode"];
+            if (res["data"][0]["routeDesc"]) {
+              this.routeDescription = res["data"][0]["routeDesc"];
+            }
+            this.isBankRoutingLinked = !res["criteriaUpdate"];
+
             this.appliedCriteriaDataOrg = [...res["data"]];
             this.appliedCriteriaData = [...res["data"]];
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            if (res["msg"].includes("No active")) {
+              this.inactiveData = true;
+              this.setCriteriaSharedComponent.criteriaCtrl.disable();
+            }
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
@@ -153,6 +179,11 @@ export class AddnewrouteComponent2 implements OnInit {
           );
           console.log(" Slabs fields", this.cmCriteriaSlabType);
 
+          if (this.mode == "add") {
+            this.routeCode = this.criteriaDataDetailsJson.data.routeCode;
+            this.routeDescription = this.criteriaDataDetailsJson.data.routeDesc;
+          }
+
           this.cmCriteriaDataDetails = [
             ...this.criteriaDataDetailsJson.data.listCriteria
               .cmCriteriaDataDetails,
@@ -188,11 +219,10 @@ export class AddnewrouteComponent2 implements OnInit {
         (res) => {
           console.log(res);
           this.criteriaMasterData = res;
-          const params = this.activatedRoute.snapshot.params;
-          if (params && params.id) {
-            this.mode = "edit";
-            this.getBanksRoutingForEditApi(params.id);
-            this.groupID = params.id;
+          if (this.mode == "edit") {
+            this.getBanksRoutingForEditApi(this.groupID, "edit");
+          } else if (this.mode == "clone") {
+            this.getBanksRoutingForEditApi(this.groupID, "clone");
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -256,7 +286,28 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   applyCriteria(postDataCriteria: any) {
-    this.routeBankCriteriaSearchApi(postDataCriteria);
+    this.isApplyCriteriaClicked = true;
+    if (this.isBankRoutingLinked && this.mode != "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: `You can not edit the current criteria, as it is already used in transaction.<br/> Kindly disable the current record and add new.`,
+        key: "bankRoutingLinkedWarning",
+        accept: () => {
+          this.coreService.displayLoadingScreen();
+          setTimeout(() => {
+            this.coreService.setHeaderStickyStyle(true);
+            this.coreService.setSidebarBtnFixedStyle(true);
+          }, 500);
+          setTimeout(() => {
+            this.coreService.removeLoadingScreen();
+          }, 1000);
+        },
+      });
+      console.log("CANNNNOT UPDATE ITTT");
+    } else {
+      this.routeBankCriteriaSearchApi(postDataCriteria);
+    }
   }
 
   routeBankCriteriaSearchApi(formData: any) {
@@ -277,13 +328,17 @@ export class AddnewrouteComponent2 implements OnInit {
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
               ];
-              this.coreService.showSuccessToast(`Criteria Applied Successfully`);
+              this.coreService.showSuccessToast(
+                `Criteria Applied Successfully`
+              );
             } else {
               this.appliedCriteriaData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
               this.appliedCriteriaDataCols = [];
-              this.coreService.showWarningToast("Applied criteria already exists.");
+              this.coreService.showWarningToast(
+                "Applied criteria already exists."
+              );
             }
           } else {
             this.coreService.showWarningToast(res["msg"]);
@@ -368,60 +423,70 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveAddNewRoute(action) {
-    this.coreService.displayLoadingScreen();
-    let isRequiredFields = false;
-    this.appliedCriteriaData.forEach((element) => {
-      function isNullValue(arr) {
-        return arr.some((el) => el == null);
-      }
-      console.log("::::", element);
-      if (isNullValue(Object.values(element))) {
-        isRequiredFields = true;
-      }
-    });
+    if (
+      this.mode != "clone" ||
+      (this.mode == "clone" && this.isApplyCriteriaClicked)
+    ) {
+      this.coreService.displayLoadingScreen();
+      let isRequiredFields = false;
+      this.appliedCriteriaData.forEach((element) => {
+        element["routeDesc"] = this.routeDescription
+          ? this.routeDescription
+          : null;
+        function isNullValue(arr) {
+          return arr.some((el) => el == null);
+        }
+        console.log("::::", element);
+        if (isNullValue(Object.values(element))) {
+          isRequiredFields = true;
+        }
+      });
 
-    if (isRequiredFields) {
-      this.coreService.removeLoadingScreen();
-      this.coreService.showWarningToast("Please Select required fields.");
-    } else {
-      let service;
-      if (this.groupID != "") {
-        let data = {
-          data: this.appliedCriteriaData,
-          duplicate: this.appliedCriteriaIsDuplicate,
-          criteriaMap: this.appliedCriteriaCriteriaMap,
-          groupID: this.groupID,
-        };
-        service = this.bankRoutingService.updateRoute(this.userId, data);
-        console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+      if (isRequiredFields) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please fill required fields.");
       } else {
-        let data = {
-          data: this.appliedCriteriaData,
-          duplicate: this.appliedCriteriaIsDuplicate,
-          criteriaMap: this.appliedCriteriaCriteriaMap,
-        };
-        service = this.bankRoutingService.addNewRoute(data);
-      }
+        let service;
+        if (this.mode == "edit") {
+          let data = {
+            data: this.appliedCriteriaData,
+            duplicate: this.appliedCriteriaIsDuplicate,
+            criteriaMap: this.appliedCriteriaCriteriaMap,
+            routeCode: this.groupID,
+          };
+          service = this.bankRoutingService.updateRoute(this.userId, data);
+          console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
+        } else {
+          let data = {
+            data: this.appliedCriteriaData,
+            duplicate: this.appliedCriteriaIsDuplicate,
+            criteriaMap: this.appliedCriteriaCriteriaMap,
+          };
+          service = this.bankRoutingService.addNewRoute(data);
+        }
 
-      if (service) {
-        service.subscribe(
-          (res) => {
-            if (res["msg"]) {
-              this.coreService.showSuccessToast(res.msg);
-              if (action == "save") {
-                this.router.navigate([`navbar/bank-routing`]);
-              } else if (action == "saveAndAddNew") {
-                this.reset();
-                this.coreService.removeLoadingScreen();
+        if (service) {
+          service.subscribe(
+            (res) => {
+              if (res["msg"]) {
+                this.coreService.showSuccessToast(res.msg);
+                if (action == "save") {
+                  this.router.navigate([`navbar/bank-routing`]);
+                } else if (action == "saveAndAddNew") {
+                  this.reset();
+                  this.coreService.removeLoadingScreen();
+                }
               }
+            },
+            (err) => {
+              this.coreService.removeLoadingScreen();
+              console.log("error in saveAddNewRoute", err);
             }
-          },
-          (err) => {
-            this.coreService.removeLoadingScreen();
-            console.log("error in saveAddNewRoute", err);
-          }
-        );
+          );
+        }
       }
+    } else {
+      this.coreService.showWarningToast("Applied criteria already exists.");
     }
   }
 }

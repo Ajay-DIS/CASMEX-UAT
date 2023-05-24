@@ -34,38 +34,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "bank-routing",
-        component: BankRoutingComponent2,
-        data: [
-          { label: "Home", routerLink: "/navbar/bank-routing" },
-          { label: "Settings", routerLink: "/navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "bank-routing/addnewroute",
-        component: AddnewrouteComponent2,
-        data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Settings", routerLink: "../navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
-          { label: "Add New Route", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "bank-routing/addnewroute/:id",
-        component: AddnewrouteComponent2,
-        data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Settings", routerLink: "../navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
-          { label: "Edit Route", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-      {
         path: "criteria-settings",
         component: CriteriaListingComponent,
         data: [
@@ -114,6 +82,49 @@ const routes: Routes = [
           },
           { label: "Criteria", routerLink: "criteria-settings" },
           { label: "Edit Criteria settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing",
+        component: BankRoutingComponent2,
+        data: [
+          { label: "Home", routerLink: "/navbar/bank-routing" },
+          { label: "Settings", routerLink: "/navbar/bank-routing" },
+          { label: "Bank Routing", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing/addnewroute",
+        component: AddnewrouteComponent2,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Add New Route", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing/addnewroute/:id/edit",
+        component: AddnewrouteComponent2,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Edit Route", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "bank-routing/addnewroute/:id/clone",
+        component: AddnewrouteComponent2,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/bank-routing" },
+          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Clone Route", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

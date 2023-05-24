@@ -26,3 +26,39 @@
 .setCriteria img {
   cursor: pointer;
 }
+
+.route-code-desc-section {
+  font-size: 0.8rem;
+  font-weight: 500;
+  gap: 17px;
+}
+.route-code-desc-section p {
+  margin-bottom: 0.5rem;
+}
+.route-code-desc-section input {
+  height: 35px;
+  font-size: 0.8rem;
+}
+.route-code-desc-section .routeCode input {
+  width: 235px;
+}
+.route-code-desc-section .routeDesc input {
+  width: 398px;
+}
+.route-code-desc-section .routeDesc input::placeholder {
+  color: #8f8f90;
+  font-size: 12px;
+}
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.description.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: -5px;
+  margin-left: 2px;
+}

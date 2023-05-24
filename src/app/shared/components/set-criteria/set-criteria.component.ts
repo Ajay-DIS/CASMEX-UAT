@@ -42,6 +42,7 @@ export class SetCriteriaComponent implements OnInit {
   @Input("saveTemplateDialogOpen") saveTemplateDialogOpen: boolean = false;
   @Input("criteriaText") criteriaText: any = [];
   @Input("criteriaCodeText") criteriaCodeText: any = [];
+  @Input("inactiveData") inactiveData: boolean = false;
 
   @Output() getCorrespondentValues = new EventEmitter<{
     fieldName: any;

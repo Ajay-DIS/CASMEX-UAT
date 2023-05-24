@@ -30,25 +30,18 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th
-            *ngFor="let col of columns"
+            *ngFor="let col of columns; let c = index"
             pReorderableColumn
             [pSortableColumn]="col.field"
             pResizableColumn
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div (click)="$event.stopPropagation()" class="filter-icon">
-              <!-- <img
-                height="12px"
-                class="pi pi-filter"
-                (click)="toggleFilterVisibility(col.field)"
-                [src]="
-                  getSelectedFilterArr(col.field).length
-                    ? '../assets/ActiveFilter.svg'
-                    : '../assets/filter.svg'
-                "
-                alt=""
-              /> -->
+            <div
+              *ngIf="c == 0 || col.field == 'status'"
+              (click)="$event.stopPropagation()"
+              class="filter-icon"
+            >
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length
@@ -80,7 +73,11 @@
         </tr>
         <tr class="search-row">
           <th *ngFor="let col of cols">
-            <span style="width: 91px" class="p-input-icon-left" *ngIf="col.field!='status'">
+            <span
+              style="width: 100%"
+              class="p-input-icon-left"
+              *ngIf="!(col.field == 'status' || col.field == 'operation')"
+            >
               <i class="pi pi-search"></i>
               <input
                 type="text"
@@ -100,9 +97,9 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i + 1 != columns.length">
+            <td *ngIf="!(col.field == 'status' || col.field == 'operation')">
               <div
-                *ngIf="i != 0"
+                *ngIf="!(i == 0 || i == 2 || i == 1)"
                 style="display: inline-block"
                 [ngClass]="objectKeys(rowData).length == 1 ? 'expandable' : ''"
               >
@@ -110,18 +107,44 @@
               </div>
               <a
                 *ngIf="i == 0"
-                style="
-                  text-decoration: underline !important;
-                  color: var(--primary-color);
-                  cursor: pointer;
-                "
+                style="text-decoration: underline !important"
+                [ngStyle]="{
+                  color: isLinked(rowData[col['field']])
+                    ? '#f89406'
+                    : 'var(--primary-color)',
+                  fontSize: '11px',
+                  cursor: 'pointer'
+                }"
+                [pTooltip]="'Active Transactions Exist.'"
+                [tooltipDisabled]="!isLinked(rowData[col['field']])"
                 (click)="viewBankRouting(rowData)"
                 >{{ rowData[col["field"]] }}</a
+              >
+              <span
+                *ngIf="i == 1"
+                [pTooltip]="
+                  rowData[col['field']].substring(
+                    36,
+                    rowData[col['field']].length
+                  )
+                "
+                tooltipPosition="bottom"
+                >{{ rowData[col["field"]].substring(0, 35) }}
+                {{ rowData[col["field"]].length > 35 ? ".." : "" }}</span
+              >
+              <span
+                *ngIf="i == 2"
+                [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
+                tooltipPosition="bottom"
+                >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
+                {{
+                  rowData[col["field"]].split(",").length > 4 ? ".." : ""
+                }}</span
               >
             </td>
 
             <td
-              *ngIf="i + 1 == columns.length"
+              *ngIf="col.field == 'status'"
               style="border: none; text-align: center"
             >
               <label
@@ -132,7 +155,13 @@
                 <input
                   #statusInp
                   type="checkbox"
-                  (click)="updateStatus($event, rowData['routeCode'])"
+                  (click)="
+                    confirmStatus(
+                      $event,
+                      rowData['routeCode'],
+                      rowData[col['field']]
+                    )
+                  "
                   [checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
@@ -142,6 +171,21 @@
                 />
                 <span class="slider round"></span>
               </label>
+            </td>
+            <td
+              *ngIf="col.field == 'operation'"
+              style="border: none; text-align: center"
+            >
+              <span class="image-text">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-clone"
+                  class="operation-btns mr-2"
+                  [disabled]="rowData['status'] == 'Inactive'"
+                  (click)="cloneRoute(rowData)"
+                ></button>
+              </span>
             </td>
           </ng-container>
         </tr>
@@ -163,3 +207,29 @@
     </p-table>
   </div>
 </div>
+
+<p-confirmDialog
+  key="activeDeactiveRouteStatus"
+  class="status-confirm confirm-popup"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
