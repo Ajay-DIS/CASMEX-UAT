@@ -114,26 +114,26 @@ export class TaxListingComponent implements OnInit {
                 return { label: code, value: code };
               }
             );
-            // this.criteriaMap = this.taxListingApiData.criteriaMap.map(
-            //   (code) => {
-            //     return { label: code, value: code };
-            //   }
-            // );
             this.criteriaMap = this.taxListingApiData.criteriaMap.map(
-              (criteriaMap) => {
-                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                  criteriaMap: criteriaMap.split("&&&&")[0],
-                });
-                let code = (
-                  this.setCriteriaService.decodeFormattedCriteria(
-                    criteriaCodeText,
-                    criteriaMasterData,
-                    [""]
-                  ) as []
-                ).join(", ");
+              (code) => {
                 return { label: code, value: code };
               }
             );
+            // this.criteriaMap = this.taxListingApiData.criteriaMap.map(
+            //   (criteriaMap) => {
+            //     let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+            //       criteriaMap: criteriaMap.split("&&&&")[0],
+            //     });
+            //     let code = (
+            //       this.setCriteriaService.decodeFormattedCriteria(
+            //         criteriaCodeText,
+            //         criteriaMasterData,
+            //         [""]
+            //       ) as []
+            //     ).join(", ");
+            //     return { label: code, value: code };
+            //   }
+            // );
             this.status = this.taxListingApiData.status.map((code) => {
               return { label: code, value: code };
             });

@@ -34,14 +34,15 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th
-            *ngFor="let col of columns"
+            *ngFor="let col of columns; let c = index"
             pReorderableColumn
             [pSortableColumn]="col.field"
             pResizableColumn
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div (click)="$event.stopPropagation()" class="filter-icon">
+            <div *ngIf="c == 0 || col.field == 'status'"
+            (click)="$event.stopPropagation()" class="filter-icon">
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length
