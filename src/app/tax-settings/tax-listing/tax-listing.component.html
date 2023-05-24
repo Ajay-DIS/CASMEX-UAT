@@ -41,8 +41,11 @@
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div *ngIf="c == 0 || col.field == 'status'"
-            (click)="$event.stopPropagation()" class="filter-icon">
+            <div
+              *ngIf="c == 0 || col.field == 'status'"
+              (click)="$event.stopPropagation()"
+              class="filter-icon"
+            >
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length
@@ -99,7 +102,10 @@
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
             <td *ngIf="col.field != 'status' && col.field != 'operation'">
-              <div *ngIf="i != 0 && i != 2" style="display: inline-block">
+              <div
+                *ngIf="!(i == 0 || i == 2 || i == 1)"
+                style="display: inline-block"
+              >
                 {{ rowData[col["field"]] }}
               </div>
               <a
@@ -118,8 +124,21 @@
                 >{{ rowData[col["field"]] }}</a
               >
               <span
+                *ngIf="i == 1"
+                [pTooltip]="
+                  rowData[col['field']].substring(
+                    36,
+                    rowData[col['field']].length
+                  )
+                "
+                tooltipPosition="bottom"
+                >{{ rowData[col["field"]].substring(0, 35) }}
+                {{ rowData[col["field"]].length > 35 ? ".." : "" }}</span
+              >
+              <span
                 *ngIf="i == 2"
                 [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
+                tooltipPosition="bottom"
                 >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
                 {{
                   rowData[col["field"]].split(",").length > 4 ? ".." : ""

@@ -77,7 +77,13 @@
         <p style="position: relative">
           Tax Description <span class="description red-star">*</span>
         </p>
-        <input type="text" pInputText [(ngModel)]="taxDescription" />
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="taxDescription"
+          maxlength="100"
+          placeholder="Max 100 characters"
+        />
       </div>
     </div>
     <app-set-criteria
@@ -96,6 +102,7 @@
       [savingCriteriaTemplateError]="savingCriteriaTemplateError"
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
+      [inactiveData]="inactiveData"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -200,9 +207,7 @@
                               rowIndex
                             )
                           "
-                          [disabled]="
-                            !rowData['action'].split(',').includes('delete')
-                          "
+                          [disabled]="rowData['linked'] == 'Y'"
                         ></p-dropdown>
                       </div>
                       <div *ngIf="col['isInput']" class="appliedCriteriaInput">
@@ -222,9 +227,7 @@
                               valInp
                             )
                           "
-                          [disabled]="
-                            !rowData['action'].split(',').includes('delete')
-                          "
+                          [disabled]="rowData['linked'] == 'Y'"
                         ></p-inputNumber>
                       </div>
                       <div

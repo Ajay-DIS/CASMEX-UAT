@@ -157,7 +157,7 @@
             ? 'Select Template'
             : 'No saved templates'
         "
-        [disabled]="!criteriaTemplatesDdlOptions.length"
+        [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData"
         (onChange)="selectCriteriaTemplate($event.value)"
         [(ngModel)]="selectedTemplate"
       ></p-dropdown>

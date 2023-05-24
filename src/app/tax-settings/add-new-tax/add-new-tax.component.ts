@@ -53,6 +53,9 @@ export class AddNewTaxComponent implements OnInit {
 
   savingCriteriaTemplateError = null;
 
+  inactiveData: boolean = false;
+  isApplyCriteriaClicked: boolean = false;
+
   // suresh Work start -->
   appliedCriteriaDataCols = [];
   appliedCriteriaData: any = [];
@@ -131,6 +134,10 @@ export class AddNewTaxComponent implements OnInit {
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            if (res["msg"].includes("No active")) {
+              this.inactiveData = true;
+              this.setCriteriaSharedComponent.criteriaCtrl.disable();
+            }
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
@@ -277,6 +284,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   applyCriteria(postDataCriteria: FormData) {
+    this.isApplyCriteriaClicked = true;
     if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
@@ -318,14 +326,17 @@ export class AddNewTaxComponent implements OnInit {
               this.appliedCriteriaDataCols = [
                 ...this.getColumns(res["column"]),
               ];
-              this.coreService.showSuccessToast(`Criteria Applied Successfully`);
+              this.coreService.showSuccessToast(
+                `Criteria Applied Successfully`
+              );
             } else {
               this.appliedCriteriaData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
               this.appliedCriteriaDataCols = [];
-              this.coreService.showWarningToast("Applied criteria already exists.");
-
+              this.coreService.showWarningToast(
+                "Applied criteria already exists."
+              );
             }
           } else {
             this.coreService.showWarningToast(res["msg"]);
@@ -357,7 +368,7 @@ export class AddNewTaxComponent implements OnInit {
           } else {
             this.savingCriteriaTemplateError = null;
             this.setCriteriaSharedComponent.selectedTemplate =
-            this.setCriteriaSharedComponent.criteriaName;
+              this.setCriteriaSharedComponent.criteriaName;
             this.coreService.showSuccessToast(response.msg);
             this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
             this.setCriteriaSharedComponent.criteriaName = "";
@@ -389,63 +400,70 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveAddNewTax(action) {
-    this.coreService.displayLoadingScreen();
-    let isRequiredFields = false;
-    this.appliedCriteriaData.forEach((element) => {
-      element["taxCodeDesc"] = this.taxDescription ? this.taxDescription : null;
-      function isNullValue(arr) {
-        return arr.some((el) => el == null);
-      }
-      console.log("::::", element);
-      if (isNullValue(Object.values(element))) {
-        isRequiredFields = true;
-      }
-    });
-
-    if (isRequiredFields) {
-      this.coreService.removeLoadingScreen();
-      this.coreService.showWarningToast("Please Fill required fields.");
-
-    } else {
-      let service;
-      if (this.mode == "edit") {
-        let data = {
-          data: this.appliedCriteriaData,
-          duplicate: this.appliedCriteriaIsDuplicate,
-          criteriaMap: this.appliedCriteriaCriteriaMap,
-          taxCode: this.groupID,
-        };
-        service = this.taxSettingsService.updateTaxSetting(this.userId, data);
-        console.log("EDIT MODE - UPDATE TAX SERVICE");
+    if (
+      this.mode != "clone" ||
+      (this.mode == "clone" && this.isApplyCriteriaClicked)
+    ) {
+      this.coreService.displayLoadingScreen();
+      let isRequiredFields = false;
+      this.appliedCriteriaData.forEach((element) => {
+        element["taxCodeDesc"] = this.taxDescription
+          ? this.taxDescription
+          : null;
+        function isNullValue(arr) {
+          return arr.some((el) => el == null);
+        }
+        console.log("::::", element);
+        if (isNullValue(Object.values(element))) {
+          isRequiredFields = true;
+        }
+      });
+      if (isRequiredFields) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Fill required fields.");
       } else {
-        let data = {
-          data: this.appliedCriteriaData,
-          duplicate: this.appliedCriteriaIsDuplicate,
-          criteriaMap: this.appliedCriteriaCriteriaMap,
-        };
-        console.log("ADD MODE - ADD NEW TAX SERVICE");
-        service = this.taxSettingsService.addNewTax(data);
-      }
+        let service;
+        if (this.mode == "edit") {
+          let data = {
+            data: this.appliedCriteriaData,
+            duplicate: this.appliedCriteriaIsDuplicate,
+            criteriaMap: this.appliedCriteriaCriteriaMap,
+            taxCode: this.groupID,
+          };
+          service = this.taxSettingsService.updateTaxSetting(this.userId, data);
+          console.log("EDIT MODE - UPDATE TAX SERVICE");
+        } else {
+          let data = {
+            data: this.appliedCriteriaData,
+            duplicate: this.appliedCriteriaIsDuplicate,
+            criteriaMap: this.appliedCriteriaCriteriaMap,
+          };
+          console.log("ADD MODE - ADD NEW TAX SERVICE");
+          service = this.taxSettingsService.addNewTax(data);
+        }
 
-      if (service) {
-        service.subscribe(
-          (res) => {
-            if (res["msg"]) {
-              this.coreService.showSuccessToast(res.msg);
-              if (action == "save") {
-                this.router.navigate([`navbar/tax-settings`]);
-              } else if (action == "saveAndAddNew") {
-                this.reset();
-                this.coreService.removeLoadingScreen();
+        if (service) {
+          service.subscribe(
+            (res) => {
+              if (res["msg"]) {
+                this.coreService.showSuccessToast(res.msg);
+                if (action == "save") {
+                  this.router.navigate([`navbar/tax-settings`]);
+                } else if (action == "saveAndAddNew") {
+                  this.reset();
+                  this.coreService.removeLoadingScreen();
+                }
               }
+            },
+            (err) => {
+              this.coreService.removeLoadingScreen();
+              console.log("error in saveAddNewTax", err);
             }
-          },
-          (err) => {
-            this.coreService.removeLoadingScreen();
-            console.log("error in saveAddNewTax", err);
-          }
-        );
+          );
+        }
       }
+    } else {
+      this.coreService.showWarningToast("Applied criteria already exists.");
     }
   }
 

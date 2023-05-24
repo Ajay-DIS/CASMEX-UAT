@@ -17,7 +17,10 @@ import {
 import { BankRoutingService } from "../bank-routing.service";
 import { CoreService } from "src/app/core.service";
 import { DialogService } from "primeng/dynamicdialog";
-import { MessageService, TreeNode } from "primeng/api";
+import { ConfirmationService, MessageService, TreeNode } from "primeng/api";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 
 @Component({
   selector: "app-bank-routing",
@@ -26,46 +29,37 @@ import { MessageService, TreeNode } from "primeng/api";
   providers: [DialogService, MessageService],
 })
 export class BankRoutingComponent2 implements OnInit {
+  formName = "Bank Routings";
+  applicationName = "Web Application";
+  linkedRouteCode: any = [];
+
+  inactiveData: boolean = false;
+
   constructor(
     private router: Router,
     private bankRoutingService: BankRoutingService,
     private coreService: CoreService,
     public dialogService: DialogService,
     public messageService: MessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private confirmationService: ConfirmationService,
+    private setCriteriaService: SetCriteriaService
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
 
-  showRouteCodesOptions: boolean = false;
-  showCountriesOptions: boolean = false;
-  showRouteBankNamesOptions: boolean = false;
-  showRouteServiceTypesOptions: boolean = false;
-  showRouteServiceCategoriesOptions: boolean = false;
-  showRouteToBankNamesOptions: boolean = false;
-  showRouteToServiceTypesOptions: boolean = false;
-  showRouteToServiceCategoriesOptions: boolean = false;
-  showISCorrespondentsOptions: boolean = false;
-  showStatusesOptions: boolean = false;
+  showrouteCodeOptions: boolean = false;
+  showrouteDescOptions: boolean = false;
+  showcriteriaMapOptions: boolean = false;
+  showstatusOptions: boolean = false;
 
   bankRoutingApiData: BankRoutingApiData;
 
   bankRoutingData: BankRouting[];
 
-  routeCode: any[] = [
-    { label: "code1", value: "code1" },
-    { label: "code2", value: "code2" },
-    { label: "code3", value: "code3" },
-    { label: "code4", value: "code4" },
-  ];
-  country: any[];
-  routeBankName: any[];
-  routeServiceType: any[];
-  routeServiceCategory: any[];
-  routeToBankName: any[];
-  routeToServiceType: any[];
-  routeToServiceCategory: any[];
-  iSCorrespondent: any[];
+  routeCode: any[] = [];
+  routeDesc: any[] = [];
+  criteriaMap: any[] = [];
   status: any[];
 
   userData: UserData;
@@ -73,42 +67,20 @@ export class BankRoutingComponent2 implements OnInit {
   noDataMsg: string = "Banks Routing Data Not Available";
 
   selectedFilterrouteCode: any[] = [];
-  selectedFiltercountry: any[] = [];
-  selectedFilterrouteBankName: any[] = [];
-  selectedFilterrouteServiceCategory: any[] = [];
-  selectedFilterrouteServiceType: any[] = [];
-  selectedFilteriSCorrespondent: any[] = [];
-  selectedFilterrouteToBankName: any[] = [];
-  selectedFilterrouteToServiceCategory: any[] = [];
-  selectedFilterrouteToServiceType: any[] = [];
+  selectedFilterrouteDesc: any[] = [];
+  selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
 
   loading = true;
 
-  // grouping
-  bankRoutesGroups: { groupID: string; routes: BankRouting[] }[] = [];
-  // grouping end
-
-  // treetable
   objectKeys = Object.keys;
   cols = [
-    { field: "routeCode", header: "Route Code", width: "4%" },
-    { field: "country", header: "Country", width: "4%" },
-    { field: "routeBankName", header: "Bank Routing", width: "4%" },
-    { field: "routeServiceCategory", header: "Service Category", width: "4%" },
-    { field: "routeServiceType", header: "Service Type", width: "4%" },
-    { field: "iSCorrespondent", header: "Is Correspondent", width: "4%" },
-    { field: "routeToBankName", header: "Route To", width: "4%" },
-    {
-      field: "routeToServiceCategory",
-      header: "Service Category",
-      width: "4%",
-    },
-    { field: "routeToServiceType", header: "Service Type", width: "4%" },
-    { field: "status", header: "Status", width: "4%" },
+    { field: "routeCode", header: "Route Code", width: "10%" },
+    { field: "routeDesc", header: "Route Description", width: "25%" },
+    { field: "criteriaMap", header: "Criteria", width: "50%" },
+    { field: "status", header: "Status", width: "7%" },
+    { field: "operation", header: "Operations", width: "8%" },
   ];
-
-  // treetable end
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -121,29 +93,170 @@ export class BankRoutingComponent2 implements OnInit {
     this.getBanksRoutingData(this.userData.userId);
   }
 
+  getDecodedDataForListing(userId: any) {
+    this.coreService.displayLoadingScreen();
+    forkJoin({
+      criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
+        this.formName,
+        this.applicationName
+      ),
+      bankRoutingListingData:
+        this.bankRoutingService.getBankRoutingData(userId),
+    })
+      .pipe(
+        take(1),
+        map((response) => {
+          const criteriaMasterData = response.criteriaMasterData;
+          const bankRoutingListingData = response.bankRoutingListingData;
+
+          if (bankRoutingListingData["data"]) {
+            this.bankRoutingApiData = bankRoutingListingData;
+            this.bankRoutingApiData.data.forEach((tax) => {
+              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                criteriaMap: tax.criteriaMap.split("&&&&")[0],
+              });
+              tax.criteriaMap = (
+                this.setCriteriaService.decodeFormattedCriteria(
+                  criteriaCodeText,
+                  criteriaMasterData,
+                  [""]
+                ) as []
+              ).join(", ");
+            });
+
+            this.bankRoutingData = [...this.bankRoutingApiData.data];
+            this.linkedRouteCode = [...this.bankRoutingApiData.linkedRouteCode];
+
+            this.routeCode = this.bankRoutingApiData.routeCode.map((code) => {
+              return { label: code, value: code };
+            });
+            this.routeDesc = this.bankRoutingApiData.routeDesc.map((code) => {
+              return { label: code, value: code };
+            });
+            this.criteriaMap = this.bankRoutingApiData.criteriaMap.map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            // this.criteriaMap = this.bankRoutingApiData.criteriaMap.map(
+            //   (criteriaMap) => {
+            //     let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+            //       criteriaMap: criteriaMap.split("&&&&")[0],
+            //     });
+            //     let code = (
+            //       this.setCriteriaService.decodeFormattedCriteria(
+            //         criteriaCodeText,
+            //         criteriaMasterData,
+            //         [""]
+            //       ) as []
+            //     ).join(", ");
+            //     return { label: code, value: code };
+            //   }
+            // );
+            this.status = this.bankRoutingApiData.status.map((code) => {
+              return { label: code, value: code };
+            });
+          } else {
+            this.noDataMsg = bankRoutingListingData["msg"];
+          }
+          return bankRoutingListingData;
+        })
+      )
+      .subscribe(
+        (res) => {
+          if (!res["data"]) {
+            console.log("No data Found");
+          }
+          this.coreService.removeLoadingScreen();
+          this.loading = false;
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          this.loading = false;
+          console.log("Error in getting bank routing list data", err);
+        }
+      );
+  }
+
   viewBankRouting(data: any) {
     this.router.navigate([
       "navbar",
       "bank-routing",
       "addnewroute",
-      data.groupID,
+      data.routeCode,
+      "edit",
     ]);
   }
 
-  updateStatus(e: any, bankRoute: string) {
-    this.coreService.displayLoadingScreen();
-    e.preventDefault();
+  cloneRoute(data: any) {
+    this.router.navigate([
+      "navbar",
+      "bank-routing",
+      "addnewroute",
+      data.routeCode,
+      "clone",
+    ]);
+  }
 
+  confirmStatus(e: any, routeCode: any, status) {
+    e.preventDefault();
+    let type = "";
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Active";
+      type = "activate";
     } else {
       reqStatus = "Inactive";
+      type = "deactivate";
     }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    let isLinkedMsg = `Active Transactions Exist. </br>`;
+    console.log(reqStatus, this.linkedRouteCode, routeCode);
+    if (reqStatus == "Inactive" && this.linkedRouteCode.includes(routeCode)) {
+      completeMsg =
+        isLinkedMsg +
+        `Do you wish to ` +
+        type +
+        ` the Bank Route: ${routeCode}?`;
+    } else {
+      completeMsg = `Do you wish to ` + type + ` the Bank Route: ${routeCode}?`;
+    }
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveRouteStatus",
+      accept: () => {
+        this.updateStatus(e, reqStatus, routeCode);
+        this.setHeaderSidebarBtn(true);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn(false);
+      },
+    });
+  }
+
+  setHeaderSidebarBtn(accept: boolean) {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    if (!accept) {
+      setTimeout(() => {
+        this.coreService.removeLoadingScreen();
+      }, 1000);
+    }
+  }
+
+  updateStatus(e: any, reqStatus: any, route: string) {
+    console.log(e.target, reqStatus);
+    this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("routeCode", bankRoute);
+    formData.append("routeCode", route);
     formData.append("status", reqStatus);
     this.updateBankRouteStatus(formData, e.target);
   }
@@ -159,77 +272,13 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   getBanksRoutingData(id: string) {
-    this.bankRoutingService.getBankRoutingData(id).subscribe(
-      (res) => {
-        console.log("::bankRoutingDataApi", res);
-        if (res["data"]) {
-          this.coreService.removeLoadingScreen();
-          this.loading = false;
-          this.bankRoutingApiData = res as BankRoutingApiData;
-          this.bankRoutingApiData.data.forEach((route) => {
-            route.createdDate = new Date(route.createdDate);
-          });
-
-          // % Before grouping
-          this.bankRoutingData = [...this.bankRoutingApiData.data];
-          // % Before grouping end
-          // .sort(
-          //   (a, b) => a.createdDate - b.createdDate
-          // );
-          this.routeCode = this.bankRoutingApiData.routeCode.map((code) => {
-            return { label: code, value: code };
-          });
-          this.country = this.bankRoutingApiData.country.map((code) => {
-            return { label: code, value: code };
-          });
-          this.routeBankName = this.bankRoutingApiData.routeBankName.map(
-            (code) => {
-              return { label: code, value: code };
-            }
-          );
-          this.routeServiceType = this.bankRoutingApiData.routeServiceType.map(
-            (code) => {
-              return { label: code, value: code };
-            }
-          );
-          this.routeServiceCategory =
-            this.bankRoutingApiData.routeServiceCategory.map((code) => {
-              return { label: code, value: code };
-            });
-          this.routeToBankName = this.bankRoutingApiData.routeToBankName.map(
-            (code) => {
-              return { label: code, value: code };
-            }
-          );
-          this.routeToServiceType =
-            this.bankRoutingApiData.routeToServiceType.map((code) => {
-              return { label: code, value: code };
-            });
-          this.routeToServiceCategory =
-            this.bankRoutingApiData.routeToServiceCategory.map((code) => {
-              return { label: code, value: code };
-            });
-          this.iSCorrespondent = this.bankRoutingApiData.iSCorrespondent.map(
-            (code) => {
-              return { label: code, value: code };
-            }
-          );
-          this.status = this.bankRoutingApiData.status.map((code) => {
-            return { label: code, value: code };
-          });
-        } else {
-          this.noDataMsg = res["msg"];
-          this.loading = false;
-          this.coreService.removeLoadingScreen();
-        }
-      },
-      (err) => {
-        console.log(err);
-        this.loading = false;
-        this.coreService.removeLoadingScreen();
-      }
-    );
+    this.getDecodedDataForListing(this.userData.userId);
   }
+
+  isLinked(id: any) {
+    return this.linkedRouteCode.includes(id);
+  }
+
   addNewRoutePage() {
     this.router.navigate(["navbar", "bank-routing", "addnewroute"]);
   }
@@ -246,6 +295,7 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   setSelectedFilter(ms: MultiSelect, field: any) {
+    console.log(field);
     this[`selectedFilter${field}`] = ms.value;
     console.log(ms.value, this[`selectedFilter${field}`]);
   }

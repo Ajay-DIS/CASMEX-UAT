@@ -28,10 +28,14 @@ export class BankRoutingService {
   //   );
   // }
 
-  getBanksRoutingForEdit(groupID: any) {
+  getBanksRoutingForEdit(routeCode: any, operation: any) {
     return this.http.get(
       `/remittance/banksRoutingController/getBanksRoutingCriteriaForEdit`,
-      { headers: new HttpHeaders().set("groupID", groupID) }
+      {
+        headers: new HttpHeaders()
+          .set("routeCode", routeCode)
+          .set("operation", operation),
+      }
     );
   }
 
@@ -124,8 +128,7 @@ export class BankRoutingService {
       `/remittance/banksRoutingController/updateBanksRoutingsCriteria`,
       data,
       {
-        headers: new HttpHeaders()
-          .set("userId", userId)
+        headers: new HttpHeaders().set("userId", userId),
       }
     );
   }
