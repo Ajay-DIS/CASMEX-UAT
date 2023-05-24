@@ -21,10 +21,14 @@ export class TaxSettingsService {
     );
   }
 
-  getTaxSettingForEdit(taxCode: any) {
+  getTaxSettingForEdit(taxCode: any, operation: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
-      { headers: new HttpHeaders().set("taxCode", taxCode) }
+      {
+        headers: new HttpHeaders()
+          .set("taxCode", taxCode)
+          .set("operation", operation),
+      }
     );
   }
 

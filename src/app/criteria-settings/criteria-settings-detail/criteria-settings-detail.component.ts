@@ -40,80 +40,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   // Suresh start
   criteriaId = "";
   criteriaSettingtable = [];
-  criteriaSettingDetails: any = {
-    data: {
-      cmCriteriaOperationsMasters: [
-        {
-          id: 1,
-          fieldName: "Correspondent",
-          displayName: "Correspondent",
-          fieldType: "Dropdown",
-          operations: "Is Equal To,Is Not Equal To",
-          orderID: 1,
-          sqlQueries: "select Correspondent from CorrespondentMaster",
-          iSMandatory: "no",
-          dependency: "Country",
-        },
-        {
-          id: 2,
-          fieldName: "Currency",
-          displayName: "Currency",
-          fieldType: "Dropdown",
-          operations:
-            "Is Equal To,Is Not Equal To,Is Greater Than,Is Not Greater Than",
-          orderID: 2,
-          sqlQueries: "select Branch from BranchMaster",
-          iSMandatory: "no",
-          dependency: "Country",
-        },
-        {
-          id: 3,
-          fieldName: "Country",
-          displayName: "Country",
-          fieldType: "Dropdown",
-          operations: "Is Equal To,Is Not Equal To",
-          orderID: 3,
-          sqlQueries: "select Country from CountryMaster",
-          iSMandatory: "no",
-          dependency: null,
-        },
-        {
-          id: 4,
-          fieldName: "Service Type",
-          displayName: "Service Type",
-          fieldType: "Dropdown",
-          operations: "Is Equal To,Is Not Equal To",
-          orderID: 4,
-          sqlQueries: "select Currency from CurrencyMaster",
-          iSMandatory: "no",
-          dependency: "Service Category",
-        },
-        {
-          id: 5,
-          fieldName: "Service Category",
-          displayName: "Service Category",
-          fieldType: "Dropdown",
-          operations: "Is Equal To,Is Not Equal To",
-          orderID: 5,
-          sqlQueries: "select Module from ModuleMaster",
-          iSMandatory: "no",
-          dependency: null,
-        },
-        {
-          id: 6,
-          fieldName: "LCY Slab",
-          displayName: "LCY Slab",
-          fieldType: "Dropdown",
-          operations: "Slab",
-          orderID: 6,
-          sqlQueries: "select slab from slab",
-          iSMandatory: "no",
-          dependency: null,
-        },
-      ],
-    },
-    status: "200",
-  };
+  criteriaSettingDetails: any = {};
   orderIDArray: any = [];
   criteriaSettingtableopt: [];
   // Suresh end
@@ -397,7 +324,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         criteria["dependency"].forEach((op) => {
           dependency.push(op["label"]);
         });
-      }console.log("data",criteria)
+      }
+      console.log("data", criteria);
       let criteriaDetails = {
         criteriaType: criteria["criteriaType"],
         fieldName: criteria["fieldName"],
@@ -495,7 +423,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     let emptyPriority = false;
     let emptydependency = false;
     this.criteriaSettingtable.forEach((element) => {
-      console.log('element',element)
+      console.log("element", element);
       if (element.operations == "") {
         emptyOperation = true;
       }
@@ -620,10 +548,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   reset() {
-    if(this.mode == "edit") {
-      (this.mode == 'edit') && (this.appCtrl.enable()) && (this.formCtrl.enable());
+    if (this.mode == "edit") {
+      this.mode == "edit" && this.appCtrl.enable() && this.formCtrl.enable();
     }
-   
+
     this.isFieldsQueriesData = false;
     this.criteriaSettingtable = [];
     this.selectFields = [];
@@ -631,7 +559,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.appCtrl.reset();
     this.formCtrl.reset();
     this.formCtrl.disable();
-  
   }
   // Suresh end
 }
