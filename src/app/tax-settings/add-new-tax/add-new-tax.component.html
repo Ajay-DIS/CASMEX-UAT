@@ -293,3 +293,29 @@
     ></button>
   </p-footer>
 </p-confirmDialog>
+
+<p-confirmDialog
+  key="resetTaxDataConfirmation"
+  class="confirm-popup"
+  #cd2
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

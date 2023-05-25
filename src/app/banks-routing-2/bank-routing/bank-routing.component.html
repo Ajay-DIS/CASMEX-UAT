@@ -124,13 +124,13 @@
                 *ngIf="i == 1"
                 [pTooltip]="
                   rowData[col['field']].substring(
-                    36,
+                    31,
                     rowData[col['field']].length
                   )
                 "
                 tooltipPosition="bottom"
-                >{{ rowData[col["field"]].substring(0, 35) }}
-                {{ rowData[col["field"]].length > 35 ? ".." : "" }}</span
+                >{{ rowData[col["field"]].substring(0, 30) }}
+                {{ rowData[col["field"]].length > 30 ? ".." : "" }}</span
               >
               <span
                 *ngIf="i == 2"
@@ -158,8 +158,7 @@
                   (click)="
                     confirmStatus(
                       $event,
-                      rowData['routeCode'],
-                      rowData[col['field']]
+                      rowData
                     )
                   "
                   [checked]="

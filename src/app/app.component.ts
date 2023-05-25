@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   @ViewChild("cd") cd: ConfirmDialog;
 
   blocked: boolean;
-  
+
   ngOnInit() {
     this.authService.autoLogin();
     this.coreService.$loadingScreen.subscribe((isLoading) => {
@@ -43,31 +43,28 @@ export class AppComponent implements OnInit, AfterContentChecked {
     });
     this.authService.showSessionConfirm.subscribe((res) => {
       let i = 1;
-      console.log( res.status)
-    
-      if(res.status){
-        console.log('expire+movement')
-       this.refreshTokenLogin();
-      } 
-      this.bnidle.startWatching(1500).subscribe((isTimedOut:boolean) => {
-       console.log(isTimedOut , res.status)
+      console.log(res.status);
+
+      if (res.status) {
+        console.log("expire+movement");
+        this.refreshTokenLogin();
+      }
+      this.bnidle.startWatching(1500).subscribe((isTimedOut: boolean) => {
+        console.log(isTimedOut, res.status);
         if (isTimedOut && res.status) {
-          console.log("expire+nomovement")
+          console.log("expire+nomovement");
           this.confirmSessionContinuity(res.timer);
           this.bnidle.stopTimer();
-        }
-        else {
+        } else {
           this.cd && this.cd.hide();
         }
-      })
+      });
       // if (res.status) {
       //   this.confirmSessionContinuity(res.timer);
       // } else {
       //   this.cd && this.cd.hide();
       // }
     });
-
-    
   }
 
   ngAfterContentChecked() {
@@ -88,7 +85,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
   }
 
   refreshTokenLogin() {
-    this.coreService.displayLoadingScreen();
+    // this.coreService.displayLoadingScreen();
     this.loginService
       .refreshAuthToken({
         application: "CASMEX_CORE",
@@ -108,17 +105,17 @@ export class AppComponent implements OnInit, AfterContentChecked {
             }
             this.loginService.refreshUserSessionToken(data.jwt);
             this.coreService.showSuccessToast("Session extended successfully");
+            // this.coreService.removeLoadingScreen();
           } else {
+            // this.coreService.removeLoadingScreen();
             data["msg"] && this.coreService.showWarningToast(data["msg"]);
           }
         },
         (err) => {
+          // this.coreService.removeLoadingScreen();
           console.log(err);
         }
-      )
-      .add(() => {
-        this.coreService.removeLoadingScreen();
-      });
+      );
   }
 
   logout() {

@@ -415,11 +415,35 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   reset() {
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaCriteriaMap = null;
-    this.appliedCriteriaIsDuplicate = null;
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    this.confirmationService.confirm({
+      message: "Are you sure, you want to clear all the fields ?",
+      key: "resetDataConfirmation",
+      accept: () => {
+        this.appliedCriteriaData = [];
+        this.appliedCriteriaCriteriaMap = null;
+        this.appliedCriteriaIsDuplicate = null;
+        this.routeDescription = "";
+        this.setCriteriaSharedComponent.resetSetCriteria();
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
 
-    this.setCriteriaSharedComponent.resetSetCriteria();
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 
   saveAddNewRoute(action) {
