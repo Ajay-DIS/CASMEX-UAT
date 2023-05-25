@@ -19,6 +19,7 @@ export class CoreService {
   ) {}
 
   showSuccessToast(description: any) {
+    this.messageService.clear();
     this.messageService.add({
       severity: "success",
       summary: "Success",
@@ -26,6 +27,7 @@ export class CoreService {
     });
   }
   showWarningToast(description: any) {
+    this.messageService.clear();
     this.messageService.add({
       severity: "warn",
       summary: "Warning",

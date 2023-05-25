@@ -22,6 +22,8 @@ export class TaxListingComponent implements OnInit {
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
 
+  showNoDataFound :boolean= false;
+
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "10%" },
     { field: "taxCodeDesc", header: "Tax Description", width: "20%" },
@@ -106,6 +108,7 @@ export class TaxListingComponent implements OnInit {
               // tax.criteriaMap = tax.criteriaMap.split("&&&&")[0];
             });
             this.taxListingData = [...this.taxListingApiData.data];
+           this.showNoDataFound = false;
             this.linkedTaxCode = [...this.taxListingApiData.linkedTaxCode];
             this.taxCode = this.taxListingApiData.taxCode.map((code) => {
               return { label: code, value: code };
@@ -140,6 +143,7 @@ export class TaxListingComponent implements OnInit {
             });
           } else {
             this.noDataMsg = taxSettingListingData["msg"];
+            this.showNoDataFound = true;
           }
           return taxSettingListingData;
         })
@@ -148,6 +152,7 @@ export class TaxListingComponent implements OnInit {
         (res) => {
           if (!res["data"]) {
             console.log("No data Found");
+            this.showNoDataFound =true;
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
@@ -155,6 +160,7 @@ export class TaxListingComponent implements OnInit {
         (err) => {
           this.coreService.removeLoadingScreen();
           this.loading = false;
+          this.showNoDataFound =true;
           console.log("Error in getting tax seting list data", err);
         }
       );

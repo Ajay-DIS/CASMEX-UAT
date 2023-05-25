@@ -1,4 +1,4 @@
-<div class="visible-main-section">
+<div class="visible-main-section" *ngIf="bankRoutingData">
   <div class="pagetitle">
     <div class="infoicon">
       <i class="pi pi-info-circle"></i>
@@ -206,6 +206,27 @@
       </ng-template>
     </p-table>
   </div>
+</div>
+<div class="NorecordFound" *ngIf="!bankRoutingData && showNoDataFound">
+  <div class="row">
+    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p>
+        "No Record Found.Click Add New Route To Add Record" 
+      </p>
+      <button
+      pButton
+      pRipple
+      type="button"
+      (click)="addNewRoutePage()"
+      label="Add New Route"
+      class="p-button-raised"
+    ></button>
+    </div>
+  </div>
+
 </div>
 
 <p-confirmDialog

@@ -1,4 +1,4 @@
-<div class="visible-main-section">
+<div class="visible-main-section" *ngIf="taxListingData">
   <div class="pagetitle">
     <div class="infoicon">
       <i class="pi pi-info-circle"></i>
@@ -192,7 +192,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td [attr.colspan]="cols.length">{{ noDataMsg }}</td>
+          <td [attr.colspan]="cols.length">No Data found.</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>
@@ -206,6 +206,27 @@
       </ng-template>
     </p-table>
   </div>
+</div>
+<div class="NorecordFound" *ngIf="!taxListingData && showNoDataFound">
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>
+          "No Record Found.Click Add New Tax To Add Record" 
+        </p>
+        <button
+        pButton
+        pRipple
+        type="button"
+        label="Add New Tax"
+        class="p-button-raised"
+        (click)="addNewTaxPage()"
+      ></button>
+      </div>
+    </div>
+
 </div>
 <p-confirmDialog
   key="activeDeactiveStatus"
