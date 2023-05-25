@@ -468,12 +468,36 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   reset() {
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaCriteriaMap = null;
-    this.appliedCriteriaIsDuplicate = null;
-    this.taxDescription = "";
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    this.confirmationService.confirm({
+      message: "Are you sure, you want to clear all the fields ?",
+      key: "resetTaxDataConfirmation",
+      accept: () => {
+        this.appliedCriteriaData = [];
+        this.appliedCriteriaCriteriaMap = null;
+        this.appliedCriteriaIsDuplicate = null;
+        this.taxDescription = "";
 
-    this.setCriteriaSharedComponent.resetSetCriteria();
+        this.setCriteriaSharedComponent.resetSetCriteria();
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 
   // suresh Work start -->

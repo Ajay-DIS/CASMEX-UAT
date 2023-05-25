@@ -198,7 +198,7 @@ export class BankRoutingComponent2 implements OnInit {
     ]);
   }
 
-  confirmStatus(e: any, routeCode: any, status) {
+  confirmStatus(e: any, data: any) {
     e.preventDefault();
     let type = "";
     let reqStatus = "";
@@ -213,21 +213,25 @@ export class BankRoutingComponent2 implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedRouteCode, routeCode);
-    if (reqStatus == "Inactive" && this.linkedRouteCode.includes(routeCode)) {
+    console.log(reqStatus, this.linkedRouteCode, data["routeCode"]);
+    if (
+      reqStatus == "Inactive" &&
+      this.linkedRouteCode.includes(data["routeCode"])
+    ) {
       completeMsg =
         isLinkedMsg +
         `Do you wish to ` +
         type +
-        ` the Bank Route: ${routeCode}?`;
+        ` the Bank Route: ${data["routeCode"]}?`;
     } else {
-      completeMsg = `Do you wish to ` + type + ` the Bank Route: ${routeCode}?`;
+      completeMsg =
+        `Do you wish to ` + type + ` the Bank Route: ${data["routeCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
       key: "activeDeactiveRouteStatus",
       accept: () => {
-        this.updateStatus(e, reqStatus, routeCode);
+        this.updateStatus(e, reqStatus, data);
         this.setHeaderSidebarBtn(true);
       },
       reject: () => {
@@ -250,23 +254,35 @@ export class BankRoutingComponent2 implements OnInit {
     }
   }
 
-  updateStatus(e: any, reqStatus: any, route: string) {
+  updateStatus(e: any, reqStatus: any, data: any) {
     console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("routeCode", route);
+    formData.append("routeCode", data["routeCode"]);
     formData.append("status", reqStatus);
-    this.updateBankRouteStatus(formData, e.target);
+    this.updateBankRouteStatus(formData, e.target, data);
   }
 
-  updateBankRouteStatus(data: any, sliderElm: any) {
-    this.bankRoutingService.updateBankRouteStatus(data).subscribe((res) => {
-      if (res["msg"]) {
-        sliderElm.checked = sliderElm!.checked;
-        this.coreService.showSuccessToast(res["msg"]);
-        this.getBanksRoutingData(this.userData.userId);
+  updateBankRouteStatus(formData: any, sliderElm: any, routeData: any) {
+    this.bankRoutingService.updateBankRouteStatus(formData).subscribe((res) => {
+      let message = "";
+      if (res["error"] == "true") {
+        this.coreService.removeLoadingScreen();
+        message = `Kindly deactivate the Route code: ${res["msg"]} ( ${routeData["criteriaMap"]} ) to activate the current record.`;
+        this.coreService.showWarningToast(message);
+      } else {
+        if (res["msg"]) {
+          message = res["msg"];
+          sliderElm.checked = sliderElm!.checked;
+          this.getBanksRoutingData(this.userData.userId);
+          this.coreService.showSuccessToast(message);
+        } else {
+          this.coreService.removeLoadingScreen();
+          message = "Something went wrong, Please try again later";
+          this.coreService.showWarningToast(message);
+        }
       }
     });
   }

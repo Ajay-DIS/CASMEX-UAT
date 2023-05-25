@@ -17,6 +17,11 @@
   width: 398px;
 }
 
+.tax-code-desc-section .taxDesc input::placeholder {
+  color: #8a9099;
+  font-size: 12px;
+}
+
 .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
   text-align: center;
 }

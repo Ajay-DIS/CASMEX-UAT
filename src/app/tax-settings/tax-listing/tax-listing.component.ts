@@ -178,7 +178,7 @@ export class TaxListingComponent implements OnInit {
     return this.linkedTaxCode.includes(id);
   }
 
-  confirmStatus(e: any, taxCode: any, status) {
+  confirmStatus(e: any, data: any) {
     e.preventDefault();
     console.log("codeeeeee", status);
     let type = "";
@@ -194,18 +194,25 @@ export class TaxListingComponent implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedTaxCode, taxCode);
-    if (reqStatus == "Inactive" && this.linkedTaxCode.includes(taxCode)) {
+    console.log(reqStatus, this.linkedTaxCode, data["taxCode"]);
+    if (
+      reqStatus == "Inactive" &&
+      this.linkedTaxCode.includes(data["taxCode"])
+    ) {
       completeMsg =
-        isLinkedMsg + `Do you wish to ` + type + ` the Tax Record: ${taxCode}?`;
+        isLinkedMsg +
+        `Do you wish to ` +
+        type +
+        ` the Tax Record: ${data["taxCode"]}?`;
     } else {
-      completeMsg = `Do you wish to ` + type + ` the Tax Record: ${taxCode}?`;
+      completeMsg =
+        `Do you wish to ` + type + ` the Tax Record: ${data["taxCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
       key: "activeDeactiveStatus",
       accept: () => {
-        this.updateStatus(e, reqStatus, taxCode);
+        this.updateStatus(e, reqStatus, data);
         this.setHeaderSidebarBtn(true);
       },
       reject: () => {
@@ -228,26 +235,40 @@ export class TaxListingComponent implements OnInit {
     }
   }
 
-  updateStatus(e: any, reqStatus: any, tax: string) {
+  updateStatus(e: any, reqStatus: any, data: any) {
     console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("taxCode", tax);
+    formData.append("taxCode", data["taxCode"]);
     formData.append("status", reqStatus);
-    this.updateTaxCodeStatus(formData, e.target);
+    this.updateTaxCodeStatus(formData, e.target, data);
     // }
   }
 
-  updateTaxCodeStatus(data: any, sliderElm: any) {
-    this.taxSettingsService.updateTaxSettingsStatus(data).subscribe((res) => {
-      if (res["msg"]) {
-        sliderElm.checked = sliderElm!.checked;
-        this.coreService.showSuccessToast(res["msg"]);
-        this.getTaxCodeListData(this.userData.userId);
-      }
-    });
+  updateTaxCodeStatus(formData: any, sliderElm: any, taxData: any) {
+    this.taxSettingsService
+      .updateTaxSettingsStatus(formData)
+      .subscribe((res) => {
+        let message = "";
+        if (res["error"] == "true") {
+          this.coreService.removeLoadingScreen();
+          message = `Kindly deactivate the Tax code: ${res["msg"]} ( ${taxData["criteriaMap"]} ) to activate the current record.`;
+          this.coreService.showWarningToast(message);
+        } else {
+          if (res["msg"]) {
+            message = res["msg"];
+            sliderElm.checked = sliderElm!.checked;
+            this.getTaxCodeListData(this.userData.userId);
+            this.coreService.showSuccessToast(message);
+          } else {
+            this.coreService.removeLoadingScreen();
+            message = "Something went wrong, Please try again later";
+            this.coreService.showWarningToast(message);
+          }
+        }
+      });
   }
 
   cloneTax(data: any) {
