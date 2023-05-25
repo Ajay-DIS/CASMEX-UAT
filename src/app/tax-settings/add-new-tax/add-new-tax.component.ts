@@ -19,6 +19,8 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
 export class AddNewTaxComponent implements OnInit {
   primaryColor = "var(--primary-color)";
 
+
+
   userId = "";
   groupID = "";
   mode = "add";
@@ -130,6 +132,10 @@ export class AddNewTaxComponent implements OnInit {
 
             this.appliedCriteriaDataOrg = [...res["data"]];
             this.appliedCriteriaData = [...res["data"]];
+            this.appliedCriteriaData.forEach((element) =>{
+              element["invalidTaxAmount"] = false;
+            }
+            );
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
@@ -321,6 +327,10 @@ export class AddNewTaxComponent implements OnInit {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
               this.appliedCriteriaData = [...res["data"]];
+              this.appliedCriteriaData.forEach((element) =>{
+                element["invalidTaxAmount"] = false;
+              }
+              );
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               this.appliedCriteriaDataCols = [
@@ -406,7 +416,11 @@ export class AddNewTaxComponent implements OnInit {
     ) {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
+      let invalidTaxAmount= false;
       this.appliedCriteriaData.forEach((element) => {
+       if(element["invalidTaxAmount"]) {
+        invalidTaxAmount= true;
+       }
         element["taxCodeDesc"] = this.taxDescription
           ? this.taxDescription
           : null;
@@ -421,7 +435,12 @@ export class AddNewTaxComponent implements OnInit {
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
-      } else {
+      }
+      else if (invalidTaxAmount) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
+      }
+      else {
         let service;
         if (this.mode == "edit") {
           let data = {
@@ -486,7 +505,11 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    this.appliedCriteriaData[index]["tax"] = 0;
+    if(selectCol == 'setAs' && value['code'] == 'Percentage'){
+      this.appliedCriteriaData[index]["tax"] = 0;
+    }else{
+      this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom) ? Number(this.appliedCriteriaData[index].lcyAmountFrom) : 0;
+    }
     this.appliedCriteriaData[index][selectCol + "Option"] = value.codeName;
     console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
   }
@@ -498,9 +521,10 @@ export class AddNewTaxComponent implements OnInit {
     index: any,
     valueInputElm: any
   ) {
+    this.appliedCriteriaData[index]["invalidTaxAmount"]= false;
     console.log(
-      "selectCol",
-      this.appliedCriteriaData[index][selectCol + "Option"]
+      "selectCol",event,'valueInputElm',valueInputElm,
+      this.appliedCriteriaData[index][selectCol + "Option"],this.appliedCriteriaData[index].lcyAmountFrom
     );
     let max = 0;
     let min = 0;
@@ -509,14 +533,32 @@ export class AddNewTaxComponent implements OnInit {
     } else if (
       this.appliedCriteriaData[index][selectCol + "Option"] == "Amount"
     ) {
-      max = 1000000;
+      if((Number(this.appliedCriteriaData[index].lcyAmountFrom)) > 0 && (Number(this.appliedCriteriaData[index].lcyAmountTo)) > 0){
+        min = Number(this.appliedCriteriaData[index].lcyAmountFrom);
+        max = Number(this.appliedCriteriaData[index].lcyAmountTo);
+      } else {
+        max = 1000000;
+      }
+      
     }
+  
     if (event.value <= max) {
       this.appliedCriteriaData[index][inputCol] = event.value;
     } else {
       let lastValueEntered = valueInputElm.lastValue;
       valueInputElm.input.nativeElement.value = lastValueEntered;
     }
+    let isDisplayError = false;
+    if(event.value < min || event.value > max){
+      isDisplayError = true;
+      this.appliedCriteriaData[index]["invalidTaxAmount"]= true;
+      this.coreService.showWarningToast("Please enter tax between " + min + " to " + max);
+      return false;
+    }
+  }
+
+  TaxValidation(){
+    
   }
 
   checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {

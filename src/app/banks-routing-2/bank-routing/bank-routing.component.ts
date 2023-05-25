@@ -48,6 +48,8 @@ export class BankRoutingComponent2 implements OnInit {
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
 
+  showNoDataFound :boolean= false;
+
   showrouteCodeOptions: boolean = false;
   showrouteDescOptions: boolean = false;
   showcriteriaMapOptions: boolean = false;
@@ -125,6 +127,7 @@ export class BankRoutingComponent2 implements OnInit {
             });
 
             this.bankRoutingData = [...this.bankRoutingApiData.data];
+            this.showNoDataFound =false;
             this.linkedRouteCode = [...this.bankRoutingApiData.linkedRouteCode];
 
             this.routeCode = this.bankRoutingApiData.routeCode.map((code) => {
@@ -158,6 +161,7 @@ export class BankRoutingComponent2 implements OnInit {
             });
           } else {
             this.noDataMsg = bankRoutingListingData["msg"];
+            this.showNoDataFound =true;
           }
           return bankRoutingListingData;
         })
@@ -166,12 +170,14 @@ export class BankRoutingComponent2 implements OnInit {
         (res) => {
           if (!res["data"]) {
             console.log("No data Found");
+            this.showNoDataFound =true;
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
         },
         (err) => {
           this.coreService.removeLoadingScreen();
+          this.showNoDataFound =true;
           this.loading = false;
           console.log("Error in getting bank routing list data", err);
         }

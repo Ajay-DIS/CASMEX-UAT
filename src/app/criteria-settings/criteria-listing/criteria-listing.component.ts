@@ -16,6 +16,8 @@ export class CriteriaListingComponent implements OnInit {
   criteriaSettingApiData: any;
   criteriaSettingData: any[] = [];
 
+  showNoDataFound :boolean= false;
+
   showapplicationsOptions: boolean = false;
   showformOptions: boolean = false;
   showtotalCriteraiFieldOptions: boolean = false;
@@ -79,6 +81,7 @@ export class CriteriaListingComponent implements OnInit {
           this.criteriaSettingApiData = res;
           if (res["data"]) {
             this.criteriaSettingData = res["data"];
+            this.showNoDataFound = false;
             this.formatApiData();
             this.setFilterOptions();
           } else {
@@ -87,6 +90,7 @@ export class CriteriaListingComponent implements OnInit {
         },
         (err) => {
           console.log("Error in criterisSettingListing", err);
+          this.showNoDataFound =true;
         }
       )
       .add(() => {
