@@ -131,6 +131,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
             this.appliedCriteriaDataOrg = [...res["data"]];
             this.appliedCriteriaData = [...res["data"]];
+            this.setSelectedOptions();
+            console.log(this.appliedCriteriaData);
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
@@ -323,6 +325,8 @@ export class AddnewrouteComponent2 implements OnInit {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
               this.appliedCriteriaData = [...res["data"]];
+              this.setSelectedOptions();
+              console.log(this.appliedCriteriaData);
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               this.appliedCriteriaDataCols = [
@@ -410,6 +414,45 @@ export class AddnewrouteComponent2 implements OnInit {
     this.appliedCriteriaData[index][selectedColField] = value["codeName"];
   }
 
+  setSelectedOptions() {
+    this.appliedCriteriaData.forEach((data) => {
+      if (data["routeToBankNameOption"]) {
+        data["routeToBankNameOption"] = data["routeToBankName"].filter(
+          (option) => option["code"] == data["routeToBankNameOption"]
+        )[0]["codeName"];
+      }
+
+      if (data["routeToServiceCategoryOption"]) {
+        data["routeToServiceCategoryOption"] = data[
+          "routeToServiceCategory"
+        ].filter(
+          (option) => option["code"] == data["routeToServiceCategoryOption"]
+        )[0]["codeName"];
+      }
+
+      if (data["routeToServiceTypeOption"]) {
+        data["routeToServiceTypeOption"] = data["routeToServiceType"].filter(
+          (option) => option["code"] == data["routeToServiceTypeOption"]
+        )[0]["codeName"];
+      }
+    });
+  }
+  decodeSelectedOptions() {
+    this.appliedCriteriaData.forEach((data) => {
+      data["routeToBankNameOption"] = data["routeToBankName"].filter(
+        (option) => option["codeName"] == data["routeToBankNameOption"]
+      )[0]["code"];
+      data["routeToServiceCategoryOption"] = data[
+        "routeToServiceCategory"
+      ].filter(
+        (option) => option["codeName"] == data["routeToServiceCategoryOption"]
+      )[0]["code"];
+      data["routeToServiceTypeOption"] = data["routeToServiceType"].filter(
+        (option) => option["codeName"] == data["routeToServiceTypeOption"]
+      )[0]["code"];
+    });
+  }
+
   isMandatoryCol(heading: any) {
     return heading.includes("*") ? true : false;
   }
@@ -471,6 +514,7 @@ export class AddnewrouteComponent2 implements OnInit {
         this.coreService.showWarningToast("Please fill required fields.");
       } else {
         let service;
+        this.decodeSelectedOptions();
         if (this.mode == "edit") {
           let data = {
             data: this.appliedCriteriaData,
