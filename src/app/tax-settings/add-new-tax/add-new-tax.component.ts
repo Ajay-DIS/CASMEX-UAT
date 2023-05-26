@@ -529,28 +529,30 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    if(selectCol == 'setAs' && value['code'] == 'Percentage'){
-      this.appliedCriteriaData[index]["tax"] = 0;
-    }else{
-      if(Number(this.appliedCriteriaData[index].lcyAmountFrom)){
-        console.log("SLAB")
-        this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom);
+    if((selectCol == 'setAs')){
+      if(selectCol == 'setAs' && value['code'] == 'Percentage'){
+        this.appliedCriteriaData[index]["tax"] = 0;
       }else{
-        console.log("NOT SLAB")
-        if(this.appliedCriteriaData[index].lcyAmount){
-          let lcyAmountNum = this.appliedCriteriaData[index].lcyAmount.split(' ')[3]
-          let lcyAmountOpr = this.appliedCriteriaData[index].lcyAmount.split(' ')[2]
-          if(lcyAmountOpr == ">="){
-            this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
-          }else if(lcyAmountOpr == ">"){
-            this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum) + 1;
-          }else if(lcyAmountOpr == "="){
-            this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+        if(Number(this.appliedCriteriaData[index].lcyAmountFrom)){
+          console.log("SLAB")
+          this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom);
+        }else{
+          console.log("NOT SLAB")
+          if(this.appliedCriteriaData[index].lcyAmount){
+            let lcyAmountNum = this.appliedCriteriaData[index].lcyAmount.split(' ')[3]
+            let lcyAmountOpr = this.appliedCriteriaData[index].lcyAmount.split(' ')[2]
+            if(lcyAmountOpr == ">="){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+            }else if(lcyAmountOpr == ">"){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum) + 1;
+            }else if(lcyAmountOpr == "="){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+            }else{
+              this.appliedCriteriaData[index]["tax"] = 0;
+            }
           }else{
             this.appliedCriteriaData[index]["tax"] = 0;
           }
-        }else{
-          this.appliedCriteriaData[index]["tax"] = 0;
         }
       }
     }
