@@ -54,7 +54,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
         if (isTimedOut && res.status) {
           console.log("expire+nomovement");
           this.confirmSessionContinuity(res.timer);
-          this.bnidle.stopTimer();
+          // this.bnidle.stopTimer();
         } else {
           this.cd && this.cd.hide();
         }
@@ -77,9 +77,11 @@ export class AppComponent implements OnInit, AfterContentChecked {
       key: "sessionConfirm",
       accept: () => {
         this.refreshTokenLogin();
+        this.bnidle.resetTimer(1500);
       },
       reject: () => {
         this.logout();
+        this.bnidle.stopTimer();
       },
     });
   }

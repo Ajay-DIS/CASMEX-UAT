@@ -19,8 +19,6 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
 export class AddNewTaxComponent implements OnInit {
   primaryColor = "var(--primary-color)";
 
-
-
   userId = "";
   groupID = "";
   mode = "add";
@@ -132,10 +130,10 @@ export class AddNewTaxComponent implements OnInit {
 
             this.appliedCriteriaDataOrg = [...res["data"]];
             this.appliedCriteriaData = [...res["data"]];
-            this.appliedCriteriaData.forEach((element) =>{
+            this.setSelectedOptions();
+            this.appliedCriteriaData.forEach((element) => {
               element["invalidTaxAmount"] = false;
-            }
-            );
+            });
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
           } else {
@@ -327,10 +325,10 @@ export class AddNewTaxComponent implements OnInit {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
               this.appliedCriteriaData = [...res["data"]];
-              this.appliedCriteriaData.forEach((element) =>{
+              this.setSelectedOptions();
+              this.appliedCriteriaData.forEach((element) => {
                 element["invalidTaxAmount"] = false;
-              }
-              );
+              });
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               this.appliedCriteriaDataCols = [
@@ -416,11 +414,11 @@ export class AddNewTaxComponent implements OnInit {
     ) {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
-      let invalidTaxAmount= false;
+      let invalidTaxAmount = false;
       this.appliedCriteriaData.forEach((element) => {
-       if(element["invalidTaxAmount"]) {
-        invalidTaxAmount= true;
-       }
+        if (element["invalidTaxAmount"]) {
+          invalidTaxAmount = true;
+        }
         element["taxCodeDesc"] = this.taxDescription
           ? this.taxDescription
           : null;
@@ -435,13 +433,12 @@ export class AddNewTaxComponent implements OnInit {
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
-      }
-      else if (invalidTaxAmount) {
+      } else if (invalidTaxAmount) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
-      }
-      else {
+      } else {
         let service;
+        this.decodeSelectedOptions();
         if (this.mode == "edit") {
           let data = {
             data: this.appliedCriteriaData,
@@ -519,6 +516,32 @@ export class AddNewTaxComponent implements OnInit {
     }, 1000);
   }
 
+  setSelectedOptions() {
+    this.appliedCriteriaData.forEach((data) => {
+      if (data["taxTypeOption"]) {
+        data["taxTypeOption"] = data["taxType"].filter(
+          (option) => option["code"] == data["taxTypeOption"]
+        )[0]["codeName"];
+      }
+
+      if (data["setAsOption"]) {
+        data["setAsOption"] = data["setAs"].filter(
+          (option) => option["code"] == data["setAsOption"]
+        )[0]["codeName"];
+      }
+    });
+  }
+  decodeSelectedOptions() {
+    this.appliedCriteriaData.forEach((data) => {
+      data["taxTypeOption"] = data["taxType"].filter(
+        (option) => option["codeName"] == data["taxTypeOption"]
+      )[0]["code"];
+      data["setAsOption"] = data["setAs"].filter(
+        (option) => option["codeName"] == data["setAsOption"]
+      )[0]["code"];
+    });
+  }
+
   // suresh Work start -->
   isMandatoryCol(heading: any) {
     return heading.includes("*") ? true : false;
@@ -567,10 +590,14 @@ export class AddNewTaxComponent implements OnInit {
     index: any,
     valueInputElm: any
   ) {
-    this.appliedCriteriaData[index]["invalidTaxAmount"]= false;
+    this.appliedCriteriaData[index]["invalidTaxAmount"] = false;
     console.log(
-      "selectCol",event,'valueInputElm',valueInputElm,
-      this.appliedCriteriaData[index][selectCol + "Option"],this.appliedCriteriaData[index].lcyAmountFrom
+      "selectCol",
+      event,
+      "valueInputElm",
+      valueInputElm,
+      this.appliedCriteriaData[index][selectCol + "Option"],
+      this.appliedCriteriaData[index].lcyAmountFrom
     );
     let max = 0;
     let min = 0;
@@ -582,7 +609,10 @@ export class AddNewTaxComponent implements OnInit {
     } else if (
       this.appliedCriteriaData[index][selectCol + "Option"] == "Amount"
     ) {
-      if((Number(this.appliedCriteriaData[index].lcyAmountFrom)) > 0 && (Number(this.appliedCriteriaData[index].lcyAmountTo)) > 0){
+      if (
+        Number(this.appliedCriteriaData[index].lcyAmountFrom) > 0 &&
+        Number(this.appliedCriteriaData[index].lcyAmountTo) > 0
+      ) {
         min = Number(this.appliedCriteriaData[index].lcyAmountFrom);
         max = Number(this.appliedCriteriaData[index].lcyAmountTo);
       }else if(Number(lcyAmountEqualTo) > 0 ) {
@@ -596,9 +626,8 @@ export class AddNewTaxComponent implements OnInit {
       else {
         max = 1000000;
       }
-      
     }
-  
+
     if (event.value <= max) {
       this.appliedCriteriaData[index][inputCol] = event.value;
     } else {
@@ -606,17 +635,17 @@ export class AddNewTaxComponent implements OnInit {
       valueInputElm.input.nativeElement.value = lastValueEntered;
     }
     let isDisplayError = false;
-    if(event.value < min || event.value > max){
+    if (event.value < min || event.value > max) {
       isDisplayError = true;
-      this.appliedCriteriaData[index]["invalidTaxAmount"]= true;
-      this.coreService.showWarningToast("Please enter tax between " + min + " to " + max);
+      this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+      this.coreService.showWarningToast(
+        "Please enter tax between " + min + " to " + max
+      );
       return false;
     }
   }
 
-  TaxValidation(){
-    
-  }
+  TaxValidation() {}
 
   checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {
     if (operation == "delete") {
