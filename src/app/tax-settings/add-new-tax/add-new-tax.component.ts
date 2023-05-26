@@ -529,10 +529,32 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    if(selectCol == 'setAs' && value['code'] == 'Percentage'){
-      this.appliedCriteriaData[index]["tax"] = 0;
-    }else{
-      this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom) ? Number(this.appliedCriteriaData[index].lcyAmountFrom) : 0;
+    if((selectCol == 'setAs')){
+      if(selectCol == 'setAs' && value['code'] == 'Percentage'){
+        this.appliedCriteriaData[index]["tax"] = 0;
+      }else{
+        if(Number(this.appliedCriteriaData[index].lcyAmountFrom)){
+          console.log("SLAB")
+          this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom);
+        }else{
+          console.log("NOT SLAB")
+          if(this.appliedCriteriaData[index].lcyAmount){
+            let lcyAmountNum = this.appliedCriteriaData[index].lcyAmount.split(' ')[3]
+            let lcyAmountOpr = this.appliedCriteriaData[index].lcyAmount.split(' ')[2]
+            if(lcyAmountOpr == ">="){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+            }else if(lcyAmountOpr == ">"){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum) + 1;
+            }else if(lcyAmountOpr == "="){
+              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+            }else{
+              this.appliedCriteriaData[index]["tax"] = 0;
+            }
+          }else{
+            this.appliedCriteriaData[index]["tax"] = 0;
+          }
+        }
+      }
     }
     this.appliedCriteriaData[index][selectCol + "Option"] = value.codeName;
     console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
@@ -552,6 +574,9 @@ export class AddNewTaxComponent implements OnInit {
     );
     let max = 0;
     let min = 0;
+    let lcyAmountEqualTo = this.appliedCriteriaData[index].lcyAmount && this.appliedCriteriaData[index].lcyAmount.substring(this.appliedCriteriaData[index].lcyAmount.indexOf("=") + 1);
+    let lcyAmountGreaterThan = this.appliedCriteriaData[index].lcyAmount && this.appliedCriteriaData[index].lcyAmount.substring(this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1);
+    // console.log("lcyAmount",lcyAmount);
     if (this.appliedCriteriaData[index][selectCol + "Option"] == "Percentage") {
       max = 100;
     } else if (
@@ -560,7 +585,15 @@ export class AddNewTaxComponent implements OnInit {
       if((Number(this.appliedCriteriaData[index].lcyAmountFrom)) > 0 && (Number(this.appliedCriteriaData[index].lcyAmountTo)) > 0){
         min = Number(this.appliedCriteriaData[index].lcyAmountFrom);
         max = Number(this.appliedCriteriaData[index].lcyAmountTo);
-      } else {
+      }else if(Number(lcyAmountEqualTo) > 0 ) {
+        min = Number(lcyAmountEqualTo);
+        max = Number(lcyAmountEqualTo);
+      }else if(Number(lcyAmountGreaterThan) > 0 ) {
+        min = Number(lcyAmountGreaterThan);
+        max = 1000000;
+      }
+      
+      else {
         max = 1000000;
       }
       
