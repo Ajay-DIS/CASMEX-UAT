@@ -245,6 +245,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["dependency"] = this.criteriaSettingtable[index]["dependency"];
         }
       }
+      let index = this.criteriaSettingtable.findIndex(
+        (x) => x.fieldName == item.fieldName
+      );
+      if (index == -1) {
+        item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+      } else {
+        item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
+      }
+      // item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
       // item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
     });
     this.criteriaSettingtable = [...this.selectedFields];
@@ -526,6 +535,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         this.criteriaSettingtable.forEach((item, i) => {
           item["operations"] = this.criteriaSettingtable[i]["operations"];
           item["dependency"] = this.criteriaSettingtable[i]["dependency"];
+          item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
+          console.log(item["iSMandatory"])
         });
         //this.criteriaSettingtable.forEach((item, i) => {
         // item["dependency"] = this.criteriaSettingtable[i]["dependency"];
