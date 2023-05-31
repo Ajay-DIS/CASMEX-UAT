@@ -199,8 +199,8 @@
                           optionLabel="codeName"
                           appendTo="body"
                           [placeholder]="
-                            rowData[col['field'] + 'Option']
-                              ? rowData[col['field'] + 'Option']
+                            rowData[col['field'].split('Option')[0]]
+                              ? rowData[col['field'].split('Option')[0]]
                               : 'Select'
                           "
                           (onChange)="

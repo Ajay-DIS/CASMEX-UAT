@@ -20,7 +20,7 @@ export class AddNewTaxComponent implements OnInit {
   primaryColor = "var(--primary-color)";
 
   userId = "";
-  groupID = "";
+  taxID = "";
   mode = "add";
   formName = "Tax Settings";
   applicationName = "Web Application";
@@ -96,7 +96,7 @@ export class AddNewTaxComponent implements OnInit {
         this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
       );
       // this.mode = "edit";
-      this.groupID = params.id;
+      this.taxID = params.id;
     }
     console.log(this.mode);
   }
@@ -183,6 +183,7 @@ export class AddNewTaxComponent implements OnInit {
 
           if (this.mode == "add") {
             this.taxCode = this.criteriaDataDetailsJson.data.taxCode;
+            this.taxID = this.taxCode;
             this.taxDescription = this.criteriaDataDetailsJson.data.taxCodeDesc;
           }
 
@@ -222,9 +223,9 @@ export class AddNewTaxComponent implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getTaxSettingForEditApi(this.groupID, "edit");
+            this.getTaxSettingForEditApi(this.taxID, "edit");
           } else if (this.mode == "clone") {
-            this.getTaxSettingForEditApi(this.groupID, "clone");
+            this.getTaxSettingForEditApi(this.taxID, "clone");
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -288,6 +289,8 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   applyCriteria(postDataCriteria: FormData) {
+    postDataCriteria.append("taxCode", this.taxID);
+    postDataCriteria.append("operation", this.mode);
     this.isApplyCriteriaClicked = true;
     if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -444,7 +447,7 @@ export class AddNewTaxComponent implements OnInit {
             data: this.appliedCriteriaData,
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
-            taxCode: this.groupID,
+            taxCode: this.taxID,
           };
           service = this.taxSettingsService.updateTaxSetting(this.userId, data);
           console.log("EDIT MODE - UPDATE TAX SERVICE");
@@ -518,26 +521,26 @@ export class AddNewTaxComponent implements OnInit {
 
   setSelectedOptions() {
     this.appliedCriteriaData.forEach((data) => {
-      if (data["taxTypeOption"]) {
-        data["taxTypeOption"] = data["taxType"].filter(
-          (option) => option["code"] == data["taxTypeOption"]
+      if (data["taxType"]) {
+        data["taxType"] = data["taxTypeOption"].filter(
+          (option) => option["code"] == data["taxType"]
         )[0]["codeName"];
       }
 
-      if (data["setAsOption"]) {
-        data["setAsOption"] = data["setAs"].filter(
-          (option) => option["code"] == data["setAsOption"]
+      if (data["setAs"]) {
+        data["setAs"] = data["setAsOption"].filter(
+          (option) => option["code"] == data["setAs"]
         )[0]["codeName"];
       }
     });
   }
   decodeSelectedOptions() {
     this.appliedCriteriaData.forEach((data) => {
-      data["taxTypeOption"] = data["taxType"].filter(
-        (option) => option["codeName"] == data["taxTypeOption"]
+      data["taxType"] = data["taxTypeOption"].filter(
+        (option) => option["codeName"] == data["taxType"]
       )[0]["code"];
-      data["setAsOption"] = data["setAs"].filter(
-        (option) => option["codeName"] == data["setAsOption"]
+      data["setAs"] = data["setAsOption"].filter(
+        (option) => option["codeName"] == data["setAs"]
       )[0]["code"];
     });
   }
@@ -552,34 +555,39 @@ export class AddNewTaxComponent implements OnInit {
   }
   selectedColumn(selectCol: any, value: any, index: any) {
     console.log(selectCol, value, index);
-    if((selectCol == 'setAs')){
-      if(selectCol == 'setAs' && value['code'] == 'Percentage'){
+    if (selectCol == "setAsOption") {
+      if (selectCol == "setAsOption" && value["code"] == "Percentage") {
         this.appliedCriteriaData[index]["tax"] = 0;
-      }else{
-        if(Number(this.appliedCriteriaData[index].lcyAmountFrom)){
-          console.log("SLAB")
-          this.appliedCriteriaData[index]["tax"] = Number(this.appliedCriteriaData[index].lcyAmountFrom);
-        }else{
-          console.log("NOT SLAB")
-          if(this.appliedCriteriaData[index].lcyAmount){
-            let lcyAmountNum = this.appliedCriteriaData[index].lcyAmount.split(' ')[3]
-            let lcyAmountOpr = this.appliedCriteriaData[index].lcyAmount.split(' ')[2]
-            if(lcyAmountOpr == ">="){
+      } else {
+        if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
+          console.log("SLAB");
+          this.appliedCriteriaData[index]["tax"] = Number(
+            this.appliedCriteriaData[index].lcyAmountFrom
+          );
+        } else {
+          console.log("NOT SLAB");
+          if (this.appliedCriteriaData[index].lcyAmount) {
+            let lcyAmountNum =
+              this.appliedCriteriaData[index].lcyAmount.split(" ")[3];
+            let lcyAmountOpr =
+              this.appliedCriteriaData[index].lcyAmount.split(" ")[2];
+            if (lcyAmountOpr == ">=") {
               this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
-            }else if(lcyAmountOpr == ">"){
+            } else if (lcyAmountOpr == ">") {
               this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum) + 1;
-            }else if(lcyAmountOpr == "="){
+            } else if (lcyAmountOpr == "=") {
               this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
-            }else{
+            } else {
               this.appliedCriteriaData[index]["tax"] = 0;
             }
-          }else{
+          } else {
             this.appliedCriteriaData[index]["tax"] = 0;
           }
         }
       }
     }
-    this.appliedCriteriaData[index][selectCol + "Option"] = value.codeName;
+    this.appliedCriteriaData[index][selectCol.split("Option")[0]] =
+      value.codeName;
     console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
   }
 
@@ -596,18 +604,29 @@ export class AddNewTaxComponent implements OnInit {
       event,
       "valueInputElm",
       valueInputElm,
-      this.appliedCriteriaData[index][selectCol + "Option"],
+      this.appliedCriteriaData[index][selectCol.split("Option")[0]],
       this.appliedCriteriaData[index].lcyAmountFrom
     );
     let max = 0;
     let min = 0;
-    let lcyAmountEqualTo = this.appliedCriteriaData[index].lcyAmount && this.appliedCriteriaData[index].lcyAmount.substring(this.appliedCriteriaData[index].lcyAmount.indexOf("=") + 1);
-    let lcyAmountGreaterThan = this.appliedCriteriaData[index].lcyAmount && this.appliedCriteriaData[index].lcyAmount.substring(this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1);
+    let lcyAmountEqualTo =
+      this.appliedCriteriaData[index].lcyAmount &&
+      this.appliedCriteriaData[index].lcyAmount.substring(
+        this.appliedCriteriaData[index].lcyAmount.indexOf("=") + 1
+      );
+    let lcyAmountGreaterThan =
+      this.appliedCriteriaData[index].lcyAmount &&
+      this.appliedCriteriaData[index].lcyAmount.substring(
+        this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1
+      );
     // console.log("lcyAmount",lcyAmount);
-    if (this.appliedCriteriaData[index][selectCol + "Option"] == "Percentage") {
+    if (
+      this.appliedCriteriaData[index][selectCol.split("Option")[0]] ==
+      "Percentage"
+    ) {
       max = 100;
     } else if (
-      this.appliedCriteriaData[index][selectCol + "Option"] == "Amount"
+      this.appliedCriteriaData[index][selectCol.split("Option")[0]] == "Amount"
     ) {
       if (
         Number(this.appliedCriteriaData[index].lcyAmountFrom) > 0 &&
@@ -615,15 +634,13 @@ export class AddNewTaxComponent implements OnInit {
       ) {
         min = Number(this.appliedCriteriaData[index].lcyAmountFrom);
         max = Number(this.appliedCriteriaData[index].lcyAmountTo);
-      }else if(Number(lcyAmountEqualTo) > 0 ) {
+      } else if (Number(lcyAmountEqualTo) > 0) {
         min = Number(lcyAmountEqualTo);
         max = Number(lcyAmountEqualTo);
-      }else if(Number(lcyAmountGreaterThan) > 0 ) {
+      } else if (Number(lcyAmountGreaterThan) > 0) {
         min = Number(lcyAmountGreaterThan);
         max = 1000000;
-      }
-      
-      else {
+      } else {
         max = 1000000;
       }
     }

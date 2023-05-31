@@ -26,7 +26,7 @@ export class AddnewrouteComponent2 implements OnInit {
   primaryColor = "var(--primary-color)";
 
   userId = "";
-  groupID = "";
+  routeID = "";
   mode = "add";
   formName = "Bank Routings";
   applicationName = "Web Application";
@@ -39,6 +39,10 @@ export class AddnewrouteComponent2 implements OnInit {
   appliedCriteriaDataCols: any = [];
   objectKeys = Object.keys;
   isEditMode = false;
+  //
+
+  //
+  formattedMasterData: any = [];
   //
 
   editBankRouteApiData: any = [];
@@ -97,7 +101,7 @@ export class AddnewrouteComponent2 implements OnInit {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
         this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
       );
-      this.groupID = params.id;
+      this.routeID = params.id;
     }
   }
 
@@ -169,6 +173,7 @@ export class AddnewrouteComponent2 implements OnInit {
       .pipe(
         take(1),
         map((response) => {
+          this.formatMasterData(response.criteriaMasterData);
           const criteriaMasterData = response.criteriaMasterData;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
@@ -183,6 +188,7 @@ export class AddnewrouteComponent2 implements OnInit {
 
           if (this.mode == "add") {
             this.routeCode = this.criteriaDataDetailsJson.data.routeCode;
+            this.routeID = this.routeCode;
             this.routeDescription = this.criteriaDataDetailsJson.data.routeDesc;
           }
 
@@ -222,9 +228,9 @@ export class AddnewrouteComponent2 implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getBanksRoutingForEditApi(this.groupID, "edit");
+            this.getBanksRoutingForEditApi(this.routeID, "edit");
           } else if (this.mode == "clone") {
-            this.getBanksRoutingForEditApi(this.groupID, "clone");
+            this.getBanksRoutingForEditApi(this.routeID, "clone");
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -234,6 +240,12 @@ export class AddnewrouteComponent2 implements OnInit {
           console.log("Error in Initiating dropdown values", err);
         }
       );
+  }
+
+  formatMasterData(masterData: any) {
+    const formattedMasterData = [].concat.apply([], Object.values(masterData));
+    console.log(formattedMasterData);
+    this.formattedMasterData = formattedMasterData;
   }
 
   getCorrespondentValues(
@@ -287,7 +299,9 @@ export class AddnewrouteComponent2 implements OnInit {
     this.setCriteriaSharedComponent.resetCriteriaDropdowns();
   }
 
-  applyCriteria(postDataCriteria: any) {
+  applyCriteria(postDataCriteria: FormData) {
+    postDataCriteria.append("routeCode", this.routeID);
+    postDataCriteria.append("operation", this.mode);
     this.isApplyCriteriaClicked = true;
     if (this.isBankRoutingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -410,45 +424,49 @@ export class AddnewrouteComponent2 implements OnInit {
 
   selectedColumn(column, value, index) {
     console.log(column, value, index);
-    let selectedColField = column + "Option";
+    let selectedColField = column.split("Option")[0];
     this.appliedCriteriaData[index][selectedColField] = value["codeName"];
   }
 
   setSelectedOptions() {
     this.appliedCriteriaData.forEach((data) => {
-      if (data["routeToBankNameOption"]) {
-        data["routeToBankNameOption"] = data["routeToBankName"].filter(
-          (option) => option["code"] == data["routeToBankNameOption"]
+      data["routeToBankNameOption"].filter((option) => {
+        console.log(option["code"], data["routeToBankName"]);
+        option["code"] == data["routeToBankName"];
+      });
+      if (data["routeToBankName"]) {
+        data["routeToBankName"] = data["routeToBankNameOption"].filter(
+          (option) => option["code"] == data["routeToBankName"]
         )[0]["codeName"];
       }
 
-      if (data["routeToServiceCategoryOption"]) {
-        data["routeToServiceCategoryOption"] = data[
-          "routeToServiceCategory"
+      if (data["routeToServiceCategory"]) {
+        data["routeToServiceCategory"] = data[
+          "routeToServiceCategoryOption"
         ].filter(
-          (option) => option["code"] == data["routeToServiceCategoryOption"]
+          (option) => option["code"] == data["routeToServiceCategory"]
         )[0]["codeName"];
       }
 
-      if (data["routeToServiceTypeOption"]) {
-        data["routeToServiceTypeOption"] = data["routeToServiceType"].filter(
-          (option) => option["code"] == data["routeToServiceTypeOption"]
+      if (data["routeToServiceType"]) {
+        data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
+          (option) => option["code"] == data["routeToServiceType"]
         )[0]["codeName"];
       }
     });
   }
   decodeSelectedOptions() {
     this.appliedCriteriaData.forEach((data) => {
-      data["routeToBankNameOption"] = data["routeToBankName"].filter(
-        (option) => option["codeName"] == data["routeToBankNameOption"]
+      data["routeToBankName"] = data["routeToBankNameOption"].filter(
+        (option) => option["codeName"] == data["routeToBankName"]
       )[0]["code"];
-      data["routeToServiceCategoryOption"] = data[
-        "routeToServiceCategory"
+      data["routeToServiceCategory"] = data[
+        "routeToServiceCategoryOption"
       ].filter(
-        (option) => option["codeName"] == data["routeToServiceCategoryOption"]
+        (option) => option["codeName"] == data["routeToServiceCategory"]
       )[0]["code"];
-      data["routeToServiceTypeOption"] = data["routeToServiceType"].filter(
-        (option) => option["codeName"] == data["routeToServiceTypeOption"]
+      data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
+        (option) => option["codeName"] == data["routeToServiceType"]
       )[0]["code"];
     });
   }
@@ -520,7 +538,7 @@ export class AddnewrouteComponent2 implements OnInit {
             data: this.appliedCriteriaData,
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
-            routeCode: this.groupID,
+            routeCode: this.routeID,
           };
           service = this.bankRoutingService.updateRoute(this.userId, data);
           console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
