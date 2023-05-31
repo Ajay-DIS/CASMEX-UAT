@@ -13,27 +13,25 @@
       <div class="form-style">
         <form [formGroup]="loginForm">
           <div class="form-group pb-3">
-            <label for="exampleInputEmail1" class="form-label">Username</label>
+            <label for="username" class="form-label">Username</label>
             <input
               formControlName="username"
               type="Username"
               placeholder="username"
               class="form-control"
-              id="exampleInputEmail1"
+              id="username"
               aria-describedby="emailHelp"
             />
           </div>
           <div class="form-group pb-3">
-            <label for="exampleInputPassword1" class="form-label"
-              >Password</label
-            >
+            <label for="password" class="form-label">Password</label>
             <input
               formControlName="password"
-              autocomplete=""
+              autocomplete="password"
               type="password"
               placeholder="password"
               class="form-control"
-              id="exampleInputPassword1"
+              id="password"
             />
           </div>
           <div class="d-flex align-items-center justify-content-between mb-2">

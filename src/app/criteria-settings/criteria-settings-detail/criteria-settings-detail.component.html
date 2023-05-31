@@ -58,10 +58,11 @@
     </div>
     <div [formGroup]="selectAppForm" class="select-form-application m-2">
       <div class="d-flex field col-5 md-3">
-        <label class="detail-page-section-heading" for="state"
+        <label class="detail-page-section-heading" for="application"
           >Application</label
         >
         <p-dropdown
+          name="application"
           inputId="application"
           [options]="criteriaApplicationOptions"
           placeholder="Select"
@@ -71,8 +72,9 @@
         ></p-dropdown>
       </div>
       <div class="d-flex field col-5 md-3">
-        <label class="detail-page-section-heading" for="state">Form</label>
+        <label class="detail-page-section-heading" for="form">Form</label>
         <p-dropdown
+          name="form"
           inputId="form"
           [options]="criteriaFormsOptions"
           placeholder="Select"
