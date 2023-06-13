@@ -1,0 +1,246 @@
+
+<div class="visible-main-section" *ngIf="formRuleListingData">
+    <div class="pagetitle">
+      <div class="infoicon">
+        <i class="pi pi-info-circle"></i>
+        List of form rules.
+      </div>
+      <div class="addnew">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New Rule"
+          class="p-button-raised"
+          (click)="addNewFormRule()"
+        ></button>
+      </div>
+    </div>
+    <div class="ptable">
+      <!-- <p-card class="p-col-12" *ngIf="!taxListingData">
+        {{ "noDataMsg" }}
+      </p-card> -->
+  
+      <p-table
+        #dt
+        [columns]="cols"
+        [value]="formRuleListingData"
+        [paginator]="true"
+        [rows]="10"
+        [loading]="loading"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th
+              *ngFor="let col of columns; let c = index"
+              pReorderableColumn
+              [pSortableColumn]="col.field"
+              pResizableColumn
+              [style.width]="col.width"
+            >
+              {{ col.header }}
+              <div
+                *ngIf="c == 0 || col.field == 'status'"
+                (click)="$event.stopPropagation()"
+                class="filter-icon"
+              >
+                <i
+                  [ngStyle]="{
+                    color: getSelectedFilterArr(col.field).length
+                      ? 'var(--primary-color)'
+                      : 'rgb(105 105 105)',
+                    fontSize: '11px'
+                  }"
+                  class="pi pi-filter-fill"
+                  (click)="toggleFilterVisibility(col.field)"
+                ></i>
+                <p-multiSelect
+                  #ms
+                  [options]="fieldFilterOptions(col.field)"
+                  [filter]="true"
+                  [displaySelectedLabel]="false"
+                  [overlayVisible]="fieldFilterVisible(col.field)"
+                  [defaultLabel]="'Search'"
+                  [appendTo]="'body'"
+                  [autoWidth]="false"
+                  (onChange)="
+                    dt.filter($event.value, col.field, 'in');
+                    setSelectedFilter(ms, col.field)
+                  "
+                  (onPanelHide)="hideFilterVisibility(col.field)"
+                >
+                </p-multiSelect>
+              </div>
+            </th>
+          </tr>
+          <tr class="search-row">
+            <th *ngFor="let col of cols" [style.width]="col.width">
+              <span
+                style="width: 100%"
+                class="p-input-icon-left"
+                *ngIf="col.field != 'status' && col.field != 'operation'"
+              >
+                <i class="pi pi-search"></i>
+                <input
+                  type="text"
+                  class="p-inputtext table-search"
+                  placeholder="Search"
+                  (input)="dt.filter($event.target.value, col.field, 'contains')"
+                />
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-columns="columns"
+          let-index="rowIndex"
+        >
+          <tr [pReorderableRow]="index">
+            <ng-container *ngFor="let col of columns; let i = index">
+              <td *ngIf="col.field != 'status' && col.field != 'operation'">
+                <div
+                  *ngIf="!(i == 0 || i == 2 || i == 1)"
+                  style="display: inline-block"
+                >
+                  {{ rowData[col["field"]] }}
+                </div>
+                <a
+                  *ngIf="i == 0"
+                  style="text-decoration: underline !important"
+                  [ngStyle]="{
+                    color: isLinked(rowData[col['field']])
+                      ? '#f89406'
+                      : 'var(--primary-color)',
+                    fontSize: '11px',
+                    cursor: 'pointer'
+                  }"
+                  [pTooltip]="'Active Transactions Exist.'"
+                  [tooltipDisabled]="!isLinked(rowData[col['field']])"
+                  (click)="viewFormRules(rowData)"
+                  >{{ rowData[col["field"]] }}</a
+                >
+                <span
+                  *ngIf="i == 1"
+                  [pTooltip]="rowData[col['field']].substring(31,rowData[col['field']].length)"
+                  tooltipPosition="bottom"
+                  >{{ rowData[col["field"]].substring(0, 30) }}
+                  {{ rowData[col["field"]].length > 30 ? ".." : "" }}</span
+                >
+                <span
+                  *ngIf="i == 2"
+                  [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
+                  tooltipPosition="bottom"
+                  >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
+                  {{
+                    rowData[col["field"]].split(",").length > 4 ? ".." : ""
+                  }}</span
+                >
+              </td>
+  
+              <td
+                *ngIf="col.field == 'status'"
+                style="border: none; text-align: center"
+              >
+                <label class="switch" style="border: none">
+                  <input
+                    #statusInp
+                    [value]="rowData[col['field']]"
+                    type="checkbox"
+                    (click)="confirmStatus($event, rowData)"
+                    [checked]="
+                      rowData[col['field']] == 'Active' ||
+                      rowData[col['field']] == 'A'
+                        ? true
+                        : false
+                    "
+                  />
+                  <span class="slider round"></span>
+                </label>
+              </td>
+              <td
+                *ngIf="col.field == 'operation'"
+                style="border: none; text-align: center"
+              >
+                <span class="image-text">
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-clone"
+                    class="operation-btns mr-2"
+                    [disabled]="rowData['status'] == 'Inactive'"
+                    (click)="cloneFormRule(rowData)"
+                  ></button>
+                </span>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length">No Data found.</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft" let-state>
+          {{ state.page * state.rows + 1 }} -
+          {{
+            state.rows * (state.page + 1) > state.totalRecords
+              ? state.totalRecords
+              : state.rows * (state.page + 1)
+          }}
+          of {{ state.totalRecords }}
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <div class="NorecordFound" *ngIf="!formRuleListingData && showNoDataFound">
+      <div class="row">
+        <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p>
+            "No Record Found.Click Add New Form Rule To Add Record" 
+          </p>
+          <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New Tax"
+          class="p-button-raised"
+          (click)="addNewRule()"
+        ></button>
+        </div>
+      </div>
+  
+  </div>
+  <p-confirmDialog
+    key="activeDeactiveStatus"
+    class="status-confirm confirm-popup"
+    #cd
+    icon="pi pi-exclamation-triangle"
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  

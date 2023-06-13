@@ -192,10 +192,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        // case "Form Rules":
-        //   item["routerLink"] = "/navbar/bank-routing-2";
-        //   item["routerLinkActiveOptions"] = { subset: true };
-        //   break;
+        case "Form Rules":
+          item["routerLink"] = "/navbar/form-rules";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
       }
     });
     return menu;

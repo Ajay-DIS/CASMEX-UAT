@@ -1,0 +1,34 @@
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+:host ::ng-deep .p-datatable-resizable-table > .p-datatable-tbody > tr > td {
+  white-space: initial;
+}
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+.NorecordFound {
+  background-color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding-bottom: 60px;
+}
+.NorecordFound p {
+  padding-bottom: 10px;
+  font-weight: 500;
+  color: rgb(0 0 0);
+  font-size: 16px;
+  line-height: 1px;
+  font-family: "IBM Plex Sans", sans-serif ;
+}
+.NorecordFound button {
+  margin-bottom: 40px;
+}
+
+.NorecordFound img {
+  width: 27%;
+  margin-top: 70px;
+}

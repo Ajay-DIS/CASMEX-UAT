@@ -53,6 +53,8 @@ import { SetCriteriaComponent } from "./shared/components/set-criteria/set-crite
 import { TransactionCriteriaModal } from "./shared/modals/transaction-criteria-modal/transaction-criteria-modal";
 import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
 import { MessageService } from "primeng/api";
+import { AddNewFormRuleComponent } from './form-rules/add-new-form-rule/add-new-form-rule.component';
+import { FormRuleListingComponent } from './form-rules/form-rule-listing/form-rule-listing.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -74,6 +76,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TransactionCriteriaModal,
     SetCriteriaComponent,
     AddNewTaxComponent,
+    AddNewFormRuleComponent,
+    FormRuleListingComponent,
   ],
   imports: [
     BrowserModule,
