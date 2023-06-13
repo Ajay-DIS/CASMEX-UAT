@@ -8,10 +8,7 @@ import { User } from "./user.model";
   providedIn: "root",
 })
 export class AuthService {
-  constructor(
-    private router: Router,
-    private coreService: CoreService
-  ) {}
+  constructor(private router: Router, private coreService: CoreService) {}
 
   userDataSub = new BehaviorSubject<User>(null);
   showSessionConfirm = new BehaviorSubject<{ status: boolean; timer?: any }>({
@@ -57,7 +54,7 @@ export class AuthService {
         this.showSessionConfirm.next({ status: true, timer: "2 Minutes" });
       }, expiryTimer - 120000);
     } else {
-      if (expiryTimer <= 0 && clearTimeout) {
+      if (expiryTimer <= 0 && this.clearWarningTimer) {
         this.showSessionConfirm.next({ status: false });
         clearTimeout(this.clearWarningTimer);
       } else {
