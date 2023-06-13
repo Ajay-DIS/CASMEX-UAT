@@ -12,6 +12,8 @@ import { TaxListingComponent } from "./tax-settings/tax-listing/tax-listing.comp
 import { BankRoutingComponent2 } from "./banks-routing-2/bank-routing/bank-routing.component";
 import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute.component";
 import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
+import { AddNewFormRuleComponent } from "./form-rules/add-new-form-rule/add-new-form-rule.component";
+import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-rule-listing.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -168,6 +170,49 @@ const routes: Routes = [
           { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "tax-settings" },
           { label: "Clone Tax", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "form-rules",
+        component: FormRuleListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/form-rules" },
+          { label: "Form Rules", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "form-rules/addnewformrule",
+        component: AddNewFormRuleComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/form-rules" },
+          { label: "Form Rules", routerLink: "form-rules" },
+          { label: "Add New Form Rule", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "form-rules/addnewrule/:id/edit",
+        component: AddNewFormRuleComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/form-rules" },
+          { label: "Form Rules", routerLink: "form-rules" },
+          { label: "Edit Form Rule", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "form-rules/addnewrule/:id/clone",
+        component: AddNewFormRuleComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/form-rules" },
+          { label: "Form Rules", routerLink: "form-rules" },
+          { label: "Clone Form Rule", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
