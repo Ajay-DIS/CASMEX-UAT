@@ -1,53 +1,59 @@
 .rule-code-desc-section {
-    font-size: 0.8rem;
-    font-weight: 500;
-    gap: 17px;
-  }
-  .rule-code-desc-section p {
-    margin-bottom: 0.5rem;
-  }
-  .rule-code-desc-section input {
-    height: 35px;
-    font-size: 0.8rem;
-  }
-  .rule-code-desc-section .ruleCode input {
-    width: 235px;
-  }
-  .rule-code-desc-section .ruleDesc input {
-    width: 398px;
-  }
-  
-  .rule-code-desc-section .ruleDesc input::placeholder {
-    color: #8a9099;
-    font-size: 12px;
-  }
-  
-  .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
-    text-align: center;
-  }
-  
-  .description.red-star {
-    font-size: 18px;
-    color: red;
-    font-weight: 500;
-    position: absolute;
-    top: -5px;
-    margin-left: 2px;
-  }
-  
-  // suresh Work start -->
-  .details-page-card-content {
-    border: 0.5px solid var(--surface-ground);
-    padding: 20px 0;
-    margin: 0 15px;
-    background-color: var(--surface-card);
-    border-radius: 10px;
-  }
-  
-  .criteria-bar {
-    display: flex;
-    padding: 0 1rem;
-    margin-top: 5px;
-  }
-  // suresh Work end -->
-  
+  font-size: 0.8rem;
+  font-weight: 500;
+  gap: 17px;
+}
+.rule-code-desc-section p {
+  margin-bottom: 0.5rem;
+}
+.rule-code-desc-section input {
+  height: 35px;
+  font-size: 0.8rem;
+}
+.rule-code-desc-section .ruleCode input {
+  width: 235px;
+}
+.rule-code-desc-section .ruleDesc input {
+  width: 398px;
+}
+
+.rule-code-desc-section .ruleDesc input::placeholder {
+  color: #8a9099;
+  font-size: 12px;
+}
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.description.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: -5px;
+  margin-left: 2px;
+}
+
+.appliedCriteriaDataTable ::ng-deep p-treetabletoggler button {
+  width: 0px !important;
+}
+.appliedCriteriaDataTable ::ng-deep p-treetabletoggler button i {
+  display: none !important;
+}
+
+// suresh Work start -->
+.details-page-card-content {
+  border: 0.5px solid var(--surface-ground);
+  padding: 20px 0;
+  margin: 0 15px;
+  background-color: var(--surface-card);
+  border-radius: 10px;
+}
+
+.criteria-bar {
+  display: flex;
+  padding: 0 1rem;
+  margin-top: 5px;
+}
+// suresh Work end -->

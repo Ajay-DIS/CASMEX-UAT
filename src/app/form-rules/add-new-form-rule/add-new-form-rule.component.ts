@@ -1,19 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
-import { CoreService } from 'src/app/core.service';
-import { SetCriteriaService } from 'src/app/shared/components/set-criteria/set-criteria.service';
-import { FormRuleService } from '../form-rule.service';
-import { CriteriaDataService } from 'src/app/shared/services/criteria-data.service';
-import { SetCriteriaComponent } from 'src/app/shared/components/set-criteria/set-criteria.component';
-import { forkJoin } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService, MessageService, TreeNode } from "primeng/api";
+import { DialogService } from "primeng/dynamicdialog";
+import { CoreService } from "src/app/core.service";
+import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
+import { FormRuleService } from "../form-rule.service";
+import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
+import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
 
 @Component({
-  selector: 'app-add-new-form-rule',
-  templateUrl: './add-new-form-rule.component.html',
-  styleUrls: ['./add-new-form-rule.component.scss'],
+  selector: "app-add-new-form-rule",
+  templateUrl: "./add-new-form-rule.component.html",
+  styleUrls: ["./add-new-form-rule.component.scss"],
   providers: [DialogService, MessageService],
 })
 export class AddNewFormRuleComponent implements OnInit {
@@ -56,55 +56,275 @@ export class AddNewFormRuleComponent implements OnInit {
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
 
-  formRulesData: any=[
-    {
-      "fieldName": "First Name",
-      "isMandatory":true,
-      "isEnabled" :false,
-      "isVisible" :true,
-      "minFieldLengthMaxLength" : "4-8",
-      "defaultValues":"",
-      "regex": ""
-    },
-    {
-      "fieldName": "Middle Name",
-      "isMandatory":true,
-      "isEnabled" :false,
-      "isVisible" :true,
-      "minFieldLengthMaxLength" : "4-12",
-      "defaultValues":"",
-      "regex": ""
-    },
-    {
-      "fieldName": "Last Name",
-      "isMandatory":true,
-      "isEnabled" :false,
-      "isVisible" :true,
-      "minFieldLengthMaxLength" : "4-9",
-      "defaultValues":"",
-      "regex": ""
-    },
-    {
-      "fieldName": "Country",
-      "isMandatory":true,
-      "isEnabled" :false,
-      "isVisible" :true,
-      "minFieldLengthMaxLength" : "6-8",
-      "defaultValues":"India",
-      "regex": ""
-    },
-    {
-      "fieldName": "Currency",
-      "isMandatory":true,
-      "isEnabled" :false,
-      "isVisible" :true,
-      "minFieldLengthMaxLength" : "2-8",
-      "defaultValues":"Rupee",
-      "regex": ""
-    },
-    
+  formRulesDataCols = [
+    "fieldName",
+    "isMandatory",
+    "isEnabled",
+    "isVisible",
+    "minFieldLengthMaxLength",
+    "defaultValues",
+    "regex",
   ];
-  formRulesDataCols: any=[];
+
+  formRulesData: any = [
+    {
+      id: 1,
+      fieldName: "First Name",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "4-8",
+      defaultValues: "",
+      regex: "",
+      groupBy: "Personal Details",
+    },
+    {
+      id: 2,
+      fieldName: "Middle Name",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "4-12",
+      defaultValues: "",
+      regex: "",
+      groupBy: "Personal Details",
+    },
+    {
+      id: 3,
+      fieldName: "Last Name",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "4-9",
+      defaultValues: "",
+      regex: "",
+      groupBy: "Personal Details",
+    },
+    {
+      id: 4,
+      fieldName: "Country",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "6-8",
+      defaultValues: "India",
+      regex: "",
+      groupBy: "Personal Details",
+    },
+    {
+      id: 5,
+      fieldName: "Currency",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "2-8",
+      defaultValues: "Rupee",
+      regex: "",
+      groupBy: "Personal Details",
+    },
+    {
+      id: 6,
+      fieldName: "Remarks",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "2-8",
+      defaultValues: "Rupee",
+      regex: "",
+      groupBy: "Payment Details",
+    },
+    {
+      id: 7,
+      fieldName: "Comments",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "2-8",
+      defaultValues: "Rupee",
+      regex: "",
+      groupBy: "Payment Details",
+    },
+    {
+      id: 8,
+      fieldName: "Description",
+      isMandatory: true,
+      isEnabled: false,
+      isVisible: true,
+      minFieldLengthMaxLength: "2-8",
+      defaultValues: "Rupee",
+      regex: "",
+      groupBy: "Payment Details",
+    },
+  ];
+
+  files: TreeNode[] = [
+    {
+      data: {
+        fieldName: "Rast",
+      },
+      expanded: true,
+      children: [
+        {
+          data: {
+            fieldName: "mat",
+            country: "India",
+            isMandatory: "200mb",
+            isEnabled: "Folder",
+            isVisible: "Applications",
+            minMaxLength: "200mb",
+            defaultValues: "Folder",
+            regex: "Folder",
+          },
+        },
+        {
+          data: {
+            fieldName: "Pat",
+            country: "India",
+            isMandatory: "200mb",
+            isEnabled: "Folder",
+            isVisible: "Applications",
+            minMaxLength: "200mb",
+            defaultValues: "Folder",
+            regex: "Folder",
+          },
+        },
+        {
+          data: {
+            fieldName: "Lat",
+            country: "India",
+            isMandatory: "200mb",
+            isEnabled: "Folder",
+            isVisible: "Applications",
+            minMaxLength: "200mb",
+            defaultValues: "Folder",
+            regex: "Folder",
+          },
+        },
+      ],
+    },
+    {
+      data: {
+        fieldName: "App",
+      },
+      expanded: true,
+      children: [
+        {
+          data: {
+            fieldName: "Cat",
+            country: "India",
+            isMandatory: "200mb",
+            isEnabled: "Folder",
+            isVisible: "Applications",
+            minMaxLength: "200mb",
+            defaultValues: "Folder",
+            regex: "Folder",
+          },
+        },
+        {
+          data: {
+            fieldName: "Sat",
+            country: "India",
+            isMandatory: "200mb",
+            isEnabled: "Folder",
+            isVisible: "Applications",
+            minMaxLength: "200mb",
+            defaultValues: "Folder",
+            regex: "Folder",
+          },
+        },
+      ],
+    },
+  ];
+  cols: any[] = [
+    { field: "country", header: "Country" },
+    { field: "fieldName", header: "Field Name" },
+    { field: "isMandatory", header: "Is Mandatory" },
+    { field: "isEnabled", header: "Is Enabled" },
+    { field: "isVisible", header: "Is Visible" },
+    { field: "minMaxLength", header: "Min/Max Length" },
+    { field: "defaultValues", header: "Default Values" },
+    { field: "regex", header: "Regex" },
+  ];
+
+  sampleJson = {
+    labelData: {
+      label: {
+        "Personal Details": "Personal Details",
+        "Payement Details": "Payement Details",
+      },
+    },
+    data: {
+      "Personal Details": [
+        {
+          id: 1,
+          applicationName: "CASMEX-ERP",
+          moduleName: "REMITTANCE",
+          formName: "CUSTOMER PROFILE",
+          fieldName: "First Name",
+          isMandatory: "N",
+          isVisibile: "N",
+          regex: null,
+          validLength: null,
+          deafultValue: null,
+          allowMandatory: null,
+          allowVisibile: null,
+          allowRegex: null,
+          allowDefaultValue: null,
+          allowEnable: null,
+          formSection: "Personal Details",
+          formLableFieldSequence: "1",
+          status: "A",
+        },
+        {
+          id: 2,
+          applicationName: "CASMEX-ERP",
+          moduleName: "REMITTANCE",
+          formName: "CUSTOMER PROFILE",
+          fieldName: "Middle Name",
+          isMandatory: "N",
+          isVisibile: "N",
+          regex: null,
+          validLength: null,
+          deafultValue: null,
+          allowMandatory: null,
+          allowVisibile: null,
+          allowRegex: null,
+          allowDefaultValue: null,
+          allowEnable: null,
+          formSection: "Personal Details",
+          formLableFieldSequence: "2",
+          status: "A",
+        },
+      ],
+      "Payement Details": [
+        {
+          id: 3,
+          applicationName: "CASMEX-ERP",
+          moduleName: "REMITTANCE",
+          formName: "CUSTOMER PROFILE",
+          fieldName: "Remark",
+          isMandatory: "N",
+          isVisibile: "N",
+          regex: null,
+          validLength: null,
+          deafultValue: null,
+          allowMandatory: null,
+          allowVisibile: null,
+          allowRegex: null,
+          allowDefaultValue: null,
+          allowEnable: null,
+          formSection: "Payement Details",
+          formLableFieldSequence: "3",
+          status: "A",
+        },
+      ],
+    },
+    duplicate: false,
+    criteriaMap:
+      "Country = IND;Module = Remittance;Form = Customer Profile&&&&from:1::to:5#from:6::to:8",
+  };
+
+  selectedNodes: TreeNode;
   maxlengthDefaultValue = 0;
 
   appliedCriteriaDataCols = [];
@@ -123,18 +343,18 @@ export class AddNewFormRuleComponent implements OnInit {
     private setCriteriaService: SetCriteriaService,
     private formRuleService: FormRuleService,
     private criteriaDataService: CriteriaDataService
-    ) { }
+  ) {}
 
-    @ViewChild(SetCriteriaComponent)
-    setCriteriaSharedComponent!: SetCriteriaComponent;
+  @ViewChild(SetCriteriaComponent)
+  setCriteriaSharedComponent!: SetCriteriaComponent;
 
   ngOnInit(): void {
     this.mode = "add";
-    this.getCriteriaMasterData();
+    // this.getCriteriaMasterData();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.getAllTemplates();
+    // this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
@@ -145,7 +365,10 @@ export class AddNewFormRuleComponent implements OnInit {
       this.ruleID = params.id;
     }
     console.log(this.mode);
-
+    console.log(
+      "decoded ARRRR",
+      this.criteriaDataService.decodeCriteriaMapIntoTableFields(this.sampleJson)
+    );
   }
 
   getFormRulesForEditApi(ruleCode: any, operation: any) {
@@ -217,7 +440,7 @@ export class AddNewFormRuleComponent implements OnInit {
         take(1),
         map((response) => {
           const criteriaMasterData = response.criteriaMasterData;
-          this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
+          this.criteriaDataDetailsJson = response.addFormRuleCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
@@ -230,7 +453,8 @@ export class AddNewFormRuleComponent implements OnInit {
           if (this.mode == "add") {
             this.ruleCode = this.criteriaDataDetailsJson.data.ruleCode;
             this.ruleID = this.ruleCode;
-            this.ruleDescription = this.criteriaDataDetailsJson.data.ruleCodeDesc;
+            this.ruleDescription =
+              this.criteriaDataDetailsJson.data.ruleCodeDesc;
           }
 
           this.cmCriteriaDataDetails = [
@@ -402,7 +626,7 @@ export class AddNewFormRuleComponent implements OnInit {
           }
         },
         (err) => {
-          console.log("error in BankCriteriaSearchApi", err);
+          console.log("error in FormRuleCriteriaSearchApi", err);
         }
       )
       .add(() => {
@@ -593,18 +817,20 @@ export class AddNewFormRuleComponent implements OnInit {
 
   // suresh Work start -->
 
-  onChange(controlId,rule){
-  let minmax = rule.minFieldLengthMaxLength.split("-");
+  onChange(controlId, rule) {
+    let minmax = rule.minFieldLengthMaxLength.split("-");
     let min = minmax[0];
     let max = minmax[1];
-    let index = this.formRulesData.findIndex(x => x.fieldName == rule.fieldName)
-    console.log("minmax", minmax,max, index);
-    if(controlId == "defaultValues") {
+    let index = this.formRulesData.findIndex(
+      (x) => x.fieldName == rule.fieldName
+    );
+    console.log("minmax", minmax, max, index);
+    if (controlId == "defaultValues") {
       // if(rule.defaultValues.length < min || rule.defaultValues.length > max) {
-        // rule.maxlengthDefaultValue = Number(max);
-        this.formRulesData[index].maxlengthDefaultValue =  Number(max);
+      // rule.maxlengthDefaultValue = Number(max);
+      this.formRulesData[index].maxlengthDefaultValue = Number(max);
       // }
-}
+    }
   }
 
   isMandatoryCol(heading: any) {
@@ -753,5 +979,4 @@ export class AddNewFormRuleComponent implements OnInit {
     console.log("delete", index);
   }
   // suresh Work end -->
-
 }
