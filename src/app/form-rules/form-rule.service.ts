@@ -10,7 +10,7 @@ export class FormRuleService {
   constructor(private http: HttpClient) { }
   getRuleCodeData(id: string) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getTaxCodeList`,
+      `/remittance/formRulesController/getFormRuleList`,
       { headers: new HttpHeaders().set("userId", id) }
     );
   }
@@ -32,19 +32,22 @@ export class FormRuleService {
     );
   }
 
-  getAddFormRuleCriteriaData() {
+  getAddFormRuleCriteriaData(userId: any) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/addTaxSettings`
+      `/remittance/formRulesController/addFormRules`,
+      {
+        headers: new HttpHeaders()
+        .set("userId", userId)
+      }
     );
   }
 
-  getCriteriaMasterData(formName: any, appName: any) {
+  getCriteriaMasterData(userId: any) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getCriteriaMasterData`,
+      `/remittance/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
-          .set("formName", formName)
-          .set("applicationName", appName),
+          .set("userId", userId)
       }
     );
   }
@@ -57,7 +60,7 @@ export class FormRuleService {
     displayName: any
   ) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getCriteriaData`,
+      `/remittance/formRulesController/getCriteriaData`,
       {
         headers: new HttpHeaders()
           .set("formName", formName)
@@ -78,14 +81,14 @@ export class FormRuleService {
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/taxSettingCriteriaController/saveTaxSettingCriteriaTemplate`,
+      `remittance/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
 
   getAllCriteriaTemplates(id: string): Observable<any> {
     return this.http.get(
-      `remittance/taxSettingCriteriaController/getTaxSettingCriteriaTemplateList
+      `remittance/formRulesController/getExistingFormRuleList
       `,
       { headers: new HttpHeaders().set("userId", id) }
     );

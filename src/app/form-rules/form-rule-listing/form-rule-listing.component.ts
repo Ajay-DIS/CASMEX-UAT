@@ -191,8 +191,7 @@ export class FormRuleListingComponent implements OnInit {
     // this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
-        this.formName,
-        this.applicationName
+        userId
       ),
       formRuleListingData: this.formRuleService.getRuleCodeData(userId),
     })

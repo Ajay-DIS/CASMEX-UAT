@@ -431,11 +431,10 @@ export class AddNewFormRuleComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
-        this.formName,
-        this.applicationName
+        this.userId
       ),
-      addFormRuleCriteriaData:
-        this.formRuleService.getAddFormRuleCriteriaData(),
+      addBankRouteCriteriaData:
+        this.formRuleService.getAddFormRuleCriteriaData(this.userId),
     })
       .pipe(
         take(1),
