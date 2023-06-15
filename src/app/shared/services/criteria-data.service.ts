@@ -232,7 +232,7 @@ export class CriteriaDataService {
           });
         });
 
-        criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
+        // criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
       } else {
         criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
       }

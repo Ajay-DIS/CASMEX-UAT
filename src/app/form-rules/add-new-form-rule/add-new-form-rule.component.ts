@@ -321,7 +321,7 @@ export class AddNewFormRuleComponent implements OnInit {
     },
     duplicate: false,
     criteriaMap:
-      "Country = IND;Form = Beneficiary;Module = Accounting&&&&from:1::to:5#from:6::to:8",
+      "Country = IND;Module = Remittance;Form = Customer Profile&&&&from:1::to:5#from:6::to:8",
   };
 
   selectedNodes: TreeNode;
@@ -367,9 +367,7 @@ export class AddNewFormRuleComponent implements OnInit {
     console.log(this.mode);
     console.log(
       "decoded ARRRR",
-      this.criteriaDataService.decodeCriteriaMapIntoTableFields(
-        this.sampleJson.criteriaMap
-      )
+      this.criteriaDataService.decodeCriteriaMapIntoTableFields(this.sampleJson)
     );
   }
 
