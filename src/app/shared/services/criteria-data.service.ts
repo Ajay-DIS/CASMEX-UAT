@@ -212,4 +212,37 @@ export class CriteriaDataService {
     console.log(tableCols);
     return tableCols;
   }
+
+  decodeCriteriaMapIntoTableFields(criteriaData: any) {
+    let criteriaMapFirstSplit = null;
+    let criteriaMapSecSplit = null;
+    let lcySlabArr = [];
+
+    if (criteriaData["criteriaMap"].includes("&&&&")) {
+      criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+      criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+
+      if (criteriaMapSecSplit.includes("from:")) {
+        criteriaMapSecSplit.split("#").forEach((rngTxt) => {
+          let fromVal = rngTxt.split("::")[0].split(":")[1];
+          let toVal = rngTxt.split("::")[1].split(":")[1];
+          lcySlabArr.push({
+            from: +fromVal,
+            to: +toVal,
+          });
+        });
+
+        criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
+      } else {
+        criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
+      }
+    } else {
+      criteriaMapFirstSplit = criteriaData["criteriaMap"];
+    }
+
+    return {
+      critMap: criteriaMapFirstSplit.split(";"),
+      lcySlabArr: lcySlabArr,
+    };
+  }
 }

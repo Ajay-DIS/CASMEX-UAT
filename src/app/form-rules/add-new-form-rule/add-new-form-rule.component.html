@@ -1,50 +1,49 @@
-
 <div class="visible-main-section">
-    <div class="details-page-card">
-      <div class="d-flex mx-3" style="justify-content: space-between">
-        <p class="description-text">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="41"
-            height="35"
-            viewBox="0 0 41 41"
+  <div class="details-page-card">
+    <div class="d-flex mx-3" style="justify-content: space-between">
+      <p class="description-text">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="41"
+          height="35"
+          viewBox="0 0 41 41"
+        >
+          <g
+            id="Group_2248"
+            data-name="Group 2248"
+            transform="translate(-341 -138)"
           >
-            <g
-              id="Group_2248"
-              data-name="Group 2248"
-              transform="translate(-341 -138)"
-            >
-              <circle
-                id="Ellipse_130"
-                data-name="Ellipse 130"
-                cx="20.5"
-                cy="20.5"
-                r="20.5"
-                transform="translate(341 138)"
-                [attr.fill]="primaryColor"
-              />
-              <path
-                id="_52_Note_Basic_Description"
-                data-name="52  Note, Basic, Description"
-                d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
-                transform="translate(348.213 145.945)"
-                fill="#fff"
-              />
-            </g>
-          </svg>
-          Enables users to configure form related settings.
-        </p>
-        <div class="buttons-section">
-          <button
-            pButton
-            pRipple
-            [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
-            type="button"
-            label="Save"
-            class="p-button-raised"
-            (click)="saveAddNewRule('save')"
-          ></button>
-          <!-- <button
+            <circle
+              id="Ellipse_130"
+              data-name="Ellipse 130"
+              cx="20.5"
+              cy="20.5"
+              r="20.5"
+              transform="translate(341 138)"
+              [attr.fill]="primaryColor"
+            />
+            <path
+              id="_52_Note_Basic_Description"
+              data-name="52  Note, Basic, Description"
+              d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+              transform="translate(348.213 145.945)"
+              fill="#fff"
+            />
+          </g>
+        </svg>
+        Enables users to configure form related settings.
+      </p>
+      <div class="buttons-section">
+        <button
+          pButton
+          pRipple
+          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
+          type="button"
+          label="Save"
+          class="p-button-raised"
+          (click)="saveAddNewRule('save')"
+        ></button>
+        <!-- <button
             pButton
             pRipple
             type="button"
@@ -52,90 +51,88 @@
             class="p-button-raised"
             (click)="saveAddNewRoute('saveAndAddNew')"
           ></button> -->
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="Reset"
-            class="p-button-warning"
-            (click)="reset()"
-          ></button>
-        </div>
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Reset"
+          class="p-button-warning"
+          (click)="reset()"
+        ></button>
       </div>
-      <div class="d-flex m-3 rule-code-desc-section">
-        <div
-          class="ruleCode"
-          [pTooltip]="
-            this.mode == 'add'
-              ? 'Rule Code is automatically generated, It may get changed in saving process.'
-              : ''
-          "
-        >
-          <p>Rule Code</p>
-          <input type="text" pInputText [(ngModel)]="ruleCode" disabled />
-        </div>
-        <div class="ruleDesc">
-          <p style="position: relative">
-            Form Description <span class="description red-star">*</span>
-          </p>
-          <input
-            type="text"
-            pInputText
-            [(ngModel)]="ruleDescription"
-            maxlength="100"
-            placeholder="Max 100 characters"
-          />
-        </div>
-      </div>
-      <app-set-criteria
-        #setCriteriaSharedComponent
-        [criteriaMasterData]="criteriaMasterData"
-        [cmCriteriaDataDetails]="cmCriteriaDataDetails"
-        [criteriaDataDetailsJson]="criteriaDataDetailsJson"
-        [cmCriteriaSlabType]="cmCriteriaSlabType"
-        [independantCriteriaArr]="independantCriteriaArr"
-        [cmCriteriaMandatory]="cmCriteriaMandatory"
-        [cmCriteriaDependency]="cmCriteriaDependency"
-        [criteriaMapDdlOptions]="criteriaMapDdlOptions"
-        [correspondentDdlOptions]="correspondentDdlOptions"
-        [criteriaEqualsDdlOptions]="criteriaEqualsDdlOptions"
-        [criteriaTemplatesDdlOptions]="criteriaTemplatesDdlOptions"
-        [savingCriteriaTemplateError]="savingCriteriaTemplateError"
-        [criteriaText]="criteriaText"
-        [criteriaCodeText]="criteriaCodeText"
-        [inactiveData]="inactiveData"
-        (postDataCriteria)="applyCriteria($event)"
-        (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
-        (getCorrespondentValues)="
-          getCorrespondentValues(
-            $event.fieldName,
-            $event.displayName,
-            $event.criteriaCodeText
-          )
-        "
-      ></app-set-criteria>
     </div>
-    <!-- // suresh Work start -->
-    <div class="details-page-card mt-2" >
-      <div class="details-page-card-content mt-1">
-        <div class="criteria-bar">
-          <p class="setCriteria detail-page-section-heading">
-            Applicable Rules
-            <img
-              height="15px"
-              src="../assets/Icon-info.svg"
-              alt=""
-              pTooltip="On selected criteria rules below rules will be applied."
-            />
-          </p>
-        </div>
-        <div class="mt-1 addnewroute-table">
-          <div class="ptable">
-            <!-- <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
-              {{ "noDataMsg" }}
-            </p-card> -->
-            <div class="appliedCriteriaDataTable">
-              <p-table
+    <div class="d-flex m-3 rule-code-desc-section">
+      <div
+        class="ruleCode"
+        [pTooltip]="
+          this.mode == 'add'
+            ? 'Rule Code is automatically generated, It may get changed in saving process.'
+            : ''
+        "
+      >
+        <p>Rule Code</p>
+        <input type="text" pInputText [(ngModel)]="ruleCode" disabled />
+      </div>
+      <div class="ruleDesc">
+        <p style="position: relative">
+          Form Description <span class="description red-star">*</span>
+        </p>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="ruleDescription"
+          maxlength="100"
+          placeholder="Max 100 characters"
+        />
+      </div>
+    </div>
+    <app-set-criteria
+      #setCriteriaSharedComponent
+      [criteriaMasterData]="criteriaMasterData"
+      [cmCriteriaDataDetails]="cmCriteriaDataDetails"
+      [criteriaDataDetailsJson]="criteriaDataDetailsJson"
+      [cmCriteriaSlabType]="cmCriteriaSlabType"
+      [independantCriteriaArr]="independantCriteriaArr"
+      [cmCriteriaMandatory]="cmCriteriaMandatory"
+      [cmCriteriaDependency]="cmCriteriaDependency"
+      [criteriaMapDdlOptions]="criteriaMapDdlOptions"
+      [correspondentDdlOptions]="correspondentDdlOptions"
+      [criteriaEqualsDdlOptions]="criteriaEqualsDdlOptions"
+      [criteriaTemplatesDdlOptions]="criteriaTemplatesDdlOptions"
+      [savingCriteriaTemplateError]="savingCriteriaTemplateError"
+      [criteriaText]="criteriaText"
+      [criteriaCodeText]="criteriaCodeText"
+      [inactiveData]="inactiveData"
+      (postDataCriteria)="applyCriteria($event)"
+      (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
+      (getCorrespondentValues)="
+        getCorrespondentValues(
+          $event.fieldName,
+          $event.displayName,
+          $event.criteriaCodeText
+        )
+      "
+    ></app-set-criteria>
+  </div>
+  <!-- // suresh Work start -->
+  <div class="details-page-card mt-2">
+    <div class="details-page-card-content mt-1">
+      <div class="criteria-bar">
+        <p class="setCriteria detail-page-section-heading">
+          Set Rules
+          <img
+            height="15px"
+            src="../assets/Icon-info.svg"
+            alt=""
+            pTooltip="On selected criteria rules below rules will be applied."
+          />
+        </p>
+      </div>
+      <div class="mt-1 addnewroute-table">
+        <div class="ptable">
+          <div class="appliedCriteriaDataTable">
+            <!-- earlier -->
+            <!-- <p-table
                 #dt
                 [columns]="formRulesDataCols"
                 [value]="formRulesData"
@@ -145,247 +142,228 @@
                 [rowHover]="true"
                 [scrollable]="true"
               >
-                <!-- <ng-template pTemplate="header" let-columns>
-                  <tr>
-                    <ng-container *ngFor="let col of columns; let c = index">
-                      <th
-                        alignFrozen="right"
-                        pFrozenColumn
-                        [frozen]="!col['isString']"
-                        [pSortableColumn]="col?.field"
-                        [style.maxWidth]="col?.maxWidth"
-                        [style.minWidth]="col?.minWidth"
-                        [ngStyle]="{
-                          right: 145 * (columns.length - (c + 1)) + 'px'
-                        }"
-                      >
-                        {{ col.header.split("*")[0] }}
-                        <span *ngIf="isMandatoryCol(col.header)" class="red-star"
-                          >*</span
-                        >
-                      </th>
-                    </ng-container>
-                  </tr>
-                </ng-template>
-                <ng-template
-                  pTemplate="body"
-                  let-rowData
-                  let-columns="columns"
-                  let-rowIndex="rowIndex"
-                >
-                
-                
-                   <tr>
-                    <ng-container *ngFor="let col of columns; let i = index">
-                      <td
-                        alignFrozen="right"
-                        pFrozenColumn
-                        [frozen]="!col['isString']"
-                        [ngStyle]="{
-                          right: 145 * (columns.length - (i + 1)) + 'px'
-                        }"
-                      >
-                        <div
-                          *ngIf="col['isString']"
-                          class="appliedCriteriaString"
-                        >
-                          {{ rowData[col["field"]] }}
-                        </div>
-                        <div
-                          *ngIf="col['isSelect']"
-                          class="appliedCriteriaSelect"
-                        >
-                          <p-dropdown
-                            [options]="rowData[col['field']]"
-                            optionLabel="codeName"
-                            appendTo="body"
-                            [placeholder]="
-                              rowData[col['field'].split('Option')[0]]
-                                ? rowData[col['field'].split('Option')[0]]
-                                : 'Select'
-                            "
-                            (onChange)="
-                              selectedColumn(
-                                columns[i]['field'],
-                                $event.value,
-                                rowIndex
-                              )
-                            "
-                            [disabled]="rowData['linked'] == 'Y'"
-                          ></p-dropdown>
-                        </div>
-                        <div *ngIf="col['isInput']" class="appliedCriteriaInput">
-                          <p-inputNumber
-                            #valInp
-                            [min]="0"
-                            [(ngModel)]="rowData[col['field']]"
-                            [useGrouping]="false"
-                            mode="decimal"
-                            [maxFractionDigits]="1"
-                            (onInput)="
-                              changeValueInput(
-                                columns[i - 1]['field'],
-                                columns[i]['field'],
-                                $event,
-                                rowIndex,
-                                valInp
-                              )
-                            "
-                            [disabled]="rowData['linked'] == 'Y'"
-                          ></p-inputNumber>
-                        </div>
-                        <div
-                          *ngIf="col['isButton']"
-                          class="appliedCriteriaButton"
-                        >
-                          <ng-container
-                            *ngFor="let btn of rowData[col['field']].split(',')"
-                          >
-                            <button
-                              pButton
-                              type="button"
-                              [icon]="
-                                'pi pi-' + (btn == 'delete' ? 'trash' : btn)
-                              "
-                              (click)="
-                                checkOperation(
-                                  btn,
-                                  rowIndex,
-                                  rowData,
-                                  columns[i]['field']
-                                )
-                              "
-                              class="operation-btns mr-2"
-                            ></button>
-                          </ng-container>
-                        </div>
-                      </td>
-                    </ng-container>
-                  </tr> 
-                </ng-template> -->
                 <ng-template pTemplate="header">
                   <tr>
-                      <th>Field Name</th>
-                      <th>Is Mandatory</th>
-                      <th>Is Enabled</th>
-                      <th>Is Visible</th>
-                      <th>Min Field Length/Max Length</th>
-                      <th>Default Values</th>
-                      <th>Regex</th>
+                    <th>Field Name</th>
+                    <th>Is Mandatory</th>
+                    <th>Is Enabled</th>
+                    <th>Is Visible</th>
+                    <th>Min Field Length/Max Length</th>
+                    <th>Default Values</th>
+                    <th>Regex</th>
                   </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-rule>
+                </ng-template>
+                <ng-template pTemplate="body" let-rule>
                   <tr>
-                      <!-- <td>
-                          <p-tableCheckbox [value]="rule"></p-tableCheckbox>
-                      </td> -->
-                      <td>
-                        <p-tableCheckbox [value]="rule"></p-tableCheckbox>
-                        {{rule.fieldName}}</td>
-                      <td>
-                          <p-Checkbox [value]="rule.isMandatory" ></p-Checkbox>
-                        <input
+                    <td>
+                      <p-tableCheckbox [value]="rule"></p-tableCheckbox>
+                      {{ rule.fieldName }}
+                    </td>
+                    <td>
+                      <p-Checkbox [value]="rule.isMandatory"></p-Checkbox>
+                      <input
                         #box
                         type="checkbox"
                         style="width: 20px"
                         [value]="rule.isMandatory"
                         [(ngModel)]="rule.isMandatory"
                       />
-                      </td>
-                      <td>
-                        <input
+                    </td>
+                    <td>
+                      <input
                         #box
                         type="checkbox"
                         style="width: 20px"
                         [value]="rule.isEnabled"
                         [(ngModel)]="rule.isEnabled"
                       />
-                      </td>
-                      <td>
-                        <input
+                    </td>
+                    <td>
+                      <input
                         #box
                         type="checkbox"
                         style="width: 20px"
                         [value]="rule.isVisible"
                         [(ngModel)]="rule.isVisible"
                       />
-                      </td>
-                      <td>
-                        <input type="text" 
+                    </td>
+                    <td>
+                      <input
+                        type="text"
                         [value]="rule.minFieldLengthMaxLength"
                         [(ngModel)]="rule.minFieldLengthMaxLength"
                         (ngModelChange)="onChange('minmax', rule)"
-                        pInputText />
-                      </td>
-                      <td>
-                        <input type="text" 
+                        pInputText
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
                         [value]="rule.defaultValues"
                         (ngModelChange)="onChange('defaultValues', rule)"
                         [maxlength]="rule.maxlengthDefaultValue"
-                        [(ngModel)]="rule.defaultValues" pInputText />
-                      </td>
-                      <td>
-                        <input type="text" 
+                        [(ngModel)]="rule.defaultValues"
+                        pInputText
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
                         [value]="rule.regex"
-                        [(ngModel)]="rule.regex" pInputText />
-                      </td>
-                  </tr>
-              </ng-template>
-                <ng-template pTemplate="emptymessage">
-                  <tr>
-                    <!-- <td [attr.colspan]="cols.length">No Data found.</td> -->
+                        [(ngModel)]="rule.regex"
+                        pInputText
+                      />
+                    </td>
                   </tr>
                 </ng-template>
-              </p-table>
-            </div>
+              </p-table> -->
+            <!-- earlier end -->
+            <!-- then -->
+            <!-- <p-table
+              [value]="formRulesData"
+              [scrollable]="true"
+              scrollHeight="400px"
+              rowGroupMode="subheader"
+              groupRowsBy="groupBy"
+              [(selection)]="selectedProducts"
+              (onRowUnselect)="rowUnselect($event)"
+              dataKey="id"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th
+                    style="min-width: 150px"
+                    *ngFor="let col of formRulesDataCols"
+                  >
+                    {{ col }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="groupheader" let-customer>
+                <tr pRowGroupHeader>
+                  <td colspan="1">
+                    <p-checkbox
+                      name="group"
+                      [value]="customer.groupBy"
+                      [(ngModel)]="selectedGroups"
+                      (onChange)="grpSelect($event)"
+                    ></p-checkbox>
+                  </td>
+                  <td colspan="7">
+                    <span class="p-text-bold p-ml-2">{{
+                      customer.groupBy
+                    }}</span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-customer
+                let-rowIndex="rowIndex"
+              >
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="customer"></p-tableCheckbox>
+                  </td>
+                  <ng-container *ngFor="let col of formRulesDataCols">
+                    <td style="min-width: 150px" *ngIf="col.length">
+                      {{ customer[col] }}
+                    </td>
+                  </ng-container>
+                </tr>
+              </ng-template>
+            </p-table> -->
+            <!-- then end -->
+            <p-treeTable
+              [value]="files"
+              [columns]="cols"
+              selectionMode="checkbox"
+              [(selection)]="selectedNodes"
+              [scrollable]="true"
+              scrollHeight="295px"
+            >
+              <!-- <ng-template pTemplate="caption">
+                <div class="flex">
+                  <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
+                  <span class="ml-2">Toggle All</span>
+                </div>
+              </ng-template> -->
+              <ng-template pTemplate="header" let-columns>
+                <tr>
+                  <th *ngFor="let col of columns">
+                    {{ col.header }}
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template
+                pTemplate="body"
+                let-rowNode
+                let-rowData="rowData"
+                let-columns="columns"
+              >
+                <tr>
+                  <td *ngFor="let col of columns; let i = index">
+                    <p-treeTableToggler
+                      [rowNode]="rowNode"
+                      *ngIf="i == 0"
+                    ></p-treeTableToggler>
+                    <p-treeTableCheckbox
+                      [value]="rowNode"
+                      *ngIf="i == 0"
+                    ></p-treeTableCheckbox>
+                    {{ rowData[col.field] }}
+                  </td>
+                </tr>
+              </ng-template>
+            </p-treeTable>
           </div>
         </div>
       </div>
     </div>
-    <!-- // suresh Work end -->
   </div>
-  
-  <p-confirmDialog
-    key="taxSettingLinkedWarning"
-    class="linked-confirm confirm-popup"
-    #cd
-    icon="pi pi-exclamation-triangle"
-    [closable]="false"
-  >
-    <p-footer>
-      <button
-        type="button"
-        pButton
-        icon="pi pi-check"
-        label="Ok"
-        (click)="cd.accept()"
-      ></button>
-    </p-footer>
-  </p-confirmDialog>
-  
-  <p-confirmDialog
-    key="resetTaxDataConfirmation"
-    class="confirm-popup"
-    #cd2
-    icon="pi pi-exclamation-triangle"
-    [closable]="false"
-  >
-    <p-footer>
-      <button
-        type="button"
-        pButton
-        icon="pi pi-check"
-        label="Yes"
-        (click)="cd2.accept()"
-      ></button>
-  
-      <button
-        type="button"
-        pButton
-        icon="pi pi-times"
-        label="Cancel"
-        (click)="cd2.reject()"
-      ></button>
-    </p-footer>
-  </p-confirmDialog>
-  
+  <!-- // suresh Work end -->
+</div>
+
+<p-confirmDialog
+  key="taxSettingLinkedWarning"
+  class="linked-confirm confirm-popup"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Ok"
+      (click)="cd.accept()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+
+<p-confirmDialog
+  key="resetTaxDataConfirmation"
+  class="confirm-popup"
+  #cd2
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
