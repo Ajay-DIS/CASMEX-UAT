@@ -1,23 +1,23 @@
-.tax-code-desc-section {
+.rule-code-desc-section {
     font-size: 0.8rem;
     font-weight: 500;
     gap: 17px;
   }
-  .tax-code-desc-section p {
+  .rule-code-desc-section p {
     margin-bottom: 0.5rem;
   }
-  .tax-code-desc-section input {
+  .rule-code-desc-section input {
     height: 35px;
     font-size: 0.8rem;
   }
-  .tax-code-desc-section .taxCode input {
+  .rule-code-desc-section .ruleCode input {
     width: 235px;
   }
-  .tax-code-desc-section .taxDesc input {
+  .rule-code-desc-section .ruleDesc input {
     width: 398px;
   }
   
-  .tax-code-desc-section .taxDesc input::placeholder {
+  .rule-code-desc-section .ruleDesc input::placeholder {
     color: #8a9099;
     font-size: 12px;
   }
