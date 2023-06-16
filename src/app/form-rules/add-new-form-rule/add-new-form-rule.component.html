@@ -71,7 +71,7 @@
         "
       >
         <p>Rule Code</p>
-        <input type="text" pInputText [(ngModel)]="ruleCode" disabled />
+        <input type="text" pInputText [(ngModel)]="formRuleCode" disabled />
       </div>
       <div class="ruleDesc">
         <p style="position: relative">
@@ -275,8 +275,8 @@
             </p-table> -->
             <!-- then end -->
             <p-treeTable
-              [value]="files"
-              [columns]="cols"
+              [value]="applyCriteriaFormattedData"
+              [columns]="applyCriteriaDataTableColumns"
               selectionMode="checkbox"
               [(selection)]="selectedNodes"
               [scrollable]="true"
@@ -290,7 +290,14 @@
               </ng-template> -->
               <ng-template pTemplate="header" let-columns>
                 <tr>
-                  <th *ngFor="let col of columns">
+                  <th
+                    *ngFor="let col of columns"
+                    [style]="
+                      col.header == 'LCY Amount'
+                        ? 'width : 150px !important'
+                        : ''
+                    "
+                  >
                     {{ col.header }}
                   </th>
                 </tr>
@@ -302,17 +309,61 @@
                 let-columns="columns"
               >
                 <tr>
-                  <td *ngFor="let col of columns; let i = index">
-                    <p-treeTableToggler
-                      [rowNode]="rowNode"
-                      *ngIf="i == 0"
-                    ></p-treeTableToggler>
-                    <p-treeTableCheckbox
-                      [value]="rowNode"
-                      *ngIf="i == 0"
-                    ></p-treeTableCheckbox>
-                    {{ rowData[col.field] }}
-                  </td>
+                  <ng-container *ngFor="let col of columns; let i = index">
+                    <td [style]="setStyle(col, i)">
+                      <p-treeTableToggler
+                        [rowNode]="rowNode"
+                        *ngIf="i == 0"
+                      ></p-treeTableToggler>
+                      <p-treeTableCheckbox
+                        [value]="rowNode"
+                        *ngIf="i == 0"
+                      ></p-treeTableCheckbox>
+
+                      <ng-container *ngIf="rowData.hasOwnProperty(col.field)">
+                        <div
+                          *ngIf="col.type == 'string'"
+                          style="display: inline-block"
+                        >
+                          {{ rowData[col.field] }}
+                        </div>
+                        <input
+                          *ngIf="col.type == 'input'"
+                          class="w-100"
+                          type="text"
+                          pInputText
+                          [placeholder]="
+                            rowData[col.field] ? rowData[col.field] : ''
+                          "
+                        />
+                        <input
+                          *ngIf="
+                            col.type == 'lcySlabFrom' ||
+                            col.type == 'lcySlabTo' ||
+                            col.type == 'lcyOpr'
+                          "
+                          class="w-100"
+                          type="text"
+                          pInputText
+                          [placeholder]="
+                            rowData[col.field] ? rowData[col.field] : ''
+                          "
+                        />
+                        <p-checkbox
+                          *ngIf="col.type == 'checkbox'"
+                          [(ngModel)]="rowData[col.field]"
+                          [binary]="true"
+                        ></p-checkbox>
+                      </ng-container>
+                      <!-- <ng-container *ngIf="col.type == 'string'">
+
+                      </ng-container>
+                      <ng-container *ngIf="col.type == 'input'">
+                      </ng-container>
+                      <ng-container *ngIf="col.type == 'checkbox'">
+                      </ng-container> -->
+                    </td>
+                  </ng-container>
                 </tr>
               </ng-template>
             </p-treeTable>

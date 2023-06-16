@@ -74,7 +74,7 @@ export class FormRuleService {
 
   postFormRuleSearch(data: any) {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/applyCriteriaSearch`,
+      `/remittance/formRulesController/applyCriteriaSearch`,
       data
     );
   }
