@@ -241,7 +241,7 @@ export class CriteriaDataService {
     }
 
     return {
-      critMap: criteriaMapFirstSplit.split(";"),
+      critMap: criteriaMapFirstSplit.split(";") as Array<any>,
       lcySlabArr: lcySlabArr,
     };
   }

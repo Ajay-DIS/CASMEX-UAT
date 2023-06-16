@@ -41,6 +41,10 @@
 .appliedCriteriaDataTable ::ng-deep p-treetabletoggler button i {
   display: none !important;
 }
+.appliedCriteriaDataTable ::ng-deep .p-checkbox .p-checkbox-box {
+  width: 18px;
+  height: 18px;
+}
 
 // suresh Work start -->
 .details-page-card-content {
