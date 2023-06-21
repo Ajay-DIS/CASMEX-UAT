@@ -9,6 +9,7 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
+import { TreeTable } from "primeng/treetable";
 
 @Component({
   selector: "app-add-new-form-rule",
@@ -18,6 +19,7 @@ import { map, take } from "rxjs/operators";
 })
 export class AddNewFormRuleComponent implements OnInit {
   primaryColor = "var(--primary-color)";
+  @ViewChild("treeTable") treeTable: TreeTable;
 
   userId = "";
   ruleID = "";
@@ -55,16 +57,10 @@ export class AddNewFormRuleComponent implements OnInit {
 
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
+  4;
 
-  formRulesDataCols = [
-    "fieldName",
-    "isMandatory",
-    "isEnabled",
-    "isVisible",
-    "minFieldLengthMaxLength",
-    "defaultValues",
-    "regex",
-  ];
+  isLcyAmount: boolean = false;
+  isLcySlab: boolean = false;
 
   formRulesData: any = [
     {
@@ -157,84 +153,7 @@ export class AddNewFormRuleComponent implements OnInit {
     },
   ];
 
-  applyCriteriaFormattedData: TreeNode[] = [
-    {
-      data: {
-        fieldName: "Rast",
-      },
-      expanded: true,
-      children: [
-        {
-          data: {
-            fieldName: "mat",
-            country: "India",
-            isMandatory: "200mb",
-            isEnabled: "Folder",
-            isVisible: "Applications",
-            minMaxLength: "200mb",
-            defaultValues: "Folder",
-            regex: "Folder",
-          },
-        },
-        {
-          data: {
-            fieldName: "Pat",
-            country: "India",
-            isMandatory: "200mb",
-            isEnabled: "Folder",
-            isVisible: "Applications",
-            minMaxLength: "200mb",
-            defaultValues: "Folder",
-            regex: "Folder",
-          },
-        },
-        {
-          data: {
-            fieldName: "Lat",
-            country: "India",
-            isMandatory: "200mb",
-            isEnabled: "Folder",
-            isVisible: "Applications",
-            minMaxLength: "200mb",
-            defaultValues: "Folder",
-            regex: "Folder",
-          },
-        },
-      ],
-    },
-    {
-      data: {
-        fieldName: "App",
-      },
-      expanded: true,
-      children: [
-        {
-          data: {
-            fieldName: "Cat",
-            country: "India",
-            isMandatory: "200mb",
-            isEnabled: "Folder",
-            isVisible: "Applications",
-            minMaxLength: "200mb",
-            defaultValues: "Folder",
-            regex: "Folder",
-          },
-        },
-        {
-          data: {
-            fieldName: "Sat",
-            country: "India",
-            isMandatory: "200mb",
-            isEnabled: "Folder",
-            isVisible: "Applications",
-            minMaxLength: "200mb",
-            defaultValues: "Folder",
-            regex: "Folder",
-          },
-        },
-      ],
-    },
-  ];
+  applyCriteriaFormattedData: TreeNode[] = [];
 
   applyCriteriaDataTableColumns: any[] = [];
 
@@ -244,86 +163,11 @@ export class AddNewFormRuleComponent implements OnInit {
     // { field: "isEnabled", header: "Is Enabled", type: 'checkbox' },
     { field: "isVisibile", header: "Is Visible", type: "checkbox" },
     { field: "validLength", header: "Min/Max Length", type: "input" },
-    { field: "deafultValue", header: "Default Values", type: "input" },
+    { field: "defaultValue", header: "Default Values", type: "input" },
     { field: "regex", header: "Regex", type: "input" },
   ];
 
-  sampleJson = {
-    labelData: {
-      label: {
-        "Personal Details": "Personal Details",
-        "Payement Details": "Payement Details",
-      },
-    },
-    data: {
-      "Personal Details": [
-        {
-          id: 1,
-          applicationName: "Web Application",
-          moduleName: "Remittance",
-          formName: "Customer Profile",
-          fieldName: "First Name",
-          isMandatory: "N",
-          isVisibile: "N",
-          regex: null,
-          validLength: null,
-          deafultValue: null,
-          allowMandatory: null,
-          allowVisibile: null,
-          allowRegex: null,
-          allowDefaultValue: null,
-          allowEnable: null,
-          formSection: "Personal Details",
-          formLableFieldSequence: "1",
-          status: "A",
-        },
-        {
-          id: 2,
-          applicationName: "Web Application",
-          moduleName: "Remittance",
-          formName: "Customer Profile",
-          fieldName: "Middle Name",
-          isMandatory: "N",
-          isVisibile: "N",
-          regex: null,
-          validLength: null,
-          deafultValue: null,
-          allowMandatory: null,
-          allowVisibile: null,
-          allowRegex: null,
-          allowDefaultValue: null,
-          allowEnable: null,
-          formSection: "Personal Details",
-          formLableFieldSequence: "2",
-          status: "A",
-        },
-      ],
-      "Payement Details": [
-        {
-          id: 3,
-          applicationName: "Web Application",
-          moduleName: "Remittance",
-          formName: "Customer Profile",
-          fieldName: "Remark",
-          isMandatory: "N",
-          isVisibile: "N",
-          regex: null,
-          validLength: null,
-          deafultValue: null,
-          allowMandatory: null,
-          allowVisibile: null,
-          allowRegex: null,
-          allowDefaultValue: null,
-          allowEnable: null,
-          formSection: "Payement Details",
-          formLableFieldSequence: "3",
-          status: "A",
-        },
-      ],
-    },
-    duplicate: false,
-    criteriaMap: "Country = IND;Module = Remittance;Form = Customer Profile",
-  };
+  applyCriteriaResponse: any = {};
 
   selectedNodes: TreeNode;
   maxlengthDefaultValue = 0;
@@ -444,6 +288,7 @@ export class AddNewFormRuleComponent implements OnInit {
             }
           );
           console.log(" Slabs fields", this.cmCriteriaSlabType);
+          console.log(this.criteriaDataDetailsJson);
 
           if (this.mode == "add") {
             this.formRuleCode = this.criteriaDataDetailsJson.data.formRuleCode;
@@ -589,6 +434,7 @@ export class AddNewFormRuleComponent implements OnInit {
       .subscribe(
         (res) => {
           console.log("criteriasearch DATA", res);
+          this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
           if (!res["msg"]) {
             if (!res["duplicate"]) {
               // this.appliedCriteriaDataOrg = [...res["data"]];
@@ -675,6 +521,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 });
 
               let completeData = [];
+              console.log(res);
               Object.keys(res["labelData"]["label"]).forEach((k) => {
                 let formattedRowData = {
                   data: {
@@ -705,7 +552,10 @@ export class AddNewFormRuleComponent implements OnInit {
                       });
                     }
                   });
-
+                  console.log(detail);
+                  childRow["data"]["formLableFieldSequence"] =
+                    detail["formLableFieldSequence"];
+                  childRow["data"]["formSection"] = detail["formSection"];
                   formattedRowData["children"].push(childRow);
                 });
                 completeData.push(formattedRowData);
@@ -717,7 +567,15 @@ export class AddNewFormRuleComponent implements OnInit {
                   element.includes("LCY Amount")
                 ) < 0
               ) {
+                this.isLcySlab = false;
+                this.isLcyAmount = false;
                 this.applyCriteriaFormattedData = [...completeData];
+                this.applyCriteriaFormattedData.forEach((row, i) => {
+                  row["data"]["key"] = i;
+                  row["children"].forEach((child) => {
+                    child["data"]["criteriaMapSplit"] = null;
+                  });
+                });
               } else {
                 if (
                   reqData.lcySlabArr.length &&
@@ -725,6 +583,8 @@ export class AddNewFormRuleComponent implements OnInit {
                     element.includes("LCY Amount")
                   ) < 0
                 ) {
+                  this.isLcySlab = true;
+                  this.isLcyAmount = false;
                   this.applyCriteriaDataTableColumns.splice(-6, 0, {
                     field: "amountFrom",
                     header: "Amount From",
@@ -738,34 +598,22 @@ export class AddNewFormRuleComponent implements OnInit {
 
                   this.applyCriteriaFormattedData = [];
 
-                  let dataObj = {};
-
                   reqData.lcySlabArr.forEach((slab, i) => {
-                    // let name = `dataCopy${i}`;
-                    // dataObj[name] = [...completeData];
-
-                    // console.log(dataObj[name]);
-
-                    // dataObj[name].forEach((field) => {
-                    //   field["children"].forEach((child) => {
-                    //     child["data"]["amountFrom"] = slab["from"];
-                    //     child["data"]["amountTo"] = slab["to"];
-                    //   });
-                    // });
-
-                    let dataCopy = completeData.map((row) => {
+                    console.log(completeData);
+                    let copy = JSON.parse(JSON.stringify(completeData));
+                    copy.forEach((row) => {
+                      row["data"]["key"] = i;
                       row["children"].forEach((child) => {
                         child["data"]["amountFrom"] = slab["from"];
                         child["data"]["amountTo"] = slab["to"];
+                        child["data"][
+                          "criteriaMapSplit"
+                        ] = `from:${slab["from"]}::to:${slab["to"]}`;
                       });
-                      return row;
                     });
-                    console.log(dataCopy);
-                    this.applyCriteriaFormattedData = [
-                      ...this.applyCriteriaFormattedData.concat([...dataCopy]),
-                    ];
+
+                    this.applyCriteriaFormattedData.push(...copy);
                   });
-                  console.log(dataObj);
                 } else if (
                   !reqData.lcySlabArr.length &&
                   reqData.critMap.findIndex((element) =>
@@ -773,35 +621,31 @@ export class AddNewFormRuleComponent implements OnInit {
                   ) >= 0
                 ) {
                   this.applyCriteriaFormattedData = [];
+                  this.isLcySlab = false;
+                  this.isLcyAmount = true;
 
                   lcyOprFields.forEach((opr, i) => {
-                    // let dataObj = {};
-
-                    // lcyOprFields.forEach((opr, i) => {
-                    //   let name = `dataCopy${i}`;
-                    //   dataObj[name] = [...completeData];
-
-                    //   console.log(dataObj[name]);
-
-                    //   dataObj[name].forEach((field) => {
-                    //     field["children"].forEach((child) => {
-                    //       child["data"]["lcyAmount"] = opr;
-                    //     });
-                    //   });
-
-                    let dataCopy = completeData.map((row) => {
+                    console.log(completeData);
+                    let copy = JSON.parse(JSON.stringify(completeData));
+                    copy.forEach((row) => {
+                      row["data"]["key"] = i;
                       row["children"].forEach((child) => {
                         child["data"]["lcyAmount"] = opr;
+                        child["data"]["criteriaMapSplit"] = opr;
                       });
-                      return row;
                     });
-                    console.log(dataCopy);
-                    this.applyCriteriaFormattedData = [
-                      ...this.applyCriteriaFormattedData.concat([...dataCopy]),
-                    ];
+
+                    this.applyCriteriaFormattedData.push(...copy);
                   });
                 }
               }
+
+              // this.treeTable.writeValue(this.applyCriteriaFormattedData);
+              // // Refresh the TreeTable component to reflect the changes
+              // this.treeTable.value = [...this.nodes];
+              // this.treeTable.updateDataToRender(
+              //   this.treeTable.filteredValue || this.treeTable.value
+              // );
 
               console.log(this.applyCriteriaFormattedData);
 
@@ -888,79 +732,147 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   saveAddNewRule(action) {
+    console.log(this.applyCriteriaFormattedData);
+
+    console.log(this.applyCriteriaResponse);
+    let copyApplyCriteriaFormattedData = [...this.applyCriteriaFormattedData];
+
+    let fruitColors = {};
+
+    for (let fruit of copyApplyCriteriaFormattedData) {
+      if (fruitColors[fruit.data.key]) {
+        fruitColors[fruit.data.key].push(fruit);
+      } else {
+        fruitColors[fruit.data.key] = [fruit];
+      }
+    }
+
+    console.log(fruitColors);
+    console.log(Object.values(fruitColors));
+
+    let groupsArray: any[] = [];
+    Object.values(fruitColors).forEach((col: any) => {
+      let groupObj: any = {};
+      col.forEach((c: any) => {
+        c["children"].forEach((childData: any) => {
+          if (childData["partialSelected"] == false) {
+            childData["data"]["ruleSelected"] = true;
+          } else {
+            childData["data"]["ruleSelected"] = false;
+          }
+          // delete childData["partialSelected"];
+          delete childData["parent"];
+        });
+        groupObj[c["data"]["fieldName"]] = c["children"];
+      });
+      groupsArray.push(groupObj);
+    });
+
+    console.log(groupsArray);
+
+    this.applyCriteriaResponse.data = {};
+
+    this.applyCriteriaResponse["data"]["dataOperation"] = groupsArray;
+    this.applyCriteriaResponse["formRuleCode"] = this.formRuleCode;
+    this.applyCriteriaResponse["formRuleDesc"] = this.ruleDescription
+      ? this.ruleDescription
+      : "";
+    this.applyCriteriaResponse["userId"] = this.userId;
+    let str = this.stringify(this.applyCriteriaResponse);
+    str = str.replace(/true/g, '"Y"');
+    str = str.replace(/false/g, '"N"');
+    console.log(JSON.parse(str));
+    this.applyCriteriaResponse = JSON.parse(str);
+    let copyPayload = JSON.parse(this.stringify(this.applyCriteriaResponse));
+    if (copyPayload["duplicate"] == "N") {
+      this.applyCriteriaResponse["duplicate"] = false;
+    } else {
+      this.applyCriteriaResponse["duplicate"] = true;
+    }
+    console.log(this.applyCriteriaResponse);
+
     if (
       this.mode != "clone" ||
       (this.mode == "clone" && this.isApplyCriteriaClicked)
     ) {
-      this.coreService.displayLoadingScreen();
-      let isRequiredFields = false;
-      let invalidTaxAmount = false;
-      this.appliedCriteriaData.forEach((element) => {
-        if (element["invalidTaxAmount"]) {
-          invalidTaxAmount = true;
-        }
-        element["ruleCodeDesc"] = this.ruleDescription
-          ? this.ruleDescription
-          : null;
-        function isNullValue(arr) {
-          return arr.some((el) => el == null);
-        }
-        console.log("::::", element);
-        if (isNullValue(Object.values(element))) {
-          isRequiredFields = true;
-        }
-      });
-      if (isRequiredFields) {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill required fields.");
-      } else if (invalidTaxAmount) {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
+      // this.coreService.displayLoadingScreen();
+      // let isRequiredFields = false;
+      // let invalidTaxAmount = false;
+      // this.appliedCriteriaData.forEach((element) => {
+      //   if (element["invalidTaxAmount"]) {
+      //     invalidTaxAmount = true;
+      //   }
+      //   element["taxCodeDesc"] = this.taxDescription
+      //     ? this.taxDescription
+      //     : null;
+      //   function isNullValue(arr) {
+      //     return arr.some((el) => el == null);
+      //   }
+      //   console.log("::::", element);
+      //   if (isNullValue(Object.values(element))) {
+      //     isRequiredFields = true;
+      //   }
+      // });
+      // if (isRequiredFields) {
+      //   this.coreService.removeLoadingScreen();
+      //   this.coreService.showWarningToast("Please Fill required fields.");
+      // } else if (invalidTaxAmount) {
+      //   this.coreService.removeLoadingScreen();
+      //   this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
+      // } else {
+      let service;
+      // this.decodeSelectedOptions();
+      if (this.mode == "edit") {
+        let data;
+        // service = this.formRuleService.updateFormRule(this.userId, data);
+        console.log("EDIT MODE - UPDATE form SERVICE");
       } else {
-        let service;
-        this.decodeSelectedOptions();
-        if (this.mode == "edit") {
-          let data = {
-            data: this.appliedCriteriaData,
-            duplicate: this.appliedCriteriaIsDuplicate,
-            criteriaMap: this.appliedCriteriaCriteriaMap,
-            formRuleCode: this.ruleID,
-          };
-          service = this.formRuleService.updateFormRule(this.userId, data);
-          console.log("EDIT MODE - UPDATE Rule SERVICE");
-        } else {
-          let data = {
-            data: this.appliedCriteriaData,
-            duplicate: this.appliedCriteriaIsDuplicate,
-            criteriaMap: this.appliedCriteriaCriteriaMap,
-          };
-          console.log("ADD MODE - ADD NEW TAX SERVICE");
-          service = this.formRuleService.addNewFormRule(data);
-        }
+        console.log("ADD MODE - ADD NEW form SERVICE");
+        service = this.formRuleService.addNewFormRule(
+          this.applyCriteriaResponse
+        );
+      }
 
-        if (service) {
-          service.subscribe(
-            (res) => {
-              if (res["msg"]) {
-                this.coreService.showSuccessToast(res.msg);
-                if (action == "save") {
-                  this.router.navigate([`navbar/form-rules`]);
-                } else if (action == "saveAddNewRule") {
-                  this.reset();
-                  this.coreService.removeLoadingScreen();
-                }
+      if (service) {
+        service.subscribe(
+          (res) => {
+            if (res["msg"]) {
+              this.coreService.showSuccessToast(res.msg);
+              if (action == "save") {
+                this.router.navigate([`navbar/form-rules`]);
+              } else if (action == "saveAndAddNew") {
+                this.reset();
+                this.coreService.removeLoadingScreen();
               }
-            },
-            (err) => {
-              this.coreService.removeLoadingScreen();
-              console.log("error in saveAddNewRule", err);
             }
-          );
-        }
+          },
+          (err) => {
+            this.coreService.removeLoadingScreen();
+            console.log("error in saveAddNewFormRule", err);
+          }
+        );
+        // }
       }
     } else {
       this.coreService.showWarningToast("Applied criteria already exists.");
     }
+  }
+
+  stringify(obj) {
+    let cache = [];
+    let str = JSON.stringify(obj, function (key, value) {
+      if (typeof value === "object" && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    });
+    cache = null; // reset the cache
+    return str;
   }
 
   reset() {

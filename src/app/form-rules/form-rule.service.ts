@@ -1,29 +1,27 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class FormRuleService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
   getRuleCodeData(id: string) {
-    return this.http.get(
-      `/remittance/formRulesController/getFormRuleList`,
-      { headers: new HttpHeaders().set("userId", id) }
-    );
+    return this.http.get(`/remittance/formRulesController/getFormRuleList`, {
+      headers: new HttpHeaders().set("userId", id),
+    });
   }
   updateFormRuleStatus(data: any) {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
+      `/remittance/formRulesController/updateFormRuleStatus`,
       data
     );
   }
 
   getFormRuleForEdit(taxCode: any, operation: any) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
+      `/remittance/formRulesController/getTaxSettingCriteriaForEdit`,
       {
         headers: new HttpHeaders()
           .set("taxCode", taxCode)
@@ -33,21 +31,16 @@ export class FormRuleService {
   }
 
   getAddFormRuleCriteriaData(userId: any) {
-    return this.http.get(
-      `/remittance/formRulesController/addFormRules`,
-      {
-        headers: new HttpHeaders()
-        .set("userId", userId)
-      }
-    );
+    return this.http.get(`/remittance/formRulesController/addFormRules`, {
+      headers: new HttpHeaders().set("userId", userId),
+    });
   }
 
   getCriteriaMasterData(userId: any) {
     return this.http.get(
       `/remittance/formRulesController/getCriteriaMasterData`,
       {
-        headers: new HttpHeaders()
-          .set("userId", userId)
+        headers: new HttpHeaders().set("userId", userId),
       }
     );
   }
@@ -59,17 +52,14 @@ export class FormRuleService {
     fieldName: any,
     displayName: any
   ) {
-    return this.http.get(
-      `/remittance/formRulesController/getCriteriaData`,
-      {
-        headers: new HttpHeaders()
-          .set("formName", formName)
-          .set("applicationName", appName)
-          .set("criteriaMap", criteriaMap)
-          .set("fieldName", fieldName)
-          .set("displayName", displayName),
-      }
-    );
+    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+      headers: new HttpHeaders()
+        .set("formName", formName)
+        .set("applicationName", appName)
+        .set("criteriaMap", criteriaMap)
+        .set("fieldName", fieldName)
+        .set("displayName", displayName),
+    });
   }
 
   postFormRuleSearch(data: any) {
@@ -96,18 +86,18 @@ export class FormRuleService {
 
   addNewFormRule(data): Observable<any> {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/addCriteriaDetails`,
+      `/remittance/formRulesController/addCriteriaDetails`,
       data
     );
   }
 
-  updateFormRule(userId, data): Observable<any> {
-    return this.http.put(
-      `/remittance/taxSettingCriteriaController/updateTaxSettingsCriteria`,
-      data,
-      {
-        headers: new HttpHeaders().set("userId", userId),
-      }
-    );
-  }
+  // updateFormRule(userId, data): Observable<any> {
+  //   return this.http.put(
+  //     `/remittance/formRulesController/updateTaxSettingsCriteria`,
+  //     data,
+  //     {
+  //       headers: new HttpHeaders().set("userId", userId),
+  //     }
+  //   );
+  // }
 }

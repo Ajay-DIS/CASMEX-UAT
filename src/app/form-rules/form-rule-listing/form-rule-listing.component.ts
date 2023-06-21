@@ -1,161 +1,51 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { CoreService } from 'src/app/core.service';
-import { FormRuleService } from '../form-rule.service';
-import { MultiSelect } from 'primeng/multiselect';
-import { forkJoin } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { SetCriteriaService } from 'src/app/shared/components/set-criteria/set-criteria.service';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { ConfirmDialog } from "primeng/confirmdialog";
+import { CoreService } from "src/app/core.service";
+import { FormRuleService } from "../form-rule.service";
+import { MultiSelect } from "primeng/multiselect";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 
 @Component({
-  selector: 'app-form-rule-listing',
-  templateUrl: './form-rule-listing.component.html',
-  styleUrls: ['./form-rule-listing.component.scss']
+  selector: "app-form-rule-listing",
+  templateUrl: "./form-rule-listing.component.html",
+  styleUrls: ["./form-rule-listing.component.scss"],
 })
 export class FormRuleListingComponent implements OnInit {
   formName = "Form Rules";
   applicationName = "Web Application";
 
-  formRuleListingData:any[]=[
-        {
-            "id": 0,
-            "userID": null,
-            "ruleCode": "F0009",
-            "country": null,
-            "createdDate": null,
-            "status": "Active",
-            "updatedBy": null,
-            "updatedDate": null,
-            "criteriaMap": "Country = IND;State = UP;Module = PM11",
-            "ruleCodeDesc": "again new clone and edited",
-            "lcyAmountFrom": null,
-            "lcyAmountTo": null,
-            "lcySlab": null,
-            "ruleCodeID": null,
-            "criteriaID": null,
-            "lcyAmount": null,
-            "state": null,
-            "amountType": null,
-            "customerType": null,
-            "module": null,
-            "ruleType": null,
-            "setAs": null,
-            "rule": null,
-            "linked": null,
-            "linkedWith": null
-        },
-        {
-            "id": 0,
-            "userID": null,
-            "ruleCode": "F0008",
-            "country": null,
-            "createdDate": null,
-            "status": "Active",
-            "updatedBy": null,
-            "updatedDate": null,
-            "criteriaMap": "Country = IND;State = UP",
-            "ruleCodeDesc": "again new",
-            "lcyAmountFrom": null,
-            "lcyAmountTo": null,
-            "lcySlab": null,
-            "ruleCodeID": null,
-            "criteriaID": null,
-            "lcyAmount": null,
-            "state": null,
-            "amountType": null,
-            "customerType": null,
-            "module": null,
-            "ruleType": null,
-            "setAs": null,
-            "rule": null,
-            "linked": null,
-            "linkedWith": null
-        },
-        {
-            "id": 0,
-            "userID": null,
-            "ruleCode": "F0007",
-            "country": null,
-            "createdDate": null,
-            "status": "Active",
-            "updatedBy": null,
-            "updatedDate": null,
-            "criteriaMap": "Country = IND;State = KL;Module = PM7&&&&from:1::to:20",
-            "ruleCodeDesc": "new rule clone and edited",
-            "lcyAmountFrom": null,
-            "lcyAmountTo": null,
-            "lcySlab": null,
-            "ruleCodeID": null,
-            "criteriaID": null,
-            "lcyAmount": null,
-            "state": null,
-            "amountType": null,
-            "customerType": null,
-            "module": null,
-            "ruleType": null,
-            "setAs": null,
-            "rule": null,
-            "linked": null,
-            "linkedWith": null
-        },
-        {
-            "id": 0,
-            "userID": null,
-            "ruleCode": "F0006",
-            "country": null,
-            "createdDate": null,
-            "status": "Active",
-            "updatedBy": null,
-            "updatedDate": null,
-            "criteriaMap": "Country = IND;State = KL",
-            "ruleCodeDesc": "new rule",
-            "lcyAmountFrom": null,
-            "lcyAmountTo": null,
-            "lcySlab": null,
-            "ruleCodeID": null,
-            "criteriaID": null,
-            "lcyAmount": null,
-            "state": null,
-            "amountType": null,
-            "customerType": null,
-            "module": null,
-            "ruleType": null,
-            "setAs": null,
-            "rule": null,
-            "linked": null,
-            "linkedWith": null
-        },
-    
-];
+  formRuleListingData: any = [];
 
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
 
-  showNoDataFound :boolean= false;
+  showNoDataFound: boolean = false;
 
   cols: any[] = [
-    { field: "ruleCode", header: "Rule Code", width: "10%" },
-    { field: "ruleCodeDesc", header: "Rule Description", width: "20%" },
+    { field: "formRuleCode", header: "Rule Code", width: "10%" },
+    { field: "formRuleDesc", header: "Rule Description", width: "20%" },
     { field: "criteriaMap", header: "Criteria", width: "55%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Operations", width: "8%" },
   ];
 
-  showruleCodeOptions: boolean = false;
-  showruleCodeDescOptions: boolean = false;
+  showformRuleCodeOptions: boolean = false;
+  showformRuleDescOptions: boolean = false;
   showcriteriaMapOptions: boolean = false;
   showstatusOptions: boolean = false;
 
-  ruleCode = [];
-  ruleCodeDesc = [];
+  formRuleCode = [];
+  formRuleDesc = [];
   criteriaMap = [];
   status = [];
 
   userData: any = {};
-  selectedFilterruleCode: any[] = [];
-  selectedFilterruleCodeDesc: any[] = [];
+  selectedFilterformRuleCode: any[] = [];
+  selectedFilterformRuleDesc: any[] = [];
   selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
 
@@ -164,35 +54,33 @@ export class FormRuleListingComponent implements OnInit {
 
   noDataMsg: string = "Form Rule Data Not Available";
 
-  linkedRuleCode: any = [];
+  linkedFormRuleCode: any = [];
 
   constructor(
     private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private formRuleService:FormRuleService,
+    private formRuleService: FormRuleService,
     private setCriteriaService: SetCriteriaService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
-    // this.coreService.displayLoadingScreen();
+    this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.userData = JSON.parse(localStorage.getItem("userData"));
     console.log("userData", localStorage.getItem("userData"));
-    // this.getRuleCodeListData(this.userData.userId);
+    this.getRuleCodeListData(this.userData.userId);
     this.loading = false;
   }
 
   getDecodedDataForListing(userId: any) {
-    // this.coreService.displayLoadingScreen();
+    this.coreService.displayLoadingScreen();
     forkJoin({
-      criteriaMasterData: this.formRuleService.getCriteriaMasterData(
-        userId
-      ),
+      criteriaMasterData: this.formRuleService.getCriteriaMasterData(userId),
       formRuleListingData: this.formRuleService.getRuleCodeData(userId),
     })
       .pipe(
@@ -216,39 +104,38 @@ export class FormRuleListingComponent implements OnInit {
                 ) as []
               ).join(", ");
 
-              // rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
+              rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
             });
             this.formRuleListingData = [...this.formruleListingApiData.data];
-           this.showNoDataFound = false;
-            this.linkedRuleCode = [...this.formruleListingApiData.linkedRuleCode];
-            this.ruleCode = this.formruleListingApiData.ruleCode.map((code) => {
-              return { label: code, value: code };
-            });
-            this.ruleCodeDesc = this.formruleListingApiData.ruleCodeDesc.map(
+            this.showNoDataFound = false;
+            this.linkedFormRuleCode = [
+              ...this.formruleListingApiData.linkedFormRuleCode,
+            ];
+            this.formRuleCode = this.formruleListingApiData.formRuleCode.map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            this.formRuleDesc = this.formruleListingApiData.formRuleDesc.map(
               (code) => {
                 return { label: code, value: code };
               }
             );
             this.criteriaMap = this.formruleListingApiData.criteriaMap.map(
-              (code) => {
+              (criteriaMap) => {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: criteriaMap.split("&&&&")[0],
+                });
+                let code = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
                 return { label: code, value: code };
               }
             );
-            // this.criteriaMap = this.formRuleListingData.criteriaMap.map(
-            //   (criteriaMap) => {
-            //     let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-            //       criteriaMap: criteriaMap.split("&&&&")[0],
-            //     });
-            //     let code = (
-            //       this.setCriteriaService.decodeFormattedCriteria(
-            //         criteriaCodeText,
-            //         criteriaMasterData,
-            //         [""]
-            //       ) as []
-            //     ).join(", ");
-            //     return { label: code, value: code };
-            //   }
-            // );
             this.status = this.formruleListingApiData.status.map((code) => {
               return { label: code, value: code };
             });
@@ -263,7 +150,7 @@ export class FormRuleListingComponent implements OnInit {
         (res) => {
           if (!res["data"]) {
             console.log("No data Found");
-            this.showNoDataFound =true;
+            this.showNoDataFound = true;
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
@@ -271,7 +158,7 @@ export class FormRuleListingComponent implements OnInit {
         (err) => {
           this.coreService.removeLoadingScreen();
           this.loading = false;
-          this.showNoDataFound =true;
+          this.showNoDataFound = true;
           console.log("Error in getting form rule list data", err);
         }
       );
@@ -286,18 +173,18 @@ export class FormRuleListingComponent implements OnInit {
       "navbar",
       "form-rules",
       "addnewformrule",
-      data.ruleCode,
+      data.formRuleCode,
       "edit",
     ]);
   }
 
   isLinked(id: any) {
-    return this.linkedRuleCode.includes(id);
+    return this.linkedFormRuleCode.includes(id);
   }
 
   confirmStatus(e: any, data: any) {
     e.preventDefault();
-    console.log("codeeeeee", status);
+    console.log("codeeeeee", data);
     let type = "";
     let reqStatus = "";
     if (e.target.checked) {
@@ -311,19 +198,19 @@ export class FormRuleListingComponent implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedRuleCode, data["ruleCode"]);
+    console.log(reqStatus, this.linkedFormRuleCode, data["formRuleCode"]);
     if (
       reqStatus == "Inactive" &&
-      this.linkedRuleCode.includes(data["ruleCode"])
+      this.linkedFormRuleCode.includes(data["formRuleCode"])
     ) {
       completeMsg =
         isLinkedMsg +
         `Do you wish to ` +
         type +
-        ` the Rule Record: ${data["ruleCode"]}?`;
+        ` the Rule Record: ${data["formRuleCode"]}?`;
     } else {
       completeMsg =
-        `Do you wish to ` + type + ` the Rule Record: ${data["ruleCode"]}?`;
+        `Do you wish to ` + type + ` the Rule Record: ${data["formRuleCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -358,34 +245,32 @@ export class FormRuleListingComponent implements OnInit {
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("ruleCode", data["ruleCode"]);
+    formData.append("formRuleCode", data["formRuleCode"]);
     formData.append("status", reqStatus);
     this.updateFormRuleStatus(formData, e.target, data);
     // }
   }
 
   updateFormRuleStatus(formData: any, sliderElm: any, ruleData: any) {
-    this.formRuleService
-      .updateFormRuleStatus(formData)
-      .subscribe((res) => {
-        let message = "";
-        if (res["error"] == "true") {
-          this.coreService.removeLoadingScreen();
-          message = `Kindly deactivate the Rule code: ${res["msg"]} ( ${ruleData["criteriaMap"]} ) to activate the current record.`;
-          this.coreService.showWarningToast(message);
+    this.formRuleService.updateFormRuleStatus(formData).subscribe((res) => {
+      let message = "";
+      if (res["error"] == "true") {
+        this.coreService.removeLoadingScreen();
+        message = `Kindly deactivate the Rule code: ${res["msg"]} ( ${ruleData["criteriaMap"]} ) to activate the current record.`;
+        this.coreService.showWarningToast(message);
+      } else {
+        if (res["msg"]) {
+          message = res["msg"];
+          sliderElm.checked = sliderElm!.checked;
+          this.getRuleCodeListData(this.userData.userId);
+          this.coreService.showSuccessToast(message);
         } else {
-          if (res["msg"]) {
-            message = res["msg"];
-            sliderElm.checked = sliderElm!.checked;
-            this.getRuleCodeListData(this.userData.userId);
-            this.coreService.showSuccessToast(message);
-          } else {
-            this.coreService.removeLoadingScreen();
-            message = "Something went wrong, Please try again later";
-            this.coreService.showWarningToast(message);
-          }
+          this.coreService.removeLoadingScreen();
+          message = "Something went wrong, Please try again later";
+          this.coreService.showWarningToast(message);
         }
-      });
+      }
+    });
   }
 
   cloneFormRule(data: any) {
@@ -393,7 +278,7 @@ export class FormRuleListingComponent implements OnInit {
       "navbar",
       "form-rules",
       "addnewformrule",
-      data.ruleCode,
+      data.formRuleCode,
       "clone",
     ]);
   }
