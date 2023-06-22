@@ -210,7 +210,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.selectedFields.forEach((item) => {
       console.log(item);
       // this.criteriaTypeOp = item["criteriaType"];
-      item["orderID"] = "";
+      // item["orderID"] =  this.criteriaSettingtable[index]["operations"];
       if (!item["operationOption"]) {
         item["operationOption"] = item["operations"].split(",").map((opt) => {
           return { label: opt, value: opt };
@@ -253,8 +253,14 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       } else {
         item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
       }
+      if (index == -1) {
+        item["orderID"] = "";
+      } else {
+        item["orderID"] = this.criteriaSettingtable[index]["orderID"];
+      }
       // item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
       // item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+      // item["orderID"] =  this.criteriaSettingtable[index]["orderID"];
     });
     this.criteriaSettingtable = [...this.selectedFields];
     this.orderIDArray = [];
@@ -334,6 +340,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           dependency.push(op["label"]);
         });
       }
+    
       console.log("data", criteria);
       let criteriaDetails = {
         criteriaType: criteria["criteriaType"],
@@ -431,11 +438,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     let emptyOperation = false;
     let emptyPriority = false;
     let emptydependency = false;
+    let validGreaterthanPriority = false;
     this.criteriaSettingtable.forEach((element) => {
       console.log("element", element);
       if (element.operations == "") {
         emptyOperation = true;
       }
+      if (element.orderID > this.criteriaSettingtable.length) {
+        validGreaterthanPriority = true;
+      } 
       if (element.orderID == 0 || element.orderID < 0) {
         emptyPriority = true;
       }
@@ -447,6 +458,14 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.coreService.showWarningToast("Please select operation.");
     } else if (emptyPriority) {
       this.coreService.showWarningToast("Priority is required.");
+    }
+     else if (validGreaterthanPriority) {
+      let msg =
+          "Please enter priority " +
+          (this.criteriaSettingtable.length == 1
+            ? "as 1 only"
+            : "between 1 to " + this.criteriaSettingtable.length);
+        this.coreService.showWarningToast(msg);
     }
     else if (emptydependency) {
       this.coreService.showWarningToast("Dependency is required.");

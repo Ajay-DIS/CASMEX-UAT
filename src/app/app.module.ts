@@ -55,6 +55,8 @@ import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.compo
 import { MessageService } from "primeng/api";
 import { AddNewFormRuleComponent } from './form-rules/add-new-form-rule/add-new-form-rule.component';
 import { FormRuleListingComponent } from './form-rules/form-rule-listing/form-rule-listing.component';
+import { GroupSettingsComponent } from './group-settings/group-settings.component';
+import { CustomerProfileComponent } from './customer-profile/customer-profile.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -78,6 +80,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddNewTaxComponent,
     AddNewFormRuleComponent,
     FormRuleListingComponent,
+    GroupSettingsComponent,
+    CustomerProfileComponent,
   ],
   imports: [
     BrowserModule,
