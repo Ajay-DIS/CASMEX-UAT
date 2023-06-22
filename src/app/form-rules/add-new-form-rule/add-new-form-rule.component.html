@@ -37,7 +37,9 @@
         <button
           pButton
           pRipple
-          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
+          [disabled]="
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+          "
           type="button"
           label="Save"
           class="p-button-raised"
@@ -275,6 +277,7 @@
             </p-table> -->
             <!-- then end -->
             <p-treeTable
+              #treeTable
               [value]="applyCriteriaFormattedData"
               [columns]="applyCriteriaDataTableColumns"
               selectionMode="checkbox"
@@ -291,12 +294,8 @@
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th
-                    *ngFor="let col of columns"
-                    [style]="
-                      col.header == 'LCY Amount'
-                        ? 'width : 150px !important'
-                        : ''
-                    "
+                    *ngFor="let col of columns; let k = index"
+                    [style]="k == 0 ? 'padding-left : 35px !important' : ''"
                   >
                     {{ col.header }}
                   </th>
@@ -320,7 +319,9 @@
                         *ngIf="i == 0"
                       ></p-treeTableCheckbox>
 
-                      <ng-container *ngIf="rowData.hasOwnProperty(col.field)">
+                      <ng-container
+                        *ngIf="rowData && rowData.hasOwnProperty(col.field)"
+                      >
                         <div
                           *ngIf="col.type == 'string'"
                           style="display: inline-block"
