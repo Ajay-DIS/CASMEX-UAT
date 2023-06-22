@@ -1,0 +1,17 @@
+.customerMapConditions {
+    background: #f4f6fa;
+    padding: 5px 8px;
+    border-radius: 5px;
+    margin-right: 5px
+}
+:host ::ng-deep .p-dropdown {
+    align-items: center;
+    border: none !important;
+    background-Color:#4759E4 ;
+  }
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+    color: #fff;
+  }
+:host ::ng-deep .p-dropdown .p-dropdown-trigger {
+    color: #fff;
+  }

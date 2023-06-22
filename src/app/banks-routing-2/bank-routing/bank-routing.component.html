@@ -123,14 +123,22 @@
               <span
                 *ngIf="i == 1"
                 [pTooltip]="
+                  rowData[col['field']] &&
                   rowData[col['field']].substring(
                     31,
                     rowData[col['field']].length
                   )
                 "
                 tooltipPosition="bottom"
-                >{{ rowData[col["field"]].substring(0, 30) }}
-                {{ rowData[col["field"]].length > 30 ? ".." : "" }}</span
+                >{{
+                  rowData[col["field"]] &&
+                    rowData[col["field"]].substring(0, 30)
+                }}
+                {{
+                  rowData[col["field"]] && rowData[col["field"]].length > 30
+                    ? ".."
+                    : ""
+                }}</span
               >
               <span
                 *ngIf="i == 2"
@@ -155,12 +163,7 @@
                 <input
                   #statusInp
                   type="checkbox"
-                  (click)="
-                    confirmStatus(
-                      $event,
-                      rowData
-                    )
-                  "
+                  (click)="confirmStatus($event, rowData)"
                   [checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
@@ -212,20 +215,17 @@
   </div>
   <div class="row">
     <div class="col-12">
-      <p>
-        "No Record Found.Click Add New Route To Add Record" 
-      </p>
+      <p>"No Record Found.Click Add New Route To Add Record"</p>
       <button
-      pButton
-      pRipple
-      type="button"
-      (click)="addNewRoutePage()"
-      label="Add New Route"
-      class="p-button-raised"
-    ></button>
+        pButton
+        pRipple
+        type="button"
+        (click)="addNewRoutePage()"
+        label="Add New Route"
+        class="p-button-raised"
+      ></button>
     </div>
   </div>
-
 </div>
 
 <p-confirmDialog
