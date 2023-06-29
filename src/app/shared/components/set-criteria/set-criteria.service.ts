@@ -42,7 +42,9 @@ export class SetCriteriaService {
         };
         this.setTransactionCriteriaRange(lcySlabForm);
 
-        criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
+        criteriaMapFirstSplit += `;${
+          criteriaData["lcySlab"] ? criteriaData["lcySlab"] : "LCY Amount"
+        } = Slab`;
       } else {
         criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
       }

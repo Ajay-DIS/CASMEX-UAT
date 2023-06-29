@@ -117,7 +117,7 @@
     ></app-set-criteria>
   </div>
   <!-- // suresh Work start -->
-  <div class="details-page-card mt-2">
+  <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -284,6 +284,8 @@
               [(selection)]="selectedNodes"
               [scrollable]="true"
               scrollHeight="295px"
+              (onNodeSelect)="onNodeSelect($event)"
+              (onNodeUnselect)="onNodeUnSelect($event)"
             >
               <!-- <ng-template pTemplate="caption">
                 <div class="flex">
@@ -336,6 +338,7 @@
                           [placeholder]="
                             rowData[col.field] ? rowData[col.field] : ''
                           "
+                          [(ngModel)]="rowData[col.field]"
                         />
                         <input
                           *ngIf="
@@ -349,6 +352,8 @@
                           [placeholder]="
                             rowData[col.field] ? rowData[col.field] : ''
                           "
+                          [(ngModel)]="rowData[col.field]"
+                          [disabled]="true"
                         />
                         <p-checkbox
                           *ngIf="col.type == 'checkbox'"
