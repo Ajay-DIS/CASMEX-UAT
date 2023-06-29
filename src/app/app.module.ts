@@ -57,6 +57,11 @@ import { AddNewFormRuleComponent } from './form-rules/add-new-form-rule/add-new-
 import { FormRuleListingComponent } from './form-rules/form-rule-listing/form-rule-listing.component';
 import { GroupSettingsComponent } from './group-settings/group-settings.component';
 import { CustomerProfileComponent } from './customer-profile/customer-profile.component';
+import { AddCustomerComponent } from './customer-profile/add-customer/add-customer.component';
+import { PanelModule } from 'primeng/panel';
+import { TabViewModule } from 'primeng/tabview';
+import { CalendarModule } from "primeng/calendar";
+import {FileUploadModule} from 'primeng/fileupload';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -82,6 +87,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     FormRuleListingComponent,
     GroupSettingsComponent,
     CustomerProfileComponent,
+    AddCustomerComponent,
   ],
   imports: [
     BrowserModule,
@@ -119,6 +125,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     }),
     PanelMenuModule,
     DialogModule,
+    PanelModule,
+    TabViewModule,
+    CalendarModule,
+    FileUploadModule
   ],
   providers: [
     BnNgIdleService,

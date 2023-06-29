@@ -209,7 +209,7 @@ export class FormRuleListingComponent implements OnInit {
         type +
         ` the Rule Record: ${data["formRuleCode"]}?`;
     } else {
-      completeMsg =
+      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
         `Do you wish to ` + type + ` the Rule Record: ${data["formRuleCode"]}?`;
     }
     this.confirmationService.confirm({

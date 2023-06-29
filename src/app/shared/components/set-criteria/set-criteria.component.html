@@ -1,7 +1,4 @@
-<div
-  class="details-page-card-content criteria-main-section mt-2"
-  style="position: relative"
->
+<div class="details-page-card-content criteria-main-section mt-2">
   <div class="criteria-bar">
     <p class="setCriteria detail-page-section-heading">
       Set Criteria
@@ -59,7 +56,6 @@
       </div>
     </ng-template>
   </p-dialog>
-
   <div class="dropdowns-select-container mb-3">
     <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
       <!-- <p-dropdown
@@ -137,7 +133,7 @@
         #addCriteriaBtn
         pButton
         pRipple
-        style="position: absolute; left: 645px; font-size: 1.5rem"
+        style="position: static; left: 645px; font-size: 1.5rem"
         type="button"
         label="+"
         class="p-button-primary"
@@ -163,8 +159,8 @@
       ></p-dropdown>
     </div>
   </div>
-  <div style="padding: 0 1rem; display: flex; flex-wrap: wrap">
-    <span
+  <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
+    <span 
       *ngFor="let criteria of criteriaText; let i = index"
       (click)="
         savedSlabs &&
@@ -207,17 +203,18 @@
         </svg>
       </span>
     </span>
-    <div class="applycriteriabtn">
-      <button
-        pButton
-        pRipple
-        type="button"
-        label="Apply Criteria"
-        class="p-button-raised"
-        [disabled]="!criteriaText?.length"
-        (click)="applyCriteria()"
-      ></button>
-    </div>
+    
+  </div>
+  <div class="col-12 applycriteriabtn">
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Apply Criteria"
+      class="p-button-raised"
+      [disabled]="!criteriaText?.length"
+      (click)="applyCriteria()"
+    ></button>
   </div>
 </div>
 
