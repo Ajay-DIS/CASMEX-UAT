@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-customer-profile',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CustomerProfileComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router,) { }
 
   customerMap = {
     userType: "", uniqueIdentifier: "", uniqueIdentifierValue: ""
@@ -54,6 +55,10 @@ export class CustomerProfileComponent implements OnInit {
     tempArr.push(s[0]);
     this.customerInfoMeta.customerMapConditions = tempArr;
     console.log("conditions", this.customerInfoMeta.customerMapConditions)
+  }
+
+  addNewCustomer() {
+    this.router.navigate(["navbar", "customer-profile", "addnewcustomer"]);
   }
 
 }

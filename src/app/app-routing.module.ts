@@ -16,6 +16,7 @@ import { AddNewFormRuleComponent } from "./form-rules/add-new-form-rule/add-new-
 import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-rule-listing.component";
 import { GroupSettingsComponent } from "./group-settings/group-settings.component";
 import { CustomerProfileComponent } from "./customer-profile/customer-profile.component";
+import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -237,6 +238,16 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "customer-profile/addnewcustomer",
+        component: AddCustomerComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/customer-profile" },
+          { label: "Customer Profile", routerLink:  "../navbar/customer-profile"  },
+          { label: "Add Customer", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      }
     ],
   },
 ];

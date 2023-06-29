@@ -266,7 +266,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.orderIDArray = [];
   }
 
-  checkCriteriaDuplication() {
+  checkCriteriaDuplication(action) {
     this.coreService.displayLoadingScreen();
     this.criteriaSettingsService
       .getCriteriaSettingListing()
@@ -288,7 +288,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 this.confirmationService.confirm({
                   message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
-                    this.saveCriteriaFields();
+                    this.saveCriteriaFields(action);
                     console.log("Update it -- call save method API");
                   },
                   reject: () => {
@@ -299,11 +299,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               }
             });
             if (!this.duplicateCriteria) {
-              this.saveCriteriaFields();
+              this.saveCriteriaFields(action);
             }
           } else {
             console.log(res["msg"]);
-            this.saveCriteriaFields();
+            this.saveCriteriaFields(action);
           }
         },
         (err) => {
@@ -318,7 +318,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       });
   }
 
-  saveCriteriaFields() {
+  saveCriteriaFields(action:any) {
     this.coreService.displayLoadingScreen();
     let data = {
       form: this.formCtrl.value.name,
@@ -372,10 +372,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.coreService.showSuccessToast("New criteria added Sucessfully.");
             }
           }
-
-          this.mode == "edit" &&
+          
+          if(this.mode == "edit"){
             this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
-          this.router.navigate(["navbar", "criteria-settings"]);
+          }
+          if (action == "save") {
+            this.router.navigate([`navbar/criteria-settings`]);
+          } else if (action == "saveAddNew") {
+            // this.reset();
+            this.router.navigate([`navbar/criteria-settings/add-criteria-settings/add`]);
+            this.coreService.removeLoadingScreen();
+          }
         }
       },
       (err) => {
@@ -434,7 +441,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     );
   }
 
-  saveCriteriaSettings() {
+  saveCriteriaSettings(action) {
     let emptyOperation = false;
     let emptyPriority = false;
     let emptydependency = false;
@@ -474,9 +481,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       console.log("passed validation",this.mode);
       
       if(this.mode == 'edit'){
-        this.saveCriteriaFields();
+        this.saveCriteriaFields(action);
       } else {
-        this.checkCriteriaDuplication();
+        this.checkCriteriaDuplication(action);
       }
     }
   }

@@ -211,7 +211,7 @@ export class TaxListingComponent implements OnInit {
         type +
         ` the Tax Record: ${data["taxCode"]}?`;
     } else {
-      completeMsg =
+      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
         `Do you wish to ` + type + ` the Tax Record: ${data["taxCode"]}?`;
     }
     this.confirmationService.confirm({

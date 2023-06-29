@@ -43,14 +43,15 @@
           class="p-button-raised"
           (click)="saveAddNewTax('save')"
         ></button>
-        <!-- <button
-          pButton
-          pRipple
-          type="button"
-          label="Save & Add New"
-          class="p-button-raised"
-          (click)="saveAddNewRoute('saveAndAddNew')"
-        ></button> -->
+        <button
+        pButton
+        pRipple
+        type="button"
+        [disabled]="!appliedCriteriaData.length || !appliedCriteriaData.length"
+        label="Save & Add New"
+        class="p-button-raised"
+        (click)="saveAddNewTax('saveAndAddNew')"
+      ></button>
         <button
           pButton
           pRipple
@@ -148,6 +149,7 @@
                 <tr>
                   <ng-container *ngFor="let col of columns; let c = index">
                     <th
+                    style="padding-left: 20px;"
                       alignFrozen="right"
                       pFrozenColumn
                       [frozen]="!col['isString']"

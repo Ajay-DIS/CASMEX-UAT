@@ -203,7 +203,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           break;
         case "Customer Profile":
           item["routerLink"] = "/navbar/customer-profile";
-          item["routerLinkActiveOptions"] = { subset: true};
+          // item["routerLinkActiveOptions"] = { subset: true};
           break;
       }
     });
