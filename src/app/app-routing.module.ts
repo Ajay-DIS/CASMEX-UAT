@@ -195,7 +195,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "form-rules/addnewrule/:id/edit",
+        path: "form-rules/addnewformrule/:id/edit",
         component: AddNewFormRuleComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
@@ -206,7 +206,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "form-rules/addnewrule/:id/clone",
+        path: "form-rules/addnewformrule/:id/clone",
         component: AddNewFormRuleComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },

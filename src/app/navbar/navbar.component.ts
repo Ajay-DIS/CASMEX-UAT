@@ -282,6 +282,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         matchUrls = [
           "/navbar/bank-routing",
           "/navbar/tax-settings",
+          "/navbar/form-rules",
           "/navbar/bank-routing/addnewroute",
           // "/navbar/bank-routing-2",
           // "/navbar/bank-routing-2/addnewroute",

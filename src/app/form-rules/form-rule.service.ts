@@ -19,15 +19,12 @@ export class FormRuleService {
     );
   }
 
-  getFormRuleForEdit(taxCode: any, operation: any) {
-    return this.http.get(
-      `/remittance/formRulesController/getTaxSettingCriteriaForEdit`,
-      {
-        headers: new HttpHeaders()
-          .set("taxCode", taxCode)
-          .set("operation", operation),
-      }
-    );
+  getFormRuleForEdit(formRuleCode: any, operation: any) {
+    return this.http.get(`/remittance/formRulesController/getFormRuleForEdit`, {
+      headers: new HttpHeaders()
+        .set("formRuleCode", formRuleCode)
+        .set("operation", operation),
+    });
   }
 
   getAddFormRuleCriteriaData(userId: any) {
@@ -91,13 +88,13 @@ export class FormRuleService {
     );
   }
 
-  // updateFormRule(userId, data): Observable<any> {
-  //   return this.http.put(
-  //     `/remittance/formRulesController/updateTaxSettingsCriteria`,
-  //     data,
-  //     {
-  //       headers: new HttpHeaders().set("userId", userId),
-  //     }
-  //   );
-  // }
+  updateFormRule(userId, data): Observable<any> {
+    return this.http.put(
+      `/remittance/formRulesController/updateFormRule`,
+      data,
+      {
+        headers: new HttpHeaders().set("userId", userId),
+      }
+    );
+  }
 }

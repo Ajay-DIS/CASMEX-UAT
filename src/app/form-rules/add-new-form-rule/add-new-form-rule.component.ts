@@ -153,7 +153,7 @@ export class AddNewFormRuleComponent implements OnInit {
     },
   ];
 
-  applyCriteriaFormattedData: TreeNode[] = [];
+  applyCriteriaFormattedData: any[] = [];
 
   applyCriteriaDataTableColumns: any[] = [];
 
@@ -169,7 +169,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
   applyCriteriaResponse: any = {};
 
-  selectedNodes: TreeNode;
+  selectedNodes: TreeNode[] = [];
   maxlengthDefaultValue = 0;
 
   appliedCriteriaDataCols = [];
@@ -213,6 +213,7 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   getFormRulesForEditApi(formRuleCode: any, operation: any) {
+    let simpleData = false;
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.formRuleService
@@ -220,8 +221,31 @@ export class AddNewFormRuleComponent implements OnInit {
       .subscribe(
         (res) => {
           if (!res["msg"]) {
-            this.editFromRulesApiData = res;
+            this.editFromRulesApiData = JSON.parse(this.stringify(res));
             console.log("edit data", res);
+
+            if (
+              !(res["criteriaMap"].indexOf("&&&&") >= 0) &&
+              !(res["criteriaMap"].indexOf("LCY Amount") >= 0)
+            ) {
+              simpleData = true;
+            } else {
+              simpleData = false;
+              res["data"]["dataOperation"].forEach((data) => {
+                Object.values(data).forEach((subData) => {
+                  (subData as any[]).forEach((d) => {
+                    console.log(d["data"]["criteriaMap"]);
+                    console.log(d["data"]["criteriaMap"].indexOf("&&&&"));
+                    console.log(d["data"]["criteriaMap"].indexOf("LCY Amount"));
+
+                    d["data"]["key"] =
+                      d["data"]["criteriaMapSplit"].split("&&&&")[1];
+                  });
+                });
+              });
+            }
+
+            console.log(res);
 
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editFromRulesApiData
@@ -233,17 +257,375 @@ export class AddNewFormRuleComponent implements OnInit {
               this.cmCriteriaSlabType
             );
 
-            this.formRuleCode = res["data"][0]["formRuleCode"];
-            if (res["data"][0]["ruleCodeDesc"]) {
-              this.ruleDescription = res["data"][0]["ruleCodeDesc"];
+            this.formRuleCode = this.editFromRulesApiData["formRuleCode"];
+            if (this.editFromRulesApiData["formRuleDesc"]) {
+              this.ruleDescription = this.editFromRulesApiData["formRuleDesc"];
             }
-            this.isFromRulesLinked = !res["criteriaUpdate"];
+            this.isFromRulesLinked =
+              !this.editFromRulesApiData["criteriaUpdate"];
 
-            this.appliedCriteriaDataOrg = [...res["data"]];
-            this.appliedCriteriaData = [...res["data"]];
-            // this.setSelectedOptions();
-            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-            this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
+            // Table formation STARt
+
+            let reqData =
+              this.criteriaDataService.decodeCriteriaMapIntoTableFields(
+                this.editFromRulesApiData
+              );
+
+            this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+              this.editFromRulesApiData
+            );
+            console.log(":::::", this.criteriaCodeText);
+
+            console.log("decoded ARRRR", reqData);
+            let crtfields = this.setCriteriaService.decodeFormattedCriteria(
+              reqData.critMap,
+              this.criteriaMasterData,
+              // reqData.lcySlabArr.length ? ["LCY Amount"] : []
+              ["LCY Amount"]
+            );
+            console.log("this.criteriaText", crtfields);
+
+            this.applyCriteriaDataTableColumns = [];
+
+            let lcyOprFields = [];
+            let isLcyOprFieldPresent = false;
+            let lcyOprFieldInserted = false;
+            let lcySlabFieldInserted = false;
+
+            this.applyCriteriaDataTableColumns = [...this.cols];
+            crtfields
+              .slice()
+              .reverse()
+              .forEach((crt) => {
+                let formatCrt;
+                let opr;
+                if (crt.includes("!=")) {
+                  formatCrt = crt.replace(/[!=]/g, "");
+                  opr = "!=";
+                } else if (crt.includes(">=")) {
+                  formatCrt = crt.replace(/[>=]/g, "");
+                  opr = ">=";
+                } else if (crt.includes("<=")) {
+                  formatCrt = crt.replace(/[<=]/g, "");
+                  opr = "<=";
+                } else if (crt.includes("<")) {
+                  formatCrt = crt.replace(/[<]/g, "");
+                  opr = "<";
+                } else if (crt.includes(">")) {
+                  formatCrt = crt.replace(/[>]/g, "");
+                  opr = ">";
+                } else {
+                  formatCrt = crt.replace(/[=]/g, "");
+                  opr = "=";
+                }
+
+                if (formatCrt.split("  ")[0] == "LCY Amount") {
+                  isLcyOprFieldPresent = true;
+                  lcyOprFields.push(
+                    formatCrt.split("  ")[0] +
+                      " " +
+                      opr +
+                      " " +
+                      formatCrt.split("  ")[1]
+                  );
+                  //   if (!lcyOprFieldInserted) {
+                  //     this.applyCriteriaDataTableColumns.unshift({
+                  //       field: "lcyAmount",
+                  //       header: formatCrt.split("  ")[0],
+                  //       value: formatCrt.split("  ")[1],
+                  //       type: "lcyOpr",
+                  //     });
+                  //     lcyOprFieldInserted = true;
+                  //   }
+                }
+                if (
+                  this.criteriaCodeText.includes("LCY Amount = Slab") &&
+                  !lcySlabFieldInserted
+                ) {
+                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                    field: "amountFrom",
+                    header: "Amount From",
+                    type: "lcySlabFrom",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                    field: "amountTo",
+                    header: "Amount To",
+                    type: "lcySlabTo",
+                  });
+                  lcySlabFieldInserted = true;
+                } else if (
+                  formatCrt.split("  ")[0] == "LCY Amount" &&
+                  !lcyOprFieldInserted
+                ) {
+                  this.applyCriteriaDataTableColumns.unshift({
+                    field: "lcyAmount",
+                    header: formatCrt.split("  ")[0],
+                    value: formatCrt.split("  ")[1],
+                    type: "lcyOpr",
+                  });
+                  lcyOprFieldInserted = true;
+                } else {
+                  this.applyCriteriaDataTableColumns.unshift({
+                    field: formatCrt.split("  ")[0],
+                    header: formatCrt.split("  ")[0],
+                    value: formatCrt.split("  ")[1],
+                    type: "string",
+                  });
+                }
+              });
+
+            this.applyCriteriaDataTableColumns.forEach((col) => {
+              res["data"]["dataOperation"].forEach((data) => {
+                Object.values(data).forEach((subData) => {
+                  (subData as any[]).forEach((d) => {
+                    if (d["data"][col["field"]] == "Y") {
+                      d["data"][col["field"]] = true;
+                    }
+                    if (d["data"][col["field"]] == "N") {
+                      d["data"][col["field"]] = false;
+                    }
+                    if (d["data"][col["field"]] == "null") {
+                      d["data"][col["field"]] = "";
+                    }
+                    if (col["value"]) {
+                      d["data"][col["field"]] = col["value"];
+                    }
+                  });
+                });
+              });
+            });
+
+            console.log(this.applyCriteriaDataTableColumns);
+
+            let completeData = [];
+            if (simpleData) {
+              Object.keys(res["labelData"]["label"]).forEach((k, i) => {
+                let formattedRowData = {
+                  data: {
+                    fieldName: res["labelData"]["label"][k],
+                    key: i,
+                  },
+                  expanded: true,
+                  children: [],
+                };
+                console.log(
+                  res["data"]["dataOperation"][0][res["labelData"]["label"][k]]
+                );
+
+                let formattedChilds =
+                  res["data"]["dataOperation"][0][res["labelData"]["label"][k]];
+
+                formattedChilds.forEach((child) => {
+                  if (child["data"]["ruleSelected"] == "Y") {
+                    child["partialSelected"] = false;
+                    this.selectedNodes.push(child);
+                  }
+                });
+
+                formattedRowData["children"] = formattedChilds;
+                completeData.push(formattedRowData);
+              });
+            } else {
+              console.log(reqData);
+              console.log(lcyOprFields);
+              if (reqData.lcySlabArr.length > 0) {
+                reqData.lcySlabArr.forEach((slab, i) => {
+                  Object.keys(res["labelData"]["label"]).forEach((k) => {
+                    let formattedRowData = {
+                      data: {
+                        fieldName: res["labelData"]["label"][k],
+                        key: i,
+                      },
+                      expanded: true,
+                      children: [],
+                    };
+                    let formattedChilds = res["data"]["dataOperation"][0][
+                      res["labelData"]["label"][k]
+                    ].filter(
+                      (child) =>
+                        child["data"]["key"] ==
+                        `from:${slab["from"]}::to:${slab["to"]}`
+                    );
+                    formattedChilds.forEach((child) => {
+                      child["data"]["amountFrom"] = slab["from"];
+                      child["data"]["amountTo"] = slab["to"];
+                      if (child["data"]["ruleSelected"] == "Y") {
+                        child["partialSelected"] = false;
+                        this.selectedNodes.push(child);
+                      }
+                    });
+
+                    formattedRowData["children"] = formattedChilds;
+                    completeData.push(formattedRowData);
+                  });
+                });
+              } else if (lcyOprFields.length > 0) {
+                lcyOprFields.forEach((oprField, i) => {
+                  Object.keys(res["labelData"]["label"]).forEach((k) => {
+                    let formattedRowData = {
+                      data: {
+                        fieldName: res["labelData"]["label"][k],
+                        key: i,
+                      },
+                      expanded: true,
+                      children: [],
+                    };
+                    console.log(
+                      res["data"]["dataOperation"][0][
+                        res["labelData"]["label"][k]
+                      ]
+                    );
+                    let formattedChilds = res["data"]["dataOperation"][0][
+                      res["labelData"]["label"][k]
+                    ].filter((child) => child["data"]["key"] == oprField);
+                    formattedChilds.forEach((child) => {
+                      child["data"]["lcyAmount"] = oprField;
+                      if (child["data"]["ruleSelected"] == "Y") {
+                        child["partialSelected"] = false;
+                        this.selectedNodes.push(child);
+                      }
+                    });
+
+                    formattedRowData["children"] = formattedChilds;
+                    completeData.push(formattedRowData);
+                  });
+                });
+              }
+            }
+
+            console.log(completeData);
+            console.log(this.selectedNodes);
+            this.applyCriteriaFormattedData = [...completeData];
+
+            // let completeData = [];
+            // this.editFromRulesApiData["data"]["dataOperation"].forEach(
+            //   (data) => {
+            //     for (const [key, value] of Object.entries(data)) {
+            //       console.log(`${key}: ${value}`);
+            //       let formattedRowData = {
+            //         data: {
+            //           fieldName: key,
+            //         },
+            //         expanded: true,
+            //         children: value,
+            //       };
+            //       (value as any[]).forEach((detail) => {
+            //         console.log(detail["data"]);
+            //         let childRow = { data: {} };
+            //         this.applyCriteriaDataTableColumns.forEach((col) => {
+            //           if (detail["data"][col["field"]] == "Y") {
+            //             detail["data"][col["field"]] = true;
+            //           }
+            //           if (detail["data"][col["field"]] == "N") {
+            //             detail["data"][col["field"]] = false;
+            //           }
+            //           console.log(detail["data"][col["field"]]);
+            //           childRow["data"][col["field"]] =
+            //             detail["data"][col["field"]];
+            //         });
+            //         Object.keys(childRow.data).forEach((field) => {
+            //           if (childRow.data[field] === undefined) {
+            //             this.applyCriteriaDataTableColumns.forEach((col) => {
+            //               if (field == col["field"]) {
+            //                 childRow.data[field] = col["value"];
+            //               }
+            //             });
+            //           }
+            //         });
+            //         childRow["data"]["formLableFieldSequence"] =
+            //           detail["data"]["formLableFieldSequence"];
+            //         childRow["data"]["formSection"] =
+            //           detail["data"]["formSection"];
+            //         (formattedRowData["children"] as any[]).push(childRow);
+            //       });
+            //       completeData.push(formattedRowData);
+            //     }
+            //   }
+            // );
+
+            // if (
+            //   !reqData.lcySlabArr.length &&
+            //   reqData.critMap.findIndex((element) =>
+            //     element.includes("LCY Amount")
+            //   ) < 0
+            // ) {
+            //   this.isLcySlab = false;
+            //   this.isLcyAmount = false;
+            //   this.applyCriteriaFormattedData = [...completeData];
+            //   this.applyCriteriaFormattedData.forEach((row, i) => {
+            //     row["data"]["key"] = i;
+            //     row["children"].forEach((child) => {
+            //       child["data"]["criteriaMapSplit"] = null;
+            //     });
+            //   });
+            // } else {
+            //   if (
+            //     reqData.lcySlabArr.length &&
+            //     reqData.critMap.findIndex((element) =>
+            //       element.includes("LCY Amount")
+            //     ) < 0
+            //   ) {
+            //     this.isLcySlab = true;
+            //     this.isLcyAmount = false;
+            //     this.applyCriteriaDataTableColumns.splice(-6, 0, {
+            //       field: "amountFrom",
+            //       header: "Amount From",
+            //       type: "lcySlabFrom",
+            //     });
+            //     this.applyCriteriaDataTableColumns.splice(-6, 0, {
+            //       field: "amountTo",
+            //       header: "Amount To",
+            //       type: "lcySlabTo",
+            //     });
+
+            //     this.applyCriteriaFormattedData = [];
+
+            //     reqData.lcySlabArr.forEach((slab, i) => {
+            //       console.log(completeData);
+            //       let copy = JSON.parse(JSON.stringify(completeData));
+            //       copy.forEach((row) => {
+            //         row["data"]["key"] = i;
+            //         row["children"].forEach((child) => {
+            //           child["data"]["amountFrom"] = slab["from"];
+            //           child["data"]["amountTo"] = slab["to"];
+            //           child["data"][
+            //             "criteriaMapSplit"
+            //           ] = `from:${slab["from"]}::to:${slab["to"]}`;
+            //         });
+            //       });
+
+            //       this.applyCriteriaFormattedData.push(...copy);
+            //     });
+            //   } else if (
+            //     !reqData.lcySlabArr.length &&
+            //     reqData.critMap.findIndex((element) =>
+            //       element.includes("LCY Amount")
+            //     ) >= 0
+            //   ) {
+            //     this.applyCriteriaFormattedData = [];
+            //     this.isLcySlab = false;
+            //     this.isLcyAmount = true;
+
+            //     lcyOprFields.forEach((opr, i) => {
+            //       console.log(completeData);
+            //       let copy = JSON.parse(JSON.stringify(completeData));
+            //       copy.forEach((row) => {
+            //         row["data"]["key"] = i;
+            //         row["children"].forEach((child) => {
+            //           child["data"]["lcyAmount"] = opr;
+            //           child["data"]["criteriaMapSplit"] = opr;
+            //         });
+            //       });
+
+            //       this.applyCriteriaFormattedData.push(...copy);
+            //     });
+            //   }
+            // }
+
+            console.log(this.editFromRulesApiData["data"]["dataOperation"]);
+            console.log(this.applyCriteriaFormattedData);
+
+            // Table formation END
           } else {
             this.coreService.showWarningToast(res["msg"]);
             if (res["msg"].includes("No active")) {
@@ -253,6 +635,8 @@ export class AddNewFormRuleComponent implements OnInit {
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
+
+          console.log(res);
         },
         (err) => {
           console.log("Error in getTaxSettingForEditApi", err);
@@ -263,6 +647,15 @@ export class AddNewFormRuleComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         }, 250);
       });
+  }
+
+  onNodeSelect(event) {
+    console.log(event);
+    event["node"]["partialSelected"] = false;
+  }
+  onNodeUnSelect(event) {
+    console.log(event);
+    delete event["node"]["partialSelected"];
   }
 
   getCriteriaMasterData() {
@@ -294,7 +687,7 @@ export class AddNewFormRuleComponent implements OnInit {
             this.formRuleCode = this.criteriaDataDetailsJson.data.formRuleCode;
             this.ruleID = this.formRuleCode;
             this.ruleDescription =
-              this.criteriaDataDetailsJson.data.ruleCodeDesc;
+              this.criteriaDataDetailsJson.data.formRuleDesc;
           }
 
           this.cmCriteriaDataDetails = [
@@ -437,13 +830,6 @@ export class AddNewFormRuleComponent implements OnInit {
           this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
           if (!res["msg"]) {
             if (!res["duplicate"]) {
-              // this.appliedCriteriaDataOrg = [...res["data"]];
-              // this.appliedCriteriaData = [...res["data"]];
-              // // this.setSelectedOptions();
-
-              // this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-              // this.appliedCriteriaIsDuplicate = res["duplicate"];
-
               // for apply START
 
               let reqData =
@@ -466,6 +852,7 @@ export class AddNewFormRuleComponent implements OnInit {
               let lcySlabFieldInserted = false;
 
               this.applyCriteriaDataTableColumns = [...this.cols];
+              this.appliedCriteriaIsDuplicate = res["duplicate"];
               crtfields
                 .slice()
                 .reverse()
@@ -640,13 +1027,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 }
               }
 
-              // this.treeTable.writeValue(this.applyCriteriaFormattedData);
-              // // Refresh the TreeTable component to reflect the changes
-              // this.treeTable.value = [...this.nodes];
-              // this.treeTable.updateDataToRender(
-              //   this.treeTable.filteredValue || this.treeTable.value
-              // );
-
               console.log(this.applyCriteriaFormattedData);
 
               // for apply END
@@ -655,10 +1035,10 @@ export class AddNewFormRuleComponent implements OnInit {
                 `Criteria Applied Successfully`
               );
             } else {
-              this.appliedCriteriaData = [];
+              this.applyCriteriaFormattedData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
-              this.appliedCriteriaDataCols = [];
+              this.applyCriteriaDataTableColumns = [];
               this.coreService.showWarningToast(
                 "Applied criteria already exists."
               );
@@ -735,67 +1115,105 @@ export class AddNewFormRuleComponent implements OnInit {
     console.log(this.applyCriteriaFormattedData);
 
     console.log(this.applyCriteriaResponse);
-    let copyApplyCriteriaFormattedData = [...this.applyCriteriaFormattedData];
+    console.log(this.editFromRulesApiData);
 
-    let fruitColors = {};
+    let payloadData;
 
-    for (let fruit of copyApplyCriteriaFormattedData) {
-      if (fruitColors[fruit.data.key]) {
-        fruitColors[fruit.data.key].push(fruit);
-      } else {
-        fruitColors[fruit.data.key] = [fruit];
-      }
+    if (this.applyCriteriaResponse["data"]) {
+      console.log("apply");
+      payloadData = JSON.parse(this.stringify(this.applyCriteriaResponse));
+    } else if (this.editFromRulesApiData["data"]) {
+      console.log("edit");
+      payloadData = JSON.parse(this.stringify(this.editFromRulesApiData));
+      payloadData["duplicate"] = this.appliedCriteriaIsDuplicate;
     }
 
-    console.log(fruitColors);
-    console.log(Object.values(fruitColors));
+    let copyApplyCriteriaFormattedData = [...this.applyCriteriaFormattedData];
 
-    let groupsArray: any[] = [];
-    Object.values(fruitColors).forEach((col: any) => {
-      let groupObj: any = {};
-      col.forEach((c: any) => {
-        c["children"].forEach((childData: any) => {
-          if (childData["partialSelected"] == false) {
-            childData["data"]["ruleSelected"] = true;
-          } else {
-            childData["data"]["ruleSelected"] = false;
-          }
-          // delete childData["partialSelected"];
-          delete childData["parent"];
-        });
-        groupObj[c["data"]["fieldName"]] = c["children"];
+    let finalObj = {};
+    Object.keys(payloadData["labelData"]["label"]).forEach((k) => {
+      let fieldArr = [];
+      let fieldObjArr = copyApplyCriteriaFormattedData.filter((tableData) => {
+        return tableData["data"]["fieldName"] == k;
       });
-      groupsArray.push(groupObj);
+
+      fieldObjArr.forEach((data) => {
+        fieldArr.push(...data["children"]);
+      });
+
+      fieldArr.forEach((child) => {
+        delete child["parent"];
+        if (child["partialSelected"] == false) {
+          child["data"]["ruleSelected"] = true;
+        } else {
+          child["data"]["ruleSelected"] = false;
+        }
+      });
+
+      finalObj[k] = fieldArr;
     });
 
-    console.log(groupsArray);
+    console.log([finalObj]);
 
-    this.applyCriteriaResponse.data = {};
+    // let groupObject = {};
 
-    this.applyCriteriaResponse["data"]["dataOperation"] = groupsArray;
-    this.applyCriteriaResponse["formRuleCode"] = this.formRuleCode;
-    this.applyCriteriaResponse["formRuleDesc"] = this.ruleDescription
+    // for (let dataObj of copyApplyCriteriaFormattedData) {
+    //   if (groupObject[dataObj.data.key]) {
+    //     groupObject[dataObj.data.key].push(dataObj);
+    //   } else {
+    //     groupObject[dataObj.data.key] = [dataObj];
+    //   }
+    // }
+
+    // console.log(groupObject);
+    // console.log(Object.values(groupObject));
+
+    // let groupsArray: any[] = [];
+    // Object.values(groupObject).forEach((col: any) => {
+    //   let groupObj: any = {};
+    //   col.forEach((c: any) => {
+    //     c["children"].forEach((childData: any) => {
+    //       if (childData["partialSelected"] == false) {
+    //         childData["data"]["ruleSelected"] = true;
+    //       } else {
+    //         childData["data"]["ruleSelected"] = false;
+    //       }
+    //       // delete childData["partialSelected"];
+    //       // delete childData["parent"];
+    //     });
+    //     groupObj[c["data"]["fieldName"]] = c["children"];
+    //   });
+    //   groupsArray.push(groupObj);
+    // });
+
+    // console.log(groupsArray);
+
+    payloadData.data = {};
+
+    payloadData["data"]["dataOperation"] = [finalObj];
+    payloadData["formRuleCode"] = this.formRuleCode;
+    payloadData["formRuleDesc"] = this.ruleDescription
       ? this.ruleDescription
       : "";
-    this.applyCriteriaResponse["userId"] = this.userId;
-    let str = this.stringify(this.applyCriteriaResponse);
+    payloadData["userId"] = this.userId;
+    let str = this.stringify(payloadData);
     str = str.replace(/true/g, '"Y"');
     str = str.replace(/false/g, '"N"');
     console.log(JSON.parse(str));
-    this.applyCriteriaResponse = JSON.parse(str);
-    let copyPayload = JSON.parse(this.stringify(this.applyCriteriaResponse));
+    payloadData = JSON.parse(str);
+    let copyPayload = JSON.parse(this.stringify(payloadData));
     if (copyPayload["duplicate"] == "N") {
-      this.applyCriteriaResponse["duplicate"] = false;
-    } else {
-      this.applyCriteriaResponse["duplicate"] = true;
+      payloadData["duplicate"] = false;
+    } else if (copyPayload["duplicate"] == "Y") {
+      payloadData["duplicate"] = true;
     }
-    console.log(this.applyCriteriaResponse);
+    console.log(payloadData);
 
     if (
       this.mode != "clone" ||
       (this.mode == "clone" && this.isApplyCriteriaClicked)
     ) {
-      // this.coreService.displayLoadingScreen();
+      this.coreService.displayLoadingScreen();
       // let isRequiredFields = false;
       // let invalidTaxAmount = false;
       // this.appliedCriteriaData.forEach((element) => {
@@ -820,22 +1238,20 @@ export class AddNewFormRuleComponent implements OnInit {
       //   this.coreService.removeLoadingScreen();
       //   this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
       // } else {
-      let service;
       // this.decodeSelectedOptions();
+      let service;
       if (this.mode == "edit") {
-        let data;
-        // service = this.formRuleService.updateFormRule(this.userId, data);
+        service = this.formRuleService.updateFormRule(this.userId, payloadData);
         console.log("EDIT MODE - UPDATE form SERVICE");
       } else {
         console.log("ADD MODE - ADD NEW form SERVICE");
-        service = this.formRuleService.addNewFormRule(
-          this.applyCriteriaResponse
-        );
+        service = this.formRuleService.addNewFormRule(payloadData);
       }
 
       if (service) {
         service.subscribe(
           (res) => {
+            console.log(res);
             if (res["msg"]) {
               this.coreService.showSuccessToast(res.msg);
               if (action == "save") {
