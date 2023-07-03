@@ -423,7 +423,9 @@ export class AddNewTaxComponent implements OnInit {
           invalidTaxAmount = true;
         }
         element["taxCodeDesc"] = this.taxDescription
-          ? (this.taxDescription.replace(/\s/g,'').length ? this.taxDescription : null)
+          ? this.taxDescription.replace(/\s/g, "").length
+            ? this.taxDescription
+            : null
           : null;
         function isNullValue(arr) {
           return arr.some((el) => el == null);
@@ -471,7 +473,7 @@ export class AddNewTaxComponent implements OnInit {
                 } else if (action == "saveAndAddNew") {
                   // this.reset();
                   this.router.navigate([`navbar/tax-settings/add-tax`]);
-                  this.coreService.removeLoadingScreen();
+                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
@@ -488,7 +490,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   reset() {
-    if(this.mode == "edit"){
+    if (this.mode == "edit") {
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetTaxDataConfirmation",
@@ -501,8 +503,7 @@ export class AddNewTaxComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } 
-    else {
+    } else {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
@@ -513,7 +514,7 @@ export class AddNewTaxComponent implements OnInit {
           this.appliedCriteriaCriteriaMap = null;
           this.appliedCriteriaIsDuplicate = null;
           this.taxDescription = "";
-  
+
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
         },
@@ -523,7 +524,6 @@ export class AddNewTaxComponent implements OnInit {
         },
       });
     }
-  
   }
 
   setHeaderSidebarBtn() {

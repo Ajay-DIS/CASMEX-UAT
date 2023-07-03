@@ -19,6 +19,7 @@ export class FormRuleListingComponent implements OnInit {
   applicationName = "Web Application";
 
   formRuleListingData: any = [];
+  formRuleData: any = [];
 
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
@@ -106,7 +107,7 @@ export class FormRuleListingComponent implements OnInit {
 
               rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
             });
-            this.formRuleListingData = [...this.formruleListingApiData.data];
+            this.formRuleData = [...this.formruleListingApiData.data];
             this.showNoDataFound = false;
             this.linkedFormRuleCode = [
               ...this.formruleListingApiData.linkedFormRuleCode,
@@ -148,6 +149,8 @@ export class FormRuleListingComponent implements OnInit {
       )
       .subscribe(
         (res) => {
+          console.log(this.formRuleData);
+          console.log(res);
           if (!res["data"]) {
             console.log("No data Found");
             this.showNoDataFound = true;
@@ -159,6 +162,7 @@ export class FormRuleListingComponent implements OnInit {
           this.coreService.removeLoadingScreen();
           this.loading = false;
           this.showNoDataFound = true;
+          console.log(this.formRuleData);
           console.log("Error in getting form rule list data", err);
         }
       );
@@ -209,8 +213,11 @@ export class FormRuleListingComponent implements OnInit {
         type +
         ` the Rule Record: ${data["formRuleCode"]}?`;
     } else {
-      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
-        `Do you wish to ` + type + ` the Rule Record: ${data["formRuleCode"]}?`;
+      completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        `Do you wish to ` +
+        type +
+        ` the Rule Record: ${data["formRuleCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,

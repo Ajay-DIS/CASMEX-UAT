@@ -577,7 +577,7 @@ export class AddnewrouteComponent2 implements OnInit {
                 } else if (action == "saveAndAddNew") {
                   // this.reset();
                   this.router.navigate([`navbar/bank-routing/addnewroute`]);
-                  this.coreService.removeLoadingScreen();
+                  // this.coreService.removeLoadingScreen();
                 }
               }
             },

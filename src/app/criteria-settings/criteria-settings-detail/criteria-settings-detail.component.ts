@@ -292,7 +292,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                     console.log("Update it -- call save method API");
                   },
                   reject: () => {
-                    this.coreService.showWarningToast("Criteria saving revoked");
+                    this.coreService.showWarningToast(
+                      "Criteria saving revoked"
+                    );
                     console.log("Dont update it -- reject");
                   },
                 });
@@ -318,7 +320,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       });
   }
 
-  saveCriteriaFields(action:any) {
+  saveCriteriaFields(action: any) {
     this.coreService.displayLoadingScreen();
     let data = {
       form: this.formCtrl.value.name,
@@ -340,7 +342,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           dependency.push(op["label"]);
         });
       }
-    
+
       console.log("data", criteria);
       let criteriaDetails = {
         criteriaType: criteria["criteriaType"],
@@ -360,28 +362,40 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         if (res["msg"]) {
           if (this.mode == "clone") {
             if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Details updated Sucessfully."
+              );
             } else {
-              this.coreService.showSuccessToast("Criteria Clone created Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Clone created Sucessfully."
+              );
             }
           }
           if (this.mode == "add") {
             if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Details updated Sucessfully."
+              );
             } else {
-              this.coreService.showSuccessToast("New criteria added Sucessfully.");
+              this.coreService.showSuccessToast(
+                "New criteria added Sucessfully."
+              );
             }
           }
-          
-          if(this.mode == "edit"){
-            this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
+
+          if (this.mode == "edit") {
+            this.coreService.showSuccessToast(
+              "Criteria Details updated Sucessfully."
+            );
           }
           if (action == "save") {
             this.router.navigate([`navbar/criteria-settings`]);
           } else if (action == "saveAddNew") {
             // this.reset();
-            this.router.navigate([`navbar/criteria-settings/add-criteria-settings/add`]);
-            this.coreService.removeLoadingScreen();
+            this.router.navigate([
+              `navbar/criteria-settings/add-criteria-settings/add`,
+            ]);
+            // this.coreService.removeLoadingScreen();
           }
         }
       },
@@ -411,7 +425,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       let index = this.orderIDArray.indexOf(orderID);
       console.log(index, this.criteriaSettingtable.indexOf(field), orderID);
       if (orderID <= 0) {
-        this.coreService.showWarningToast("Priority is required and should be atleast 1");
+        this.coreService.showWarningToast(
+          "Priority is required and should be atleast 1"
+        );
         this.orderIDArray[this.criteriaSettingtable.indexOf(field)] = orderID;
         this.invalidForSave = true;
       } else {
@@ -453,7 +469,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       }
       if (element.orderID > this.criteriaSettingtable.length) {
         validGreaterthanPriority = true;
-      } 
+      }
       if (element.orderID == 0 || element.orderID < 0) {
         emptyPriority = true;
       }
@@ -465,22 +481,19 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.coreService.showWarningToast("Please select operation.");
     } else if (emptyPriority) {
       this.coreService.showWarningToast("Priority is required.");
-    }
-     else if (validGreaterthanPriority) {
+    } else if (validGreaterthanPriority) {
       let msg =
-          "Please enter priority " +
-          (this.criteriaSettingtable.length == 1
-            ? "as 1 only"
-            : "between 1 to " + this.criteriaSettingtable.length);
-        this.coreService.showWarningToast(msg);
-    }
-    else if (emptydependency) {
+        "Please enter priority " +
+        (this.criteriaSettingtable.length == 1
+          ? "as 1 only"
+          : "between 1 to " + this.criteriaSettingtable.length);
+      this.coreService.showWarningToast(msg);
+    } else if (emptydependency) {
       this.coreService.showWarningToast("Dependency is required.");
-    }
-    else {
-      console.log("passed validation",this.mode);
-      
-      if(this.mode == 'edit'){
+    } else {
+      console.log("passed validation", this.mode);
+
+      if (this.mode == "edit") {
         this.saveCriteriaFields(action);
       } else {
         this.checkCriteriaDuplication(action);
@@ -562,7 +575,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["operations"] = this.criteriaSettingtable[i]["operations"];
           item["dependency"] = this.criteriaSettingtable[i]["dependency"];
           item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
-          console.log(item["iSMandatory"])
+          console.log(item["iSMandatory"]);
         });
         //this.criteriaSettingtable.forEach((item, i) => {
         // item["dependency"] = this.criteriaSettingtable[i]["dependency"];
