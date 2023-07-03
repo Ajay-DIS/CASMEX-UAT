@@ -107,7 +107,7 @@
 
       <p-dropdown
         *ngIf="!hideValuesDropdown"
-        class="mr-1"
+        class="mr-3"
         [options]="correspondentDdlOptions"
         optionLabel="name"
         placeholder="Value"
@@ -116,7 +116,7 @@
       ></p-dropdown>
 
       <p-inputNumber
-        class="value-input"
+        class="value-input mr-3"
         *ngIf="hideValuesDropdown && showValueInput"
         placeholder="Value"
         pInputNumber
@@ -160,7 +160,7 @@
     </div>
   </div>
   <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
-    <span 
+    <span
       *ngFor="let criteria of criteriaText; let i = index"
       (click)="
         savedSlabs &&
@@ -203,7 +203,6 @@
         </svg>
       </span>
     </span>
-    
   </div>
   <div class="col-12 applycriteriabtn">
     <button
