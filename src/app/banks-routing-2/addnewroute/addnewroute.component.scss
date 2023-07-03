@@ -8,7 +8,7 @@
 }
 .details-page-card-content {
   border: 0.5px solid var(--surface-ground);
-  padding: 20px 0;
+  padding: 10px 0 5px 0;
   margin: 0 15px;
   background-color: var(--surface-card);
   border-radius: 10px;
@@ -16,8 +16,7 @@
 
 .criteria-bar {
   display: flex;
-  padding: 0 1rem;
-  margin-top: 5px;
+  padding: 0 0.5rem;
 }
 
 .setCriteria {

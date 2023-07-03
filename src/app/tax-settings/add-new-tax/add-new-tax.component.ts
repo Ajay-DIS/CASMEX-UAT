@@ -423,7 +423,9 @@ export class AddNewTaxComponent implements OnInit {
           invalidTaxAmount = true;
         }
         element["taxCodeDesc"] = this.taxDescription
-          ? this.taxDescription
+          ? this.taxDescription.replace(/\s/g, "").length
+            ? this.taxDescription
+            : null
           : null;
         function isNullValue(arr) {
           return arr.some((el) => el == null);
@@ -469,8 +471,9 @@ export class AddNewTaxComponent implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/tax-settings`]);
                 } else if (action == "saveAndAddNew") {
-                  this.reset();
-                  this.coreService.removeLoadingScreen();
+                  // this.reset();
+                  this.router.navigate([`navbar/tax-settings/add-tax`]);
+                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
@@ -487,25 +490,40 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   reset() {
-    this.coreService.setSidebarBtnFixedStyle(false);
-    this.coreService.setHeaderStickyStyle(false);
-    this.confirmationService.confirm({
-      message: "Are you sure, you want to clear all the fields ?",
-      key: "resetTaxDataConfirmation",
-      accept: () => {
-        this.appliedCriteriaData = [];
-        this.appliedCriteriaCriteriaMap = null;
-        this.appliedCriteriaIsDuplicate = null;
-        this.taxDescription = "";
+    if (this.mode == "edit") {
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetTaxDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear all the fields ?",
+        key: "resetTaxDataConfirmation",
+        accept: () => {
+          this.appliedCriteriaData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.taxDescription = "";
 
-        this.setCriteriaSharedComponent.resetSetCriteria();
-        this.setHeaderSidebarBtn();
-      },
-      reject: () => {
-        this.confirmationService.close;
-        this.setHeaderSidebarBtn();
-      },
-    });
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }
   }
 
   setHeaderSidebarBtn() {

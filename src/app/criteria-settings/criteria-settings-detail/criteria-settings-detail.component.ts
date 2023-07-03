@@ -210,7 +210,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.selectedFields.forEach((item) => {
       console.log(item);
       // this.criteriaTypeOp = item["criteriaType"];
-      item["orderID"] = "";
+      // item["orderID"] =  this.criteriaSettingtable[index]["operations"];
       if (!item["operationOption"]) {
         item["operationOption"] = item["operations"].split(",").map((opt) => {
           return { label: opt, value: opt };
@@ -253,14 +253,20 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       } else {
         item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
       }
+      if (index == -1) {
+        item["orderID"] = "";
+      } else {
+        item["orderID"] = this.criteriaSettingtable[index]["orderID"];
+      }
       // item["iSMandatory"] = this.criteriaSettingtable[index]["iSMandatory"];
       // item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
+      // item["orderID"] =  this.criteriaSettingtable[index]["orderID"];
     });
     this.criteriaSettingtable = [...this.selectedFields];
     this.orderIDArray = [];
   }
 
-  checkCriteriaDuplication() {
+  checkCriteriaDuplication(action) {
     this.coreService.displayLoadingScreen();
     this.criteriaSettingsService
       .getCriteriaSettingListing()
@@ -282,22 +288,24 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 this.confirmationService.confirm({
                   message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
-                    this.saveCriteriaFields();
+                    this.saveCriteriaFields(action);
                     console.log("Update it -- call save method API");
                   },
                   reject: () => {
-                    this.coreService.showWarningToast("Criteria saving revoked");
+                    this.coreService.showWarningToast(
+                      "Criteria saving revoked"
+                    );
                     console.log("Dont update it -- reject");
                   },
                 });
               }
             });
             if (!this.duplicateCriteria) {
-              this.saveCriteriaFields();
+              this.saveCriteriaFields(action);
             }
           } else {
             console.log(res["msg"]);
-            this.saveCriteriaFields();
+            this.saveCriteriaFields(action);
           }
         },
         (err) => {
@@ -312,7 +320,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       });
   }
 
-  saveCriteriaFields() {
+  saveCriteriaFields(action: any) {
     this.coreService.displayLoadingScreen();
     let data = {
       form: this.formCtrl.value.name,
@@ -334,6 +342,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           dependency.push(op["label"]);
         });
       }
+
       console.log("data", criteria);
       let criteriaDetails = {
         criteriaType: criteria["criteriaType"],
@@ -353,22 +362,41 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         if (res["msg"]) {
           if (this.mode == "clone") {
             if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Details updated Sucessfully."
+              );
             } else {
-              this.coreService.showSuccessToast("Criteria Clone created Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Clone created Sucessfully."
+              );
             }
           }
           if (this.mode == "add") {
             if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
+              this.coreService.showSuccessToast(
+                "Criteria Details updated Sucessfully."
+              );
             } else {
-              this.coreService.showSuccessToast("New criteria added Sucessfully.");
+              this.coreService.showSuccessToast(
+                "New criteria added Sucessfully."
+              );
             }
           }
 
-          this.mode == "edit" &&
-            this.coreService.showSuccessToast("Criteria Details updated Sucessfully.");
-          this.router.navigate(["navbar", "criteria-settings"]);
+          if (this.mode == "edit") {
+            this.coreService.showSuccessToast(
+              "Criteria Details updated Sucessfully."
+            );
+          }
+          if (action == "save") {
+            this.router.navigate([`navbar/criteria-settings`]);
+          } else if (action == "saveAddNew") {
+            // this.reset();
+            this.router.navigate([
+              `navbar/criteria-settings/add-criteria-settings/add`,
+            ]);
+            // this.coreService.removeLoadingScreen();
+          }
         }
       },
       (err) => {
@@ -397,7 +425,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       let index = this.orderIDArray.indexOf(orderID);
       console.log(index, this.criteriaSettingtable.indexOf(field), orderID);
       if (orderID <= 0) {
-        this.coreService.showWarningToast("Priority is required and should be atleast 1");
+        this.coreService.showWarningToast(
+          "Priority is required and should be atleast 1"
+        );
         this.orderIDArray[this.criteriaSettingtable.indexOf(field)] = orderID;
         this.invalidForSave = true;
       } else {
@@ -427,14 +457,18 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     );
   }
 
-  saveCriteriaSettings() {
+  saveCriteriaSettings(action) {
     let emptyOperation = false;
     let emptyPriority = false;
     let emptydependency = false;
+    let validGreaterthanPriority = false;
     this.criteriaSettingtable.forEach((element) => {
       console.log("element", element);
       if (element.operations == "") {
         emptyOperation = true;
+      }
+      if (element.orderID > this.criteriaSettingtable.length) {
+        validGreaterthanPriority = true;
       }
       if (element.orderID == 0 || element.orderID < 0) {
         emptyPriority = true;
@@ -447,17 +481,22 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.coreService.showWarningToast("Please select operation.");
     } else if (emptyPriority) {
       this.coreService.showWarningToast("Priority is required.");
-    }
-    else if (emptydependency) {
+    } else if (validGreaterthanPriority) {
+      let msg =
+        "Please enter priority " +
+        (this.criteriaSettingtable.length == 1
+          ? "as 1 only"
+          : "between 1 to " + this.criteriaSettingtable.length);
+      this.coreService.showWarningToast(msg);
+    } else if (emptydependency) {
       this.coreService.showWarningToast("Dependency is required.");
-    }
-    else {
-      console.log("passed validation",this.mode);
-      
-      if(this.mode == 'edit'){
-        this.saveCriteriaFields();
+    } else {
+      console.log("passed validation", this.mode);
+
+      if (this.mode == "edit") {
+        this.saveCriteriaFields(action);
       } else {
-        this.checkCriteriaDuplication();
+        this.checkCriteriaDuplication(action);
       }
     }
   }
@@ -536,7 +575,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           item["operations"] = this.criteriaSettingtable[i]["operations"];
           item["dependency"] = this.criteriaSettingtable[i]["dependency"];
           item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
-          console.log(item["iSMandatory"])
+          console.log(item["iSMandatory"]);
         });
         //this.criteriaSettingtable.forEach((item, i) => {
         // item["dependency"] = this.criteriaSettingtable[i]["dependency"];

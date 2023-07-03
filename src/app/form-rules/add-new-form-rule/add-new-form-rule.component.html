@@ -45,14 +45,17 @@
           class="p-button-raised"
           (click)="saveAddNewRule('save')"
         ></button>
-        <!-- <button
-            pButton
-            pRipple
-            type="button"
-            label="Save & Add New"
-            class="p-button-raised"
-            (click)="saveAddNewRoute('saveAndAddNew')"
-          ></button> -->
+        <button
+          pButton
+          pRipple
+          type="button"
+          [disabled]="
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+          "
+          label="Save & Add New"
+          class="p-button-raised"
+          (click)="saveAddNewRule('saveAndAddNew')"
+        ></button>
         <button
           pButton
           pRipple
@@ -133,149 +136,6 @@
       <div class="mt-1 addnewroute-table">
         <div class="ptable">
           <div class="appliedCriteriaDataTable">
-            <!-- earlier -->
-            <!-- <p-table
-                #dt
-                [columns]="formRulesDataCols"
-                [value]="formRulesData"
-                [rows]="10"
-                scrollHeight="315px"
-                columnResizeMode="expand"
-                [rowHover]="true"
-                [scrollable]="true"
-              >
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>Field Name</th>
-                    <th>Is Mandatory</th>
-                    <th>Is Enabled</th>
-                    <th>Is Visible</th>
-                    <th>Min Field Length/Max Length</th>
-                    <th>Default Values</th>
-                    <th>Regex</th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-rule>
-                  <tr>
-                    <td>
-                      <p-tableCheckbox [value]="rule"></p-tableCheckbox>
-                      {{ rule.fieldName }}
-                    </td>
-                    <td>
-                      <p-Checkbox [value]="rule.isMandatory"></p-Checkbox>
-                      <input
-                        #box
-                        type="checkbox"
-                        style="width: 20px"
-                        [value]="rule.isMandatory"
-                        [(ngModel)]="rule.isMandatory"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        #box
-                        type="checkbox"
-                        style="width: 20px"
-                        [value]="rule.isEnabled"
-                        [(ngModel)]="rule.isEnabled"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        #box
-                        type="checkbox"
-                        style="width: 20px"
-                        [value]="rule.isVisible"
-                        [(ngModel)]="rule.isVisible"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        [value]="rule.minFieldLengthMaxLength"
-                        [(ngModel)]="rule.minFieldLengthMaxLength"
-                        (ngModelChange)="onChange('minmax', rule)"
-                        pInputText
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        [value]="rule.defaultValues"
-                        (ngModelChange)="onChange('defaultValues', rule)"
-                        [maxlength]="rule.maxlengthDefaultValue"
-                        [(ngModel)]="rule.defaultValues"
-                        pInputText
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        [value]="rule.regex"
-                        [(ngModel)]="rule.regex"
-                        pInputText
-                      />
-                    </td>
-                  </tr>
-                </ng-template>
-              </p-table> -->
-            <!-- earlier end -->
-            <!-- then -->
-            <!-- <p-table
-              [value]="formRulesData"
-              [scrollable]="true"
-              scrollHeight="400px"
-              rowGroupMode="subheader"
-              groupRowsBy="groupBy"
-              [(selection)]="selectedProducts"
-              (onRowUnselect)="rowUnselect($event)"
-              dataKey="id"
-            >
-              <ng-template pTemplate="header">
-                <tr>
-                  <th
-                    style="min-width: 150px"
-                    *ngFor="let col of formRulesDataCols"
-                  >
-                    {{ col }}
-                  </th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="groupheader" let-customer>
-                <tr pRowGroupHeader>
-                  <td colspan="1">
-                    <p-checkbox
-                      name="group"
-                      [value]="customer.groupBy"
-                      [(ngModel)]="selectedGroups"
-                      (onChange)="grpSelect($event)"
-                    ></p-checkbox>
-                  </td>
-                  <td colspan="7">
-                    <span class="p-text-bold p-ml-2">{{
-                      customer.groupBy
-                    }}</span>
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template
-                pTemplate="body"
-                let-customer
-                let-rowIndex="rowIndex"
-              >
-                <tr>
-                  <td>
-                    <p-tableCheckbox [value]="customer"></p-tableCheckbox>
-                  </td>
-                  <ng-container *ngFor="let col of formRulesDataCols">
-                    <td style="min-width: 150px" *ngIf="col.length">
-                      {{ customer[col] }}
-                    </td>
-                  </ng-container>
-                </tr>
-              </ng-template>
-            </p-table> -->
-            <!-- then end -->
             <p-treeTable
               #treeTable
               [value]="applyCriteriaFormattedData"
@@ -446,7 +306,7 @@
 </div>
 
 <p-confirmDialog
-  key="taxSettingLinkedWarning"
+  key="formRulesLinkedWarning"
   class="linked-confirm confirm-popup"
   #cd
   icon="pi pi-exclamation-triangle"
@@ -464,7 +324,7 @@
 </p-confirmDialog>
 
 <p-confirmDialog
-  key="resetTaxDataConfirmation"
+  key="resetFormDataConfirmation"
   class="confirm-popup"
   #cd2
   icon="pi pi-exclamation-triangle"

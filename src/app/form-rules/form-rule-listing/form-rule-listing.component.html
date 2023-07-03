@@ -1,4 +1,4 @@
-<div class="visible-main-section" *ngIf="formRuleListingData">
+<div class="visible-main-section" *ngIf="formRuleData.length">
   <div class="pagetitle">
     <div class="infoicon">
       <i class="pi pi-info-circle"></i>
@@ -16,14 +16,14 @@
     </div>
   </div>
   <div class="ptable">
-    <!-- <p-card class="p-col-12" *ngIf="!formRuleListingData">
+    <!-- <p-card class="p-col-12" *ngIf="!formRuleData">
         {{ "noDataMsg" }}
       </p-card> -->
 
     <p-table
       #dt
       [columns]="cols"
-      [value]="formRuleListingData"
+      [value]="formRuleData"
       [paginator]="true"
       [rows]="10"
       [loading]="loading"
@@ -218,20 +218,20 @@
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!formRuleListingData && showNoDataFound">
+<div class="NorecordFound" *ngIf="!formRuleData.length && showNoDataFound">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>
   <div class="row">
     <div class="col-12">
-      <p>"No Record Found.Click Add New Form Rule To Add Record"</p>
+      <p>"No Record Found.Click Add New Rule To Add Record"</p>
       <button
         pButton
         pRipple
         type="button"
-        label="Add New Tax"
+        label="Add New Rule"
         class="p-button-raised"
-        (click)="addNewRule()"
+        (click)="addNewFormRule()"
       ></button>
     </div>
   </div>
@@ -240,7 +240,6 @@
   key="activeDeactiveStatus"
   class="status-confirm confirm-popup"
   #cd
-  icon="pi pi-exclamation-triangle"
   [closable]="false"
 >
   <p-footer>

@@ -161,7 +161,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.menuItems.push({
           label: menu,
           icon: this.getIcons(menu).icon,
-          // routerLink: this.getIcons(menu).routerLink,
+          routerLink: this.getIcons(menu).routerLink,
           // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
@@ -195,6 +195,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         case "Form Rules":
           item["routerLink"] = "/navbar/form-rules";
           item["routerLinkActiveOptions"] = { subset: true };
+          break;
+          
+        case "Group Settings":
+          item["routerLink"] = "/navbar/group-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Customer Profile":
+          item["routerLink"] = "/navbar/customer-profile";
+          // item["routerLinkActiveOptions"] = { subset: true};
           break;
       }
     });
@@ -261,6 +270,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Customer Profile":
         iconName = "beneficiary-icon";
+        matchUrls = [
+          "/navbar/customer-profile",
+        ];
+        routeName = "/navbar/customer-profile";
         break;
       case "Rate Setup":
         iconName = "rateSetup-icon";
@@ -291,7 +304,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Application Settings":
         iconName = "applicationsettings-icon";
-        matchUrls = ["/navbar/criteria-settings"];
+        matchUrls = ["/navbar/criteria-settings",
+        "/navbar/group-settings",
+      ];
         routeName = "/navbar/criteria-settings";
         break;
       case "User Roles Management":

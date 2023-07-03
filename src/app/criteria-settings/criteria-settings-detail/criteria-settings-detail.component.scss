@@ -125,9 +125,7 @@
   width: 147px;
   height: 35px;
 }
-:host ::ng-deep .criteria-view-table .p-datatable>.p-datatable-wrapper{
-  height: 325px;
-}
+
 :host ::ng-deep .p-datatable.p-datatable-hoverable-rows
   .p-datatable-tbody
   > tr:not(.p-highlight):hover {

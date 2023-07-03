@@ -476,6 +476,21 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   reset() {
+    if(this.mode == "edit"){
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } 
+    else {
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
     this.confirmationService.confirm({
@@ -494,6 +509,7 @@ export class AddnewrouteComponent2 implements OnInit {
         this.setHeaderSidebarBtn();
       },
     });
+  }
   }
 
   setHeaderSidebarBtn() {
@@ -516,7 +532,7 @@ export class AddnewrouteComponent2 implements OnInit {
       let isRequiredFields = false;
       this.appliedCriteriaData.forEach((element) => {
         element["routeDesc"] = this.routeDescription
-          ? this.routeDescription
+          ? (this.routeDescription.replace(/\s/g,'').length ? this.routeDescription : null)
           : null;
         function isNullValue(arr) {
           return arr.some((el) => el == null);
@@ -559,8 +575,9 @@ export class AddnewrouteComponent2 implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/bank-routing`]);
                 } else if (action == "saveAndAddNew") {
-                  this.reset();
-                  this.coreService.removeLoadingScreen();
+                  // this.reset();
+                  this.router.navigate([`navbar/bank-routing/addnewroute`]);
+                  // this.coreService.removeLoadingScreen();
                 }
               }
             },

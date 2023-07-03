@@ -230,7 +230,7 @@ export class BankRoutingComponent2 implements OnInit {
         type +
         ` the Bank Route: ${data["routeCode"]}?`;
     } else {
-      completeMsg =
+      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
         `Do you wish to ` + type + ` the Bank Route: ${data["routeCode"]}?`;
     }
     this.confirmationService.confirm({

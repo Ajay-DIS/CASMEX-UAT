@@ -1170,7 +1170,10 @@ export class AddNewFormRuleComponent implements OnInit {
       finalObj[k] = fieldArr;
     });
 
-    if (this.ruleDescription.replace(/\s+/g, "").length == 0) {
+    if (
+      !this.ruleDescription ||
+      this.ruleDescription.replace(/\s+/g, "").length == 0
+    ) {
       isRequiredFields = true;
     }
 
@@ -1235,8 +1238,8 @@ export class AddNewFormRuleComponent implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/form-rules`]);
                 } else if (action == "saveAndAddNew") {
-                  this.reset();
-                  this.coreService.removeLoadingScreen();
+                  this.router.navigate([`navbar/form-rules/addnewformrule`]);
+                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
@@ -1273,25 +1276,40 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   reset() {
-    this.coreService.setSidebarBtnFixedStyle(false);
-    this.coreService.setHeaderStickyStyle(false);
-    this.confirmationService.confirm({
-      message: "Are you sure, you want to clear all the fields ?",
-      key: "resetTaxDataConfirmation",
-      accept: () => {
-        this.applyCriteriaFormattedData = [];
-        this.appliedCriteriaCriteriaMap = null;
-        this.appliedCriteriaIsDuplicate = null;
-        this.ruleDescription = "";
+    if (this.mode == "edit") {
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetFormDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear all the fields ?",
+        key: "resetFormDataConfirmation",
+        accept: () => {
+          this.applyCriteriaFormattedData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.ruleDescription = "";
 
-        this.setCriteriaSharedComponent.resetSetCriteria();
-        this.setHeaderSidebarBtn();
-      },
-      reject: () => {
-        this.confirmationService.close;
-        this.setHeaderSidebarBtn();
-      },
-    });
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }
   }
 
   setHeaderSidebarBtn() {
