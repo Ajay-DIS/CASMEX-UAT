@@ -311,7 +311,18 @@
               >
                 <tr>
                   <ng-container *ngFor="let col of columns; let i = index">
-                    <td [style]="setStyle(col, i)">
+                    <td
+                      [style]="setStyle(col, i)"
+                      [pTooltip]="
+                        col.type == 'input' &&
+                        col.field == 'defaultValue' &&
+                        (rowData['isValidLength'] == false ||
+                          rowData['isValidDefValue'] == false)
+                          ? defValueInpTooltip
+                          : ''
+                      "
+                      tooltipPosition="bottom"
+                    >
                       <p-treeTableToggler
                         [rowNode]="rowNode"
                         *ngIf="i == 0"
@@ -331,7 +342,59 @@
                           {{ rowData[col.field] }}
                         </div>
                         <input
-                          *ngIf="col.type == 'input'"
+                          #validLengthInp
+                          *ngIf="
+                            col.type == 'input' && col.field == 'validLength'
+                          "
+                          class="w-100"
+                          type="text"
+                          pInputText
+                          [placeholder]="
+                            rowData[col.field] ? rowData[col.field] : ''
+                          "
+                          [(ngModel)]="rowData[col.field]"
+                          [pTooltip]="
+                            col.type == 'input' &&
+                            col.field == 'validLength' &&
+                            rowData['isValidLength'] == false
+                              ? minMaxInpTooltip
+                              : ''
+                          "
+                          tooltipPosition="bottom"
+                          (ngModelChange)="
+                            minMaxValidation(
+                              $event,
+                              rowData,
+                              validLengthInp,
+                              columns[i + 1].field,
+                              defValueInp
+                            )
+                          "
+                        />
+                        <input
+                          #defValueInp
+                          *ngIf="
+                            col.type == 'input' && col.field == 'defaultValue'
+                          "
+                          class="w-100"
+                          type="text"
+                          pInputText
+                          [placeholder]="
+                            rowData[col.field] ? rowData[col.field] : ''
+                          "
+                          [(ngModel)]="rowData[col.field]"
+                          (ngModelChange)="
+                            defaultValueValidation(
+                              $event,
+                              rowData,
+                              defValueInp,
+                              columns[i - 1].field
+                            )
+                          "
+                          [disabled]="rowData['isValidLength'] == false"
+                        />
+                        <input
+                          *ngIf="col.type == 'input' && col.field == 'regex'"
                           class="w-100"
                           type="text"
                           pInputText
@@ -340,6 +403,7 @@
                           "
                           [(ngModel)]="rowData[col.field]"
                         />
+
                         <input
                           *ngIf="
                             col.type == 'lcySlabFrom' ||

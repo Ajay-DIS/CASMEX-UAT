@@ -21,6 +21,8 @@ export class AddNewFormRuleComponent implements OnInit {
   primaryColor = "var(--primary-color)";
   @ViewChild("treeTable") treeTable: TreeTable;
 
+  validLengthRegex: RegExp = /^[^<>*!]+$/;
+
   userId = "";
   ruleID = "";
   mode = "add";
@@ -166,6 +168,9 @@ export class AddNewFormRuleComponent implements OnInit {
     { field: "defaultValue", header: "Default Values", type: "input" },
     { field: "regex", header: "Regex", type: "input" },
   ];
+
+  defValueInpTooltip = "";
+  minMaxInpTooltip = "";
 
   applyCriteriaResponse: any = {};
 
@@ -1117,6 +1122,10 @@ export class AddNewFormRuleComponent implements OnInit {
     console.log(this.applyCriteriaResponse);
     console.log(this.editFromRulesApiData);
 
+    let isRequiredFields = false;
+    let invalidDefValue = false;
+    let invalidLengthValue = false;
+
     let payloadData;
 
     if (this.applyCriteriaResponse["data"]) {
@@ -1143,135 +1152,107 @@ export class AddNewFormRuleComponent implements OnInit {
 
       fieldArr.forEach((child) => {
         delete child["parent"];
+
         if (child["partialSelected"] == false) {
           child["data"]["ruleSelected"] = true;
         } else {
           child["data"]["ruleSelected"] = false;
+        }
+        if (child["data"]["isValidLength"] == false) {
+          invalidLengthValue = true;
+        }
+
+        if (child["data"]["isValidDefValue"] == false) {
+          invalidDefValue = true;
         }
       });
 
       finalObj[k] = fieldArr;
     });
 
-    console.log([finalObj]);
-
-    // let groupObject = {};
-
-    // for (let dataObj of copyApplyCriteriaFormattedData) {
-    //   if (groupObject[dataObj.data.key]) {
-    //     groupObject[dataObj.data.key].push(dataObj);
-    //   } else {
-    //     groupObject[dataObj.data.key] = [dataObj];
-    //   }
-    // }
-
-    // console.log(groupObject);
-    // console.log(Object.values(groupObject));
-
-    // let groupsArray: any[] = [];
-    // Object.values(groupObject).forEach((col: any) => {
-    //   let groupObj: any = {};
-    //   col.forEach((c: any) => {
-    //     c["children"].forEach((childData: any) => {
-    //       if (childData["partialSelected"] == false) {
-    //         childData["data"]["ruleSelected"] = true;
-    //       } else {
-    //         childData["data"]["ruleSelected"] = false;
-    //       }
-    //       // delete childData["partialSelected"];
-    //       // delete childData["parent"];
-    //     });
-    //     groupObj[c["data"]["fieldName"]] = c["children"];
-    //   });
-    //   groupsArray.push(groupObj);
-    // });
-
-    // console.log(groupsArray);
-
-    payloadData.data = {};
-
-    payloadData["data"]["dataOperation"] = [finalObj];
-    payloadData["formRuleCode"] = this.formRuleCode;
-    payloadData["formRuleDesc"] = this.ruleDescription
-      ? this.ruleDescription
-      : "";
-    payloadData["userId"] = this.userId;
-    let str = this.stringify(payloadData);
-    str = str.replace(/true/g, '"Y"');
-    str = str.replace(/false/g, '"N"');
-    console.log(JSON.parse(str));
-    payloadData = JSON.parse(str);
-    let copyPayload = JSON.parse(this.stringify(payloadData));
-    if (copyPayload["duplicate"] == "N") {
-      payloadData["duplicate"] = false;
-    } else if (copyPayload["duplicate"] == "Y") {
-      payloadData["duplicate"] = true;
+    if (this.ruleDescription.replace(/\s+/g, "").length == 0) {
+      isRequiredFields = true;
     }
-    console.log(payloadData);
 
-    if (
-      this.mode != "clone" ||
-      (this.mode == "clone" && this.isApplyCriteriaClicked)
-    ) {
-      this.coreService.displayLoadingScreen();
-      // let isRequiredFields = false;
-      // let invalidTaxAmount = false;
-      // this.appliedCriteriaData.forEach((element) => {
-      //   if (element["invalidTaxAmount"]) {
-      //     invalidTaxAmount = true;
-      //   }
-      //   element["taxCodeDesc"] = this.taxDescription
-      //     ? this.taxDescription
-      //     : null;
-      //   function isNullValue(arr) {
-      //     return arr.some((el) => el == null);
-      //   }
-      //   console.log("::::", element);
-      //   if (isNullValue(Object.values(element))) {
-      //     isRequiredFields = true;
-      //   }
-      // });
-      // if (isRequiredFields) {
-      //   this.coreService.removeLoadingScreen();
-      //   this.coreService.showWarningToast("Please Fill required fields.");
-      // } else if (invalidTaxAmount) {
-      //   this.coreService.removeLoadingScreen();
-      //   this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
-      // } else {
-      // this.decodeSelectedOptions();
-      let service;
-      if (this.mode == "edit") {
-        service = this.formRuleService.updateFormRule(this.userId, payloadData);
-        console.log("EDIT MODE - UPDATE form SERVICE");
-      } else {
-        console.log("ADD MODE - ADD NEW form SERVICE");
-        service = this.formRuleService.addNewFormRule(payloadData);
-      }
-
-      if (service) {
-        service.subscribe(
-          (res) => {
-            console.log(res);
-            if (res["msg"]) {
-              this.coreService.showSuccessToast(res.msg);
-              if (action == "save") {
-                this.router.navigate([`navbar/form-rules`]);
-              } else if (action == "saveAndAddNew") {
-                this.reset();
-                this.coreService.removeLoadingScreen();
-              }
-            }
-          },
-          (err) => {
-            this.coreService.removeLoadingScreen();
-            console.log("error in saveAddNewFormRule", err);
-          }
-        );
-        // }
-      }
+    if (isRequiredFields) {
+      this.coreService.removeLoadingScreen();
+      this.coreService.showWarningToast("Please Fill required fields.");
+    } else if (invalidLengthValue) {
+      this.coreService.removeLoadingScreen();
+      this.coreService.showWarningToast(
+        "Some Min/Max Length fields are invalid."
+      );
+    } else if (invalidDefValue) {
+      this.coreService.removeLoadingScreen();
+      this.coreService.showWarningToast(
+        "Some Default values fields are invalid."
+      );
     } else {
-      this.coreService.showWarningToast("Applied criteria already exists.");
+      payloadData.data = {};
+
+      payloadData["data"]["dataOperation"] = [finalObj];
+      payloadData["formRuleCode"] = this.formRuleCode;
+      payloadData["formRuleDesc"] = this.ruleDescription
+        ? this.ruleDescription
+        : "";
+      payloadData["userId"] = this.userId;
+      let str = this.stringify(payloadData);
+      str = str.replace(/true/g, '"Y"');
+      str = str.replace(/false/g, '"N"');
+      console.log(JSON.parse(str));
+      payloadData = JSON.parse(str);
+      let copyPayload = JSON.parse(this.stringify(payloadData));
+      if (copyPayload["duplicate"] == "N") {
+        payloadData["duplicate"] = false;
+      } else if (copyPayload["duplicate"] == "Y") {
+        payloadData["duplicate"] = true;
+      }
+      console.log(payloadData);
+
+      if (
+        this.mode != "clone" ||
+        (this.mode == "clone" && this.isApplyCriteriaClicked)
+      ) {
+        this.coreService.displayLoadingScreen();
+        let service;
+        if (this.mode == "edit") {
+          service = this.formRuleService.updateFormRule(
+            this.userId,
+            payloadData
+          );
+          console.log("EDIT MODE - UPDATE form SERVICE");
+        } else {
+          console.log("ADD MODE - ADD NEW form SERVICE");
+          service = this.formRuleService.addNewFormRule(payloadData);
+        }
+
+        if (service) {
+          service.subscribe(
+            (res) => {
+              console.log(res);
+              if (res["msg"]) {
+                this.coreService.showSuccessToast(res.msg);
+                if (action == "save") {
+                  this.router.navigate([`navbar/form-rules`]);
+                } else if (action == "saveAndAddNew") {
+                  this.reset();
+                  this.coreService.removeLoadingScreen();
+                }
+              }
+            },
+            (err) => {
+              this.coreService.removeLoadingScreen();
+              console.log("error in saveAddNewFormRule", err);
+            }
+          );
+          // }
+        }
+      } else {
+        this.coreService.showWarningToast("Applied criteria already exists.");
+      }
     }
+
+    console.log([finalObj]);
   }
 
   stringify(obj) {
@@ -1298,7 +1279,7 @@ export class AddNewFormRuleComponent implements OnInit {
       message: "Are you sure, you want to clear all the fields ?",
       key: "resetTaxDataConfirmation",
       accept: () => {
-        this.appliedCriteriaData = [];
+        this.applyCriteriaFormattedData = [];
         this.appliedCriteriaCriteriaMap = null;
         this.appliedCriteriaIsDuplicate = null;
         this.ruleDescription = "";
@@ -1348,6 +1329,105 @@ export class AddNewFormRuleComponent implements OnInit {
         (option) => option["codeName"] == data["setAs"]
       )[0]["code"];
     });
+  }
+
+  minMaxValidation(
+    e: any,
+    rowData: any,
+    validLengthInp: any,
+    defaultValueCol: any
+  ) {
+    console.log(rowData, e, validLengthInp);
+    const pattern = /^(\d+)-(\d+)$/;
+    rowData["isValidLength"] = null;
+
+    rowData[defaultValueCol] = "";
+    const defValueInp = validLengthInp
+      .closest("td")
+      .nextSibling.nextSibling.querySelector("input");
+    defValueInp.classList.remove("inputError");
+
+    if (e.length == 0) {
+      this.minMaxInpTooltip = "";
+      validLengthInp.classList.remove("inputError");
+      rowData["isValidLength"] = null;
+      return;
+    }
+
+    const match = e.match(pattern);
+    console.log(validLengthInp.classList);
+    if (match) {
+      const lesserNumber = parseInt(match[1]);
+      const bigNumber = parseInt(match[2]);
+
+      if (bigNumber > lesserNumber) {
+        console.log("Valid match!");
+        this.minMaxInpTooltip = "";
+        validLengthInp.classList.remove("inputError");
+        rowData["isValidLength"] = true;
+      } else {
+        this.minMaxInpTooltip = "{min-length} should be less than {max-length}";
+        rowData["isValidLength"] = false;
+        validLengthInp.classList.add("inputError");
+        console.log(
+          "Invalid match: big number is not greater than lesser number."
+        );
+      }
+    } else {
+      this.minMaxInpTooltip =
+        "Please enter only number in this format: {min-length}-{max-length}";
+
+      validLengthInp.classList.add("inputError");
+      rowData["isValidLength"] = false;
+      console.log("No match found.");
+    }
+
+    if (rowData["isValidLength"] == false) {
+      this.defValueInpTooltip = "Please set min max length correctly";
+    } else {
+      this.defValueInpTooltip = "";
+    }
+  }
+
+  defaultValueValidation(
+    e: any,
+    rowData: any,
+    defValueInp: any,
+    minMaxCol: any
+  ) {
+    console.log(e);
+    console.log(rowData);
+    rowData["isValidDefValue"] = null;
+
+    console.log(rowData[minMaxCol]);
+    console.log(e.length);
+
+    if (e.length == 0) {
+      rowData["isValidDefValue"] = null;
+      defValueInp.classList.remove("inputError");
+      return;
+    } else {
+      if (rowData[minMaxCol]) {
+        const min = rowData[minMaxCol].split("-")[0];
+        const max = rowData[minMaxCol].split("-")[1];
+        if (e.length > max || e.length < min) {
+          rowData["isValidDefValue"] = false;
+          defValueInp.classList.add("inputError");
+        } else {
+          rowData["isValidDefValue"] = true;
+          defValueInp.classList.remove("inputError");
+        }
+      } else {
+        rowData["isValidDefValue"] = true;
+        defValueInp.classList.remove("inputError");
+      }
+
+      if (rowData["isValidDefValue"] == false) {
+        this.defValueInpTooltip = "Default value is not in specified range";
+      } else {
+        this.defValueInpTooltip = "";
+      }
+    }
   }
 
   // suresh Work start -->
