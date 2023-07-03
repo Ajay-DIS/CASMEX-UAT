@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CoreService } from '../core.service';
 
 @Component({
   selector: 'app-customer-profile',
@@ -8,7 +9,8 @@ import { Router } from '@angular/router';
 })
 export class CustomerProfileComponent implements OnInit {
 
-  constructor(private router: Router,) { }
+  constructor(private router: Router,private coreService: CoreService,
+    private route: ActivatedRoute,) { }
 
   customerMap = {
     userType: "", uniqueIdentifier: "", uniqueIdentifierValue: ""
@@ -31,9 +33,14 @@ export class CustomerProfileComponent implements OnInit {
   }
 // needs to check bind issue 
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
     this.customerInfoMeta.tblCustomerDataArray = [{
       customerCode: 1, customerFullName: "Suresh A", nationality: "Indian", mobileNumber: "9876543210", idType: "PID", idNumber:"12343323", totalBenificiary: 20  
     }]
+    this.coreService.removeLoadingScreen();
   }  
 
   onChange(section: any, controlId: any, controllType: any, event) {

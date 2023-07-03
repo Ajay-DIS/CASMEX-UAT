@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CoreService } from 'src/app/core.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { CoreService } from 'src/app/core.service';
 export class AddCustomerComponent implements OnInit {
 
   Select:"Select"
-  constructor(private coreService: CoreService) { }
+  constructor(private coreService: CoreService,private route: ActivatedRoute,) { }
   minDate = new Date();
   customerInfo = {
     firstName: "",middleName:"",lastName:"" ,gender:"", dateOfBirth: "",countryOfBirth:""
@@ -36,6 +37,11 @@ export class AddCustomerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
+    this.coreService.removeLoadingScreen();
   }
 
   onChange(section, controlId, controlType, event) {

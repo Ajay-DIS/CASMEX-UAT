@@ -95,6 +95,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     console.log(this.currRoute);
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
+      console.log(this.breadcrumbsItems)
     });
 
     this.coreService.userActionsObs.subscribe((opt) => {
@@ -203,7 +204,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           break;
         case "Customer Profile":
           item["routerLink"] = "/navbar/customer-profile";
-          // item["routerLinkActiveOptions"] = { subset: true};
+          item["routerLinkActiveOptions"] = { subset: true};
           break;
       }
     });
