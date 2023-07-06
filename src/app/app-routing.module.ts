@@ -17,6 +17,8 @@ import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-ru
 import { GroupSettingsComponent } from "./group-settings/group-settings.component";
 import { CustomerProfileComponent } from "./customer-profile/customer-profile.component";
 import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
+import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
+import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 
 const routes: Routes = [
@@ -88,6 +90,44 @@ const routes: Routes = [
           },
           { label: "Criteria", routerLink: "criteria-settings" },
           { label: "Edit Criteria settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "search-settings",
+        component: SearchListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "search-settings" },
+          { label: "Search settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "search-settings/add-search-settings/add",
+        component: AddNewSearchComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Application Settings",
+            routerLink: "../navbar/search-settings",
+          },
+          { label: "Search settings", routerLink: "search-settings" },
+          { label: "Add Search settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "search-settings/add-search-settings/:id/edit",
+        component: AddNewSearchComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Application Settings",
+            routerLink: "../navbar/search-settings",
+          },
+          { label: "Search settings", routerLink: "search-settings" },
+          { label: "Edit Search settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -245,7 +285,10 @@ const routes: Routes = [
         component: CustomerProfileComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },
-          { label: "Customer Profile", routerLink: "../navbar/customer-profile" },
+          {
+            label: "Customer Profile",
+            routerLink: "../navbar/customer-profile",
+          },
         ],
         canActivate: [AuthGuard],
       },
@@ -254,11 +297,14 @@ const routes: Routes = [
         component: AddCustomerComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },
-          { label: "Customer Profile", routerLink:  "../navbar/customer-profile"  },
+          {
+            label: "Customer Profile",
+            routerLink: "../navbar/customer-profile",
+          },
           { label: "Add Customer", routerLink: "" },
         ],
         canActivate: [AuthGuard],
-      }
+      },
     ],
   },
 ];

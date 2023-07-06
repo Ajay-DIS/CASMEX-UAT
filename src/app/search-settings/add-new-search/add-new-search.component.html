@@ -1,0 +1,266 @@
+<div class="visible-main-section">
+  <div class="details-page-card">
+    <div class="d-flex mx-3" style="justify-content: space-between">
+      <p class="description-text">
+        <!-- <img height="35px" src="../assets/description.svg" alt="" /> -->
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="41"
+          height="35"
+          viewBox="0 0 41 41"
+        >
+          <g
+            id="Group_2248"
+            data-name="Group 2248"
+            transform="translate(-341 -138)"
+          >
+            <circle
+              id="Ellipse_130"
+              data-name="Ellipse 130"
+              cx="20.5"
+              cy="20.5"
+              r="20.5"
+              transform="translate(341 138)"
+              [attr.fill]="primaryColor"
+            />
+            <path
+              id="_52_Note_Basic_Description"
+              data-name="52  Note, Basic, Description"
+              d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+              transform="translate(348.213 145.945)"
+              fill="#fff"
+            />
+          </g>
+        </svg>
+        Search settings are parameters or fields that are used to select or
+        return a resultant value based on selected form...
+      </p>
+      <div class="buttons-section">
+        <button
+          pButton
+          pRipple
+          type="button"
+          [disabled]="invalidForSave || !searchSettingtable.length"
+          label="Save"
+          (click)="saveCriteriaSettings('save')"
+          class="p-button-raised"
+        ></button>
+        <!-- <button
+          pButton
+          pRipple
+          type="button"
+          [disabled]="invalidForSave || !searchSettingtable.length"
+          label="Save & Add New"
+          (click)="saveCriteriaSettings('saveAddNew')"
+          class="p-button-raised"
+        ></button> -->
+        <button
+          pButton
+          pRipple
+          type="button"
+          [disabled]="false"
+          label="Clear"
+          class="p-button-warning"
+          (click)="reset()"
+        ></button>
+      </div>
+    </div>
+    <div [formGroup]="selectAppForm" class="select-form-application m-2">
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="application"
+          >Application</label
+        >
+        <p-dropdown
+          name="application"
+          inputId="application"
+          [options]="searchApplicationOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="applications"
+          (onChange)="onAppChange($event)"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="module">Module</label>
+        <p-dropdown
+          name="module"
+          inputId="module"
+          [options]="searchModuleOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="modules"
+          (onChange)="onModuleChange()"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="form">Form</label>
+        <p-dropdown
+          name="form"
+          inputId="form"
+          [options]="searchFormsOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="forms"
+          (onChange)="executeQueries()"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div class="drag-criteria-fields m-3">
+      <div class="d-flex mb-2">
+        <div class="detail-page-section-heading list-heading w-50">
+          Select Fields
+        </div>
+        <div
+          class="detail-page-section-heading list-heading w-50"
+          style="margin-left: 6rem"
+        >
+          Selected Fields
+        </div>
+      </div>
+      <p-pickList
+        [source]="selectFields"
+        [target]="selectedFields"
+        [showSourceControls]="false"
+        [showTargetControls]="false"
+        [dragdrop]="true"
+      >
+        <ng-template let-field pTemplate="item">
+          <div class="field-item">
+            {{ field.displayName }}
+          </div>
+        </ng-template>
+      </p-pickList>
+    </div>
+    <div
+      class="form-app-heading-execute-btn d-flex mx-3"
+      style="justify-content: flex-end"
+    >
+      <button
+        pButton
+        pRipple
+        type="button"
+        [disabled]="!selectedFields.length"
+        label="Execute"
+        class="p-button-raised"
+        (click)="executeBtnClick()"
+      ></button>
+    </div>
+
+    <!-- Suresh start -->
+    <div class="application-table">
+      <div class="application-header" *ngIf="searchSettingtable.length">
+        Application: {{ appCtrl.value && appCtrl.value.name }} | Module:
+        {{ moduleCtrl.value && moduleCtrl.value.name }} | Form:
+        {{ formCtrl.value && formCtrl.value.name }}
+      </div>
+      <div class="application-ptable" *ngIf="searchSettingtable.length">
+        <p-table
+          #dt
+          [value]="searchSettingtable"
+          class="criteria-view-table"
+          [rowHover]="true"
+          [scrollable]="true"
+          scrollHeight="360px"
+          [style]="{ width: '100%' }"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th
+                *ngFor="let col of cols; let i = index"
+                [style.width]="col.width"
+              >
+                {{ col.header }}
+              </th>
+            </tr>
+            <tr class="search-row">
+              <th *ngFor="let col of cols; let i = index">
+                <span
+                  *ngIf="
+                    !(col.field == 'displayOrder' || col.field == 'operator')
+                  "
+                  class="p-input-icon-left"
+                  [style.width]="'120px'"
+                >
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="text"
+                    class="p-inputtext table-search"
+                    placeholder="Search"
+                    (input)="
+                      dt.filter($event.target.value, col.field, 'contains')
+                    "
+                  />
+                </span>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-product
+            let-col="settingsCol"
+            let-rowIndex="rowIndex"
+          >
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  placeholder="{{ product.fieldName }}"
+                  [disabled]="true"
+                />
+              </td>
+              <td>
+                <input
+                  type="text"
+                  placeholder="{{ product.displayName }}"
+                  [disabled]="true"
+                />
+              </td>
+              <td>
+                <p-multiSelect
+                  id="operationsmulti"
+                  [options]="product.operationOption"
+                  [(ngModel)]="product.operations"
+                  defaultLabel="Select"
+                  [showHeader]="false"
+                  (onChange)="
+                    bindSelectedOperations(product.operations, rowIndex)
+                  "
+                  optionLabel="label"
+                  [maxSelectedLabels]="5"
+                  [appendTo]="'body'"
+                ></p-multiSelect>
+              </td>
+              <td>
+                <input
+                  type="number"
+                  min="1"
+                  [value]="product.orderID"
+                  [(ngModel)]="product.orderID"
+                  placeholder="{{ product.orderID }}"
+                  [disabled]="false"
+                  (blur)="criteriaPriorityValidation($event, product)"
+                  style="
+                    width: 90px;
+                    margin-left: 10px;
+                    background-color: #f4f6fa;
+                  "
+                />
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="cols.length">No Data found.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+
+    <!-- Suresh end -->
+  </div>
+</div>
+<p-confirmDialog
+  class="duplicateSearchConfirm"
+  [style]="{ width: '50vw' }"
+></p-confirmDialog>

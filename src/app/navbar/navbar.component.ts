@@ -95,7 +95,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     console.log(this.currRoute);
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
-      console.log(this.breadcrumbsItems)
+      console.log(this.breadcrumbsItems);
     });
 
     this.coreService.userActionsObs.subscribe((opt) => {
@@ -187,6 +187,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/criteria-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Search Settings":
+          item["routerLink"] = "/navbar/search-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
 
         case "Tax":
           item["routerLink"] = "/navbar/tax-settings";
@@ -197,7 +201,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/form-rules";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-          
+
         case "Group Settings":
           item["routerLink"] = "/navbar/group-settings";
           item["routerLinkActiveOptions"] = { subset: true };
@@ -208,7 +212,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           break;
         case "Customer Profile":
           item["routerLink"] = "/navbar/customer-profile";
-          item["routerLinkActiveOptions"] = { subset: true};
+          item["routerLinkActiveOptions"] = { subset: true };
           break;
       }
     });
@@ -275,9 +279,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Customer Profile":
         iconName = "beneficiary-icon";
-        matchUrls = [
-          "/navbar/customer-profile",
-        ];
+        matchUrls = ["/navbar/customer-profile"];
         routeName = "/navbar/customer-profile";
         break;
       case "Rate Setup":
@@ -309,10 +311,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Application Settings":
         iconName = "applicationsettings-icon";
-        matchUrls = ["/navbar/criteria-settings",
-        "/navbar/group-settings",
-        "/navbar/custom-fields",
-      ];
+        matchUrls = [
+          "/navbar/criteria-settings",
+          "/navbar/group-settings",
+          "/navbar/search-settings",
+          "/navbar/custom-fields",
+        ];
         routeName = "/navbar/criteria-settings";
         break;
       case "User Roles Management":

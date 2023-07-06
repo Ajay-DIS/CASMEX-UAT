@@ -169,6 +169,8 @@ export class AddNewFormRuleComponent implements OnInit {
     { field: "regex", header: "Regex", type: "input" },
   ];
 
+  defCols = this.cols.map((col) => col.field);
+
   defValueInpTooltip = "";
   minMaxInpTooltip = "";
 
@@ -297,6 +299,8 @@ export class AddNewFormRuleComponent implements OnInit {
             let lcyOprFieldInserted = false;
             let lcySlabFieldInserted = false;
 
+            let countryCol = {};
+
             this.applyCriteriaDataTableColumns = [...this.cols];
             crtfields
               .slice()
@@ -323,6 +327,8 @@ export class AddNewFormRuleComponent implements OnInit {
                   formatCrt = crt.replace(/[=]/g, "");
                   opr = "=";
                 }
+
+                console.log(crt, formatCrt.split("  ")[0]);
 
                 if (formatCrt.split("  ")[0] == "LCY Amount") {
                   isLcyOprFieldPresent = true;
@@ -358,7 +364,9 @@ export class AddNewFormRuleComponent implements OnInit {
                     type: "lcySlabTo",
                   });
                   lcySlabFieldInserted = true;
-                } else if (
+                }
+
+                if (
                   formatCrt.split("  ")[0] == "LCY Amount" &&
                   !lcyOprFieldInserted
                 ) {
@@ -370,14 +378,29 @@ export class AddNewFormRuleComponent implements OnInit {
                   });
                   lcyOprFieldInserted = true;
                 } else {
-                  this.applyCriteriaDataTableColumns.unshift({
-                    field: formatCrt.split("  ")[0],
-                    header: formatCrt.split("  ")[0],
-                    value: formatCrt.split("  ")[1],
-                    type: "string",
-                  });
+                  console.log(formatCrt.split("  ")[0]);
+                  if (formatCrt.split("  ")[0] == "Country") {
+                    countryCol = {
+                      field: formatCrt.split("  ")[0],
+                      header: formatCrt.split("  ")[0],
+                      value: formatCrt.split("  ")[1],
+                      type: "string",
+                    };
+                  } else {
+                    this.applyCriteriaDataTableColumns.unshift({
+                      field: formatCrt.split("  ")[0],
+                      header: formatCrt.split("  ")[0],
+                      value: formatCrt.split("  ")[1],
+                      type: "string",
+                    });
+                  }
                 }
               });
+
+            console.log(countryCol);
+            if (Object.keys(countryCol).length) {
+              this.applyCriteriaDataTableColumns.unshift(countryCol);
+            }
 
             this.applyCriteriaDataTableColumns.forEach((col) => {
               res["data"]["dataOperation"].forEach((data) => {
@@ -856,6 +879,8 @@ export class AddNewFormRuleComponent implements OnInit {
               let lcyOprFieldInserted = false;
               let lcySlabFieldInserted = false;
 
+              let countryCol = {};
+
               this.applyCriteriaDataTableColumns = [...this.cols];
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               crtfields
@@ -903,15 +928,27 @@ export class AddNewFormRuleComponent implements OnInit {
                       lcyOprFieldInserted = true;
                     }
                   } else {
-                    this.applyCriteriaDataTableColumns.unshift({
-                      field: formatCrt.split("  ")[0],
-                      header: formatCrt.split("  ")[0],
-                      value: formatCrt.split("  ")[1],
-                      type: "string",
-                    });
+                    if (formatCrt.split("  ")[0] == "Country") {
+                      countryCol = {
+                        field: formatCrt.split("  ")[0],
+                        header: formatCrt.split("  ")[0],
+                        value: formatCrt.split("  ")[1],
+                        type: "string",
+                      };
+                    } else {
+                      this.applyCriteriaDataTableColumns.unshift({
+                        field: formatCrt.split("  ")[0],
+                        header: formatCrt.split("  ")[0],
+                        value: formatCrt.split("  ")[1],
+                        type: "string",
+                      });
+                    }
                   }
                 });
 
+              if (Object.keys(countryCol).length) {
+                this.applyCriteriaDataTableColumns.unshift(countryCol);
+              }
               let completeData = [];
               console.log(res);
               Object.keys(res["labelData"]["label"]).forEach((k) => {
@@ -1066,7 +1103,7 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   setStyle(col: any, i: any) {
-    let padLeft = i == 0 ? "0px !important" : "";
+    let padLeft = i == 0 ? "8px !important" : "";
     let width = col.type == "lcyOpr" ? "120px !important" : "";
 
     return `padding-left : ${padLeft};`;

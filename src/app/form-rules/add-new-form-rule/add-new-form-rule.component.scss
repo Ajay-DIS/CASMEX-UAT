@@ -42,8 +42,49 @@
   display: none !important;
 }
 .appliedCriteriaDataTable ::ng-deep .p-checkbox .p-checkbox-box {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+}
+.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody > tr.groupHeading {
+  position: relative;
+  background: #eaedf4;
+}
+.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcyOpr {
+  width: 100% !important;
+  max-width: 125px;
+  font-size: 11px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcySlab {
+  width: 86px !important;
+  max-width: 86px;
+}
+.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody > tr.groupHeading td {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 32px !important;
+  color: var(--primary-color);
+}
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-treetable-tbody
+  > tr.groupHeading
+  td.dataCol {
+  position: absolute;
+  left: 25px;
+  top: 7px;
+}
+
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-treetable-tbody
+  > tr
+  > td
+  p-treetablecheckbox
+  .p-checkbox {
+  margin-right: 0.3rem;
 }
 
 // suresh Work start -->
