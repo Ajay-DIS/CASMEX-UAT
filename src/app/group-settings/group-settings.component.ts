@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GroupServiceService } from './group-service.service';
+import { ActivatedRoute } from '@angular/router';
+import { CoreService } from '../core.service';
 
 @Component({
   selector: 'app-group-settings',
@@ -14,11 +16,14 @@ export class GroupSettingsComponent implements OnInit {
 
   criteriaMapDes = "";
 
-  constructor(private groupService: GroupServiceService,) { }
+  constructor(private groupService: GroupServiceService,private route: ActivatedRoute,private coreService: CoreService,) { }
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.getRoutingapiData();
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
   }
 
   Apply(){

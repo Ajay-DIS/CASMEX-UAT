@@ -63,6 +63,7 @@ import { PanelModule } from "primeng/panel";
 import { TabViewModule } from "primeng/tabview";
 import { CalendarModule } from "primeng/calendar";
 import { FileUploadModule } from "primeng/fileupload";
+import { CustomFieldsComponent } from './custom-fields/custom-fields.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -89,6 +90,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     GroupSettingsComponent,
     CustomerProfileComponent,
     AddCustomerComponent,
+    CustomFieldsComponent,
   ],
   imports: [
     BrowserModule,

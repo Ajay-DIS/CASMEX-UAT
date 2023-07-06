@@ -598,10 +598,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   reset() {
-    if (this.mode == "edit") {
-      this.mode == "edit" && this.appCtrl.enable() && this.formCtrl.enable();
+    if (this.mode == "edit" || this.mode == "clone") {
+       this.appCtrl.enable() ;
     }
-
     this.isFieldsQueriesData = false;
     this.criteriaSettingtable = [];
     this.selectFields = [];

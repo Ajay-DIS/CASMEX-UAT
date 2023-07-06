@@ -503,7 +503,21 @@ export class AddNewTaxComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } else {
+    } else if(this.mode == "clone") {
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetTaxDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }
+    else {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
@@ -575,7 +589,7 @@ export class AddNewTaxComponent implements OnInit {
     console.log(selectCol, value, index);
     if (selectCol == "setAsOption") {
       if (selectCol == "setAsOption" && value["code"] == "Percentage") {
-        this.appliedCriteriaData[index]["tax"] = 0;
+        this.appliedCriteriaData[index]["tax"] = 0.1;
       } else {
         if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
           console.log("SLAB");
@@ -596,10 +610,10 @@ export class AddNewTaxComponent implements OnInit {
             } else if (lcyAmountOpr == "=") {
               this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
             } else {
-              this.appliedCriteriaData[index]["tax"] = 0;
+              this.appliedCriteriaData[index]["tax"] = 0.1;
             }
           } else {
-            this.appliedCriteriaData[index]["tax"] = 0;
+            this.appliedCriteriaData[index]["tax"] = 0.1;
           }
         }
       }
@@ -625,8 +639,8 @@ export class AddNewTaxComponent implements OnInit {
       this.appliedCriteriaData[index][selectCol.split("Option")[0]],
       this.appliedCriteriaData[index].lcyAmountFrom
     );
-    let max = 0;
-    let min = 0;
+    let max = 0.1;
+    let min = 0.1;
     let lcyAmountEqualTo =
       this.appliedCriteriaData[index].lcyAmount &&
       this.appliedCriteriaData[index].lcyAmount.substring(

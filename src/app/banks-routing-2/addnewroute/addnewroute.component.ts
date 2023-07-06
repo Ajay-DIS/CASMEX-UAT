@@ -489,6 +489,19 @@ export class AddnewrouteComponent2 implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
+    } else if(this.mode == "clone"){
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
     } 
     else {
     this.coreService.setSidebarBtnFixedStyle(false);

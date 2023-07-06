@@ -202,6 +202,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/group-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Custom Fields":
+          item["routerLink"] = "/navbar/custom-fields";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
         case "Customer Profile":
           item["routerLink"] = "/navbar/customer-profile";
           item["routerLinkActiveOptions"] = { subset: true};
@@ -307,6 +311,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         iconName = "applicationsettings-icon";
         matchUrls = ["/navbar/criteria-settings",
         "/navbar/group-settings",
+        "/navbar/custom-fields",
       ];
         routeName = "/navbar/criteria-settings";
         break;
