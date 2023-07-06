@@ -562,10 +562,6 @@ export class AddNewSearchComponent implements OnInit {
   }
 
   setCloneCriteriaData(searchId: any) {
-    this.searchSettingsService.getSearchCloneData(searchId).subscribe((res) => {
-      console.log(res);
-    });
-
     let data = {
       formName: this.appFormModuleDataForEdit["formName"],
       moduleName: this.appFormModuleDataForEdit["moduleName"],
@@ -583,6 +579,13 @@ export class AddNewSearchComponent implements OnInit {
         map((response) => {
           console.log(response.cloneCriteriaData);
           console.log(response.criteriaFieldsData);
+          if (response.cloneCriteriaData["msg"]) {
+            this.coreService.showWarningToast(
+              response.cloneCriteriaData["msg"]
+            );
+            return;
+          }
+
           const cloneCriteriaData =
             response.cloneCriteriaData["data"]["cloneCriteria"];
           const criteriaFieldsData =
@@ -626,24 +629,26 @@ export class AddNewSearchComponent implements OnInit {
       )
       .subscribe((data) => {
         console.log(data);
-        this.searchSettingtable = data["settingSearchQueryCriteria"];
-        console.log(this.searchSettingtable);
-        this.searchSettingtable.forEach((item, i) => {
-          item["operations"] = this.searchSettingtable[i]["operators"];
-        });
+        if (data) {
+          this.searchSettingtable = data["settingSearchQueryCriteria"];
+          console.log(this.searchSettingtable);
+          this.searchSettingtable.forEach((item, i) => {
+            item["operations"] = this.searchSettingtable[i]["operators"];
+          });
 
-        const appValue = this.searchApplicationOptions.find(
-          (value) => value.code === data["applicationName"]
-        );
-        this.appCtrl.setValue(appValue);
-        const formValue = this.searchFormsOptions.find(
-          (value) => value.code === data["formName"]
-        );
-        this.formCtrl.setValue(formValue);
-        const moduleValue = this.searchModuleOptions.find(
-          (value) => value.code === data["moduleName"]
-        );
-        this.moduleCtrl.setValue(moduleValue);
+          const appValue = this.searchApplicationOptions.find(
+            (value) => value.code === data["applicationName"]
+          );
+          this.appCtrl.setValue(appValue);
+          const formValue = this.searchFormsOptions.find(
+            (value) => value.code === data["formName"]
+          );
+          this.formCtrl.setValue(formValue);
+          const moduleValue = this.searchModuleOptions.find(
+            (value) => value.code === data["moduleName"]
+          );
+          this.moduleCtrl.setValue(moduleValue);
+        }
       })
       .add(() => {
         if (this.params && this.params.id) {
