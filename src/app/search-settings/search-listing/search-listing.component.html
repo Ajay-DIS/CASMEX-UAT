@@ -1,0 +1,292 @@
+<div class="visible-main-section" *ngIf="searchSettingData.length">
+  <div class="pagetitle">
+    <div class="infoicon">
+      <i class="pi pi-info-circle"></i>
+      List of search setting created for forms.
+    </div>
+    <div class="addnew">
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Add New Search Settings"
+        class="p-button-raised"
+        routerLink="add-search-settings/add"
+      ></button>
+    </div>
+  </div>
+  <div class="ptable">
+    <p-card class="p-col-12" *ngIf="!searchSettingData">
+      {{ noDataMsg }}
+    </p-card>
+    <p-table
+      #dt
+      [columns]="cols"
+      [value]="searchSettingData"
+      [paginator]="true"
+      [rows]="10"
+      [rowHover]="true"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns; let i = index"
+            pReorderableColumn
+            [pSortableColumn]="col.field"
+            pResizableColumn
+            [style.width]="col.width"
+          >
+            {{ col.header }}
+            <div
+              *ngIf="!(i + 1 == columns.length)"
+              (click)="$event.stopPropagation()"
+              class="filter-icon"
+            >
+              <!-- <img
+                  height="12px"
+                  class="pi pi-filter searchSettingFilterIcon"
+                  (click)="toggleFilterVisibility(col.field)"
+                  [src]="
+                    getSelectedFilterArr(col.field).length
+                      ? '../assets/ActiveFilter.svg'
+                      : '../assets/filter.svg'
+                  "
+                  alt=""
+                /> -->
+              <i
+                [ngStyle]="{
+                  color: getSelectedFilterArr(col.field).length
+                    ? 'var(--primary-color)'
+                    : 'rgb(105 105 105)',
+                  fontSize: '11px'
+                }"
+                class="pi pi-filter-fill"
+                (click)="toggleFilterVisibility(col.field)"
+              ></i>
+              <p-multiSelect
+                #ms
+                [options]="fieldFilterOptions(col.field)"
+                [filter]="true"
+                [displaySelectedLabel]="false"
+                [overlayVisible]="fieldFilterVisible(col.field)"
+                [defaultLabel]="'Search'"
+                [appendTo]="'body'"
+                [autoWidth]="false"
+                (onChange)="
+                  dt.filter($event.value, col.field, 'in');
+                  setSelectedFilter(ms, col.field)
+                "
+                (onPanelHide)="hideFilterVisibility(col.field)"
+              >
+              </p-multiSelect>
+            </div>
+          </th>
+        </tr>
+
+        <tr class="search-row">
+          <th *ngFor="let col of cols; let i = index">
+            <span
+              *ngIf="!(col.field == 'status' || col.field == 'operations')"
+              class="p-input-icon-left"
+              [style.width]="'120px'"
+            >
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                class="p-inputtext table-search"
+                placeholder="Search"
+                (input)="dt.filter($event.target.value, col.field, 'contains')"
+              />
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-index="rowIndex"
+      >
+        <tr [pReorderableRow]="index">
+          <ng-container *ngFor="let col of columns; let i = index">
+            <td
+              *ngIf="!(col.field == 'status' || col.field == 'operations')"
+              style="border: none; cursor: pointer"
+              (click)="openClickForClone(rowData, 'edit')"
+            >
+              {{ rowData[col["field"]] }}
+            </td>
+            <td
+              *ngIf="col.field == 'status'"
+              style="border: none; text-align: center"
+            >
+              <label class="switch" style="border: none">
+                <input
+                  #statusInp
+                  [value]="rowData[col['field']]"
+                  type="checkbox"
+                  (click)="confirmStatus($event, rowData)"
+                  [checked]="
+                    rowData[col['field']] == 'Active' ||
+                    rowData[col['field']] == 'A'
+                      ? true
+                      : false
+                  "
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td
+              *ngIf="col.field == 'operations'"
+              style="border: none; text-align: center"
+            >
+              <span class="image-text">
+                <!-- <button
+                  pButton
+                  type="button"
+                  icon="pi pi-clone"
+                  class="operation-btns mr-2"
+                  (click)="openClickForClone(rowData, 'clone')"
+                ></button> -->
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-eye"
+                  class="operation-btns"
+                  (click)="openClickForView(rowData)"
+                ></button>
+              </span>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length">No Data found.</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        {{ state.page * state.rows + 1 }} -
+        {{
+          state.rows * (state.page + 1) > state.totalRecords
+            ? state.totalRecords
+            : state.rows * (state.page + 1)
+        }}
+        of {{ state.totalRecords }}
+      </ng-template>
+    </p-table>
+  </div>
+</div>
+<div class="NorecordFound" *ngIf="!searchSettingData.length && showNoDataFound">
+  <div class="row">
+    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p>"No Record Found.Click Add New Search To Add Record"</p>
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Add New Search"
+        class="p-button-raised"
+        routerLink="add-search-settings/add"
+      ></button>
+    </div>
+  </div>
+</div>
+<div>
+  <p-dialog
+    [(visible)]="clickforview"
+    [modal]="true"
+    [style]="{ width: '70vw', left: '50px' }"
+    (onHide)="closeDialog()"
+  >
+    <ng-template pTemplate="header">
+      <div class="application-header">
+        Application: {{ searchDataArrayView["applicationName"] }} | Module:
+        {{ searchDataArrayView["moduleName"] }} | Form:
+        {{ searchDataArrayView["formName"] }}
+      </div>
+    </ng-template>
+    <p-table
+      [value]="searchDataArrayView"
+      class="search-view-table"
+      [rowHover]="true"
+      [style]="{ width: '100%' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Field Name</th>
+          <th>Display Name</th>
+          <th>Operator</th>
+          <th>Display Order</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-product>
+        <tr>
+          <td>
+            <input
+              type="text"
+              placeholder="{{ product.fieldName }}"
+              [disabled]="true"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              placeholder="{{ product.displayName }}"
+              [disabled]="true"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              placeholder="{{ product.operators }}"
+              [disabled]="true"
+              style="width: 200px"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              placeholder="{{ product.orderID }}"
+              [disabled]="true"
+              style="text-align: center; width: 90px"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td>No Data found.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-dialog>
+</div>
+
+<p-confirmDialog
+  key="activeDeactiveStatus"
+  class="status-confirm confirm-popup"
+  #cd
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

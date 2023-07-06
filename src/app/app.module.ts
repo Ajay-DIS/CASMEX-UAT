@@ -63,6 +63,8 @@ import { PanelModule } from "primeng/panel";
 import { TabViewModule } from "primeng/tabview";
 import { CalendarModule } from "primeng/calendar";
 import { FileUploadModule } from "primeng/fileupload";
+import { SearchListingComponent } from './search-settings/search-listing/search-listing.component';
+import { AddNewSearchComponent } from './search-settings/add-new-search/add-new-search.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -89,6 +91,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     GroupSettingsComponent,
     CustomerProfileComponent,
     AddCustomerComponent,
+    SearchListingComponent,
+    AddNewSearchComponent,
   ],
   imports: [
     BrowserModule,

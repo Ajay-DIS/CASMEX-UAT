@@ -146,6 +146,7 @@
               scrollHeight="295px"
               (onNodeSelect)="onNodeSelect($event)"
               (onNodeUnselect)="onNodeUnSelect($event)"
+              [resizableColumns]="true"
             >
               <!-- <ng-template pTemplate="caption">
                 <div class="flex">
@@ -153,13 +154,44 @@
                   <span class="ml-2">Toggle All</span>
                 </div>
               </ng-template> -->
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" />
+                </colgroup>
+              </ng-template>
               <ng-template pTemplate="header" let-columns>
                 <tr>
                   <th
                     *ngFor="let col of columns; let k = index"
-                    [style]="k == 0 ? 'padding-left : 35px !important' : ''"
+                    ttResizableColumn
                   >
                     {{ col.header }}
+                  </th>
+                </tr>
+                <tr class="search-row">
+                  <th *ngFor="let col of columns; let i = index">
+                    <span
+                      *ngIf="
+                        !defCols.includes(col.field) || col.field == 'fieldName'
+                      "
+                      class="p-input-icon-left"
+                      [style.width]="'95px'"
+                      [style.maxWidth]="'100%'"
+                    >
+                      <i class="pi pi-search"></i>
+                      <input
+                        type="text"
+                        class="p-inputtext table-search"
+                        placeholder="Search"
+                        (input)="
+                          treeTable.filter(
+                            $event.target.value,
+                            col.field,
+                            'contains'
+                          )
+                        "
+                      />
+                    </span>
                   </th>
                 </tr>
               </ng-template>
@@ -169,7 +201,11 @@
                 let-rowData="rowData"
                 let-columns="columns"
               >
-                <tr>
+                <tr
+                  [ngClass]="{
+                    groupHeading: rowData && !rowData.hasOwnProperty('Form')
+                  }"
+                >
                   <ng-container *ngFor="let col of columns; let i = index">
                     <td
                       [style]="setStyle(col, i)"
@@ -181,6 +217,9 @@
                           ? defValueInpTooltip
                           : ''
                       "
+                      [ngClass]="{
+                        dataCol: rowData && rowData.hasOwnProperty(col.field)
+                      }"
                       tooltipPosition="bottom"
                     >
                       <p-treeTableToggler
@@ -220,6 +259,7 @@
                               ? minMaxInpTooltip
                               : ''
                           "
+                          [style.maxWidth]="'75%'"
                           tooltipPosition="bottom"
                           (ngModelChange)="
                             minMaxValidation(
@@ -238,6 +278,7 @@
                           "
                           class="w-100"
                           type="text"
+                          [style.maxWidth]="'85%'"
                           pInputText
                           [placeholder]="
                             rowData[col.field] ? rowData[col.field] : ''
@@ -257,6 +298,7 @@
                           *ngIf="col.type == 'input' && col.field == 'regex'"
                           class="w-100"
                           type="text"
+                          [style.maxWidth]="'85%'"
                           pInputText
                           [placeholder]="
                             rowData[col.field] ? rowData[col.field] : ''
@@ -270,7 +312,6 @@
                             col.type == 'lcySlabTo' ||
                             col.type == 'lcyOpr'
                           "
-                          class="w-100"
                           type="text"
                           pInputText
                           [placeholder]="
@@ -278,6 +319,12 @@
                           "
                           [(ngModel)]="rowData[col.field]"
                           [disabled]="true"
+                          [ngClass]="{
+                            lcyOpr: col.type == 'lcyOpr',
+                            lcySlab:
+                              col.type == 'lcySlabFrom' ||
+                              col.type == 'lcySlabTo'
+                          }"
                         />
                         <p-checkbox
                           *ngIf="col.type == 'checkbox'"

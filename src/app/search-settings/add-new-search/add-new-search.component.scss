@@ -1,0 +1,156 @@
+.select-form-application {
+  display: flex;
+  gap: 10px;
+}
+.select-form-application .field {
+  align-items: center;
+  gap: 15px;
+}
+
+.select-form-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-form-application p-dropdown {
+  width: 100%;
+}
+.select-form-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  border: none !important;
+}
+
+.drag-criteria-fields::ng-deep .p-picklist-list {
+  border-radius: 10px;
+  border: 1px solid #b9b9b9;
+  min-height: 165px !important;
+  max-height: 165px !important;
+}
+
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(1)
+  span::before {
+  content: "\e905" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(2)
+  span::before {
+  content: "\e9ae" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(3)
+  span::before {
+  content: "\e904" !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist-buttons
+  > button:nth-child(4)
+  span::before {
+  content: "\e9af" !important;
+}
+
+.drag-criteria-fields::ng-deep .p-picklist .p-picklist-list .p-picklist-item {
+  box-shadow: none !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist
+  .p-picklist-list
+  .p-picklist-item:hover {
+  background: none !important;
+}
+.drag-criteria-fields::ng-deep
+  .p-picklist
+  .p-picklist-list
+  .p-picklist-item.p-highlight,
+.drag-criteria-fields::ng-deep
+  .p-picklist
+  .p-picklist-list
+  .p-picklist-item:active {
+  box-shadow: none !important;
+  background: none !important;
+}
+
+.drag-criteria-fields::ng-deep
+  .p-picklist
+  .p-picklist-list
+  .p-picklist-item.p-highlight
+  .field-item {
+  border: 1px solid rgb(22 167 6);
+}
+
+.drag-criteria-fields::ng-deep .field-item {
+  width: 140px;
+  border: 1px dashed var(--surface-500);
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: var(--surface-ground);
+  font-size: 14px;
+}
+
+.form-app-heading-execute-btn button {
+  padding: 5px 18px !important;
+}
+/* suresh start*/
+.application-header {
+  background-color: var(--surface-ground);
+  border-radius: 5px;
+  padding: 5px;
+  width: 550px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  position: relative;
+  bottom: 30px;
+  left: 15px;
+}
+
+#operationsmulti ::ng-deep .p-multiselect,
+#dependencymulti ::ng-deep .p-multiselect {
+  font-weight: 500;
+  font-size: 12px !important;
+  border-radius: 5px;
+  border: none;
+  width: 147px;
+  height: 35px;
+}
+#dependencymulti ::ng-deep .p-multiselect {
+  background: #f4f6fa;
+  font-weight: 500;
+  font-size: 12px !important;
+  border-radius: 5px;
+  border: none;
+  width: 147px;
+  height: 35px;
+}
+
+:host
+  ::ng-deep
+  .p-datatable.p-datatable-hoverable-rows
+  .p-datatable-tbody
+  > tr:not(.p-highlight):hover {
+  background: #fff;
+  color: #000;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* suresh end*/
+
+.duplicateSearchConfirm ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+.duplicateSearchConfirm ::ng-deep .p-dialog .p-dialog-header {
+  padding: 1rem !important;
+}
+.duplicateSearchConfirm ::ng-deep .p-dialog .p-dialog-footer {
+  text-align: center;
+}
+.duplicateSearchConfirm ::ng-deep .p-dialog .p-dialog-footer button {
+  padding: 0 20px !important;
+}
