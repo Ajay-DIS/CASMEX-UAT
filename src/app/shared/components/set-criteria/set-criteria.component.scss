@@ -83,7 +83,7 @@
   }
   
   .saveTemplateModal ::ng-deep .p-dialog .p-dialog-content {
-    padding-bottom: 1.5rem;
+    padding-bottom: 0px;
   }
   .saveTemplateModal
     ::ng-deep
@@ -94,7 +94,8 @@
     width: 100%;
     border: 1px solid rgb(247 68 64);
     background-color: rgb(255 212 211);
-    margin-top: 15px;
+    margin-top: 10px;
+    margin-bottom: 7px;
     border-radius: 5px;
     font-size: 12px;
     display: flex;
@@ -113,6 +114,7 @@
   }
   
   .saveTemplateModal ::ng-deep .p-dialog .p-dialog-footer {
+    
     border-bottom-right-radius: 15px !important;
     border-bottom-left-radius: 15px !important;
   }

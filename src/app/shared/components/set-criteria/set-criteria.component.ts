@@ -1213,7 +1213,8 @@ export class SetCriteriaComponent implements OnInit {
   }
 
   savingCriteriaTemplate() {
-    if (this.criteriaName == "") {
+
+    if (this.criteriaName.replace(/\s/g, "").length == 0) {
       this.savingCriteriaTemplateError =
         "Name of Criteria Template cannot be Empty";
     } else {

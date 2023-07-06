@@ -19,6 +19,7 @@ import { CustomerProfileComponent } from "./customer-profile/customer-profile.co
 import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
+import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -270,6 +271,16 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: "custom-fields",
+        component: CustomFieldsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "custom-fields" },
+          { label: "Custom Fields", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+        {
         path: "customer-profile",
         component: CustomerProfileComponent,
         data: [
