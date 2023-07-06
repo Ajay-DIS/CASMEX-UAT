@@ -1289,7 +1289,21 @@ export class AddNewFormRuleComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } else {
+    } 
+    else if (this.mode == "clone") {
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetFormDataConfirmation",
+        accept: () => {
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }else {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({

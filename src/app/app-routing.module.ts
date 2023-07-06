@@ -17,6 +17,7 @@ import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-ru
 import { GroupSettingsComponent } from "./group-settings/group-settings.component";
 import { CustomerProfileComponent } from "./customer-profile/customer-profile.component";
 import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
+import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -226,6 +227,16 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "group-settings" },
           { label: "Group Setting", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "custom-fields",
+        component: CustomFieldsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "custom-fields" },
+          { label: "Custom Fields", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
