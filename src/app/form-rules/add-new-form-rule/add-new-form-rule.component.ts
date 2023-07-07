@@ -366,19 +366,19 @@ export class AddNewFormRuleComponent implements OnInit {
                   lcySlabFieldInserted = true;
                 }
 
-                if (
-                  formatCrt.split("  ")[0] == "LCY Amount" &&
-                  !lcyOprFieldInserted
-                ) {
-                  this.applyCriteriaDataTableColumns.unshift({
-                    field: "lcyAmount",
-                    header: formatCrt.split("  ")[0],
-                    value: formatCrt.split("  ")[1],
-                    type: "lcyOpr",
-                  });
-                  lcyOprFieldInserted = true;
+                if (formatCrt.split("  ")[0] == "LCY Amount") {
+                  if (!lcyOprFieldInserted) {
+                    this.applyCriteriaDataTableColumns.unshift({
+                      field: "lcyAmount",
+                      header: formatCrt.split("  ")[0],
+                      value: formatCrt.split("  ")[1],
+                      type: "lcyOpr",
+                    });
+                    lcyOprFieldInserted = true;
+                  } else {
+                    return;
+                  }
                 } else {
-                  console.log(formatCrt.split("  ")[0]);
                   if (formatCrt.split("  ")[0] == "Country") {
                     countryCol = {
                       field: formatCrt.split("  ")[0],
@@ -1326,8 +1326,7 @@ export class AddNewFormRuleComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } 
-    else if (this.mode == "clone") {
+    } else if (this.mode == "clone") {
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetFormDataConfirmation",
@@ -1340,7 +1339,7 @@ export class AddNewFormRuleComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    }else {
+    } else {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
