@@ -29,6 +29,8 @@
       [rowHover]="true">
     <ng-template pTemplate="header">
         <tr>
+            <th>Route Code</th>
+            <th>Route Code ID</th>
             <th>Country</th>
             <th>Organization </th>
             <th>State</th>
@@ -43,6 +45,8 @@
     </ng-template>
     <ng-template pTemplate="body" let-product>
         <tr>
+            <td>{{product.RouteCode}}</td>
+            <td>{{product.RouteCodeID}}</td>
             <td>{{product.Country}}</td>
             <td>{{product["Organization "]}}</td>
             <td>{{product.State}}</td>

@@ -266,7 +266,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "group-settings" },
-          { label: "Group Setting", routerLink: "" },
+          { label: "Bank Routing", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -276,7 +276,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "custom-fields" },
-          { label: "Custom Fields", routerLink: "" },
+          { label: "Tax Setting", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
