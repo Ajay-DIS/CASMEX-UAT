@@ -20,6 +20,7 @@ import { AddCustomerComponent } from "./customer-profile/add-customer/add-custom
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
+import { CustomFormComponent } from "./custom-form/custom-form.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -90,6 +91,29 @@ const routes: Routes = [
           },
           { label: "Criteria", routerLink: "criteria-settings" },
           { label: "Edit Criteria settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "authorization-page-setting",
+        component: CustomFormComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Application Settings",
+            routerLink: "authorization-page-setting",
+          },
+          { label: "Get Form Rules", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "custom-fields",
+        component: CustomFieldsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "custom-fields" },
+          { label: "Tax Setting", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -271,16 +295,6 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "custom-fields",
-        component: CustomFieldsComponent,
-        data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Application Settings", routerLink: "custom-fields" },
-          { label: "Tax Setting", routerLink: "" },
-        ],
-        canActivate: [AuthGuard],
-      },
-        {
         path: "customer-profile",
         component: CustomerProfileComponent,
         data: [
