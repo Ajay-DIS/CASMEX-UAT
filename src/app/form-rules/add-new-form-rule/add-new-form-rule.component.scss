@@ -35,6 +35,9 @@
   margin-left: 2px;
 }
 
+.appliedCriteriaDataTable ::ng-deep .p-treetable-wrapper {
+  max-height: 323px !important;
+}
 .appliedCriteriaDataTable ::ng-deep p-treetabletoggler button {
   width: 0px !important;
 }
@@ -48,7 +51,7 @@
 }
 .appliedCriteriaDataTable ::ng-deep .p-treetable-tbody > tr.groupHeading {
   position: relative;
-  background: #F3F4F8;
+  background: #f3f4f8;
 }
 .appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcyOpr {
   width: 100% !important;

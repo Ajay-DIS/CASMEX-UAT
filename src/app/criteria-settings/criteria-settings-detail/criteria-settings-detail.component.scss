@@ -126,7 +126,9 @@
   height: 35px;
 }
 
-:host ::ng-deep .p-datatable.p-datatable-hoverable-rows
+:host
+  ::ng-deep
+  .p-datatable.p-datatable-hoverable-rows
   .p-datatable-tbody
   > tr:not(.p-highlight):hover {
   background: #fff;
@@ -146,3 +148,7 @@ input::-webkit-inner-spin-button {
   margin-left: 2px;
 }
 /* suresh end*/
+
+.criteria-view-table ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  border-width: 0 0 0 0 !important;
+}
