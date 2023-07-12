@@ -610,10 +610,10 @@ export class AddNewTaxComponent implements OnInit {
             } else if (lcyAmountOpr == "=") {
               this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
             } else {
-              this.appliedCriteriaData[index]["tax"] = 0.1;
+              this.appliedCriteriaData[index]["tax"] = 0;
             }
           } else {
-            this.appliedCriteriaData[index]["tax"] = 0.1;
+            this.appliedCriteriaData[index]["tax"] = 0;
           }
         }
       }
@@ -639,8 +639,8 @@ export class AddNewTaxComponent implements OnInit {
       this.appliedCriteriaData[index][selectCol.split("Option")[0]],
       this.appliedCriteriaData[index].lcyAmountFrom
     );
-    let max = 0.1;
-    let min = 0.1;
+    let max = 0;
+    let min = 0;
     let lcyAmountEqualTo =
       this.appliedCriteriaData[index].lcyAmount &&
       this.appliedCriteriaData[index].lcyAmount.substring(
