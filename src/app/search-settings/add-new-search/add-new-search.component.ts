@@ -39,6 +39,7 @@ export class AddNewSearchComponent implements OnInit {
 
   userData: any;
 
+
   appFormModuleDataForEdit: any = {};
 
   // Suresh start
@@ -54,11 +55,12 @@ export class AddNewSearchComponent implements OnInit {
   mode = "add";
   criteriaTypeOp: any;
 
+
   cols: any[] = [
-    { field: "fieldName", header: "Field Name", width: "20%" },
-    { field: "displayName", header: "Display Name", width: "30%" },
-    { field: "operator", header: "Operator *", width: "35%" },
-    { field: "displayOrder", header: "Display Order", width: "15%" },
+    { field: "fieldName", header: "Field Name", width: "20%", isMandatory:false },
+    { field: "displayName", header: "Display Name", width: "30%" ,isMandatory:false},
+    { field: "operator", header: "Operator ", width: "35%",isMandatory:true },
+    { field: "displayOrder", header: "Display Order", width: "15%",isMandatory:true },
   ];
 
   state$: Observable<any>;

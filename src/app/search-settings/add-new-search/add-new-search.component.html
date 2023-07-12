@@ -169,7 +169,7 @@
                 *ngFor="let col of cols; let i = index"
                 [style.width]="col.width"
               >
-                {{ col.header }}
+                {{ col.header }}<span class="red-star" *ngIf="col.isMandatory">*</span>
               </th>
             </tr>
             <tr class="search-row">

@@ -154,3 +154,11 @@ input::-webkit-inner-spin-button {
 .duplicateSearchConfirm ::ng-deep .p-dialog .p-dialog-footer button {
   padding: 0 20px !important;
 }
+.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: 8px;
+  margin-left: 2px;
+}
