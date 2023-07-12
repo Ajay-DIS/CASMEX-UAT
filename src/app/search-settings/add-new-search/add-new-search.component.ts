@@ -39,7 +39,6 @@ export class AddNewSearchComponent implements OnInit {
 
   userData: any;
 
-
   appFormModuleDataForEdit: any = {};
 
   // Suresh start
@@ -55,12 +54,26 @@ export class AddNewSearchComponent implements OnInit {
   mode = "add";
   criteriaTypeOp: any;
 
-
   cols: any[] = [
-    { field: "fieldName", header: "Field Name", width: "20%", isMandatory:false },
-    { field: "displayName", header: "Display Name", width: "30%" ,isMandatory:false},
-    { field: "operator", header: "Operator ", width: "35%",isMandatory:true },
-    { field: "displayOrder", header: "Display Order", width: "15%",isMandatory:true },
+    {
+      field: "fieldName",
+      header: "Field Name",
+      width: "20%",
+      isMandatory: false,
+    },
+    {
+      field: "displayName",
+      header: "Display Name",
+      width: "30%",
+      isMandatory: false,
+    },
+    { field: "operator", header: "Operator ", width: "35%", isMandatory: true },
+    {
+      field: "displayOrder",
+      header: "Display Order",
+      width: "15%",
+      isMandatory: true,
+    },
   ];
 
   state$: Observable<any>;
@@ -214,8 +227,8 @@ export class AddNewSearchComponent implements OnInit {
       applicationName: this.appCtrl.value.name,
     };
     console.log(data);
-    if (!this.isFieldsQueriesData) {
-      console.log("changed form if");
+
+    if (this.mode == "add") {
       this.searchSettingsService
         .getSearchFieldsExecuteQueries(data)
         .pipe(take(1))
@@ -243,9 +256,15 @@ export class AddNewSearchComponent implements OnInit {
               this.coreService.showWarningToast(
                 "No data found for selected parameters"
               );
+              this.selectFields = [];
+              this.selectedFields = [];
+              this.searchSettingtable = [];
             } else if (res["msg"]) {
               this.isFieldsQueriesData = false;
               this.coreService.showWarningToast(res["msg"]);
+              this.selectFields = [];
+              this.selectedFields = [];
+              this.searchSettingtable = [];
             }
           },
           (err) => {
@@ -261,10 +280,59 @@ export class AddNewSearchComponent implements OnInit {
         this.selectedFields = [];
         this.searchSettingtable = [];
       }
-      setTimeout(() => {
-        this.coreService.removeLoadingScreen();
-      }, 500);
     }
+
+    // if (!this.isFieldsQueriesData) {
+    //   console.log("changed form if");
+    //   this.searchSettingsService
+    //     .getSearchFieldsExecuteQueries(data)
+    //     .pipe(take(1))
+    //     .subscribe(
+    //       (res) => {
+    //         if (res["data"]["cmCriteriaOperationsMasters"].length) {
+    //           this.isFieldsQueriesData = true;
+    //           this.fieldsQueriesData =
+    //             res["data"]["cmCriteriaOperationsMasters"];
+    //           this.selectFields = [...this.fieldsQueriesData];
+    //           this.restoreSelectFields = [...this.fieldsQueriesData];
+    //           this.selectFields.forEach((item) => {
+    //             item["operationOption"] = this.searchOperatorsOptions.map(
+    //               (x) => {
+    //                 return { label: x.name, code: x.name };
+    //               }
+    //             );
+    //             item["orderID"] = "";
+    //             item["operations"] = "";
+    //           });
+    //           console.log("fields Data", this.fieldsQueriesData);
+    //           console.log(this.selectFields);
+    //         } else if (res["data"]["cmCriteriaOperationsMasters"].length == 0) {
+    //           this.isFieldsQueriesData = false;
+    //           this.coreService.showWarningToast(
+    //             "No data found for selected parameters"
+    //           );
+    //         } else if (res["msg"]) {
+    //           this.isFieldsQueriesData = false;
+    //           this.coreService.showWarningToast(res["msg"]);
+    //         }
+    //       },
+    //       (err) => {
+    //         console.log("error in getting fields queries", err);
+    //       }
+    //     )
+    //     .add(() => {
+    //       this.coreService.removeLoadingScreen();
+    //     });
+    // } else {
+    //   if (!this.isCloneMode) {
+    //     this.selectFields = [...this.fieldsQueriesData];
+    //     this.selectedFields = [];
+    //     this.searchSettingtable = [];
+    //   }
+    //   setTimeout(() => {
+    //     this.coreService.removeLoadingScreen();
+    //   }, 500);
+    // }
   }
 
   executeBtnClick() {

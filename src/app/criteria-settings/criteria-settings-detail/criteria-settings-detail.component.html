@@ -46,14 +46,14 @@
           class="p-button-raised"
         ></button>
         <button
-        pButton
-        pRipple
-        type="button"
-        [disabled]="invalidForSave || !criteriaSettingtable.length"
-        label="Save & Add New"
-        (click)="saveCriteriaSettings('saveAddNew')"
-        class="p-button-raised"
-      ></button>
+          pButton
+          pRipple
+          type="button"
+          [disabled]="invalidForSave || !criteriaSettingtable.length"
+          label="Save & Add New"
+          (click)="saveCriteriaSettings('saveAddNew')"
+          class="p-button-raised"
+        ></button>
         <button
           pButton
           pRipple
@@ -142,22 +142,51 @@
       </div>
       <div class="application-ptable" *ngIf="criteriaSettingtable.length">
         <p-table
+          #dt
           [value]="criteriaSettingtable"
           class="criteria-view-table"
           [rowHover]="true"
           [scrollable]="true"
-          scrollHeight="315px"
+          scrollHeight="375px"
           [style]="{ width: '100%' }"
         >
           <ng-template pTemplate="header">
-            <tr>
+            <!-- <tr>
               <th>Field Name</th>
               <th>Display Name</th>
-              <!-- <th>Field Type</th> -->
+              <th>Field Type</th>
               <th>Operator <span class="red-star">*</span></th>
               <th>Criteria Priority <span class="red-star">*</span></th>
               <th>Is Mandatory</th>
               <th>Dependency <span class="red-star">*</span></th>
+            </tr> -->
+            <tr>
+              <th
+                *ngFor="let col of cols; let i = index"
+                [style.width]="col.width"
+              >
+                {{ col.header
+                }}<span class="red-star" *ngIf="col.isMandatory">*</span>
+              </th>
+            </tr>
+            <tr class="search-row">
+              <th *ngFor="let col of cols; let i = index">
+                <span
+                  *ngIf="col.field == 'fieldName' || col.field == 'displayName'"
+                  class="p-input-icon-left"
+                  [style.width]="'120px'"
+                >
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="text"
+                    class="p-inputtext table-search"
+                    placeholder="Search"
+                    (input)="
+                      dt.filter($event.target.value, col.field, 'contains')
+                    "
+                  />
+                </span>
+              </th>
             </tr>
           </ng-template>
           <ng-template
@@ -243,6 +272,11 @@
                   [appendTo]="'body'"
                 ></p-multiSelect>
               </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="cols.length">No Data found.</td>
             </tr>
           </ng-template>
         </p-table>

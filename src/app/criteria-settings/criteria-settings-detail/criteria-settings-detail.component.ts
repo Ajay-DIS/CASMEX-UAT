@@ -51,6 +51,40 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   mode = "add";
   criteriaTypeOp: any;
 
+  cols: any[] = [
+    {
+      field: "fieldName",
+      header: "Field Name",
+      width: "20%",
+      isMandatory: false,
+    },
+    {
+      field: "displayName",
+      header: "Display Name",
+      width: "20%",
+      isMandatory: false,
+    },
+    { field: "operator", header: "Operator ", width: "20%", isMandatory: true },
+    {
+      field: "criteriaPriority",
+      header: "Criteria Priority",
+      width: "15%",
+      isMandatory: true,
+    },
+    {
+      field: "isMandatory",
+      header: "Is Mandatory",
+      width: "15%",
+      isMandatory: false,
+    },
+    {
+      field: "dependency",
+      header: "Dependency",
+      width: "10%",
+      isMandatory: true,
+    },
+  ];
+
   constructor(
     private confirmationService: ConfirmationService,
     private fb: UntypedFormBuilder,
@@ -149,10 +183,13 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeQueries() {
-    this.coreService.displayLoadingScreen();
     console.log("changed form");
-    if (!this.isFieldsQueriesData) {
-      console.log("changed form if");
+
+    if (this.mode == "add") {
+      this.coreService.displayLoadingScreen();
+      this.selectFields = [];
+      this.selectedFields = [];
+      this.criteriaSettingtable = [];
       this.criteriaSettingsService
         .getCriteriaFieldsExecuteQueries()
         .pipe(take(1))
@@ -194,16 +231,61 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         .add(() => {
           this.coreService.removeLoadingScreen();
         });
-    } else {
-      if (!this.isCloneMode) {
-        this.selectFields = [...this.fieldsQueriesData];
-        this.selectedFields = [];
-        this.criteriaSettingtable = [];
-      }
-      setTimeout(() => {
-        this.coreService.removeLoadingScreen();
-      }, 500);
     }
+
+    // if (!this.isFieldsQueriesData) {
+    //   console.log("changed form if");
+    //   this.criteriaSettingsService
+    //     .getCriteriaFieldsExecuteQueries()
+    //     .pipe(take(1))
+    //     .subscribe(
+    //       (res) => {
+    //         if (res["data"]) {
+    //           this.isFieldsQueriesData = true;
+    //           this.fieldsQueriesData =
+    //             res["data"]["cmCriteriaOperationsMasters"];
+    //           this.selectFields = [...this.fieldsQueriesData];
+    //           this.restoreSelectFields = [...this.fieldsQueriesData];
+    //           this.selectFields.forEach((item) => {
+    //             item["operationOption"] = item.operations
+    //               .split(",")
+    //               .map((x) => {
+    //                 return { label: x, code: x };
+    //               });
+    //             item["orderID"] = "";
+    //             item["operations"] = "";
+    //             item["iSMandatory"] =
+    //               item["iSMandatory"] == "yes" ? true : false;
+    //             item["dependencyOptions"] = item.dependency
+    //               ?.split(",")
+    //               .map((x) => {
+    //                 return { label: x, code: x };
+    //               });
+    //             item["dependency"] = "";
+    //           });
+    //           console.log("fields Data", this.fieldsQueriesData);
+    //         } else if (res["msg"]) {
+    //           this.isFieldsQueriesData = false;
+    //           this.coreService.showWarningToast(res["msg"]);
+    //         }
+    //       },
+    //       (err) => {
+    //         console.log("error in getting fields queries", err);
+    //       }
+    //     )
+    //     .add(() => {
+    //       this.coreService.removeLoadingScreen();
+    //     });
+    // } else {
+    //   if (!this.isCloneMode) {
+    //     this.selectFields = [...this.fieldsQueriesData];
+    //     this.selectedFields = [];
+    //     this.criteriaSettingtable = [];
+    //   }
+    //   setTimeout(() => {
+    //     this.coreService.removeLoadingScreen();
+    //   }, 500);
+    // }
   }
 
   executeBtnClick() {
@@ -599,7 +681,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   reset() {
     if (this.mode == "edit" || this.mode == "clone") {
-       this.appCtrl.enable() ;
+      this.appCtrl.enable();
     }
     this.isFieldsQueriesData = false;
     this.criteriaSettingtable = [];

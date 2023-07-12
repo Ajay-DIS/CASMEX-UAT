@@ -162,3 +162,7 @@ input::-webkit-inner-spin-button {
   top: 8px;
   margin-left: 2px;
 }
+
+.criteria-view-table ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  border-width: 0 0 0 0 !important;
+}
