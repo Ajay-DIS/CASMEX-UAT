@@ -589,7 +589,12 @@ export class AddNewTaxComponent implements OnInit {
     console.log(selectCol, value, index);
     if (selectCol == "setAsOption") {
       if (selectCol == "setAsOption" && value["code"] == "Percentage") {
-        this.appliedCriteriaData[index]["tax"] = 0.1;
+        this.appliedCriteriaData[index]["tax"] = 0;
+        this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+        this.coreService.showWarningToast(
+        "Please enter tax greater than zero" 
+      );
+        
       } else {
         if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
           console.log("SLAB");
@@ -684,7 +689,15 @@ export class AddNewTaxComponent implements OnInit {
       valueInputElm.input.nativeElement.value = lastValueEntered;
     }
     let isDisplayError = false;
-    if (event.value < min || event.value > max) {
+    if(event.value == 0){
+      isDisplayError = true;
+      this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+      this.coreService.showWarningToast(
+        "Please enter tax greater than zero" 
+      );
+      return false; 
+    }
+   else if (event.value < min || event.value > max) {
       isDisplayError = true;
       this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
       this.coreService.showWarningToast(
