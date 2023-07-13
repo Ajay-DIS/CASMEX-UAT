@@ -476,7 +476,7 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   reset() {
-    if(this.mode == "edit"){
+    if (this.mode == "edit") {
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetDataConfirmation",
@@ -489,7 +489,7 @@ export class AddnewrouteComponent2 implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } else if(this.mode == "clone"){
+    } else if (this.mode == "clone") {
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetDataConfirmation",
@@ -502,27 +502,26 @@ export class AddnewrouteComponent2 implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } 
-    else {
-    this.coreService.setSidebarBtnFixedStyle(false);
-    this.coreService.setHeaderStickyStyle(false);
-    this.confirmationService.confirm({
-      message: "Are you sure, you want to clear all the fields ?",
-      key: "resetDataConfirmation",
-      accept: () => {
-        this.appliedCriteriaData = [];
-        this.appliedCriteriaCriteriaMap = null;
-        this.appliedCriteriaIsDuplicate = null;
-        this.routeDescription = "";
-        this.setCriteriaSharedComponent.resetSetCriteria();
-        this.setHeaderSidebarBtn();
-      },
-      reject: () => {
-        this.confirmationService.close;
-        this.setHeaderSidebarBtn();
-      },
-    });
-  }
+    } else {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear all the fields ?",
+        key: "resetDataConfirmation",
+        accept: () => {
+          this.appliedCriteriaData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.routeDescription = "";
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }
   }
 
   setHeaderSidebarBtn() {
@@ -537,6 +536,18 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveAddNewRoute(action) {
+    console.log(this.setCriteriaSharedComponent.getCurrentCriteriaMap());
+    console.log(this.appliedCriteriaCriteriaMap);
+
+    if (
+      this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
+      this.appliedCriteriaCriteriaMap
+    ) {
+      this.coreService.showWarningToast(
+        "Recent changes in Criteria map has not been applied, Saving last applied data"
+      );
+    }
+
     if (
       this.mode != "clone" ||
       (this.mode == "clone" && this.isApplyCriteriaClicked)
@@ -545,7 +556,9 @@ export class AddnewrouteComponent2 implements OnInit {
       let isRequiredFields = false;
       this.appliedCriteriaData.forEach((element) => {
         element["routeDesc"] = this.routeDescription
-          ? (this.routeDescription.replace(/\s/g,'').length ? this.routeDescription : null)
+          ? this.routeDescription.replace(/\s/g, "").length
+            ? this.routeDescription
+            : null
           : null;
         function isNullValue(arr) {
           return arr.some((el) => el == null);
@@ -555,7 +568,6 @@ export class AddnewrouteComponent2 implements OnInit {
           isRequiredFields = true;
         }
       });
-
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please fill required fields.");
@@ -579,7 +591,6 @@ export class AddnewrouteComponent2 implements OnInit {
           };
           service = this.bankRoutingService.addNewRoute(data);
         }
-
         if (service) {
           service.subscribe(
             (res) => {

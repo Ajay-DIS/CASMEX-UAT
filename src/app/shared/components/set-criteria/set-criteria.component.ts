@@ -1034,6 +1034,53 @@ export class SetCriteriaComponent implements OnInit {
     }
   }
 
+  getCurrentCriteriaMap() {
+    let formattedCriteriaArr = this.createFormattedCriteria();
+
+    let finalCriteriaObj;
+
+    if (this.checkMandatoryCondition(formattedCriteriaArr)) {
+      finalCriteriaObj = this.checkMandatoryCondition(formattedCriteriaArr);
+      console.log(
+        "mandatory passed",
+        this.checkMandatoryCondition(formattedCriteriaArr)
+      );
+      if (this.checkDependanceCondition(formattedCriteriaArr)) {
+        console.log("mandatory and dependance passed");
+        let criteriaMap = finalCriteriaObj.criteriaMap;
+        let slabText = null;
+        let lcyOpr = null;
+        let NEWcriteriaMap = null;
+
+        if (finalCriteriaObj.slabs) {
+          let slabs = finalCriteriaObj.slabs;
+          let slabArr = [];
+          slabs.forEach((slab) => {
+            let rngArr = [];
+            Object.entries(slab).forEach((rng) => {
+              rngArr.push(rng.join(":"));
+            });
+            slabArr.push(rngArr.join("::"));
+          });
+          slabText = slabArr.join("#");
+          NEWcriteriaMap = criteriaMap + "&&&&" + slabText;
+        } else if (finalCriteriaObj.lcyOpr) {
+          lcyOpr = finalCriteriaObj.lcyOpr;
+          NEWcriteriaMap = criteriaMap + "&&&&" + lcyOpr;
+        } else {
+          NEWcriteriaMap = criteriaMap;
+        }
+
+        return NEWcriteriaMap;
+      } else {
+        return false;
+        // this.appliedCriteriaData = [];
+      }
+    } else {
+      return false;
+    }
+  }
+
   showTransCriteriaModal() {
     this.ref = this.dialogService.open(TransactionCriteriaModal, {
       width: "40%",
@@ -1213,7 +1260,6 @@ export class SetCriteriaComponent implements OnInit {
   }
 
   savingCriteriaTemplate() {
-
     if (this.criteriaName.replace(/\s/g, "").length == 0) {
       this.savingCriteriaTemplateError =
         "Name of Criteria Template cannot be Empty";
