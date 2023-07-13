@@ -411,6 +411,18 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveAddNewTax(action) {
+    console.log(this.setCriteriaSharedComponent.getCurrentCriteriaMap());
+    console.log(this.appliedCriteriaCriteriaMap);
+
+    if (
+      this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
+      this.appliedCriteriaCriteriaMap
+    ) {
+      this.coreService.showWarningToast(
+        "Recent changes in Criteria map has not been applied, Saving last applied data"
+      );
+    }
+
     if (
       this.mode != "clone" ||
       (this.mode == "clone" && this.isApplyCriteriaClicked)
@@ -503,7 +515,7 @@ export class AddNewTaxComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    } else if(this.mode == "clone") {
+    } else if (this.mode == "clone") {
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetTaxDataConfirmation",
@@ -516,8 +528,7 @@ export class AddNewTaxComponent implements OnInit {
           this.setHeaderSidebarBtn();
         },
       });
-    }
-    else {
+    } else {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
