@@ -858,6 +858,8 @@ export class AddNewFormRuleComponent implements OnInit {
                   childRow["data"]["formLableFieldSequence"] =
                     detail["formLableFieldSequence"];
                   childRow["data"]["formSection"] = detail["formSection"];
+                  childRow["data"]["fieldType"] = detail["fieldType"];
+                  childRow["data"]["fieldLabel"] = detail["fieldLabel"];
                   formattedRowData["children"].push(childRow);
                 });
                 completeData.push(formattedRowData);

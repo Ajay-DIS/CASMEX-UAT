@@ -85,9 +85,10 @@ export class CustomFormComponent implements OnInit {
             criteriaSplit: replica
               ? secData["criteriaMapSplit"].split("&&&&")[1]
               : null,
-            fieldLabel: secData["fieldLabel"]
-              ? secData["fieldLabel"]
-              : secData["fieldName"],
+            fieldLabel:
+              secData["fieldLabel"] && secData["fieldLabel"] != "null"
+                ? secData["fieldLabel"]
+                : secData["fieldName"],
             required: secData["isMandatory"] == "Y" ? true : false,
             visible: secData["isVisibile"] == "Y" ? true : false,
             validLength: secData["validLength"],
