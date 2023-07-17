@@ -26,7 +26,6 @@ export class CustomFormComponent implements OnInit {
   submitted = false;
   form: FormGroup;
   formSections: any[] = [];
-  fields: Field[];
 
   noDataMsg = "No data found.";
 
@@ -75,14 +74,31 @@ export class CustomFormComponent implements OnInit {
                 }`
               : secData["fieldName"],
             type: "input",
+            inputType:
+              secData["fieldType"] && secData["fieldType"] != "null"
+                ? secData["fieldType"]
+                : "text",
+            fieldName:
+              secData["fieldName"] && secData["fieldName"] != "null"
+                ? secData["fieldName"]
+                : false,
             criteriaSplit: replica
               ? secData["criteriaMapSplit"].split("&&&&")[1]
               : null,
-            label: secData["fieldName"],
+            fieldLabel:
+              secData["fieldLabel"] && secData["fieldLabel"] != "null"
+                ? secData["fieldLabel"]
+                : secData["fieldName"],
             required: secData["isMandatory"] == "Y" ? true : false,
             visible: secData["isVisibile"] == "Y" ? true : false,
             validLength: secData["validLength"],
             defaultValue: secData["defaultValue"],
+            regex:
+              secData["regex"] &&
+              secData["regex"] != "null" &&
+              secData["regex"].trim().length
+                ? secData["regex"]
+                : false,
             minLength:
               secData["validLength"]?.length > 0 &&
               secData["validLength"] != "null"
@@ -115,11 +131,12 @@ export class CustomFormComponent implements OnInit {
           let max = +field.validLength?.split("-")[1];
           validators.push(Validators.minLength(min));
           validators.push(Validators.maxLength(max));
-        } else {
-          validators.push(Validators.maxLength(40));
         }
         if (field.required) {
           validators.push(Validators.required);
+        }
+        if (field.regex) {
+          validators.push(Validators.pattern(field.regex));
         }
         sectionGroup.addControl(
           field.name,
@@ -138,19 +155,19 @@ export class CustomFormComponent implements OnInit {
     console.log(this.form);
   }
 
-  getFieldType(field: any): string {
-    switch (field.type) {
-      case "input":
-        return "text";
-      case "select":
-      case "multiselect":
-        return "select";
-      case "checkbox":
-        return "checkbox";
-      default:
-        return "text";
-    }
-  }
+  // getFieldType(field: any): string {
+  //   switch (field.type) {
+  //     case "input":
+  //       return "text";
+  //     case "select":
+  //     case "multiselect":
+  //       return "select";
+  //     case "checkbox":
+  //       return "checkbox";
+  //     default:
+  //       return "text";
+  //   }
+  // }
 
   Apply() {
     console.log("criteriaMapCode", this.criteriaMapCode.trim());
@@ -207,14 +224,4 @@ export class CustomFormComponent implements OnInit {
     this.submitted = false;
     if (this.form) this.form.reset();
   }
-}
-
-export class Field {
-  name: string;
-  type: string;
-  label: string;
-  required: boolean;
-  visible: boolean;
-  validLength: string;
-  defaultValue: string;
 }
