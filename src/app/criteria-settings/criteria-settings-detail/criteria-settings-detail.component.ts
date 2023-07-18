@@ -6,7 +6,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
-import { forkJoin } from "rxjs";
+import { Observable, forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 import { CriteriaSettingsService } from "../criteria-settings.service";
@@ -29,6 +29,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   criteriaApplicationOptions: any[] = [];
   criteriaFormsOptions: any[] = [];
+  criteriaModuleOptions: any[] = [];
+
+  criteriaOperatorsOptions: any[] = [];
 
   isFieldsQueriesData: boolean = false;
   fieldsQueriesData: any = [];
@@ -36,6 +39,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   invalidForSave = false;
 
   userData: any;
+  appFormModuleDataForEdit: any = {};
 
   // Suresh start
   criteriaId = "";
@@ -85,6 +89,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     },
   ];
 
+  state$: Observable<any>;
+
   constructor(
     private confirmationService: ConfirmationService,
     private fb: UntypedFormBuilder,
@@ -93,7 +99,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     private criteriaSettingsService: CriteriaSettingsService,
     private coreService: CoreService,
     private activatedRoute: ActivatedRoute
-  ) {}
+  ) {
+    this.state$ = this.route.paramMap.pipe(map(() => window.history.state));
+  }
 
   ngOnInit(): void {
     this.params = this.activatedRoute.snapshot.params;
@@ -119,17 +127,36 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             ].map((app) => {
               return { name: app.name, code: app.name };
             });
+            this.criteriaModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
+            });
             this.criteriaFormsOptions = res["data"][
               "cmCriteriaFormsMaster"
             ].map((app) => {
               return { name: app.criteriaForms, code: app.criteriaForms };
+            });
+            this.criteriaOperatorsOptions = res["data"][
+              "systemOperatorsMaster"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
             });
             const params = this.activatedRoute.snapshot.params;
             if (params && params.id) {
               this.isCloneMode = true;
               this.setCloneCriteriaData(params.id);
               this.criteriaId = params.id;
-              //this.formCtrl.enable();
+              // this.formCtrl.enable();
+              // this.state$.subscribe((res) => {
+              //   console.log(res);
+              //   if (res["appName"]) {
+              //     this.appFormModuleDataForEdit = res;
+              //     this.setCloneCriteriaData(params.id);
+              //   } else {
+              //     this.router.navigateByUrl(`navbar/criteria-settings`);
+              //   }
+              // });
             }
           } else if (res["msg"]) {
             this.coreService.showWarningToast(res["msg"]);
@@ -158,11 +185,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       forms: new UntypedFormControl({ value: "", disabled: true }, [
         Validators.required,
       ]),
+      modules: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
     });
   }
 
   get appCtrl() {
     return this.selectAppForm.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppForm.get("modules");
   }
   get formCtrl() {
     return this.selectAppForm.get("forms");
@@ -174,6 +207,18 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.selectedFields = [];
       this.formCtrl.reset();
       this.selectFields = [];
+      this.moduleCtrl.reset();
+    }
+    this.formCtrl.enable();
+    this.moduleCtrl.enable();
+  }
+
+  onModuleChange() {
+    if (!this.isCloneMode) {
+      this.formCtrl.reset();
+      this.criteriaSettingtable = [];
+      this.selectedFields = [];
+      this.selectFields = [];
     }
     this.formCtrl.enable();
   }
@@ -184,6 +229,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
   executeQueries() {
     console.log("changed form");
+    let data = {
+      formName: this.formCtrl.value.name,
+      moduleName: this.moduleCtrl.value.name,
+      applicationName: this.appCtrl.value.name,
+    };
 
     if (this.mode == "add") {
       this.coreService.displayLoadingScreen();
@@ -202,11 +252,16 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               this.selectFields = [...this.fieldsQueriesData];
               this.restoreSelectFields = [...this.fieldsQueriesData];
               this.selectFields.forEach((item) => {
-                item["operationOption"] = item.operations
-                  .split(",")
-                  .map((x) => {
-                    return { label: x, code: x };
-                  });
+                item["operationOption"] = this.criteriaOperatorsOptions.map(
+                  (x) => {
+                    return { label: x.name, code: x.name };
+                  }
+                );
+                // item["operationOption"] = item.operations
+                //   .split(",")
+                //   .map((x) => {
+                //     return { label: x, code: x };
+                //   });
                 item["orderID"] = "";
                 item["operations"] = "";
                 item["iSMandatory"] =
@@ -294,8 +349,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       // this.criteriaTypeOp = item["criteriaType"];
       // item["orderID"] =  this.criteriaSettingtable[index]["operations"];
       if (!item["operationOption"]) {
-        item["operationOption"] = item["operations"].split(",").map((opt) => {
-          return { label: opt, value: opt };
+        item["operationOption"] = this.criteriaOperatorsOptions.map((x) => {
+          return { label: x.name, code: x.name };
         });
         let index = this.criteriaSettingtable.findIndex(
           (x) => x.fieldName == item.fieldName
@@ -360,15 +415,17 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             res["appForm"].forEach((appForm) => {
               let app = appForm.split(":")[0];
               let form = appForm.split(":")[1];
+              let module = appForm.split(":")[2];
               if (
                 this.appCtrl.value.name == app &&
                 this.formCtrl.value.name == form &&
+                this.moduleCtrl.value.name == module &&
                 !this.duplicateCriteria
               ) {
                 console.log("confirm dialog");
                 this.duplicateCriteria = true;
                 this.confirmationService.confirm({
-                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
+                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
                     this.saveCriteriaFields(action);
                     console.log("Update it -- call save method API");
@@ -407,6 +464,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     let data = {
       form: this.formCtrl.value.name,
       applications: this.appCtrl.value.name,
+      moduleName: this.moduleCtrl.value.name,
       createdBy: null,
       createdByID: this.userData.userId,
       status: "A",
@@ -584,6 +642,11 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   setCloneCriteriaData(criteriaId: any) {
+    let data = {
+      formName: this.appFormModuleDataForEdit["formName"],
+      moduleName: this.appFormModuleDataForEdit["moduleName"],
+      applicationName: this.appFormModuleDataForEdit["appName"],
+    };
     forkJoin({
       cloneCriteriaData:
         this.criteriaSettingsService.getCriteriaCloneData(criteriaId),
@@ -599,15 +662,20 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
           cloneCriteriaData["cmCriteriaDataDetails"].forEach((cloneD: any) => {
             this.orderIDArray.push(cloneD.orderID);
-            cloneD["operationOption"] = criteriaFieldsData
-              .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"])
-              ["operations"].split(",")
-              .map((x) => {
-                return { label: x, value: x };
-              });
+            cloneD["operationOption"] = this.criteriaOperatorsOptions.map(
+              (x) => {
+                return { label: x.name, code: x.name };
+              }
+            );
+            // cloneD["operationOption"] = criteriaFieldsData
+            //   .find((fieldD) => fieldD["fieldName"] == cloneD["fieldName"])
+            //   ["operations"].split(",")
+            //   .map((x) => {
+            //     return { label: x, value: x };
+            //   });
             let selectedOpt = cloneD["operations"].split(",");
             cloneD["operations"] = selectedOpt.map((opt) => {
-              return { label: opt, value: opt };
+              return { label: opt, code: opt };
             });
             cloneD["iSMandatory"] =
               cloneD["iSMandatory"] == "yes" ? true : false;
@@ -671,6 +739,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           (value) => value.code === data["form"]
         );
         this.formCtrl.setValue(formValue);
+        const moduleValue = this.criteriaModuleOptions.find(
+          (value) => value.code === data["moduleName"]
+        );
+        this.moduleCtrl.setValue(moduleValue);
       })
       .add(() => {
         if (this.params && this.params.id) {
@@ -690,6 +762,8 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.appCtrl.reset();
     this.formCtrl.reset();
     this.formCtrl.disable();
+    this.moduleCtrl.reset();
+    this.moduleCtrl.disable();
   }
   // Suresh end
 }
