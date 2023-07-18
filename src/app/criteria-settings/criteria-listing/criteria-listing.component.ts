@@ -19,15 +19,21 @@ export class CriteriaListingComponent implements OnInit {
   showNoDataFound :boolean= false;
 
   showapplicationsOptions: boolean = false;
+  showmoduleNameOptions: boolean = false;
   showformOptions: boolean = false;
   showtotalCriteraiFieldOptions: boolean = false;
+  showtotalDisplayFieldsOptions: boolean = false;
   showtotalListFieldsOptions: boolean = false;
   showcreatedDateOptions: boolean = false;
   showcreatedByOptions: boolean = false;
 
+  objectKeys = Object.keys;
+
   applications: any[];
+  moduleName: any[];
   form: any[];
   totalCriteraiField: any[];
+  totalDisplayField: any = [];
   totalListField: any = [];
   createdDate: any[];
   createdBy: any[];
@@ -36,8 +42,10 @@ export class CriteriaListingComponent implements OnInit {
   criteriaDataArrayView = [];
 
   selectedFilterapplications: any[] = [];
+  selectedFiltermoduleName: any[] = [];
   selectedFilterform: any[] = [];
   selectedFiltertotalCriteraiField: any[] = [];
+  selectedFiltertotalDisplayField: any[] = [];
   selectedFiltertotalListField: any[] = [];
   selectedFiltercreatedDate: any[] = [];
   selectedFiltercreatedBy: any[] = [];
@@ -45,6 +53,7 @@ export class CriteriaListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "applications", header: "Applications", width: "15%" },
+    { field: "moduleName", header: "Module", width: "15%" },
     { field: "form", header: "Form", width: "15%" },
     {
       field: "totalCriteraiField",
@@ -122,6 +131,9 @@ export class CriteriaListingComponent implements OnInit {
       return { label: code, value: code };
     });
     this.form = this.criteriaSettingApiData.form.map((code) => {
+      return { label: code, value: code };
+    });
+    this.moduleName = this.criteriaSettingApiData.moduleName.map((code) => {
       return { label: code, value: code };
     });
     this.totalCriteraiField = this.criteriaSettingApiData[
