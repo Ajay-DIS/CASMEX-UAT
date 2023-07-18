@@ -115,7 +115,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     });
     this.setSelectAppForm();
     this.mode == "edit" && this.appCtrl.disable() && this.formCtrl.disable();
-    this.mode == "clone" && this.formCtrl.enable();
+   if(this.mode == "clone") {
+    this.formCtrl.enable();
+    this.moduleCtrl.enable();
+   } 
     this.criteriaSettingsService
       .getCriteriaAppFormsList()
       .pipe(take(1))
@@ -209,7 +212,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.selectFields = [];
       this.moduleCtrl.reset();
     }
-    this.formCtrl.enable();
+    // this.formCtrl.enable();
     this.moduleCtrl.enable();
   }
 
