@@ -24,6 +24,7 @@ export class AddNewTaxComponent implements OnInit {
   mode = "add";
   formName = "Tax Settings";
   applicationName = "Web Application";
+  moduleName = "Remittance";
 
   taxCode = "No Data";
   taxDescription = "";
@@ -88,8 +89,8 @@ export class AddNewTaxComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+    this.getAllTemplates();
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
@@ -291,6 +292,9 @@ export class AddNewTaxComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("taxCode", this.taxID);
     postDataCriteria.append("operation", this.mode);
+    postDataCriteria.append("applications", this.applicationName);
+    postDataCriteria.append("form", this.formName);
+    postDataCriteria.append("moduleName", this.moduleName);
     this.isApplyCriteriaClicked = true;
     if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -367,6 +371,9 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
+    templateFormData.append("applications", this.applicationName);
+    templateFormData.append("form", this.formName);
+    templateFormData.append("moduleName", this.moduleName);
     this.coreService.displayLoadingScreen();
     this.taxSettingsService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -394,6 +401,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   getAllTemplates() {
+    console.log("::", this.userId);
     this.taxSettingsService
       .getAllCriteriaTemplates(this.userId)
       .subscribe((response) => {
@@ -602,10 +610,7 @@ export class AddNewTaxComponent implements OnInit {
       if (selectCol == "setAsOption" && value["code"] == "Percentage") {
         this.appliedCriteriaData[index]["tax"] = 0;
         this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
-        this.coreService.showWarningToast(
-        "Please enter tax greater than zero" 
-      );
-        
+        this.coreService.showWarningToast("Please enter tax greater than zero");
       } else {
         if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
           console.log("SLAB");
@@ -700,15 +705,12 @@ export class AddNewTaxComponent implements OnInit {
       valueInputElm.input.nativeElement.value = lastValueEntered;
     }
     let isDisplayError = false;
-    if(event.value == 0){
+    if (event.value == 0) {
       isDisplayError = true;
       this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
-      this.coreService.showWarningToast(
-        "Please enter tax greater than zero" 
-      );
-      return false; 
-    }
-   else if (event.value < min || event.value > max) {
+      this.coreService.showWarningToast("Please enter tax greater than zero");
+      return false;
+    } else if (event.value < min || event.value > max) {
       isDisplayError = true;
       this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
       this.coreService.showWarningToast(
