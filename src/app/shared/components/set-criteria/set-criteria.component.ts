@@ -1299,7 +1299,7 @@ export class SetCriteriaComponent implements OnInit {
 
       const formData = new FormData();
       formData.append("userId", this.userId);
-      formData.append("criteriaName", this.criteriaName);
+      formData.append("criteriaName", this.criteriaName.trim());
       formData.append("criteriaMap", NEWcriteriaMap);
 
       formData.append("lcySlab", this.lcySlab);

@@ -30,6 +30,7 @@ export class AddnewrouteComponent2 implements OnInit {
   mode = "add";
   formName = "Bank Routings";
   applicationName = "Web Application";
+  moduleName = "Remittance";
 
   //
   appliedCriteriaData: any = [];
@@ -94,8 +95,8 @@ export class AddnewrouteComponent2 implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.getAllTemplates();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+    this.getAllTemplates();
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
@@ -302,6 +303,9 @@ export class AddnewrouteComponent2 implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("routeCode", this.routeID);
     postDataCriteria.append("operation", this.mode);
+    postDataCriteria.append("applications", this.applicationName);
+    postDataCriteria.append("form", this.formName);
+    postDataCriteria.append("moduleName", this.moduleName);
     this.isApplyCriteriaClicked = true;
     if (this.isBankRoutingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -375,6 +379,9 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
+    templateFormData.append("applications", this.applicationName);
+    templateFormData.append("form", this.formName);
+    templateFormData.append("moduleName", this.moduleName);
     this.coreService.displayLoadingScreen();
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(templateFormData)

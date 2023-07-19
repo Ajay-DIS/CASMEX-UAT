@@ -31,6 +31,7 @@ import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-c
 export class BankRoutingComponent2 implements OnInit {
   formName = "Bank Routings";
   applicationName = "Web Application";
+  moduleName = "Remittance";
   linkedRouteCode: any = [];
 
   inactiveData: boolean = false;
@@ -48,7 +49,7 @@ export class BankRoutingComponent2 implements OnInit {
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
 
-  showNoDataFound :boolean= false;
+  showNoDataFound: boolean = false;
 
   showrouteCodeOptions: boolean = false;
   showrouteDescOptions: boolean = false;
@@ -127,7 +128,7 @@ export class BankRoutingComponent2 implements OnInit {
             });
 
             this.bankRoutingData = [...this.bankRoutingApiData.data];
-            this.showNoDataFound =false;
+            this.showNoDataFound = false;
             this.linkedRouteCode = [...this.bankRoutingApiData.linkedRouteCode];
 
             this.routeCode = this.bankRoutingApiData.routeCode.map((code) => {
@@ -161,7 +162,7 @@ export class BankRoutingComponent2 implements OnInit {
             });
           } else {
             this.noDataMsg = bankRoutingListingData["msg"];
-            this.showNoDataFound =true;
+            this.showNoDataFound = true;
           }
           return bankRoutingListingData;
         })
@@ -170,14 +171,14 @@ export class BankRoutingComponent2 implements OnInit {
         (res) => {
           if (!res["data"]) {
             console.log("No data Found");
-            this.showNoDataFound =true;
+            this.showNoDataFound = true;
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
         },
         (err) => {
           this.coreService.removeLoadingScreen();
-          this.showNoDataFound =true;
+          this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting bank routing list data", err);
         }
@@ -230,8 +231,11 @@ export class BankRoutingComponent2 implements OnInit {
         type +
         ` the Bank Route: ${data["routeCode"]}?`;
     } else {
-      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
-        `Do you wish to ` + type + ` the Bank Route: ${data["routeCode"]}?`;
+      completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        `Do you wish to ` +
+        type +
+        ` the Bank Route: ${data["routeCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -268,6 +272,9 @@ export class BankRoutingComponent2 implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("routeCode", data["routeCode"]);
     formData.append("status", reqStatus);
+    formData.append("applications", this.applicationName);
+    formData.append("moduleName", this.moduleName);
+    formData.append("form", this.formName);
     this.updateBankRouteStatus(formData, e.target, data);
   }
 
