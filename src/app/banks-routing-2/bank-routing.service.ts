@@ -8,19 +8,22 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
 export class BankRoutingService {
   constructor(private http: HttpClient) {}
 
-  appName = "Web Application";
-  moduleName = "Remittance";
-  formName = "Bank Routings";
+  applicationName: any = null;
+  moduleName: any = null;
 
-  getBankRoutingData(id: string) {
+  // appName = "Web Application";
+  // moduleName = "Remittance";
+  // formName = "Bank Routings";
+
+  getBankRoutingData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/banksRoutingController/getBanksRoutingList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
@@ -31,44 +34,47 @@ export class BankRoutingService {
     );
   }
 
-  // getBanksRoutingForEdit(routeCode: any) {
-  //   return this.http.get(
-  //     `/remittance/banksRoutingController/getBanksRoutingForEdit`,
-  //     { headers: new HttpHeaders().set("routeCode", routeCode) }
-  //   );
-  // }
+  getBanksRoutingAppModuleList() {
+    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+  }
 
-  getBanksRoutingForEdit(routeCode: any, operation: any) {
+  getBanksRoutingForEdit(
+    routeCode: any,
+    operation: any,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ) {
     return this.http.get(
       `/remittance/banksRoutingController/getBanksRoutingCriteriaForEdit`,
       {
         headers: new HttpHeaders()
           .set("routeCode", routeCode)
           .set("operation", operation)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
 
-  getAddBankRouteCriteriaData() {
+  getAddBankRouteCriteriaData(appName: any, moduleName: any, formName: any) {
     return this.http.get(`/remittance/banksRoutingController/addBankRoute`, {
       headers: new HttpHeaders()
-        .set("applications", this.appName)
-        .set("moduleName", this.moduleName)
-        .set("form", this.formName),
+        .set("applications", appName)
+        .set("moduleName", moduleName)
+        .set("form", formName),
     });
   }
 
-  getCriteriaMasterData(formName: any, appName: any) {
+  getCriteriaMasterData(formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/banksRoutingController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("formName", formName)
           .set("applicationName", appName)
-          .set("moduleName", this.moduleName),
+          .set("moduleName", moduleName),
       }
     );
   }
@@ -78,7 +84,8 @@ export class BankRoutingService {
     appName: any,
     criteriaMap: any,
     fieldName: any,
-    displayName: any
+    displayName: any,
+    moduleName: any
   ) {
     return this.http.get(`/remittance/banksRoutingController/getCriteriaData`, {
       headers: new HttpHeaders()
@@ -87,7 +94,7 @@ export class BankRoutingService {
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", this.moduleName),
+        .set("moduleName", moduleName),
     });
   }
 
@@ -111,15 +118,20 @@ export class BankRoutingService {
     );
   }
 
-  getAllCriteriaTemplates(id: string): Observable<any> {
+  getAllCriteriaTemplates(
+    id: string,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.get(
       `remittance/banksRoutingController/getExistingCriteriaList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
@@ -131,15 +143,20 @@ export class BankRoutingService {
   //   );
   // }
 
-  addNewRoute(data): Observable<any> {
+  addNewRoute(
+    data,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.post(
       `/remittance/banksRoutingController/addCriteriaDetails`,
       data,
       {
         headers: new HttpHeaders()
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
@@ -155,16 +172,22 @@ export class BankRoutingService {
   //     }
   //   );
   // }
-  updateRoute(userId, data): Observable<any> {
+  updateRoute(
+    userId,
+    data,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.put(
       `/remittance/banksRoutingController/updateBanksRoutingsCriteria`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }

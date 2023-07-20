@@ -1,4 +1,4 @@
-<div class="visible-main-section" *ngIf="bankRoutingData">
+<div class="visible-main-section">
   <div class="pagetitle">
     <div class="infoicon">
       <i class="pi pi-info-circle"></i>
@@ -15,7 +15,48 @@
       ></button>
     </div>
   </div>
-  <div class="ptable">
+
+  <div class="app-form-search">
+    <div [formGroup]="selectAppModule" class="select-module-application m-2">
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="application"
+          >Application</label
+        >
+        <p-dropdown
+          name="application"
+          inputId="application"
+          [options]="searchApplicationOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="applications"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="module">Module</label>
+        <p-dropdown
+          name="module"
+          inputId="module"
+          [options]="searchModuleOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="modules"
+        ></p-dropdown>
+      </div>
+      <div class="addnew field col-2 md-2">
+        <button
+          pButton
+          pRipple
+          type="button"
+          (click)="searchAppModule()"
+          label="Apply"
+          class="p-button-raised"
+          [disabled]="selectAppModule.invalid"
+        ></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ptable" *ngIf="bankRoutingData">
     <p-table
       #dt
       [columns]="cols"

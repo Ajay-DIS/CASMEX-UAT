@@ -45,7 +45,7 @@
   width: 398px;
 }
 .route-code-desc-section .routeDesc input::placeholder {
-  color: #8A9099;
+  color: #8a9099;
   font-size: 12px;
 }
 
@@ -60,4 +60,52 @@
   position: absolute;
   top: -5px;
   margin-left: 2px;
+}
+
+.select-module-application {
+  display: flex;
+  gap: 10px;
+}
+.select-module-application .field {
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.select-module-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-module-application p-dropdown {
+  width: 100%;
+}
+.select-module-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  border: none !important;
+}
+
+.NorecordFound {
+  background-color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+  padding-bottom: 60px;
+}
+.NorecordFound p {
+  padding-bottom: 10px;
+  font-weight: 500;
+  color: rgb(0 0 0);
+  font-size: 16px;
+  line-height: 1px;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+.NorecordFound button {
+  margin-bottom: 40px;
+}
+
+.NorecordFound img {
+  width: 27%;
+  margin-top: 70px;
 }
