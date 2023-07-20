@@ -21,6 +21,11 @@ import { ConfirmationService, MessageService, TreeNode } from "primeng/api";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-bank-routing",
@@ -30,8 +35,8 @@ import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-c
 })
 export class BankRoutingComponent2 implements OnInit {
   formName = "Bank Routings";
-  applicationName = "Web Application";
-  moduleName = "Remittance";
+  // applicationName = "Web Application";
+  // moduleName = "Remittance";
   linkedRouteCode: any = [];
 
   inactiveData: boolean = false;
@@ -44,7 +49,8 @@ export class BankRoutingComponent2 implements OnInit {
     public messageService: MessageService,
     private route: ActivatedRoute,
     private confirmationService: ConfirmationService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private fb: UntypedFormBuilder
   ) {}
   @ViewChild("dt") table: Table;
   @ViewChild("statusInp") statusInp: HTMLInputElement;
@@ -76,6 +82,10 @@ export class BankRoutingComponent2 implements OnInit {
 
   loading = true;
 
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
   objectKeys = Object.keys;
   cols = [
     { field: "routeCode", header: "Route Code", width: "10%" },
@@ -91,26 +101,83 @@ export class BankRoutingComponent2 implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
 
+    this.bankRoutingService.applicationName = null;
+    this.bankRoutingService.moduleName = null;
+
     this.userData = JSON.parse(localStorage.getItem("userData"));
     console.log("userData", localStorage.getItem("userData"));
-    this.getBanksRoutingData(this.userData.userId);
+
+    this.setSelectAppModule();
+
+    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
+      this.coreService.removeLoadingScreen();
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+      } else {
+      }
+    });
   }
 
-  getDecodedDataForListing(userId: any) {
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  searchAppModule() {
+    console.log("Hi");
+    this.getDecodedDataForListing(
+      this.userData.userId,
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
+    );
+  }
+
+  getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
+    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
         this.formName,
-        this.applicationName
+        appValue,
+        moduleValue
       ),
-      bankRoutingListingData:
-        this.bankRoutingService.getBankRoutingData(userId),
+      bankRoutingListingData: this.bankRoutingService.getBankRoutingData(
+        userId,
+        this.formName,
+        appValue,
+        moduleValue
+      ),
     })
       .pipe(
         take(1),
         map((response) => {
           const criteriaMasterData = response.criteriaMasterData;
           const bankRoutingListingData = response.bankRoutingListingData;
+
+          console.log(criteriaMasterData, bankRoutingListingData);
 
           if (bankRoutingListingData["data"]) {
             this.bankRoutingApiData = bankRoutingListingData;
@@ -178,6 +245,7 @@ export class BankRoutingComponent2 implements OnInit {
         },
         (err) => {
           this.coreService.removeLoadingScreen();
+          this.bankRoutingData = null;
           this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting bank routing list data", err);
@@ -186,6 +254,8 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   viewBankRouting(data: any) {
+    this.bankRoutingService.applicationName = this.appCtrl.value.code;
+    this.bankRoutingService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "bank-routing",
@@ -196,6 +266,8 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   cloneRoute(data: any) {
+    this.bankRoutingService.applicationName = this.appCtrl.value.code;
+    this.bankRoutingService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "bank-routing",
@@ -272,8 +344,8 @@ export class BankRoutingComponent2 implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("routeCode", data["routeCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.applicationName);
-    formData.append("moduleName", this.moduleName);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateBankRouteStatus(formData, e.target, data);
   }
@@ -289,7 +361,11 @@ export class BankRoutingComponent2 implements OnInit {
         if (res["msg"]) {
           message = res["msg"];
           sliderElm.checked = sliderElm!.checked;
-          this.getBanksRoutingData(this.userData.userId);
+          this.getDecodedDataForListing(
+            this.userData.userId,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code
+          );
           this.coreService.showSuccessToast(message);
         } else {
           this.coreService.removeLoadingScreen();
@@ -298,10 +374,6 @@ export class BankRoutingComponent2 implements OnInit {
         }
       }
     });
-  }
-
-  getBanksRoutingData(id: string) {
-    this.getDecodedDataForListing(this.userData.userId);
   }
 
   isLinked(id: any) {

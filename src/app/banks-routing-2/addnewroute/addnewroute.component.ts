@@ -12,6 +12,11 @@ import { Dropdown } from "primeng/dropdown";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-addnewroute",
@@ -73,6 +78,13 @@ export class AddnewrouteComponent2 implements OnInit {
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
 
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
+  appModuleDataPresent: boolean = false;
+  showContent: boolean = false;
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -83,20 +95,21 @@ export class AddnewrouteComponent2 implements OnInit {
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService,
     private criteriaDataService: CriteriaDataService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private fb: UntypedFormBuilder
   ) {}
 
   @ViewChild(SetCriteriaComponent)
   setCriteriaSharedComponent!: SetCriteriaComponent;
 
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
     this.mode = "add";
-    this.getCriteriaMasterData();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.setSelectAppModule();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
-    this.getAllTemplates();
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
@@ -104,6 +117,82 @@ export class AddnewrouteComponent2 implements OnInit {
       );
       this.routeID = params.id;
     }
+
+    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+        if (
+          !(
+            this.bankRoutingService.applicationName ||
+            this.bankRoutingService.moduleName
+          )
+        ) {
+          if (this.mode != "add") {
+            this.router.navigate([`navbar/bank-routing`]);
+          } else {
+            this.coreService.removeLoadingScreen();
+          }
+        } else {
+          if (this.mode != "add") {
+            this.appCtrl.setValue({
+              name: this.bankRoutingService.applicationName,
+              code: this.bankRoutingService.applicationName,
+            });
+            this.moduleCtrl.setValue({
+              name: this.bankRoutingService.moduleName,
+              code: this.bankRoutingService.moduleName,
+            });
+            this.appModuleDataPresent = true;
+            this.appCtrl.disable();
+            this.moduleCtrl.disable();
+            this.searchAppModule();
+          }
+        }
+      } else {
+      }
+    });
+  }
+
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  onAppValueChange() {
+    this.showContent = false;
+    this.appModuleDataPresent = false;
+    this.moduleCtrl.reset();
+    this.moduleCtrl.enable();
+  }
+
+  searchAppModule() {
+    this.appModuleDataPresent = true;
+    this.showContent = false;
+    this.getCriteriaMasterData();
+    this.getAllTemplates();
   }
 
   getBanksRoutingForEditApi(routeCode: any, operation: any) {
@@ -111,9 +200,17 @@ export class AddnewrouteComponent2 implements OnInit {
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.bankRoutingService
-      .getBanksRoutingForEdit(routeCode, operation)
+      .getBanksRoutingForEdit(
+        routeCode,
+        operation,
+        this.bankRoutingService.applicationName,
+        this.bankRoutingService.moduleName,
+        this.formName
+      )
       .subscribe(
         (res) => {
+          this.coreService.removeLoadingScreen();
+          this.appModuleDataPresent = true;
           if (!res["msg"]) {
             this.editBankRouteApiData = res;
             console.log("edit data", res);
@@ -140,8 +237,10 @@ export class AddnewrouteComponent2 implements OnInit {
             console.log(this.appliedCriteriaData);
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
+            this.showContent = true;
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            this.showContent = false;
             if (res["msg"].includes("No active")) {
               this.inactiveData = true;
               this.setCriteriaSharedComponent.criteriaCtrl.disable();
@@ -151,25 +250,29 @@ export class AddnewrouteComponent2 implements OnInit {
           }
         },
         (err) => {
+          this.showContent = false;
+          this.coreService.removeLoadingScreen();
           console.log("Error in getBanksRoutingForEditApi", err);
         }
-      )
-      .add(() => {
-        setTimeout(() => {
-          this.coreService.removeLoadingScreen();
-        }, 250);
-      });
+      );
   }
 
   getCriteriaMasterData() {
-    this.coreService.displayLoadingScreen();
+    if (this.mode == "add") {
+      this.coreService.displayLoadingScreen();
+    }
     forkJoin({
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
         this.formName,
-        this.applicationName
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData:
-        this.bankRoutingService.getAddBankRouteCriteriaData(),
+        this.bankRoutingService.getAddBankRouteCriteriaData(
+          this.appCtrl.value.code,
+          this.moduleCtrl.value.code,
+          this.formName
+        ),
     })
       .pipe(
         take(1),
@@ -229,14 +332,38 @@ export class AddnewrouteComponent2 implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getBanksRoutingForEditApi(this.routeID, "edit");
+            if (
+              !(
+                this.bankRoutingService.applicationName ||
+                this.bankRoutingService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/bank-routing`]);
+            } else {
+              this.getBanksRoutingForEditApi(this.routeID, "edit");
+            }
           } else if (this.mode == "clone") {
-            this.getBanksRoutingForEditApi(this.routeID, "clone");
+            if (
+              !(
+                this.bankRoutingService.applicationName ||
+                this.bankRoutingService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/bank-routing`]);
+            } else {
+              this.getBanksRoutingForEditApi(this.routeID, "clone");
+            }
           } else {
+            this.showContent = true;
             this.coreService.removeLoadingScreen();
           }
         },
         (err) => {
+          this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
         }
@@ -260,10 +387,11 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .getCorrespondentValuesData(
         this.formName,
-        this.applicationName,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
-        displayName
+        displayName,
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -379,9 +507,9 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.applicationName);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleName);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -410,7 +538,12 @@ export class AddnewrouteComponent2 implements OnInit {
 
   getAllTemplates() {
     this.bankRoutingService
-      .getAllCriteriaTemplates(this.userId)
+      .getAllCriteriaTemplates(
+        this.userId,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
+        this.formName
+      )
       .subscribe((response) => {
         if (response.data && response.data.length) {
           console.log("::templates", response);
@@ -484,12 +617,16 @@ export class AddnewrouteComponent2 implements OnInit {
 
   reset() {
     if (this.mode == "edit") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -497,12 +634,16 @@ export class AddnewrouteComponent2 implements OnInit {
         },
       });
     } else if (this.mode == "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -522,6 +663,11 @@ export class AddnewrouteComponent2 implements OnInit {
           this.routeDescription = "";
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
+          this.appCtrl.reset();
+          this.moduleCtrl.reset();
+          this.moduleCtrl.disable();
+          this.showContent = false;
+          this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;
@@ -588,7 +734,13 @@ export class AddnewrouteComponent2 implements OnInit {
             criteriaMap: this.appliedCriteriaCriteriaMap,
             routeCode: this.routeID,
           };
-          service = this.bankRoutingService.updateRoute(this.userId, data);
+          service = this.bankRoutingService.updateRoute(
+            this.userId,
+            data,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
+          );
           console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
         } else {
           let data = {
@@ -596,7 +748,12 @@ export class AddnewrouteComponent2 implements OnInit {
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
           };
-          service = this.bankRoutingService.addNewRoute(data);
+          service = this.bankRoutingService.addNewRoute(
+            data,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
+          );
         }
         if (service) {
           service.subscribe(
