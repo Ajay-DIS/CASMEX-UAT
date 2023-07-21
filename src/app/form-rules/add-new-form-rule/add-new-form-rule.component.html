@@ -66,7 +66,38 @@
         ></button>
       </div>
     </div>
-    <div class="d-flex m-3 rule-code-desc-section">
+    <div [formGroup]="selectAppModule" class="select-module-application m-2">
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="application"
+          >Application</label
+        >
+        <p-dropdown
+          name="application"
+          inputId="application"
+          [options]="searchApplicationOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="applications"
+          (onChange)="onAppValueChange()"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="module">Module</label>
+        <p-dropdown
+          name="module"
+          inputId="module"
+          [options]="searchModuleOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="modules"
+          (onChange)="searchAppModule()"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div
+      *ngIf="appModuleDataPresent && showContent"
+      class="d-flex m-3 rule-code-desc-section"
+    >
       <div
         class="ruleCode"
         [pTooltip]="
@@ -92,6 +123,7 @@
       </div>
     </div>
     <app-set-criteria
+      *ngIf="appModuleDataPresent && showContent"
       #setCriteriaSharedComponent
       [criteriaMasterData]="criteriaMasterData"
       [cmCriteriaDataDetails]="cmCriteriaDataDetails"
@@ -120,7 +152,10 @@
     ></app-set-criteria>
   </div>
   <!-- // suresh Work start -->
-  <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
+  <div
+    class="details-page-card mt-2"
+    *ngIf="showContent && applyCriteriaFormattedData.length"
+  >
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -303,6 +338,19 @@
                           "
                           [(ngModel)]="rowData[col.field]"
                         />
+                        <input
+                          *ngIf="
+                            col.type == 'input' && col.field == 'fieldLabel'
+                          "
+                          class="w-100"
+                          type="text"
+                          [style.maxWidth]="'85%'"
+                          pInputText
+                          [placeholder]="
+                            rowData[col.field] ? rowData[col.field] : ''
+                          "
+                          [(ngModel)]="rowData[col.field]"
+                        />
 
                         <input
                           *ngIf="
@@ -348,6 +396,19 @@
     </div>
   </div>
   <!-- // suresh Work end -->
+  <div
+    class="NorecordFound"
+    *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"
+  >
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>No Record Found.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <p-confirmDialog

@@ -34,8 +34,8 @@ export class AddnewrouteComponent2 implements OnInit {
   routeID = "";
   mode = "add";
   formName = "Bank Routings";
-  applicationName = "Web Application";
-  moduleName = "Remittance";
+  // applicationName = "Web Application";
+  // moduleName = "Remittance";
 
   //
   appliedCriteriaData: any = [];
@@ -431,9 +431,9 @@ export class AddnewrouteComponent2 implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("routeCode", this.routeID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.applicationName);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleName);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isBankRoutingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -763,6 +763,8 @@ export class AddnewrouteComponent2 implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/bank-routing`]);
                 } else if (action == "saveAndAddNew") {
+                  this.bankRoutingService.applicationName = null;
+                  this.bankRoutingService.moduleName = null;
                   // this.reset();
                   this.router.navigate([`navbar/bank-routing/addnewroute`]);
                   // this.coreService.removeLoadingScreen();

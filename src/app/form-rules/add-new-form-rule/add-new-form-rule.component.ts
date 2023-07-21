@@ -10,6 +10,11 @@ import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { TreeTable } from "primeng/treetable";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-add-new-form-rule",
@@ -27,7 +32,7 @@ export class AddNewFormRuleComponent implements OnInit {
   ruleID = "";
   mode = "add";
   formName = "Form Rules";
-  applicationName = "Web Application";
+  // applicationName = "Web Application";
 
   formRuleCode = "No Data";
   ruleDescription = "";
@@ -161,6 +166,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
   cols: any[] = [
     { field: "fieldName", header: "Field Name", type: "string" },
+    { field: "fieldLabel", header: "Field Label", type: "input" },
     { field: "isMandatory", header: "Is Mandatory", type: "checkbox" },
     // { field: "isEnabled", header: "Is Enabled", type: 'checkbox' },
     { field: "isVisibile", header: "Is Visible", type: "checkbox" },
@@ -184,6 +190,13 @@ export class AddNewFormRuleComponent implements OnInit {
 
   appliedCriteriaDatajson: any = {};
 
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
+  appModuleDataPresent: boolean = false;
+  showContent: boolean = false;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -194,19 +207,20 @@ export class AddNewFormRuleComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private setCriteriaService: SetCriteriaService,
     private formRuleService: FormRuleService,
-    private criteriaDataService: CriteriaDataService
+    private criteriaDataService: CriteriaDataService,
+    private fb: UntypedFormBuilder
   ) {}
 
   @ViewChild(SetCriteriaComponent)
   setCriteriaSharedComponent!: SetCriteriaComponent;
 
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
     this.mode = "add";
-    this.getCriteriaMasterData();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.getAllTemplates();
+    this.setSelectAppModule();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
@@ -216,7 +230,82 @@ export class AddNewFormRuleComponent implements OnInit {
       // this.mode = "edit";
       this.ruleID = params.id;
     }
-    console.log(this.mode);
+    this.formRuleService.getFormRulesAppModuleList().subscribe((res) => {
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+        if (
+          !(
+            this.formRuleService.applicationName ||
+            this.formRuleService.moduleName
+          )
+        ) {
+          if (this.mode != "add") {
+            this.router.navigate([`navbar/form-rules`]);
+          } else {
+            this.coreService.removeLoadingScreen();
+          }
+        } else {
+          if (this.mode != "add") {
+            this.appCtrl.setValue({
+              name: this.formRuleService.applicationName,
+              code: this.formRuleService.applicationName,
+            });
+            this.moduleCtrl.setValue({
+              name: this.formRuleService.moduleName,
+              code: this.formRuleService.moduleName,
+            });
+            this.appModuleDataPresent = true;
+            this.appCtrl.disable();
+            this.moduleCtrl.disable();
+            this.searchAppModule();
+          }
+        }
+      } else {
+        this.coreService.removeLoadingScreen();
+      }
+    });
+  }
+
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  onAppValueChange() {
+    this.showContent = false;
+    this.appModuleDataPresent = false;
+    this.moduleCtrl.reset();
+    this.moduleCtrl.enable();
+  }
+
+  searchAppModule() {
+    this.appModuleDataPresent = true;
+    this.showContent = false;
+    this.getCriteriaMasterData();
+    this.getAllTemplates();
   }
 
   getFormRulesForEditApi(formRuleCode: any, operation: any) {
@@ -224,10 +313,18 @@ export class AddNewFormRuleComponent implements OnInit {
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.formRuleService
-      .getFormRuleForEdit(formRuleCode, operation)
+      .getFormRuleForEdit(
+        formRuleCode,
+        operation,
+        this.formRuleService.applicationName,
+        this.formRuleService.moduleName,
+        this.formName
+      )
       .subscribe(
         (res) => {
           if (!res["msg"]) {
+            this.coreService.removeLoadingScreen();
+            this.appModuleDataPresent = true;
             this.editFromRulesApiData = JSON.parse(this.stringify(res));
             console.log("edit data", res);
 
@@ -525,10 +622,11 @@ export class AddNewFormRuleComponent implements OnInit {
 
             console.log(this.editFromRulesApiData["data"]["dataOperation"]);
             console.log(this.applyCriteriaFormattedData);
-
+            this.showContent = true;
             // Table formation END
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            this.showContent = false;
             if (res["msg"].includes("No active")) {
               this.inactiveData = true;
               this.setCriteriaSharedComponent.criteriaCtrl.disable();
@@ -540,14 +638,11 @@ export class AddNewFormRuleComponent implements OnInit {
           console.log(res);
         },
         (err) => {
+          this.showContent = false;
+          this.coreService.removeLoadingScreen();
           console.log("Error in getTaxSettingForEditApi", err);
         }
-      )
-      .add(() => {
-        setTimeout(() => {
-          this.coreService.removeLoadingScreen();
-        }, 250);
-      });
+      );
   }
 
   onNodeSelect(event) {
@@ -563,10 +658,16 @@ export class AddNewFormRuleComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
-        this.userId
+        this.userId,
+        this.formName,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addFormRuleCriteriaData: this.formRuleService.getAddFormRuleCriteriaData(
-        this.userId
+        this.userId,
+        this.formName,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
     })
       .pipe(
@@ -627,14 +728,38 @@ export class AddNewFormRuleComponent implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getFormRulesForEditApi(this.ruleID, "edit");
+            if (
+              !(
+                this.formRuleService.applicationName ||
+                this.formRuleService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/bank-routing`]);
+            } else {
+              this.getFormRulesForEditApi(this.ruleID, "edit");
+            }
           } else if (this.mode == "clone") {
-            this.getFormRulesForEditApi(this.ruleID, "clone");
+            if (
+              !(
+                this.formRuleService.applicationName ||
+                this.formRuleService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/bank-routing`]);
+            } else {
+              this.getFormRulesForEditApi(this.ruleID, "clone");
+            }
           } else {
+            this.showContent = true;
             this.coreService.removeLoadingScreen();
           }
         },
         (err) => {
+          this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
         }
@@ -652,10 +777,11 @@ export class AddNewFormRuleComponent implements OnInit {
     this.formRuleService
       .getCorrespondentValuesData(
         this.formName,
-        this.applicationName,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
-        displayName
+        displayName,
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -695,6 +821,9 @@ export class AddNewFormRuleComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("formRuleCode", this.ruleID);
     postDataCriteria.append("operation", this.mode);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
+    postDataCriteria.append("form", this.formName);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isFromRulesLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -985,6 +1114,9 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
+    templateFormData.append("applications", this.appCtrl.value.code);
+    templateFormData.append("form", this.formName);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1013,7 +1145,12 @@ export class AddNewFormRuleComponent implements OnInit {
 
   getAllTemplates() {
     this.formRuleService
-      .getAllCriteriaTemplates(this.userId)
+      .getAllCriteriaTemplates(
+        this.userId,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
+        this.formName
+      )
       .subscribe((response) => {
         if (response.data && response.data.length) {
           console.log("::templates", response);
@@ -1144,12 +1281,20 @@ export class AddNewFormRuleComponent implements OnInit {
         if (this.mode == "edit") {
           service = this.formRuleService.updateFormRule(
             this.userId,
-            payloadData
+            payloadData,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
           );
           console.log("EDIT MODE - UPDATE form SERVICE");
         } else {
           console.log("ADD MODE - ADD NEW form SERVICE");
-          service = this.formRuleService.addNewFormRule(payloadData);
+          service = this.formRuleService.addNewFormRule(
+            payloadData,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
+          );
         }
 
         if (service) {
@@ -1161,6 +1306,8 @@ export class AddNewFormRuleComponent implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/form-rules`]);
                 } else if (action == "saveAndAddNew") {
+                  this.formRuleService.applicationName = null;
+                  this.formRuleService.moduleName = null;
                   this.router.navigate([`navbar/form-rules/addnewformrule`]);
                   // this.coreService.removeLoadingScreen();
                 }
@@ -1200,12 +1347,16 @@ export class AddNewFormRuleComponent implements OnInit {
 
   reset() {
     if (this.mode == "edit") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetFormDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -1213,12 +1364,16 @@ export class AddNewFormRuleComponent implements OnInit {
         },
       });
     } else if (this.mode == "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetFormDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -1239,6 +1394,11 @@ export class AddNewFormRuleComponent implements OnInit {
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
+          this.appCtrl.reset();
+          this.moduleCtrl.reset();
+          this.moduleCtrl.disable();
+          this.showContent = false;
+          this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;

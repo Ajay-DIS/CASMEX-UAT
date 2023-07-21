@@ -50,14 +50,21 @@
                     pInputText
                     [formControlName]="field.name"
                   />
-                  <p-inputNumber
+                  <input
+                  *ngSwitchCase="'number'"
+                    type="text"
+                    class="block"
+                    pInputText
+                    [formControlName]="field.name"
+                  />
+                  <!-- <p-inputNumber
                     *ngSwitchCase="'number'"
                     class="block"
                     [formControlName]="field.name"
                     mode="decimal"
                     [useGrouping]="false"
                   >
-                  </p-inputNumber>
+                  </p-inputNumber> -->
                   <p-calendar
                     *ngSwitchCase="'date'"
                     class="block"

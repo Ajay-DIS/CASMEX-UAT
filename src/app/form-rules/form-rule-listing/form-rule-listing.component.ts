@@ -8,6 +8,11 @@ import { MultiSelect } from "primeng/multiselect";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-form-rule-listing",
@@ -16,7 +21,7 @@ import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-c
 })
 export class FormRuleListingComponent implements OnInit {
   formName = "Form Rules";
-  applicationName = "Web Application";
+  // applicationName = "Web Application";
 
   formRuleListingData: any = [];
   formRuleData: any = [];
@@ -57,6 +62,10 @@ export class FormRuleListingComponent implements OnInit {
 
   linkedFormRuleCode: any = [];
 
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
   constructor(
     private router: Router,
     private coreService: CoreService,
@@ -64,7 +73,7 @@ export class FormRuleListingComponent implements OnInit {
     private formRuleService: FormRuleService,
     private setCriteriaService: SetCriteriaService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private fb: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -72,17 +81,74 @@ export class FormRuleListingComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.formRuleService.applicationName = null;
+    this.formRuleService.moduleName = null;
     this.userData = JSON.parse(localStorage.getItem("userData"));
     console.log("userData", localStorage.getItem("userData"));
-    this.getRuleCodeListData(this.userData.userId);
-    this.loading = false;
+    this.setSelectAppModule();
+
+    this.formRuleService.getFormRulesAppModuleList().subscribe((res) => {
+      this.coreService.removeLoadingScreen();
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+      } else {
+      }
+    });
   }
 
-  getDecodedDataForListing(userId: any) {
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  searchAppModule() {
+    console.log("Hi");
+    this.getDecodedDataForListing(
+      this.userData.userId,
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
+    );
+  }
+
+  getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
+    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
-      criteriaMasterData: this.formRuleService.getCriteriaMasterData(userId),
-      formRuleListingData: this.formRuleService.getRuleCodeData(userId),
+      criteriaMasterData: this.formRuleService.getCriteriaMasterData(
+        userId,
+        this.formName,
+        appValue,
+        moduleValue
+      ),
+      formRuleListingData: this.formRuleService.getRuleCodeData(
+        userId,
+        this.formName,
+        appValue,
+        moduleValue
+      ),
     })
       .pipe(
         take(1),
@@ -91,55 +157,59 @@ export class FormRuleListingComponent implements OnInit {
           const formRuleListingData = response.formRuleListingData;
 
           console.log(":formRuleListingData", formRuleListingData);
-          if (formRuleListingData["data"]) {
-            this.formruleListingApiData = formRuleListingData;
-            this.formruleListingApiData.data.forEach((rule) => {
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: rule.criteriaMap.split("&&&&")[0],
-              });
-              rule.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-
-              rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
-            });
-            this.formRuleData = [...this.formruleListingApiData.data];
-            this.showNoDataFound = false;
-            this.linkedFormRuleCode = [
-              ...this.formruleListingApiData.linkedFormRuleCode,
-            ];
-            this.formRuleCode = this.formruleListingApiData.formRuleCode.map(
-              (code) => {
-                return { label: code, value: code };
-              }
-            );
-            this.formRuleDesc = this.formruleListingApiData.formRuleDesc.map(
-              (code) => {
-                return { label: code, value: code };
-              }
-            );
-            this.criteriaMap = this.formruleListingApiData.criteriaMap.map(
-              (criteriaMap) => {
+          if (Object.keys(criteriaMasterData).length) {
+            if (formRuleListingData["data"]) {
+              this.formruleListingApiData = formRuleListingData;
+              this.formruleListingApiData.data.forEach((rule) => {
                 let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                  criteriaMap: criteriaMap.split("&&&&")[0],
+                  criteriaMap: rule.criteriaMap.split("&&&&")[0],
                 });
-                let code = (
+                rule.criteriaMap = (
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     criteriaMasterData,
                     [""]
                   ) as []
                 ).join(", ");
+
+                rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
+              });
+              this.formRuleData = [...this.formruleListingApiData.data];
+              this.showNoDataFound = false;
+              this.linkedFormRuleCode = [
+                ...this.formruleListingApiData.linkedFormRuleCode,
+              ];
+              this.formRuleCode = this.formruleListingApiData.formRuleCode.map(
+                (code) => {
+                  return { label: code, value: code };
+                }
+              );
+              this.formRuleDesc = this.formruleListingApiData.formRuleDesc.map(
+                (code) => {
+                  return { label: code, value: code };
+                }
+              );
+              this.criteriaMap = this.formruleListingApiData.criteriaMap.map(
+                (criteriaMap) => {
+                  let criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+                    {
+                      criteriaMap: criteriaMap.split("&&&&")[0],
+                    }
+                  );
+                  let code = (
+                    this.setCriteriaService.decodeFormattedCriteria(
+                      criteriaCodeText,
+                      criteriaMasterData,
+                      [""]
+                    ) as []
+                  ).join(", ");
+                  return { label: code, value: code };
+                }
+              );
+              this.status = this.formruleListingApiData.status.map((code) => {
                 return { label: code, value: code };
-              }
-            );
-            this.status = this.formruleListingApiData.status.map((code) => {
-              return { label: code, value: code };
-            });
+              });
+            }
           } else {
             this.noDataMsg = formRuleListingData["msg"];
             this.showNoDataFound = true;
@@ -160,6 +230,7 @@ export class FormRuleListingComponent implements OnInit {
         },
         (err) => {
           this.coreService.removeLoadingScreen();
+          this.formRuleData = null;
           this.loading = false;
           this.showNoDataFound = true;
           console.log(this.formRuleData);
@@ -168,11 +239,9 @@ export class FormRuleListingComponent implements OnInit {
       );
   }
 
-  getRuleCodeListData(id: string) {
-    this.getDecodedDataForListing(this.userData.userId);
-  }
-
   viewFormRules(data: any) {
+    this.formRuleService.applicationName = this.appCtrl.value.code;
+    this.formRuleService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",
@@ -254,6 +323,9 @@ export class FormRuleListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("formRuleCode", data["formRuleCode"]);
     formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("form", this.formName);
     this.updateFormRuleStatus(formData, e.target, data);
     // }
   }
@@ -269,7 +341,11 @@ export class FormRuleListingComponent implements OnInit {
         if (res["msg"]) {
           message = res["msg"];
           sliderElm.checked = sliderElm!.checked;
-          this.getRuleCodeListData(this.userData.userId);
+          this.getDecodedDataForListing(
+            this.userData.userId,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code
+          );
           this.coreService.showSuccessToast(message);
         } else {
           this.coreService.removeLoadingScreen();
@@ -281,6 +357,8 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   cloneFormRule(data: any) {
+    this.formRuleService.applicationName = this.appCtrl.value.code;
+    this.formRuleService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",
