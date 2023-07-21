@@ -7,9 +7,16 @@ import { Observable } from "rxjs";
 })
 export class FormRuleService {
   constructor(private http: HttpClient) {}
-  getRuleCodeData(id: string) {
+  applicationName: any = null;
+  moduleName: any = null;
+
+  getRuleCodeData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(`/remittance/formRulesController/getFormRuleList`, {
-      headers: new HttpHeaders().set("userId", id),
+      headers: new HttpHeaders()
+        .set("userId", id)
+        .set("applications", appName)
+        .set("moduleName", moduleName)
+        .set("form", formName),
     });
   }
   updateFormRuleStatus(data: any) {
@@ -19,25 +26,56 @@ export class FormRuleService {
     );
   }
 
-  getFormRuleForEdit(formRuleCode: any, operation: any) {
+  getFormRulesAppModuleList() {
+    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+  }
+
+  getFormRuleForEdit(
+    formRuleCode: any,
+    operation: any,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ) {
     return this.http.get(`/remittance/formRulesController/getFormRuleForEdit`, {
       headers: new HttpHeaders()
         .set("formRuleCode", formRuleCode)
-        .set("operation", operation),
+        .set("operation", operation)
+        .set("applications", appName)
+        .set("moduleName", moduleName)
+        .set("form", formName),
     });
   }
 
-  getAddFormRuleCriteriaData(userId: any) {
+  getAddFormRuleCriteriaData(
+    userId: any,
+    formName: any,
+    appName: any,
+    moduleName: any
+  ) {
     return this.http.get(`/remittance/formRulesController/addFormRules`, {
-      headers: new HttpHeaders().set("userId", userId),
+      headers: new HttpHeaders()
+        .set("userId", userId)
+        .set("applications", appName)
+        .set("moduleName", moduleName)
+        .set("form", formName),
     });
   }
 
-  getCriteriaMasterData(userId: any) {
+  getCriteriaMasterData(
+    userId: any,
+    formName: any,
+    appName: any,
+    moduleName: any
+  ) {
     return this.http.get(
       `/remittance/formRulesController/getCriteriaMasterData`,
       {
-        headers: new HttpHeaders().set("userId", userId),
+        headers: new HttpHeaders()
+          .set("userId", userId)
+          .set("form", formName)
+          .set("applications", appName)
+          .set("moduleName", moduleName),
       }
     );
   }
@@ -47,15 +85,17 @@ export class FormRuleService {
     appName: any,
     criteriaMap: any,
     fieldName: any,
-    displayName: any
+    displayName: any,
+    moduleName: any
   ) {
     return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
-        .set("formName", formName)
-        .set("applicationName", appName)
+        .set("form", formName)
+        .set("applications", appName)
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
-        .set("displayName", displayName),
+        .set("displayName", displayName)
+        .set("moduleName", moduleName),
     });
   }
 
@@ -73,27 +113,59 @@ export class FormRuleService {
     );
   }
 
-  getAllCriteriaTemplates(id: string): Observable<any> {
+  getAllCriteriaTemplates(
+    id: string,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.get(
       `remittance/formRulesController/getExistingFormRuleList
       `,
-      { headers: new HttpHeaders().set("userId", id) }
+      {
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
     );
   }
 
-  addNewFormRule(data): Observable<any> {
+  addNewFormRule(
+    data,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.post(
       `/remittance/formRulesController/addCriteriaDetails`,
-      data
+      data,
+      {
+        headers: new HttpHeaders()
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
     );
   }
 
-  updateFormRule(userId, data): Observable<any> {
+  updateFormRule(
+    userId,
+    data,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ): Observable<any> {
     return this.http.put(
       `/remittance/formRulesController/updateFormRule`,
       data,
       {
-        headers: new HttpHeaders().set("userId", userId),
+        headers: new HttpHeaders()
+          .set("userId", userId)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }

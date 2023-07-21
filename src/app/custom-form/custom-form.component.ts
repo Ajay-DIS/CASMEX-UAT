@@ -122,6 +122,7 @@ export class CustomFormComponent implements OnInit {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
+        console.log(field);
         if (field.visible) {
           haveVisibleFields = true;
         }
@@ -129,8 +130,17 @@ export class CustomFormComponent implements OnInit {
         if (field.validLength?.length > 0 && field.validLength != "null") {
           let min = +field.validLength?.split("-")[0];
           let max = +field.validLength?.split("-")[1];
+          console.log(field.inputType);
+          // if (field.inputType == "number") {
+          // let newMin = +("1" + "0".repeat(min));
+          // let newMax = +"9".repeat(max);
+          // validators.push(Validators.min(newMin));
+          // validators.push(Validators.max(newMax));
+          // validators.push(Validators.pattern("^d{10}$"));
+          // } else {
           validators.push(Validators.minLength(min));
           validators.push(Validators.maxLength(max));
+          // }
         }
         if (field.required) {
           validators.push(Validators.required);
@@ -177,9 +187,9 @@ export class CustomFormComponent implements OnInit {
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
           .set("criteriaMap", this.criteriaMapCode.trim())
-          .set("formName", "Form Rules")
+          .set("form", "Form Rules")
           .set("moduleName", "Remittance")
-          .set("applicationName", "Web Application"),
+          .set("applications", "Web Application"),
       })
       .subscribe(
         (res) => {
