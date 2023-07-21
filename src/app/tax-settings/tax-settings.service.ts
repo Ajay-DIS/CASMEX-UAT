@@ -6,38 +6,51 @@ import { BehaviorSubject, Observable, Subject } from "rxjs";
   providedIn: "root",
 })
 export class TaxSettingsService {
+ 
   constructor(private http: HttpClient) {}
 
-  appName = "Web Application";
-  moduleName = "Remittance";
-  formName = "Tax Settings";
+  applicationName: any = null;
+  moduleName: any = null;
 
-  getTaxCodeData(id: string) {
+  // appName = "Web Application";
+  // moduleName = "Remittance";
+  // formName = "Bank Routings";
+
+  getTaxCodeData(id: string,formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getTaxCodeList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
-      }
-    );
-  }
-  updateTaxSettingsStatus(data: any) {
-    return this.http.post(
-      `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
-      data,
-      {
-        headers: new HttpHeaders()
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
 
-  getTaxSettingForEdit(taxCode: any, operation: any) {
+  getTaxSettingAppModuleList() {
+    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+  }
+
+  updateTaxSettingsStatus(data: any) {
+    return this.http.post(
+      `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
+      data,
+      // {
+      //   headers: new HttpHeaders()
+      //     .set("applications", appName)
+      //     .set("moduleName", moduleName)
+      //     .set("form", formName),
+      // }
+    );
+  }
+
+  getTaxSettingForEdit(taxCode: any,  
+    operation: any,
+    appName: any,
+    moduleName: any,
+    formName: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
       {
@@ -48,26 +61,26 @@ export class TaxSettingsService {
     );
   }
 
-  getAddTaxSettingsCriteriaData() {
+  getAddTaxSettingsCriteriaData(appName:any, moduleName: any,formName:any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/addTaxSettings`,
       {
         headers: new HttpHeaders()
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
 
-  getCriteriaMasterData(formName: any, appName: any) {
+  getCriteriaMasterData(formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("formName", formName)
           .set("applicationName", appName)
-          .set("moduleName", this.moduleName),
+          .set("moduleName", moduleName),
       }
     );
   }
@@ -77,7 +90,8 @@ export class TaxSettingsService {
     appName: any,
     criteriaMap: any,
     fieldName: any,
-    displayName: any
+    displayName: any,
+    moduleName: any
   ) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getCriteriaData`,
@@ -88,7 +102,7 @@ export class TaxSettingsService {
           .set("criteriaMap", criteriaMap)
           .set("fieldName", fieldName)
           .set("displayName", displayName)
-          .set("moduleName", this.moduleName),
+          .set("moduleName", moduleName),
       }
     );
   }
@@ -107,43 +121,53 @@ export class TaxSettingsService {
     );
   }
 
-  getAllCriteriaTemplates(id: string): Observable<any> {
+  getAllCriteriaTemplates( id: string,
+    appName: any,
+    moduleName: any,
+    formName: any): Observable<any> {
     return this.http.get(
       `remittance/taxSettingCriteriaController/getTaxSettingCriteriaTemplateList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
 
-  addNewTax(data): Observable<any> {
+  addNewTax( data,
+    appName: any,
+    moduleName: any,
+    formName: any): Observable<any> {
     return this.http.post(
       `/remittance/taxSettingCriteriaController/addCriteriaDetails`,
       data,
       {
         headers: new HttpHeaders()
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }
 
-  updateTaxSetting(userId, data): Observable<any> {
+  updateTaxSetting(userId,
+    data,
+    appName: any,
+    moduleName: any,
+    formName: any): Observable<any> {
     return this.http.put(
       `/remittance/taxSettingCriteriaController/updateTaxSettingsCriteria`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", this.appName)
-          .set("moduleName", this.moduleName)
-          .set("form", this.formName),
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
       }
     );
   }

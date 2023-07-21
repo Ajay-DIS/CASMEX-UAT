@@ -13,7 +13,7 @@
   border-radius: 10px;
   text-align: center;
   margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 20px;
   padding-bottom: 60px;
 }
 .NorecordFound p {
@@ -22,13 +22,42 @@
   color: rgb(0 0 0);
   font-size: 16px;
   line-height: 1px;
-  font-family: "IBM Plex Sans", sans-serif ;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 .NorecordFound button {
   margin-bottom: 40px;
+  margin-top: 70px;
 }
 
 .NorecordFound img {
   width: 27%;
   margin-top: 70px;
+}
+.app-form-search {
+  background: white;
+  border-radius: 6px;
+}
+
+.select-module-application {
+  display: flex;
+  gap: 10px;
+}
+.select-module-application .field {
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.select-module-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-module-application p-dropdown {
+  width: 100%;
+}
+.select-module-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  border: none !important;
 }

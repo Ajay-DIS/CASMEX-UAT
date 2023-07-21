@@ -1037,48 +1037,48 @@ export class SetCriteriaComponent implements OnInit {
   getCurrentCriteriaMap() {
     let formattedCriteriaArr = this.createFormattedCriteria();
 
-    let finalCriteriaObj;
+    let finalCriteriaObj = this.createFormattedCriteriaMap();
 
-    if (this.checkMandatoryCondition(formattedCriteriaArr)) {
-      finalCriteriaObj = this.checkMandatoryCondition(formattedCriteriaArr);
-      console.log(
-        "mandatory passed",
-        this.checkMandatoryCondition(formattedCriteriaArr)
-      );
-      if (this.checkDependanceCondition(formattedCriteriaArr)) {
-        console.log("mandatory and dependance passed");
-        let criteriaMap = finalCriteriaObj.criteriaMap;
-        let slabText = null;
-        let lcyOpr = null;
-        let NEWcriteriaMap = null;
+    // if (this.checkMandatoryCondition(formattedCriteriaArr)) {
+    //   finalCriteriaObj = this.checkMandatoryCondition(formattedCriteriaArr);
+    //   console.log(
+    //     "mandatory passed",
+    //     this.checkMandatoryCondition(formattedCriteriaArr)
+    //   );
+    if (this.checkDependanceCondition(formattedCriteriaArr)) {
+      console.log("mandatory and dependance passed");
+      let criteriaMap = finalCriteriaObj["criteriaMap"];
+      let slabText = null;
+      let lcyOpr = null;
+      let NEWcriteriaMap = null;
 
-        if (finalCriteriaObj.slabs) {
-          let slabs = finalCriteriaObj.slabs;
-          let slabArr = [];
-          slabs.forEach((slab) => {
-            let rngArr = [];
-            Object.entries(slab).forEach((rng) => {
-              rngArr.push(rng.join(":"));
-            });
-            slabArr.push(rngArr.join("::"));
+      if (finalCriteriaObj["slabs"]) {
+        let slabs = finalCriteriaObj["slabs"];
+        let slabArr = [];
+        slabs.forEach((slab) => {
+          let rngArr = [];
+          Object.entries(slab).forEach((rng) => {
+            rngArr.push(rng.join(":"));
           });
-          slabText = slabArr.join("#");
-          NEWcriteriaMap = criteriaMap + "&&&&" + slabText;
-        } else if (finalCriteriaObj.lcyOpr) {
-          lcyOpr = finalCriteriaObj.lcyOpr;
-          NEWcriteriaMap = criteriaMap + "&&&&" + lcyOpr;
-        } else {
-          NEWcriteriaMap = criteriaMap;
-        }
-
-        return NEWcriteriaMap;
+          slabArr.push(rngArr.join("::"));
+        });
+        slabText = slabArr.join("#");
+        NEWcriteriaMap = criteriaMap + "&&&&" + slabText;
+      } else if (finalCriteriaObj["lcyOpr"]) {
+        lcyOpr = finalCriteriaObj["lcyOpr"];
+        NEWcriteriaMap = criteriaMap + "&&&&" + lcyOpr;
       } else {
-        return false;
-        // this.appliedCriteriaData = [];
+        NEWcriteriaMap = criteriaMap;
       }
+
+      return NEWcriteriaMap;
     } else {
       return false;
+      // this.appliedCriteriaData = [];
     }
+    // } else {
+    //   return false;
+    // }
   }
 
   showTransCriteriaModal() {
