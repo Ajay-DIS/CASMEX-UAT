@@ -8,6 +8,7 @@ import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ConfirmDialog } from "primeng/confirmdialog";
+import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-tax-listing",
@@ -50,6 +51,10 @@ export class TaxListingComponent implements OnInit {
   taxListingApiData: any = {};
   loading: boolean = true;
 
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
   noDataMsg: string = "Tax Setting Data Not Available";
 
   linkedTaxCode: any = [];
@@ -61,7 +66,8 @@ export class TaxListingComponent implements OnInit {
     private taxSettingsService: TaxSettingsService,
     private setCriteriaService: SetCriteriaService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {
@@ -69,20 +75,76 @@ export class TaxListingComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+
+    this.taxSettingsService.applicationName = null;
+    this.taxSettingsService.moduleName = null;
+
     this.userData = JSON.parse(localStorage.getItem("userData"));
     console.log("userData", localStorage.getItem("userData"));
-    this.getTaxCodeListData(this.userData.userId);
-    this.loading = false;
+
+    this.setSelectAppModule();
+
+    this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
+      this.coreService.removeLoadingScreen();
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+      } else {
+      }
+    });
   }
 
-  getDecodedDataForListing(userId: any) {
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  searchAppModule() {
+    console.log("Hi");
+    this.getDecodedDataForListing(
+      this.userData.userId,
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
+    );
+  }
+  getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
+    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
         this.formName,
-        this.applicationName
+        appValue,
+        moduleValue,
       ),
-      taxSettingListingData: this.taxSettingsService.getTaxCodeData(userId),
+      taxSettingListingData: this.taxSettingsService.getTaxCodeData(
+        userId,
+        this.formName,
+        appValue,
+        moduleValue
+      ),
     })
       .pipe(
         take(1),
@@ -159,18 +221,23 @@ export class TaxListingComponent implements OnInit {
         },
         (err) => {
           this.coreService.removeLoadingScreen();
-          this.loading = false;
+          this.taxListingData = null;
           this.showNoDataFound =true;
+          this.loading = false;
           console.log("Error in getting tax seting list data", err);
         }
       );
   }
 
-  getTaxCodeListData(id: string) {
-    this.getDecodedDataForListing(this.userData.userId);
-  }
+
+  // getTaxCodeListData(id: string) {
+  //   this.getDecodedDataForListing(this.userData.userId,this.appCtrl.value.code,
+  //     this.moduleCtrl.value.code);
+  // }
 
   viewTaxSetting(data: any) {
+    this.taxSettingsService.applicationName = this.appCtrl.value.code;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "tax-settings",
@@ -249,6 +316,9 @@ export class TaxListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("taxCode", data["taxCode"]);
     formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("form", this.formName);
     this.updateTaxCodeStatus(formData, e.target, data);
     // }
   }
@@ -266,7 +336,11 @@ export class TaxListingComponent implements OnInit {
           if (res["msg"]) {
             message = res["msg"];
             sliderElm.checked = sliderElm!.checked;
-            this.getTaxCodeListData(this.userData.userId);
+            this.getDecodedDataForListing(
+              this.userData.userId,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
+            );
             this.coreService.showSuccessToast(message);
           } else {
             this.coreService.removeLoadingScreen();
@@ -278,6 +352,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   cloneTax(data: any) {
+    this.taxSettingsService.applicationName = this.appCtrl.value.code;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "tax-settings",

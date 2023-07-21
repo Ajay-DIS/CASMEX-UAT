@@ -9,6 +9,9 @@ import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { TaxSettingsService } from "../tax-settings.service";
 import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
+import { Table } from "primeng/table";
+import { Dropdown } from "primeng/dropdown";
+import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-add-new-tax",
@@ -17,14 +20,16 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
   providers: [DialogService, MessageService],
 })
 export class AddNewTaxComponent implements OnInit {
+  @ViewChild("table", { static: false }) table!: Table;
+  @ViewChild("templatesDropdown") templatesDropdown: Dropdown;
   primaryColor = "var(--primary-color)";
 
   userId = "";
   taxID = "";
   mode = "add";
   formName = "Tax Settings";
-  applicationName = "Web Application";
-  moduleName = "Remittance";
+  // applicationName = "Web Application";
+  // moduleName = "Remittance";
 
   taxCode = "No Data";
   taxDescription = "";
@@ -34,6 +39,8 @@ export class AddNewTaxComponent implements OnInit {
   appliedCriteriaDataOrg: any = [];
   appliedCriteriaCriteriaMap: any = null;
   appliedCriteriaIsDuplicate: any = null;
+  objectKeys = Object.keys;
+  isEditMode = false;
 
   editTaxSettingApiData: any = [];
 
@@ -66,6 +73,14 @@ export class AddNewTaxComponent implements OnInit {
 
   appliedCriteriaDatajson: any = {};
   // suresh Work end -->
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
+  formattedMasterData: any = [];
+
+  appModuleDataPresent: boolean = false;
+  showContent: boolean = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -77,38 +92,121 @@ export class AddNewTaxComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private setCriteriaService: SetCriteriaService,
     private taxSettingsService: TaxSettingsService,
-    private criteriaDataService: CriteriaDataService
+    private criteriaDataService: CriteriaDataService,
+    private fb: UntypedFormBuilder
   ) {}
 
   @ViewChild(SetCriteriaComponent)
   setCriteriaSharedComponent!: SetCriteriaComponent;
 
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
     this.mode = "add";
-    this.getCriteriaMasterData();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.setSelectAppModule();
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
-    this.getAllTemplates();
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
         this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
       );
-      // this.mode = "edit";
       this.taxID = params.id;
     }
     console.log(this.mode);
+    this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
+      console.log("appModuleList", res);
+      if (!res["msg"]) {
+        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
+          (app) => {
+            return { name: app.name, code: app.name };
+          }
+        );
+        this.searchModuleOptions = res["data"][
+          "cmPrimaryModuleMasterDetails"
+        ].map((app) => {
+          return { name: app.codeName, code: app.codeName };
+        });
+        if (
+          !(
+            this.taxSettingsService.applicationName ||
+            this.taxSettingsService.moduleName
+          )
+        ) {
+          if (this.mode != "add") {
+            this.router.navigate([`navbar/tax-settings`]);
+          } else {
+            this.coreService.removeLoadingScreen();
+          }
+        } else {
+          if (this.mode != "add") {
+            this.appCtrl.setValue({
+              name: this.taxSettingsService.applicationName,
+              code: this.taxSettingsService.applicationName,
+            });
+            this.moduleCtrl.setValue({
+              name: this.taxSettingsService.moduleName,
+              code: this.taxSettingsService.moduleName,
+            });
+            this.appModuleDataPresent = true;
+            this.appCtrl.disable();
+            this.moduleCtrl.disable();
+            this.searchAppModule();
+          }
+        }
+      } else {
+      }
+    });
+  }
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  onAppValueChange() {
+    this.showContent = false;
+    this.appModuleDataPresent = false;
+    this.moduleCtrl.reset();
+    this.moduleCtrl.enable();
+  }
+
+  searchAppModule() {
+    this.appModuleDataPresent = true;
+    this.showContent = false;
+    this.getCriteriaMasterData();
+    this.getAllTemplates();
   }
 
   getTaxSettingForEditApi(taxCode: any, operation: any) {
+    this.isEditMode = true;
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.taxSettingsService
-      .getTaxSettingForEdit(taxCode, operation)
+      .getTaxSettingForEdit(
+        taxCode,  
+        operation,
+        this.taxSettingsService.applicationName,
+        this.taxSettingsService.moduleName,
+        this.formName
+        )
       .subscribe(
         (res) => {
+          this.coreService.removeLoadingScreen();
+          this.appModuleDataPresent = true;
           if (!res["msg"]) {
             this.editTaxSettingApiData = res;
             console.log("edit data", res);
@@ -137,8 +235,10 @@ export class AddNewTaxComponent implements OnInit {
             });
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
+            this.showContent = true;
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            this.showContent = false;
             if (res["msg"].includes("No active")) {
               this.inactiveData = true;
               this.setCriteriaSharedComponent.criteriaCtrl.disable();
@@ -148,33 +248,38 @@ export class AddNewTaxComponent implements OnInit {
           }
         },
         (err) => {
+          this.showContent = false;
+          this.coreService.removeLoadingScreen();
           console.log("Error in getTaxSettingForEditApi", err);
         }
-      )
-      .add(() => {
-        setTimeout(() => {
-          this.coreService.removeLoadingScreen();
-        }, 250);
-      });
+      );
   }
 
   getCriteriaMasterData() {
-    this.coreService.displayLoadingScreen();
+    if (this.mode == "add") {
+      this.coreService.displayLoadingScreen();
+    }
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
         this.formName,
-        this.applicationName
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData:
-        this.taxSettingsService.getAddTaxSettingsCriteriaData(),
+        this.taxSettingsService.getAddTaxSettingsCriteriaData(
+          this.appCtrl.value.code,
+          this.moduleCtrl.value.code,
+          this.formName),
     })
       .pipe(
         take(1),
         map((response) => {
+          this.formatMasterData(response.criteriaMasterData);
           const criteriaMasterData = response.criteriaMasterData;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
+              console.log(data["criteriaType"]);
               if (data["criteriaType"] == "Slab") {
                 this.cmCriteriaSlabType.push(data["fieldName"]);
               }
@@ -224,20 +329,48 @@ export class AddNewTaxComponent implements OnInit {
           console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
-            this.getTaxSettingForEditApi(this.taxID, "edit");
+            if (
+              !(
+                this.taxSettingsService.applicationName ||
+                this.taxSettingsService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/tax-settings`]);
+            } else {
+              this.getTaxSettingForEditApi(this.taxID, "edit");
+            }
           } else if (this.mode == "clone") {
-            this.getTaxSettingForEditApi(this.taxID, "clone");
+            if (
+              !(
+                this.taxSettingsService.applicationName ||
+                this.taxSettingsService.moduleName
+              )
+            ) {
+              this.appModuleDataPresent = false;
+              this.showContent = false;
+              this.router.navigate([`navbar/tax-settings`]);
+            } else {
+              this.getTaxSettingForEditApi(this.taxID, "clone");
+            }
           } else {
+            this.showContent = true;
             this.coreService.removeLoadingScreen();
           }
         },
         (err) => {
+          this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
         }
       );
   }
-
+  formatMasterData(masterData: any) {
+    const formattedMasterData = [].concat.apply([], Object.values(masterData));
+    console.log(formattedMasterData);
+    this.formattedMasterData = formattedMasterData;
+  }
   getCorrespondentValues(
     fieldName: any,
     displayName: any,
@@ -249,10 +382,11 @@ export class AddNewTaxComponent implements OnInit {
     this.taxSettingsService
       .getCorrespondentValuesData(
         this.formName,
-        this.applicationName,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
-        displayName
+        displayName,
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -292,9 +426,9 @@ export class AddNewTaxComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("taxCode", this.taxID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.applicationName);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleName);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -371,9 +505,9 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.applicationName);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleName);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.taxSettingsService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -403,7 +537,12 @@ export class AddNewTaxComponent implements OnInit {
   getAllTemplates() {
     console.log("::", this.userId);
     this.taxSettingsService
-      .getAllCriteriaTemplates(this.userId)
+      .getAllCriteriaTemplates(
+        this.userId,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
+        this.formName
+      )
       .subscribe((response) => {
         if (response.data && response.data.length) {
           console.log("::templates", response);
@@ -471,7 +610,13 @@ export class AddNewTaxComponent implements OnInit {
             criteriaMap: this.appliedCriteriaCriteriaMap,
             taxCode: this.taxID,
           };
-          service = this.taxSettingsService.updateTaxSetting(this.userId, data);
+          service = this.taxSettingsService.updateTaxSetting(
+            this.userId,
+            data,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
+          );
           console.log("EDIT MODE - UPDATE TAX SERVICE");
         } else {
           let data = {
@@ -480,7 +625,12 @@ export class AddNewTaxComponent implements OnInit {
             criteriaMap: this.appliedCriteriaCriteriaMap,
           };
           console.log("ADD MODE - ADD NEW TAX SERVICE");
-          service = this.taxSettingsService.addNewTax(data);
+          service = this.taxSettingsService.addNewTax(
+            data,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formName
+          );
         }
 
         if (service) {
@@ -491,6 +641,8 @@ export class AddNewTaxComponent implements OnInit {
                 if (action == "save") {
                   this.router.navigate([`navbar/tax-settings`]);
                 } else if (action == "saveAndAddNew") {
+                  this.taxSettingsService.applicationName = null;
+                  this.taxSettingsService.moduleName = null;
                   // this.reset();
                   this.router.navigate([`navbar/tax-settings/add-tax`]);
                   // this.coreService.removeLoadingScreen();
@@ -511,12 +663,16 @@ export class AddNewTaxComponent implements OnInit {
 
   reset() {
     if (this.mode == "edit") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetTaxDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -524,12 +680,16 @@ export class AddNewTaxComponent implements OnInit {
         },
       });
     } else if (this.mode == "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetTaxDataConfirmation",
         accept: () => {
+          this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
           this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -550,6 +710,11 @@ export class AddNewTaxComponent implements OnInit {
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
+          this.appCtrl.reset();
+          this.moduleCtrl.reset();
+          this.moduleCtrl.disable();
+          this.showContent = false;
+          this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;

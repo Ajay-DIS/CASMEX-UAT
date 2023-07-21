@@ -52,6 +52,7 @@
                   />
                   <p-inputNumber
                     *ngSwitchCase="'number'"
+                    class="block"
                     [formControlName]="field.name"
                     mode="decimal"
                     [useGrouping]="false"
@@ -59,10 +60,12 @@
                   </p-inputNumber>
                   <p-calendar
                     *ngSwitchCase="'date'"
+                    class="block"
                     [formControlName]="field.name"
                   ></p-calendar>
                   <input
                     *ngSwitchCase="'checkbox'"
+                    class="block"
                     type="checkbox"
                     [formControlName]="field.name"
                   />
