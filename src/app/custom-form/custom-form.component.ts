@@ -90,6 +90,7 @@ export class CustomFormComponent implements OnInit {
                 ? secData["fieldLabel"]
                 : secData["fieldName"],
             required: secData["isMandatory"] == "Y" ? true : false,
+            enable: secData["isEnable"] == "Y" ? true : false,
             visible: secData["isVisibile"] == "Y" ? true : false,
             validLength: secData["validLength"],
             defaultValue: secData["defaultValue"],

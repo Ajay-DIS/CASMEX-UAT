@@ -12,7 +12,6 @@ import { take } from "rxjs/operators";
 import { AuthService } from "./auth/auth.service";
 import { CoreService } from "./core.service";
 import { LoginService } from "./login/login.service";
-import { BnNgIdleService } from "bn-ng-idle";
 
 @Component({
   selector: "app-root",
@@ -27,8 +26,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     private confirmationService: ConfirmationService,
     private coreService: CoreService,
     private authService: AuthService,
-    private loginService: LoginService,
-    private bnidle: BnNgIdleService
+    private loginService: LoginService
   ) {}
   title = "casmex";
 
@@ -37,33 +35,19 @@ export class AppComponent implements OnInit, AfterContentChecked {
   blocked: boolean;
 
   ngOnInit() {
-    this.authService.autoLogin();
     this.coreService.$loadingScreen.subscribe((isLoading) => {
       this.blocked = isLoading;
     });
-    this.authService.showSessionConfirm.subscribe((res) => {
-      let i = 1;
-      console.log(res.status);
 
+    this.authService.autoLogin();
+
+    this.authService.showSessionConfirm.subscribe((res) => {
+      console.log("::tokenexpiring", res);
       if (res.status) {
-        console.log("expire+movement");
-        this.refreshTokenLogin();
+        this.confirmSessionContinuity(res.timer);
+      } else {
+        this.cd && this.cd.hide();
       }
-      this.bnidle.startWatching(1500).subscribe((isTimedOut: boolean) => {
-        console.log(isTimedOut, res.status);
-        if (isTimedOut && res.status) {
-          console.log("expire+nomovement");
-          this.confirmSessionContinuity(res.timer);
-          // this.bnidle.stopTimer();
-        } else {
-          this.cd && this.cd.hide();
-        }
-      });
-      // if (res.status) {
-      //   this.confirmSessionContinuity(res.timer);
-      // } else {
-      //   this.cd && this.cd.hide();
-      // }
     });
   }
 
@@ -77,17 +61,16 @@ export class AppComponent implements OnInit, AfterContentChecked {
       key: "sessionConfirm",
       accept: () => {
         this.refreshTokenLogin();
-        this.bnidle.resetTimer(1500);
+        this.authService.clearOldTimers();
+        this.authService.resetUserIdlenessTimer(1680);
       },
       reject: () => {
         this.logout();
-        this.bnidle.stopTimer();
       },
     });
   }
 
   refreshTokenLogin() {
-    // this.coreService.displayLoadingScreen();
     this.loginService
       .refreshAuthToken({
         application: "CASMEX_CORE",
@@ -99,34 +82,21 @@ export class AppComponent implements OnInit, AfterContentChecked {
         (data: any) => {
           if (data && data.jwt) {
             console.log("::refreshToken", data);
-            if (this.authService.clearTimer) {
-              clearTimeout(this.authService.clearTimer);
-            }
-            if (this.authService.clearWarningTimer) {
-              clearTimeout(this.authService.clearWarningTimer);
-            }
             this.loginService.refreshUserSessionToken(data.jwt);
-            this.coreService.showSuccessToast("Session extended successfully");
-            // this.coreService.removeLoadingScreen();
+            // this.coreService.showSuccessToast("Session extended successfully");
           } else {
-            // this.coreService.removeLoadingScreen();
             data["msg"] && this.coreService.showWarningToast(data["msg"]);
           }
         },
         (err) => {
-          // this.coreService.removeLoadingScreen();
           console.log(err);
         }
       );
   }
 
   logout() {
-    if (this.authService.clearTimer) {
-      clearTimeout(this.authService.clearTimer);
-    }
-    if (this.authService.clearWarningTimer) {
-      clearTimeout(this.authService.clearWarningTimer);
-    }
+    this.authService.clearOldTimers();
+    this.authService.stopUserIdlenessTimer();
     this.authService.userDataSub.next(null);
     localStorage.removeItem("token");
     localStorage.removeItem("userData");

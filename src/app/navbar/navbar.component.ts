@@ -14,6 +14,7 @@ import { MenuItem } from "primeng/api";
 import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
+import { BnNgIdleService } from "bn-ng-idle";
 
 @Component({
   selector: "app-navbar",
@@ -349,9 +350,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   selectProfileOption(data) {
     if (data && (data.name == "Logout" || data.name == "Login")) {
-      if (this.authService.clearTimer) {
-        clearTimeout(this.authService.clearTimer);
-      }
+      this.authService.clearOldTimers();
+      this.authService.stopUserIdlenessTimer();
       this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
       localStorage.removeItem("userData");

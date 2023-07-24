@@ -168,7 +168,7 @@ export class AddNewFormRuleComponent implements OnInit {
     { field: "fieldName", header: "Field Name", type: "string" },
     { field: "fieldLabel", header: "Field Label", type: "input" },
     { field: "isMandatory", header: "Is Mandatory", type: "checkbox" },
-    // { field: "isEnabled", header: "Is Enabled", type: 'checkbox' },
+    { field: "isEnable", header: "Is Enable", type: "checkbox" },
     { field: "isVisibile", header: "Is Visible", type: "checkbox" },
     { field: "validLength", header: "Min/Max Length", type: "input" },
     { field: "defaultValue", header: "Default Values", type: "input" },

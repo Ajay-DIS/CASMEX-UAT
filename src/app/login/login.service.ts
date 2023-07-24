@@ -3,6 +3,8 @@ import { Injectable } from "@angular/core";
 import { environment } from "src/environments/environment";
 import { AuthService } from "../auth/auth.service";
 import { User } from "../auth/user.model";
+import { BnNgIdleService } from "bn-ng-idle";
+import { take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -20,7 +22,11 @@ export class LoginService {
       data.jwt,
       new Date(expiry * 1000).getTime()
     );
-    this.authService.autoLogout(
+    // this.authService.autoLogout(
+    //   new Date(expiry * 1000).getTime() - new Date().getTime()
+    // );
+
+    this.authService.mandateRefreshToken(
       new Date(expiry * 1000).getTime() - new Date().getTime()
     );
     let token = data.jwt;
@@ -30,6 +36,16 @@ export class LoginService {
     localStorage.setItem("userData", JSON.stringify(loggedUser));
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
+
+    this.authService
+      .startCheckingUserIdleness(1680)
+      .subscribe((isTimedOut: boolean) => {
+        console.log("::userIDle", isTimedOut);
+        if (isTimedOut) {
+          this.authService.clearOldTimers();
+          this.authService.autoLogout(120000);
+        }
+      });
   }
 
   refreshUserSessionToken(token: any) {
@@ -49,12 +65,25 @@ export class LoginService {
       "updatedTimer",
       new Date(expiry * 1000).getTime() - new Date().getTime()
     );
-    this.authService.autoLogout(
+    // this.authService.autoLogout(
+    //   new Date(expiry * 1000).getTime() - new Date().getTime()
+    // );
+    this.authService.mandateRefreshToken(
       new Date(expiry * 1000).getTime() - new Date().getTime()
     );
     this.authService.userDataSub.next(loggedUser);
     localStorage.setItem("token", token);
     localStorage.setItem("userData", JSON.stringify(loggedUser));
+
+    this.authService
+      .startCheckingUserIdleness(1680)
+      .subscribe((isTimedOut: boolean) => {
+        console.log("::userIDle", isTimedOut);
+        if (isTimedOut) {
+          this.authService.clearOldTimers();
+          this.authService.autoLogout(120000);
+        }
+      });
   }
 
   loginUser(data: LoginFormData) {
