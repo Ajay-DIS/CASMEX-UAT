@@ -95,10 +95,11 @@
 }
 /* suresh start*/
 .application-header {
+  display: inline-block;
   background-color: var(--surface-ground);
   border-radius: 5px;
   padding: 5px;
-  width: 550px;
+  // width: 550px;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

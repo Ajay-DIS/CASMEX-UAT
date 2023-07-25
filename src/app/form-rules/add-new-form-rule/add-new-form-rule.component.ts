@@ -302,6 +302,9 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   searchAppModule() {
+    this.applyCriteriaFormattedData = [];
+    this.criteriaText = [];
+    this.criteriaCodeText = [];
     this.appModuleDataPresent = true;
     this.showContent = false;
     this.getCriteriaMasterData();
@@ -989,6 +992,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   childRow["data"]["formSection"] = detail["formSection"];
                   childRow["data"]["fieldType"] = detail["fieldType"];
                   childRow["data"]["fieldLabel"] = detail["fieldLabel"];
+                  childRow["data"]["apiKey"] = detail["apiKey"];
                   formattedRowData["children"].push(childRow);
                 });
                 completeData.push(formattedRowData);
@@ -1092,7 +1096,7 @@ export class AddNewFormRuleComponent implements OnInit {
           } else {
             this.coreService.showWarningToast(res["msg"]);
 
-            this.appliedCriteriaData = [];
+            this.applyCriteriaFormattedData = [];
           }
         },
         (err) => {

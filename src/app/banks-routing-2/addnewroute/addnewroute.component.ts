@@ -189,6 +189,9 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   searchAppModule() {
+    this.appliedCriteriaData = [];
+    this.criteriaText = [];
+    this.criteriaCodeText = [];
     this.appModuleDataPresent = true;
     this.showContent = false;
     this.getCriteriaMasterData();

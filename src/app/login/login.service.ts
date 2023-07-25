@@ -26,9 +26,6 @@ export class LoginService {
     //   new Date(expiry * 1000).getTime() - new Date().getTime()
     // );
 
-    this.authService.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - new Date().getTime()
-    );
     let token = data.jwt;
     let menuTree = data.menuItemTree;
     console.log("user", loggedUser);
@@ -37,12 +34,15 @@ export class LoginService {
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
 
+    this.authService.mandateRefreshToken(
+      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
+    );
     this.authService
       .startCheckingUserIdleness(1680)
       .subscribe((isTimedOut: boolean) => {
         console.log("::userIDle", isTimedOut);
         if (isTimedOut) {
-          this.authService.clearOldTimers();
+          // this.authService.clearOldTimers();
           this.authService.autoLogout(120000);
         }
       });
@@ -68,19 +68,19 @@ export class LoginService {
     // this.authService.autoLogout(
     //   new Date(expiry * 1000).getTime() - new Date().getTime()
     // );
-    this.authService.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - new Date().getTime()
-    );
     this.authService.userDataSub.next(loggedUser);
     localStorage.setItem("token", token);
     localStorage.setItem("userData", JSON.stringify(loggedUser));
 
+    this.authService.mandateRefreshToken(
+      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
+    );
     this.authService
       .startCheckingUserIdleness(1680)
       .subscribe((isTimedOut: boolean) => {
         console.log("::userIDle", isTimedOut);
         if (isTimedOut) {
-          this.authService.clearOldTimers();
+          // this.authService.clearOldTimers();
           this.authService.autoLogout(120000);
         }
       });

@@ -79,7 +79,7 @@ export class AuthService {
     //   new Date(expiry * 1000).getTime() - new Date().getTime()
     // );
     this.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - new Date().getTime()
+      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
     );
     this.userDataSub.next(loggedUser);
     localStorage.setItem("token", token);
@@ -88,7 +88,7 @@ export class AuthService {
     this.startCheckingUserIdleness(1680).subscribe((isTimedOut: boolean) => {
       console.log("::userIDle", isTimedOut);
       if (isTimedOut) {
-        this.clearOldTimers();
+        // this.clearOldTimers();
         this.autoLogout(120000);
       }
     });
@@ -182,13 +182,24 @@ export class AuthService {
     this.startCheckingUserIdleness(1680).subscribe((isTimedOut: boolean) => {
       console.log("::userIDle", isTimedOut);
       if (isTimedOut) {
-        this.clearOldTimers();
+        // this.clearOldTimers();
         this.autoLogout(120000);
       }
     });
 
     // this.autoLogout(userData["expirationDate"] - new Date().getTime());
-    this.mandateRefreshToken(userData["expirationDate"] - new Date().getTime());
+    if (userData["expirationDate"] - new Date().getTime() <= 0) {
+      console.log("expired");
+      this.logout();
+    } else {
+      console.log(
+        "expiring in ",
+        userData["expirationDate"] - (new Date().getTime() + 60000)
+      );
+      this.mandateRefreshToken(
+        userData["expirationDate"] - (new Date().getTime() + 60000)
+      );
+    }
   }
 
   startCheckingUserIdleness(timer: any) {
