@@ -34,6 +34,7 @@ export class LoginService {
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
 
+    clearTimeout(this.authService.mandateRefreshTokenTimer);
     this.authService.mandateRefreshToken(
       new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
     );
@@ -72,6 +73,7 @@ export class LoginService {
     localStorage.setItem("token", token);
     localStorage.setItem("userData", JSON.stringify(loggedUser));
 
+    clearTimeout(this.authService.mandateRefreshTokenTimer);
     this.authService.mandateRefreshToken(
       new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
     );
