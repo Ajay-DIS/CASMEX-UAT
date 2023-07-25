@@ -190,7 +190,7 @@ export class CustomFormComponent implements OnInit {
           .set("criteriaMap", this.criteriaMapCode.trim())
           .set("form", "Form Rules")
           .set("moduleName", "Remittance")
-          .set("applications", "Web Application"),
+          .set("applications", "Remittance Mobile App"),
       })
       .subscribe(
         (res) => {

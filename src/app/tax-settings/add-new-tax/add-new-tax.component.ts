@@ -11,7 +11,11 @@ import { TaxSettingsService } from "../tax-settings.service";
 import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
 import { Table } from "primeng/table";
 import { Dropdown } from "primeng/dropdown";
-import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-add-new-tax",
@@ -185,6 +189,9 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   searchAppModule() {
+    this.appliedCriteriaData = [];
+    this.criteriaText = [];
+    this.criteriaCodeText = [];
     this.appModuleDataPresent = true;
     this.showContent = false;
     this.getCriteriaMasterData();
@@ -197,12 +204,12 @@ export class AddNewTaxComponent implements OnInit {
     this.appliedCriteriaDataCols = [];
     this.taxSettingsService
       .getTaxSettingForEdit(
-        taxCode,  
+        taxCode,
         operation,
         this.taxSettingsService.applicationName,
         this.taxSettingsService.moduleName,
         this.formName
-        )
+      )
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
@@ -269,7 +276,8 @@ export class AddNewTaxComponent implements OnInit {
         this.taxSettingsService.getAddTaxSettingsCriteriaData(
           this.appCtrl.value.code,
           this.moduleCtrl.value.code,
-          this.formName),
+          this.formName
+        ),
     })
       .pipe(
         take(1),
