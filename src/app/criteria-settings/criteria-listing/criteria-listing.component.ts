@@ -16,7 +16,7 @@ export class CriteriaListingComponent implements OnInit {
   criteriaSettingApiData: any;
   criteriaSettingData: any[] = [];
 
-  showNoDataFound :boolean= false;
+  showNoDataFound: boolean = false;
 
   showapplicationsOptions: boolean = false;
   showmoduleNameOptions: boolean = false;
@@ -72,7 +72,7 @@ export class CriteriaListingComponent implements OnInit {
     private coreService: CoreService,
     private route: ActivatedRoute,
     private datePipe: DatePipe,
-    private criterisSettingsService: CriteriaSettingsService,
+    private criterisSettingsService: CriteriaSettingsService
   ) {}
 
   ngOnInit(): void {
@@ -87,19 +87,21 @@ export class CriteriaListingComponent implements OnInit {
       .subscribe(
         (res) => {
           console.log(res);
-          this.criteriaSettingApiData = res;
-          if (res["data"]) {
+          if (!res["msg"]) {
+            this.criteriaSettingApiData = res;
             this.criteriaSettingData = res["data"];
             this.showNoDataFound = false;
             this.formatApiData();
             this.setFilterOptions();
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            this.criteriaSettingData = [];
+            this.showNoDataFound = true;
           }
         },
         (err) => {
           console.log("Error in criterisSettingListing", err);
-          this.showNoDataFound =true;
+          this.showNoDataFound = true;
         }
       )
       .add(() => {
