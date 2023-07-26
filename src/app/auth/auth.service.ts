@@ -78,6 +78,8 @@ export class AuthService {
     // this.authService.autoLogout(
     //   new Date(expiry * 1000).getTime() - new Date().getTime()
     // );
+
+    clearTimeout(this.mandateRefreshTokenTimer);
     this.mandateRefreshToken(
       new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
     );
@@ -196,6 +198,7 @@ export class AuthService {
         "expiring in ",
         userData["expirationDate"] - (new Date().getTime() + 60000)
       );
+      clearTimeout(this.mandateRefreshTokenTimer);
       this.mandateRefreshToken(
         userData["expirationDate"] - (new Date().getTime() + 60000)
       );

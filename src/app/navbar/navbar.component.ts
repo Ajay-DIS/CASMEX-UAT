@@ -351,7 +351,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   selectProfileOption(data) {
     if (data && (data.name == "Logout" || data.name == "Login")) {
       this.authService.clearOldTimers();
-      this.authService.stopUserIdlenessTimer();
+      // this.authService.stopUserIdlenessTimer();
       this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
