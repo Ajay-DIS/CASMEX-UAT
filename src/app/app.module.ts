@@ -67,7 +67,14 @@ import { SearchListingComponent } from "./search-settings/search-listing/search-
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./custom-form/custom-form.component";
+import { CorporateComponent } from './customer-profile/corporate/corporate.component';
 import { UserIdleModule } from "angular-user-idle";
+
+import { SearchListingComponent } from './search-settings/search-listing/search-listing.component';
+import { AddNewSearchComponent } from './search-settings/add-new-search/add-new-search.component';
+import { CustomFieldsComponent } from './custom-fields/custom-fields.component';
+import { CustomFormComponent } from './custom-form/custom-form.component';
+import { CorporateComponent } from './customer-profile/corporate/corporate.component';
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -98,6 +105,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddNewSearchComponent,
     CustomFieldsComponent,
     CustomFormComponent,
+    CorporateComponent,
   ],
   imports: [
     BrowserModule,
