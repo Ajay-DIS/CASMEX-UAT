@@ -22,6 +22,7 @@
     "@angular/router": "^14.3.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
+    "angular-user-idle": "^3.0.1",
     "bn-ng-idle": "^2.0.5",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",

@@ -63,10 +63,11 @@ import { PanelModule } from "primeng/panel";
 import { TabViewModule } from "primeng/tabview";
 import { CalendarModule } from "primeng/calendar";
 import { FileUploadModule } from "primeng/fileupload";
-import { SearchListingComponent } from './search-settings/search-listing/search-listing.component';
-import { AddNewSearchComponent } from './search-settings/add-new-search/add-new-search.component';
-import { CustomFieldsComponent } from './custom-fields/custom-fields.component';
-import { CustomFormComponent } from './custom-form/custom-form.component';
+import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
+import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
+import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
+import { CustomFormComponent } from "./custom-form/custom-form.component";
+import { UserIdleModule } from "angular-user-idle";
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -139,6 +140,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TabViewModule,
     CalendarModule,
     FileUploadModule,
+    UserIdleModule.forRoot({ idle: 1680, timeout: 120, ping: 1500 }),
   ],
   providers: [
     BnNgIdleService,

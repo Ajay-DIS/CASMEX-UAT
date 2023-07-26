@@ -22,9 +22,6 @@ export class LoginService {
       data.jwt,
       new Date(expiry * 1000).getTime()
     );
-    // this.authService.autoLogout(
-    //   new Date(expiry * 1000).getTime() - new Date().getTime()
-    // );
 
     let token = data.jwt;
     let menuTree = data.menuItemTree;
@@ -33,66 +30,10 @@ export class LoginService {
     localStorage.setItem("userData", JSON.stringify(loggedUser));
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
-
-    clearTimeout(this.authService.mandateRefreshTokenTimer);
-    this.authService.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
-    );
-    this.authService
-      .startCheckingUserIdleness(1680)
-      .subscribe((isTimedOut: boolean) => {
-        console.log("::userIDle", isTimedOut);
-        if (isTimedOut) {
-          // this.authService.clearOldTimers();
-          this.authService.autoLogout(120000);
-        }
-      });
-  }
-
-  refreshUserSessionToken(token: any) {
-    let expiry = JSON.parse(atob(token.split(".")[1])).exp;
-    let user = JSON.parse(localStorage.getItem("userData"));
-    console.log(user);
-    let loggedUser = new User(
-      user["useRole"],
-      user["userGroup"],
-      user["userId"],
-      user["userName"],
-      token,
-      new Date(expiry * 1000).getTime()
-    );
-    console.log("updatedUSer", loggedUser);
-    console.log(
-      "updatedTimer",
-      new Date(expiry * 1000).getTime() - new Date().getTime()
-    );
-    // this.authService.autoLogout(
-    //   new Date(expiry * 1000).getTime() - new Date().getTime()
-    // );
-    this.authService.userDataSub.next(loggedUser);
-    localStorage.setItem("token", token);
-    localStorage.setItem("userData", JSON.stringify(loggedUser));
-
-    clearTimeout(this.authService.mandateRefreshTokenTimer);
-    this.authService.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
-    );
-    this.authService
-      .startCheckingUserIdleness(1680)
-      .subscribe((isTimedOut: boolean) => {
-        console.log("::userIDle", isTimedOut);
-        if (isTimedOut) {
-          // this.authService.clearOldTimers();
-          this.authService.autoLogout(120000);
-        }
-      });
   }
 
   loginUser(data: LoginFormData) {
     return this.http.post(`/login/loginController/login`, data);
-  }
-  refreshAuthToken(data: LoginFormData) {
-    return this.http.post(`/login/loginController/refreshToken`, data);
   }
 }
 

@@ -7,6 +7,7 @@ import { BnNgIdleService } from "bn-ng-idle";
 import { take } from "rxjs/operators";
 import { LoginService } from "../login/login.service";
 import { HttpClient } from "@angular/common/http";
+import { UserIdleService } from "angular-user-idle";
 
 @Injectable({
   providedIn: "root",
@@ -16,7 +17,8 @@ export class AuthService {
     private router: Router,
     private coreService: CoreService,
     private bnidle: BnNgIdleService,
-    private http: HttpClient
+    private http: HttpClient,
+    private userIdle: UserIdleService
   ) {}
 
   userDataSub = new BehaviorSubject<User>(null);
@@ -27,16 +29,98 @@ export class AuthService {
   clearTimer: any;
   clearWarningTimer: any;
 
-  mandateRefreshTokenTimer: any;
+  $onTimerStart: any;
+  $onTimeOut: any;
+  $ping: any;
 
-  mandateRefreshToken(timer: any) {
-    this.mandateRefreshTokenTimer = setTimeout(() => {
-      console.log("::mandateRefreshToken", timer);
-      this.refreshToken();
-    }, timer);
+  isLoggedIn() {
+    return !!localStorage.getItem("userData");
   }
 
-  refreshToken() {
+  logout() {
+    this.clearTimers();
+    this.stopWatching();
+    this.coreService.userActionsObs.next([{ name: "Login" }]);
+    this.userDataSub.next(null);
+    this.showSessionConfirm.next({ status: false });
+    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
+    this.coreService.showWarningToast(
+      "Your session has timed out. Please log in again to continue."
+    );
+    this.router.navigate(["navbar/session-time-out"]);
+  }
+
+  autoLogout(expiryTimer: any) {
+    console.log("::expire in ", expiryTimer / 1000, "sec");
+    if (expiryTimer <= 0) {
+      this.logout();
+    } else {
+      this.sessionTimeoutWarning(expiryTimer);
+      this.clearTimer = setTimeout(() => {
+        this.logout();
+      }, expiryTimer);
+    }
+  }
+
+  clearTimers() {
+    if (this.clearTimer) {
+      clearInterval(this.clearTimer);
+    }
+    if (this.clearWarningTimer) {
+      clearInterval(this.clearWarningTimer);
+    }
+  }
+
+  sessionTimeoutWarning(expiryTimer: any) {
+    if (expiryTimer >= 120000) {
+      this.clearWarningTimer = setTimeout(() => {
+        console.log("::expires in", expiryTimer - 120000);
+        this.showSessionConfirm.next({ status: true, timer: "2 Minutes" });
+      }, expiryTimer - 120000);
+    } else {
+      let remainTime =
+        expiryTimer / 1000 > 60
+          ? `${Math.floor(expiryTimer / (1000 * 60))} Minute`
+          : `less than 1 Minute`;
+      this.showSessionConfirm.next({ status: true, timer: remainTime });
+      console.log("::expires in", remainTime);
+    }
+  }
+
+  autoLogin() {
+    let userData: {
+      useRole: string;
+      userGroup: string;
+      userId: string;
+      userName: string;
+      _token: string;
+      expirationDate: number;
+    } = JSON.parse(localStorage.getItem("userData"));
+    if (!userData) {
+      return;
+    }
+
+    let user = new User(
+      userData["useRole"],
+      userData["userGroup"],
+      userData["userId"],
+      userData["userName"],
+      userData["_token"],
+      userData["expirationDate"]
+    );
+
+    if (userData["expirationDate"] - new Date().getTime() <= 0) {
+      this.logout();
+    } else {
+      // if (user.token) {
+      //   this.userDataSub.next(user);
+      // }
+      this.refreshTokenLogin();
+    }
+  }
+
+  refreshTokenLogin() {
     this.refreshAuthToken({
       application: "CASMEX_CORE",
       username: "yogeshm",
@@ -49,7 +133,7 @@ export class AuthService {
             console.log("::refreshToken", data);
             this.refreshUserSessionToken(data.jwt);
           } else {
-            data["msg"] && console.log(data["msg"]);
+            data["msg"] && this.coreService.showWarningToast(data["msg"]);
           }
         },
         (err) => {
@@ -75,145 +159,90 @@ export class AuthService {
       "updatedTimer",
       new Date(expiry * 1000).getTime() - new Date().getTime()
     );
-    // this.authService.autoLogout(
-    //   new Date(expiry * 1000).getTime() - new Date().getTime()
-    // );
 
-    clearTimeout(this.mandateRefreshTokenTimer);
-    this.mandateRefreshToken(
-      new Date(expiry * 1000).getTime() - (new Date().getTime() + 60000)
-    );
     this.userDataSub.next(loggedUser);
+    this.coreService.userActionsObs.next([
+      { name: "Profile" },
+      { name: "Logout" },
+    ]);
     localStorage.setItem("token", token);
     localStorage.setItem("userData", JSON.stringify(loggedUser));
-
-    this.startCheckingUserIdleness(1680).subscribe((isTimedOut: boolean) => {
-      console.log("::userIDle", isTimedOut);
-      if (isTimedOut) {
-        // this.clearOldTimers();
-        this.autoLogout(120000);
-      }
-    });
   }
 
   refreshAuthToken(data: any) {
     return this.http.post(`/login/loginController/refreshToken`, data);
   }
 
-  isLoggedIn() {
-    return !!localStorage.getItem("userData");
-  }
+  // % USER IDLENESS DETECTOR
 
-  logout() {
-    this.clearOldTimers();
-    this.stopUserIdlenessTimer();
-    this.coreService.userActionsObs.next([{ name: "Login" }]);
-    this.userDataSub.next(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("userData");
-    this.coreService.showWarningToast(
-      "Your session has timed out. Please log in again to continue."
-    );
-    this.router.navigate(["navbar/session-time-out"]);
-  }
+  startUserIdleDetector() {
+    console.log("::Watch START");
 
-  autoLogout(expiryTimer: any) {
-    console.log("::expire in ", expiryTimer / 1000, "sec");
-    if (expiryTimer <= 0) {
-      this.logout();
-    } else {
-      this.sessionTimeoutWarning(expiryTimer);
-      this.clearTimer = setTimeout(() => {
-        this.logout();
-      }, expiryTimer);
-    }
-  }
+    //Start watching for user inactivity.
+    this.startWatching();
 
-  sessionTimeoutWarning(expiryTimer: any) {
-    if (expiryTimer >= 120000) {
-      this.clearWarningTimer = setTimeout(() => {
-        console.log("::expires in", expiryTimer - 120000);
-        this.showSessionConfirm.next({ status: true, timer: "2 Minutes" });
-      }, expiryTimer - 120000);
-    } else {
-      let remainTime =
-        expiryTimer / 1000 > 60
-          ? `${Math.floor(expiryTimer / (1000 * 60))} Minute`
-          : `less than 1 Minute`;
-      this.showSessionConfirm.next({ status: true, timer: remainTime });
-      console.log("::expires in", remainTime);
-    }
-  }
-
-  clearOldTimers() {
-    if (this.clearTimer) {
-      clearTimeout(this.clearTimer);
-    }
-    if (this.clearWarningTimer) {
-      clearTimeout(this.clearWarningTimer);
-    }
-    this.showSessionConfirm.next({ status: false });
-  }
-
-  autoLogin() {
-    let userData: {
-      useRole: string;
-      userGroup: string;
-      userId: string;
-      userName: string;
-      _token: string;
-      expirationDate: number;
-    } = JSON.parse(localStorage.getItem("userData"));
-    if (!userData) {
-      return;
-    }
-
-    let user = new User(
-      userData["useRole"],
-      userData["userGroup"],
-      userData["userId"],
-      userData["userName"],
-      userData["_token"],
-      userData["expirationDate"]
-    );
-
-    if (user.token) {
-      this.userDataSub.next(user);
-    }
-
-    this.startCheckingUserIdleness(1680).subscribe((isTimedOut: boolean) => {
-      console.log("::userIDle", isTimedOut);
-      if (isTimedOut) {
-        // this.clearOldTimers();
-        this.autoLogout(120000);
+    // Start watching when user idle is starting.
+    this.$onTimerStart = this.onTimerStart().subscribe((count) => {
+      if (count == 1) {
+        if (this.isLoggedIn()) {
+          this.clearTimers();
+          this.sessionTimeoutWarning(120000);
+          console.log("::expireTImer", count);
+        }
       }
     });
 
-    // this.autoLogout(userData["expirationDate"] - new Date().getTime());
-    if (userData["expirationDate"] - new Date().getTime() <= 0) {
-      console.log("expired");
-      this.logout();
-    } else {
-      console.log(
-        "expiring in ",
-        userData["expirationDate"] - (new Date().getTime() + 60000)
-      );
-      clearTimeout(this.mandateRefreshTokenTimer);
-      this.mandateRefreshToken(
-        userData["expirationDate"] - (new Date().getTime() + 60000)
-      );
-    }
+    // Start watch when time is up.
+    this.$onTimeOut = this.onTimeout().subscribe(() => {
+      if (this.isLoggedIn()) {
+        this.logout();
+        console.log("::Time is up!");
+      }
+    });
+
+    // Refresh Token.
+    this.$ping = this.userIdle.ping$.subscribe(() => {
+      if (this.isLoggedIn()) {
+        console.log("::PING");
+      }
+    });
   }
 
-  startCheckingUserIdleness(timer: any) {
-    return this.bnidle.startWatching(timer);
+  stopTimer() {
+    console.log("STOPPED TIMER");
+    this.userIdle.stopTimer();
   }
 
-  resetUserIdlenessTimer(timer: any = 1680) {
-    this.bnidle.resetTimer(timer);
+  onTimerStart() {
+    return this.userIdle.onTimerStart();
   }
 
-  stopUserIdlenessTimer() {
-    this.bnidle.stopTimer();
+  onTimeout() {
+    return this.userIdle.onTimeout();
   }
+  onUserIdleStatusChange() {
+    return this.userIdle.onIdleStatusChanged();
+  }
+
+  stopWatching() {
+    console.log("STOPPED WATCHING");
+    this.$onTimeOut?.unsubscribe();
+    this.$onTimerStart?.unsubscribe();
+    this.$ping?.unsubscribe();
+    this.userIdle.stopWatching();
+  }
+
+  startWatching() {
+    this.userIdle.startWatching();
+  }
+
+  restartTimer() {
+    this.userIdle.resetTimer();
+  }
+
+  checkIfWatching() {
+    return this.userIdle.ping$;
+  }
+
+  // % USER IDLENESS DETECTOR END
 }
