@@ -2,7 +2,6 @@
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
-        <!-- <img height="35px" src="../assets/description.svg" alt="" /> -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="41"
@@ -45,15 +44,6 @@
           (click)="saveCriteriaSettings('save')"
           class="p-button-raised"
         ></button>
-        <!-- <button
-          pButton
-          pRipple
-          type="button"
-          [disabled]="invalidForSave || !searchSettingtable.length"
-          label="Save & Add New"
-          (click)="saveCriteriaSettings('saveAddNew')"
-          class="p-button-raised"
-        ></button> -->
         <button
           pButton
           pRipple
@@ -146,7 +136,6 @@
       ></button>
     </div>
 
-    <!-- Suresh start -->
     <div class="application-table">
       <div class="application-header" *ngIf="searchSettingtable.length">
         Application: {{ appCtrl.value && appCtrl.value.name }} | Module:
@@ -257,7 +246,6 @@
       </div>
     </div>
 
-    <!-- Suresh end -->
   </div>
 </div>
 <p-confirmDialog

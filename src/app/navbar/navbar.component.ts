@@ -93,10 +93,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.selectedLanguage = this.translate.currentLang;
     this.selectTheme({ name: "Blue", color: "#4759e4" });
-    console.log(this.currRoute);
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
-      console.log(this.breadcrumbsItems);
     });
 
     this.coreService.userActionsObs.subscribe((opt) => {
@@ -121,14 +119,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     });
 
     this.authService.userDataSub.pipe(take(1)).subscribe((user) => {
-      console.log(user);
       if (!user) {
         this.userActions = [{ name: "Login" }];
       } else {
         this.userActions = [{ name: "Profile" }, { name: "Logout" }];
       }
     });
-    // this.setSidebarMenu();
   }
   switchLanguage(lang: string) {
     this.translate.use(lang);
@@ -151,8 +147,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           label: menu,
           icon: this.getIcons(menu).icon,
           items: this.getSubMenus(submenus),
-          // routerLink: this.getIcons(menu).routerLink,
-          // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
             this.getIcons(menu).matchUrls.some((v) =>
@@ -164,7 +158,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           label: menu,
           icon: this.getIcons(menu).icon,
           routerLink: this.getIcons(menu).routerLink,
-          // routerLinkActiveOptions: { exact: true },
           expanded:
             this.getIcons(menu).matchUrls &&
             this.getIcons(menu).matchUrls.some((v) =>
@@ -309,8 +302,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/tax-settings",
           "/navbar/form-rules",
           "/navbar/bank-routing/addnewroute",
-          // "/navbar/bank-routing-2",
-          // "/navbar/bank-routing-2/addnewroute",
         ];
         routeName = "/navbar/bank-routing";
         break;
@@ -344,14 +335,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
     return { icon: iconName, matchUrls: matchUrls, routerLink: routeName };
   }
-  // onChange(item: any) {
-  //   this.translate.use(item.value);
-  // }
 
   selectProfileOption(data) {
     if (data && (data.name == "Logout" || data.name == "Login")) {
-      this.authService.clearOldTimers();
-      // this.authService.stopUserIdlenessTimer();
       this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
@@ -363,7 +349,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   selectTheme(data) {
-    console.log(data);
     this.selectedTheme = data;
     let theme = "theme-" + data.name.toLowerCase();
     this.coreService.switchTheme(theme);

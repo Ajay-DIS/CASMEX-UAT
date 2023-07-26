@@ -41,13 +41,11 @@ export class AddNewSearchComponent implements OnInit {
 
   appFormModuleDataForEdit: any = {};
 
-  // Suresh start
   searchId = "";
   searchSettingtable = [];
   criteriaSettingDetails: any = {};
   orderIDArray: any = [];
   searchSettingtableopt: [];
-  // Suresh end
 
   params: any;
   isCloneMode = false;
@@ -129,19 +127,12 @@ export class AddNewSearchComponent implements OnInit {
             ].map((app) => {
               return { name: app.codeName, code: app.codeName };
             });
-            console.log(
-              this.searchApplicationOptions,
-              this.searchFormsOptions,
-              this.searchModuleOptions
-            );
             const params = this.activatedRoute.snapshot.params;
             if (params && params.id) {
               this.isCloneMode = true;
               let data;
               this.searchId = params.id;
-              //this.formCtrl.enable();
               this.state$.subscribe((res) => {
-                console.log(res);
                 if (res["appName"]) {
                   this.appFormModuleDataForEdit = res;
                   this.setCloneCriteriaData(params.id);
@@ -220,13 +211,11 @@ export class AddNewSearchComponent implements OnInit {
 
   executeQueries() {
     this.coreService.displayLoadingScreen();
-    console.log("changed form");
     let data = {
       formName: this.formCtrl.value.name,
       moduleName: this.moduleCtrl.value.name,
       applicationName: this.appCtrl.value.name,
     };
-    console.log(data);
 
     if (this.mode == "add") {
       this.searchSettingsService
@@ -249,8 +238,6 @@ export class AddNewSearchComponent implements OnInit {
                 item["orderID"] = "";
                 item["operations"] = "";
               });
-              console.log("fields Data", this.fieldsQueriesData);
-              console.log(this.selectFields);
             } else if (res["data"]["cmCriteriaOperationsMasters"].length == 0) {
               this.isFieldsQueriesData = false;
               this.coreService.showWarningToast(
@@ -281,65 +268,10 @@ export class AddNewSearchComponent implements OnInit {
         this.searchSettingtable = [];
       }
     }
-
-    // if (!this.isFieldsQueriesData) {
-    //   console.log("changed form if");
-    //   this.searchSettingsService
-    //     .getSearchFieldsExecuteQueries(data)
-    //     .pipe(take(1))
-    //     .subscribe(
-    //       (res) => {
-    //         if (res["data"]["cmCriteriaOperationsMasters"].length) {
-    //           this.isFieldsQueriesData = true;
-    //           this.fieldsQueriesData =
-    //             res["data"]["cmCriteriaOperationsMasters"];
-    //           this.selectFields = [...this.fieldsQueriesData];
-    //           this.restoreSelectFields = [...this.fieldsQueriesData];
-    //           this.selectFields.forEach((item) => {
-    //             item["operationOption"] = this.searchOperatorsOptions.map(
-    //               (x) => {
-    //                 return { label: x.name, code: x.name };
-    //               }
-    //             );
-    //             item["orderID"] = "";
-    //             item["operations"] = "";
-    //           });
-    //           console.log("fields Data", this.fieldsQueriesData);
-    //           console.log(this.selectFields);
-    //         } else if (res["data"]["cmCriteriaOperationsMasters"].length == 0) {
-    //           this.isFieldsQueriesData = false;
-    //           this.coreService.showWarningToast(
-    //             "No data found for selected parameters"
-    //           );
-    //         } else if (res["msg"]) {
-    //           this.isFieldsQueriesData = false;
-    //           this.coreService.showWarningToast(res["msg"]);
-    //         }
-    //       },
-    //       (err) => {
-    //         console.log("error in getting fields queries", err);
-    //       }
-    //     )
-    //     .add(() => {
-    //       this.coreService.removeLoadingScreen();
-    //     });
-    // } else {
-    //   if (!this.isCloneMode) {
-    //     this.selectFields = [...this.fieldsQueriesData];
-    //     this.selectedFields = [];
-    //     this.searchSettingtable = [];
-    //   }
-    //   setTimeout(() => {
-    //     this.coreService.removeLoadingScreen();
-    //   }, 500);
-    // }
   }
 
   executeBtnClick() {
     this.selectedFields.forEach((item) => {
-      console.log(item);
-      // this.criteriaTypeOp = item["criteriaType"];
-      // item["orderID"] =  this.searchSettingtable[index]["operations"];
       if (!item["operationOption"]) {
         item["operationOption"] = this.searchOperatorsOptions.map((x) => {
           return { label: x.name, code: x.name };
@@ -361,9 +293,6 @@ export class AddNewSearchComponent implements OnInit {
       } else {
         item["orderID"] = this.searchSettingtable[index]["orderID"];
       }
-      // item["iSMandatory"] = this.searchSettingtable[index]["iSMandatory"];
-      // item["iSMandatory"] = item["iSMandatory"] == "yes" ? true : false;
-      // item["orderID"] =  this.searchSettingtable[index]["orderID"];
     });
     this.searchSettingtable = [...this.selectedFields];
     this.orderIDArray = [];
@@ -376,7 +305,6 @@ export class AddNewSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
-          console.log(res);
           if (res["appForm"] && res["appForm"].length) {
             this.duplicateCriteria = false;
             res["appForm"].forEach((appForm) => {
@@ -389,7 +317,6 @@ export class AddNewSearchComponent implements OnInit {
                 this.moduleCtrl.value.name == module &&
                 !this.duplicateCriteria
               ) {
-                console.log("confirm dialog");
                 this.coreService.setSidebarBtnFixedStyle(false);
                 this.coreService.setHeaderStickyStyle(false);
                 this.duplicateCriteria = true;
@@ -397,14 +324,12 @@ export class AddNewSearchComponent implements OnInit {
                   message: `<img src="../../../assets/warning.svg"><br/><br/> Search setting for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
                   accept: () => {
                     this.saveCriteriaFields(action);
-                    console.log("Update it -- call save method API");
                     this.setHeaderSidebarBtn(true);
                   },
                   reject: () => {
                     this.coreService.showWarningToast(
                       "Search setting saving revoked"
                     );
-                    console.log("Dont update it -- reject");
                     this.setHeaderSidebarBtn(false);
                   },
                 });
@@ -414,7 +339,6 @@ export class AddNewSearchComponent implements OnInit {
               this.saveCriteriaFields(action);
             }
           } else {
-            console.log(res["msg"]);
             this.saveCriteriaFields(action);
           }
         },
@@ -454,33 +378,21 @@ export class AddNewSearchComponent implements OnInit {
       status: "A",
       settingSearchQueryCriteria: [],
     };
-    console.log("on save", this.searchSettingtable);
     this.searchSettingtable.forEach((searchSetting) => {
       let operations = [];
       searchSetting["operations"].forEach((op) => {
         operations.push(op["label"]);
       });
 
-      console.log("data", searchSetting);
       searchSetting["operators"] = operations.join(",");
-      // let searchSettingDetails = {
-      //   fieldName: searchSetting["fieldName"],
-      //   displayName: searchSetting["displayName"],
-      //   operators: operations.join(","),
-      //   orderID: searchSetting["orderID"],
-      // };
       data["settingSearchQueryCriteria"].push(searchSetting);
     });
-
-    console.log(data);
 
     let operation = "add";
 
     if (this.mode == "edit") {
       operation = "update";
     }
-
-    console.log(operation, this.userData.userId);
 
     this.searchSettingsService
       .postSearchFieldsToSave(data, operation, this.userData.userId)
@@ -518,11 +430,9 @@ export class AddNewSearchComponent implements OnInit {
             if (action == "save") {
               this.router.navigate([`navbar/search-settings`]);
             } else if (action == "saveAddNew") {
-              // this.reset();
               this.router.navigate([
                 `navbar/search-settings/add-search-settings/add`,
               ]);
-              // this.coreService.removeLoadingScreen();
             }
           }
         },
@@ -532,11 +442,6 @@ export class AddNewSearchComponent implements OnInit {
       );
   }
 
-  toggleIsMandatory(e: any) {
-    console.log(e, this.searchSettingtable);
-  }
-
-  // Suresh start
   criteriaPriorityValidation(event, field) {
     let orderID = Number(event.target.value);
     if (orderID > this.searchSettingtable.length) {
@@ -550,7 +455,6 @@ export class AddNewSearchComponent implements OnInit {
       field["invalidForSave"] = true;
     } else {
       let index = this.orderIDArray.indexOf(orderID);
-      console.log(index, this.searchSettingtable.indexOf(field), orderID);
       if (orderID <= 0) {
         this.coreService.showWarningToast(
           "Display Order is required and should be atleast 1"
@@ -579,12 +483,6 @@ export class AddNewSearchComponent implements OnInit {
   bindSelectedOperations(values, rowIndex) {
     let selectedOp: any = [];
     selectedOp = [...values.map((x) => x.code)].join(",");
-    console.log(
-      "selected",
-      selectedOp,
-      "this.searchSettingtable[rowIndex].operations",
-      this.searchSettingtable[rowIndex].operations
-    );
   }
 
   saveCriteriaSettings(action) {
@@ -593,7 +491,6 @@ export class AddNewSearchComponent implements OnInit {
     let validGreaterthanPriority = false;
     let displayOrderInvalid = false;
     this.searchSettingtable.forEach((element) => {
-      console.log("element", element);
       if (element.operations == "") {
         emptyOperation = true;
       }
@@ -622,7 +519,6 @@ export class AddNewSearchComponent implements OnInit {
       let msg = "Some of display order fields are invalid.";
       this.coreService.showWarningToast(msg);
     } else {
-      console.log("passed validation", this.mode);
       if (this.mode == "edit") {
         this.saveCriteriaFields(action);
       } else {
@@ -647,8 +543,6 @@ export class AddNewSearchComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          console.log(response.cloneCriteriaData);
-          console.log(response.criteriaFieldsData);
           if (response.cloneCriteriaData["msg"]) {
             this.coreService.showWarningToast(
               response.cloneCriteriaData["msg"]
@@ -662,15 +556,12 @@ export class AddNewSearchComponent implements OnInit {
             response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
           cloneCriteriaData["settingSearchQueryCriteria"].forEach(
             (cloneD: any) => {
-              console.log(cloneD);
               this.orderIDArray.push(cloneD.orderID);
               cloneD["operationOption"] = this.searchOperatorsOptions.map(
                 (x) => {
                   return { label: x.name, code: x.name };
                 }
               );
-              console.log(criteriaFieldsData);
-              console.log(cloneD["operationOption"]);
               let selectedOpt = cloneD["operators"].split(",");
               cloneD["operators"] = selectedOpt.map((opt) => {
                 return { label: opt, code: opt };
@@ -678,7 +569,6 @@ export class AddNewSearchComponent implements OnInit {
               let data = criteriaFieldsData.find(
                 (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
               );
-              console.log("data   vvvv", data);
             }
           );
           this.isFieldsQueriesData = true;
@@ -698,10 +588,8 @@ export class AddNewSearchComponent implements OnInit {
         })
       )
       .subscribe((data) => {
-        console.log(data);
         if (data) {
           this.searchSettingtable = data["settingSearchQueryCriteria"];
-          console.log(this.searchSettingtable);
           this.searchSettingtable.forEach((item, i) => {
             item["operations"] = this.searchSettingtable[i]["operators"];
           });
@@ -728,11 +616,6 @@ export class AddNewSearchComponent implements OnInit {
   }
 
   reset() {
-    // if (this.mode == "edit") {
-    //   this.appCtrl.enable();
-    //   this.formCtrl.enable();
-    //   this.moduleCtrl.enable();
-    // }
 
     this.isFieldsQueriesData = false;
     this.searchSettingtable = [];
@@ -744,5 +627,4 @@ export class AddNewSearchComponent implements OnInit {
     this.formCtrl.disable();
     this.moduleCtrl.disable();
   }
-  // Suresh end
 }

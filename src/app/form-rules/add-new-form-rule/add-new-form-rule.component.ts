@@ -32,7 +32,6 @@ export class AddNewFormRuleComponent implements OnInit {
   ruleID = "";
   mode = "add";
   formName = "Form Rules";
-  // applicationName = "Web Application";
 
   formRuleCode = "No Data";
   ruleDescription = "";
@@ -227,11 +226,9 @@ export class AddNewFormRuleComponent implements OnInit {
       this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
         this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
       );
-      // this.mode = "edit";
       this.ruleID = params.id;
     }
     this.formRuleService.getFormRulesAppModuleList().subscribe((res) => {
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -329,7 +326,6 @@ export class AddNewFormRuleComponent implements OnInit {
             this.coreService.removeLoadingScreen();
             this.appModuleDataPresent = true;
             this.editFromRulesApiData = JSON.parse(this.stringify(res));
-            console.log("edit data", res);
 
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
 
@@ -350,8 +346,6 @@ export class AddNewFormRuleComponent implements OnInit {
               });
             }
 
-            console.log(res);
-
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editFromRulesApiData
             );
@@ -369,7 +363,6 @@ export class AddNewFormRuleComponent implements OnInit {
             this.isFromRulesLinked =
               !this.editFromRulesApiData["criteriaUpdate"];
 
-            // Table formation STARt
 
             let reqData =
               this.criteriaDataService.decodeCriteriaMapIntoTableFields(
@@ -379,16 +372,11 @@ export class AddNewFormRuleComponent implements OnInit {
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editFromRulesApiData
             );
-            console.log(":::::", this.criteriaCodeText);
-
-            console.log("decoded ARRRR", reqData);
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
-              // reqData.lcySlabArr.length ? ["LCY Amount"] : []
               ["LCY Amount"]
             );
-            console.log("this.criteriaText", crtfields);
 
             this.applyCriteriaDataTableColumns = [];
 
@@ -426,8 +414,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   opr = "=";
                 }
 
-                console.log(crt, formatCrt.split("  ")[0]);
-
                 if (formatCrt.split("  ")[0] == "LCY Amount") {
                   isLcyOprFieldPresent = true;
                   lcyOprFields.push(
@@ -437,15 +423,6 @@ export class AddNewFormRuleComponent implements OnInit {
                       " " +
                       formatCrt.split("  ")[1]
                   );
-                  //   if (!lcyOprFieldInserted) {
-                  //     this.applyCriteriaDataTableColumns.unshift({
-                  //       field: "lcyAmount",
-                  //       header: formatCrt.split("  ")[0],
-                  //       value: formatCrt.split("  ")[1],
-                  //       type: "lcyOpr",
-                  //     });
-                  //     lcyOprFieldInserted = true;
-                  //   }
                 }
                 if (
                   this.criteriaCodeText.includes("LCY Amount = Slab") &&
@@ -495,7 +472,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 }
               });
 
-            console.log(countryCol);
             if (Object.keys(countryCol).length) {
               this.applyCriteriaDataTableColumns.unshift(countryCol);
             }
@@ -521,8 +497,6 @@ export class AddNewFormRuleComponent implements OnInit {
               });
             });
 
-            console.log(this.applyCriteriaDataTableColumns);
-
             let completeData = [];
             if (simpleData) {
               Object.keys(res["labelData"]["label"]).forEach((k, i) => {
@@ -534,9 +508,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   expanded: true,
                   children: [],
                 };
-                console.log(
-                  res["data"]["dataOperation"][0][res["labelData"]["label"][k]]
-                );
 
                 let formattedChilds =
                   res["data"]["dataOperation"][0][res["labelData"]["label"][k]];
@@ -552,8 +523,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 completeData.push(formattedRowData);
               });
             } else {
-              console.log(reqData);
-              console.log(lcyOprFields);
               if (reqData.lcySlabArr.length > 0) {
                 reqData.lcySlabArr.forEach((slab, i) => {
                   Object.keys(res["labelData"]["label"]).forEach((k) => {
@@ -596,11 +565,6 @@ export class AddNewFormRuleComponent implements OnInit {
                       expanded: true,
                       children: [],
                     };
-                    console.log(
-                      res["data"]["dataOperation"][0][
-                        res["labelData"]["label"][k]
-                      ]
-                    );
                     let formattedChilds = res["data"]["dataOperation"][0][
                       res["labelData"]["label"][k]
                     ].filter((child) => child["data"]["key"] == oprField);
@@ -619,14 +583,8 @@ export class AddNewFormRuleComponent implements OnInit {
               }
             }
 
-            console.log(completeData);
-            console.log(this.selectedNodes);
             this.applyCriteriaFormattedData = [...completeData];
-
-            console.log(this.editFromRulesApiData["data"]["dataOperation"]);
-            console.log(this.applyCriteriaFormattedData);
             this.showContent = true;
-            // Table formation END
           } else {
             this.coreService.showWarningToast(res["msg"]);
             this.showContent = false;
@@ -637,8 +595,6 @@ export class AddNewFormRuleComponent implements OnInit {
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
-
-          console.log(res);
         },
         (err) => {
           this.showContent = false;
@@ -649,11 +605,9 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   onNodeSelect(event) {
-    console.log(event);
     event["node"]["partialSelected"] = false;
   }
   onNodeUnSelect(event) {
-    console.log(event);
     delete event["node"]["partialSelected"];
   }
 
@@ -685,8 +639,6 @@ export class AddNewFormRuleComponent implements OnInit {
               }
             }
           );
-          console.log(" Slabs fields", this.cmCriteriaSlabType);
-          console.log(this.criteriaDataDetailsJson);
 
           if (this.mode == "add") {
             this.formRuleCode = this.criteriaDataDetailsJson.data.formRuleCode;
@@ -699,7 +651,6 @@ export class AddNewFormRuleComponent implements OnInit {
             ...this.criteriaDataDetailsJson.data.listCriteria
               .cmCriteriaDataDetails,
           ];
-          console.log("this.cmCriteriaDataDetails", this.cmCriteriaDataDetails);
 
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
@@ -722,13 +673,11 @@ export class AddNewFormRuleComponent implements OnInit {
             criteriaDependencyTreeData["criteriaMapDdlOptions"];
           this.independantCriteriaArr =
             criteriaDependencyTreeData["independantCriteriaArr"];
-          console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
       )
       .subscribe(
         (res) => {
-          console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
             if (
@@ -789,13 +738,11 @@ export class AddNewFormRuleComponent implements OnInit {
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
-          console.log(res);
           if (res[fieldName]) {
             this.setCriteriaSharedComponent.valueCtrl.enable();
             this.setCriteriaSharedComponent.hideValuesDropdown = false;
             this.setCriteriaSharedComponent.showValueInput = false;
 
-            console.log(res[fieldName]);
             this.correspondentDdlOptions = res[fieldName].map((val) => {
               return { name: val["codeName"], code: val["code"] };
             });
@@ -845,7 +792,6 @@ export class AddNewFormRuleComponent implements OnInit {
           }, 1000);
         },
       });
-      console.log("CANNNNOT UPDATE ITTT");
     } else {
       this.formRuleCriteriaSearchApi(postDataCriteria);
     }
@@ -859,23 +805,18 @@ export class AddNewFormRuleComponent implements OnInit {
       .postFormRuleSearch(formData)
       .subscribe(
         (res) => {
-          console.log("criteriasearch DATA", res);
           this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
           if (!res["msg"]) {
             if (!res["duplicate"]) {
-              // for apply START
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
               let reqData =
                 this.criteriaDataService.decodeCriteriaMapIntoTableFields(res);
 
-              console.log("decoded ARRRR", reqData);
               let crtfields = this.setCriteriaService.decodeFormattedCriteria(
                 reqData.critMap,
                 this.criteriaMasterData,
-                // reqData.lcySlabArr.length ? ["LCY Amount"] : []
                 ["LCY Amount"]
               );
-              console.log("this.criteriaText", crtfields);
 
               this.applyCriteriaDataTableColumns = [];
 
@@ -955,7 +896,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 this.applyCriteriaDataTableColumns.unshift(countryCol);
               }
               let completeData = [];
-              console.log(res);
               Object.keys(res["labelData"]["label"]).forEach((k) => {
                 let formattedRowData = {
                   data: {
@@ -974,7 +914,6 @@ export class AddNewFormRuleComponent implements OnInit {
                     if (detail[col["field"]] == "N") {
                       detail[col["field"]] = false;
                     }
-                    console.log(detail[col["field"]]);
                     childRow["data"][col["field"]] = detail[col["field"]];
                   });
                   Object.keys(childRow.data).forEach((field) => {
@@ -986,7 +925,6 @@ export class AddNewFormRuleComponent implements OnInit {
                       });
                     }
                   });
-                  console.log(detail);
                   childRow["data"]["formLableFieldSequence"] =
                     detail["formLableFieldSequence"];
                   childRow["data"]["formSection"] = detail["formSection"];
@@ -1036,7 +974,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.applyCriteriaFormattedData = [];
 
                   reqData.lcySlabArr.forEach((slab, i) => {
-                    console.log(completeData);
                     let copy = JSON.parse(JSON.stringify(completeData));
                     copy.forEach((row) => {
                       row["data"]["key"] = i;
@@ -1062,7 +999,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.isLcyAmount = true;
 
                   lcyOprFields.forEach((opr, i) => {
-                    console.log(completeData);
                     let copy = JSON.parse(JSON.stringify(completeData));
                     copy.forEach((row) => {
                       row["data"]["key"] = i;
@@ -1077,9 +1013,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 }
               }
 
-              console.log(this.applyCriteriaFormattedData);
-
-              // for apply END
 
               this.coreService.showSuccessToast(
                 `Criteria Applied Successfully`
@@ -1157,7 +1090,6 @@ export class AddNewFormRuleComponent implements OnInit {
       )
       .subscribe((response) => {
         if (response.data && response.data.length) {
-          console.log("::templates", response);
           this.criteriaTemplatesDdlOptions = response.data;
           this.criteriaTemplatesDdlOptions.forEach((val) => {
             val["name"] = val["criteriaName"];
@@ -1170,9 +1102,6 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   saveAddNewRule(action) {
-    console.log(this.setCriteriaSharedComponent.getCurrentCriteriaMap());
-    console.log(this.appliedCriteriaCriteriaMap);
-
     if (
       this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
       this.appliedCriteriaCriteriaMap
@@ -1182,10 +1111,6 @@ export class AddNewFormRuleComponent implements OnInit {
       );
     }
 
-    console.log(this.applyCriteriaFormattedData);
-    console.log(this.applyCriteriaResponse);
-    console.log(this.editFromRulesApiData);
-
     let isRequiredFields = false;
     let invalidDefValue = false;
     let invalidLengthValue = false;
@@ -1193,10 +1118,8 @@ export class AddNewFormRuleComponent implements OnInit {
     let payloadData;
 
     if (this.applyCriteriaResponse["data"]) {
-      console.log("apply");
       payloadData = JSON.parse(this.stringify(this.applyCriteriaResponse));
     } else if (this.editFromRulesApiData["data"]) {
-      console.log("edit");
       payloadData = JSON.parse(this.stringify(this.editFromRulesApiData));
       payloadData["duplicate"] = this.appliedCriteriaIsDuplicate;
     }
@@ -1266,7 +1189,6 @@ export class AddNewFormRuleComponent implements OnInit {
       let str = this.stringify(payloadData);
       str = str.replace(/true/g, '"Y"');
       str = str.replace(/false/g, '"N"');
-      console.log(JSON.parse(str));
       payloadData = JSON.parse(str);
       let copyPayload = JSON.parse(this.stringify(payloadData));
       if (copyPayload["duplicate"] == "N") {
@@ -1274,7 +1196,6 @@ export class AddNewFormRuleComponent implements OnInit {
       } else if (copyPayload["duplicate"] == "Y") {
         payloadData["duplicate"] = true;
       }
-      console.log(payloadData);
 
       if (
         this.mode != "clone" ||
@@ -1290,9 +1211,7 @@ export class AddNewFormRuleComponent implements OnInit {
             this.moduleCtrl.value.code,
             this.formName
           );
-          console.log("EDIT MODE - UPDATE form SERVICE");
         } else {
-          console.log("ADD MODE - ADD NEW form SERVICE");
           service = this.formRuleService.addNewFormRule(
             payloadData,
             this.appCtrl.value.code,
@@ -1304,7 +1223,6 @@ export class AddNewFormRuleComponent implements OnInit {
         if (service) {
           service.subscribe(
             (res) => {
-              console.log(res);
               if (res["msg"]) {
                 this.coreService.showSuccessToast(res.msg);
                 if (action == "save") {
@@ -1313,7 +1231,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.formRuleService.applicationName = null;
                   this.formRuleService.moduleName = null;
                   this.router.navigate([`navbar/form-rules/addnewformrule`]);
-                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
@@ -1322,14 +1239,11 @@ export class AddNewFormRuleComponent implements OnInit {
               console.log("error in saveAddNewFormRule", err);
             }
           );
-          // }
         }
       } else {
         this.coreService.showWarningToast("Applied criteria already exists.");
       }
     }
-
-    console.log([finalObj]);
   }
 
   stringify(obj) {
@@ -1337,10 +1251,8 @@ export class AddNewFormRuleComponent implements OnInit {
     let str = JSON.stringify(obj, function (key, value) {
       if (typeof value === "object" && value !== null) {
         if (cache.indexOf(value) !== -1) {
-          // Circular reference found, discard key
           return;
         }
-        // Store value in our collection
         cache.push(value);
       }
       return value;
@@ -1455,7 +1367,6 @@ export class AddNewFormRuleComponent implements OnInit {
     validLengthInp: any,
     defaultValueCol: any
   ) {
-    console.log(rowData, e, validLengthInp);
     const pattern = /^(\d+)-(\d+)$/;
     rowData["isValidLength"] = null;
 
@@ -1473,13 +1384,11 @@ export class AddNewFormRuleComponent implements OnInit {
     }
 
     const match = e.match(pattern);
-    console.log(validLengthInp.classList);
     if (match) {
       const lesserNumber = parseInt(match[1]);
       const bigNumber = parseInt(match[2]);
 
       if (bigNumber > lesserNumber) {
-        console.log("Valid match!");
         this.minMaxInpTooltip = "";
         validLengthInp.classList.remove("inputError");
         rowData["isValidLength"] = true;
@@ -1487,9 +1396,6 @@ export class AddNewFormRuleComponent implements OnInit {
         this.minMaxInpTooltip = "{min-length} should be less than {max-length}";
         rowData["isValidLength"] = false;
         validLengthInp.classList.add("inputError");
-        console.log(
-          "Invalid match: big number is not greater than lesser number."
-        );
       }
     } else {
       this.minMaxInpTooltip =
@@ -1497,7 +1403,6 @@ export class AddNewFormRuleComponent implements OnInit {
 
       validLengthInp.classList.add("inputError");
       rowData["isValidLength"] = false;
-      console.log("No match found.");
     }
 
     if (rowData["isValidLength"] == false) {
@@ -1513,13 +1418,7 @@ export class AddNewFormRuleComponent implements OnInit {
     defValueInp: any,
     minMaxCol: any
   ) {
-    console.log(e);
-    console.log(rowData);
     rowData["isValidDefValue"] = null;
-
-    console.log(rowData[minMaxCol]);
-    console.log(e.length);
-
     if (e.length == 0) {
       rowData["isValidDefValue"] = null;
       defValueInp.classList.remove("inputError");
@@ -1548,8 +1447,6 @@ export class AddNewFormRuleComponent implements OnInit {
     }
   }
 
-  // suresh Work start -->
-
   onChange(controlId, rule) {
     let minmax = rule.minFieldLengthMaxLength.split("-");
     let min = minmax[0];
@@ -1557,12 +1454,8 @@ export class AddNewFormRuleComponent implements OnInit {
     let index = this.formRulesData.findIndex(
       (x) => x.fieldName == rule.fieldName
     );
-    console.log("minmax", minmax, max, index);
     if (controlId == "defaultValues") {
-      // if(rule.defaultValues.length < min || rule.defaultValues.length > max) {
-      // rule.maxlengthDefaultValue = Number(max);
       this.formRulesData[index].maxlengthDefaultValue = Number(max);
-      // }
     }
   }
 
@@ -1574,18 +1467,15 @@ export class AddNewFormRuleComponent implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
-    console.log(selectCol, value, index);
     if (selectCol == "setAsOption") {
       if (selectCol == "setAsOption" && value["code"] == "Percentage") {
         this.appliedCriteriaData[index]["tax"] = 0;
       } else {
         if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
-          console.log("SLAB");
           this.appliedCriteriaData[index]["tax"] = Number(
             this.appliedCriteriaData[index].lcyAmountFrom
           );
         } else {
-          console.log("NOT SLAB");
           if (this.appliedCriteriaData[index].lcyAmount) {
             let lcyAmountNum =
               this.appliedCriteriaData[index].lcyAmount.split(" ")[3];
@@ -1608,7 +1498,6 @@ export class AddNewFormRuleComponent implements OnInit {
     }
     this.appliedCriteriaData[index][selectCol.split("Option")[0]] =
       value.codeName;
-    console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
   }
 
   changeValueInput(
@@ -1619,14 +1508,6 @@ export class AddNewFormRuleComponent implements OnInit {
     valueInputElm: any
   ) {
     this.appliedCriteriaData[index]["invalidTaxAmount"] = false;
-    console.log(
-      "selectCol",
-      event,
-      "valueInputElm",
-      valueInputElm,
-      this.appliedCriteriaData[index][selectCol.split("Option")[0]],
-      this.appliedCriteriaData[index].lcyAmountFrom
-    );
     let max = 0;
     let min = 0;
     let lcyAmountEqualTo =
@@ -1639,7 +1520,6 @@ export class AddNewFormRuleComponent implements OnInit {
       this.appliedCriteriaData[index].lcyAmount.substring(
         this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1
       );
-    // console.log("lcyAmount",lcyAmount);
     if (
       this.appliedCriteriaData[index][selectCol.split("Option")[0]] ==
       "Percentage"
@@ -1689,27 +1569,17 @@ export class AddNewFormRuleComponent implements OnInit {
       this.delete(index);
     } else if (operation == "clone") {
       this.clone(index, selectRow, fieldName);
-    } else {
-      console.log("Nor Clone neither Delete");
     }
   }
 
   clone(index: any, selectRow: any, fieldName: any) {
-    console.log("clone", index, selectRow);
     let clonedRow = {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
-    console.log(clonedRow);
     this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
-    setTimeout(() => {
-      console.log(this.appliedCriteriaData[index]);
-      console.log(this.appliedCriteriaData[index + 1]);
-    }, 100);
   }
   delete(index: any) {
     this.appliedCriteriaData.splice(index, 1);
-    console.log("delete", index);
   }
-  // suresh Work end -->
 }

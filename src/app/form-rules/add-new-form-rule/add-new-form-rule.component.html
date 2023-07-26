@@ -151,7 +151,6 @@
       "
     ></app-set-criteria>
   </div>
-  <!-- // suresh Work start -->
   <div
     class="details-page-card mt-2"
     *ngIf="showContent && applyCriteriaFormattedData.length"
@@ -183,12 +182,6 @@
               [scrollable]="true"
               scrollHeight="250px"
             >
-              <!-- <ng-template pTemplate="caption">
-                <div class="flex">
-                  <p-treeTableHeaderCheckbox></p-treeTableHeaderCheckbox>
-                  <span class="ml-2">Toggle All</span>
-                </div>
-              </ng-template> -->
               <ng-template pTemplate="colgroup" let-columns>
                 <colgroup>
                   <col *ngFor="let col of columns" />
@@ -380,13 +373,6 @@
                           [binary]="true"
                         ></p-checkbox>
                       </ng-container>
-                      <!-- <ng-container *ngIf="col.type == 'string'">
-
-                      </ng-container>
-                      <ng-container *ngIf="col.type == 'input'">
-                      </ng-container>
-                      <ng-container *ngIf="col.type == 'checkbox'">
-                      </ng-container> -->
                     </td>
                   </ng-container>
                 </tr>
@@ -397,7 +383,6 @@
       </div>
     </div>
   </div>
-  <!-- // suresh Work end -->
   <div
     class="NorecordFound"
     *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"

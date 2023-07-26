@@ -36,15 +36,9 @@
     <div style="display: flex; margin-bottom: 20px; margin-left: 30px;">
       <select class="form-select" aria-label="Default select example" (change)="changeCriteriaFields($any($event.target).value)" style="width: 200px; margin-right: 10px;">
         <option selected *ngFor="let name of testData">{{name.displayName}}</option>
-        <!-- <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option> -->
       </select>
       <select class="form-select" aria-label="Default select example" style="width: 200px; margin-right: 10px;">
         <option selected *ngFor="let operation of criteriaOperations">{{operation}}</option>
-        <!-- <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option> -->
       </select>
       <select class="form-select" aria-label="Default select example" style="width: 200px; margin-right: 10px;">
         <option selected>SBI</option>
@@ -78,15 +72,9 @@
     <div style="display: flex; margin-bottom: 20px; margin-left: 30px; margin-top: 10px;">
       <select class="form-select" [(ngModel)]="selectedPaymentCategory" aria-label="Default select example" style="width: 180px; margin-right: 25px;">
         <option selected *ngFor="let cate of payCateData">{{cate.name}}</option>
-        <!-- <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option> -->
       </select>
       <select class="form-select" [(ngModel)]="selectedPaymentMode" aria-label="Default select example" style="width: 180px; margin-right: 10px;">
         <option selected *ngFor="let mode of paymodeData">{{mode.name}}</option>
-        <!-- <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option> -->
       </select>
       <button class="btn btn-primary" style="margin-left: 20px;" (click)="onPaymentModeAdd()">
         +
@@ -116,29 +104,4 @@
   </p-table>
   </div>
   
-  <!-- <table class="table"
-    style="margin: 20px; position: absolute; top: 550px;;left: 330px;border-collapse: collapse; width: 1050px;">
-  <thead>
-    <tr>
-      <th style="font-size: 16px;">Payment Mode Description</th>
-      <th style=" font-size: 16px;">Payment Mode </th>
-      <th style="font-size: 16px;">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data1 of getdata">
-      <td>
-        {{data1?.payment}}
-      </td>
-      <td>
-        {{data1?.paymentMethod}}
-      </td>
-        <td>
-           {{data1?.status}}  
-          <label class="switch" style="margin-left: 10px;border: none;">
-            <input type="checkbox" checked>
-            <span class="slider round"></span>
-          </label>
-        </td>
-      </tbody>
-  </table> -->
+

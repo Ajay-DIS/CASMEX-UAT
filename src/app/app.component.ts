@@ -12,6 +12,7 @@ import { take } from "rxjs/operators";
 import { AuthService } from "./auth/auth.service";
 import { CoreService } from "./core.service";
 import { LoginService } from "./login/login.service";
+import { UserIdleService } from "angular-user-idle";
 
 @Component({
   selector: "app-root",
@@ -42,11 +43,18 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.authService.autoLogin();
 
     this.authService.showSessionConfirm.subscribe((res) => {
-      console.log("::tokenexpiring", res);
       if (res.status) {
         this.confirmSessionContinuity(res.timer);
       } else {
         this.cd && this.cd.hide();
+      }
+    });
+
+    this.authService.userDataSub.subscribe((user) => {
+      if (!user) {
+        this.authService.stopWatching();
+      } else {
+        this.authService.startUserIdleDetector();
       }
     });
   }
@@ -60,9 +68,8 @@ export class AppComponent implements OnInit, AfterContentChecked {
       message: `Your session is expiring in ${timer}, you want to continue ?`,
       key: "sessionConfirm",
       accept: () => {
-        this.refreshTokenLogin();
-        this.authService.clearOldTimers();
-        this.authService.resetUserIdlenessTimer(1680);
+        this.authService.clearTimers();
+        this.authService.stopTimer();
       },
       reject: () => {
         this.logout();
@@ -70,34 +77,11 @@ export class AppComponent implements OnInit, AfterContentChecked {
     });
   }
 
-  refreshTokenLogin() {
-    this.loginService
-      .refreshAuthToken({
-        application: "CASMEX_CORE",
-        username: "yogeshm",
-        password: "test@123",
-      })
-      .pipe(take(1))
-      .subscribe(
-        (data: any) => {
-          if (data && data.jwt) {
-            console.log("::refreshToken", data);
-            this.loginService.refreshUserSessionToken(data.jwt);
-            // this.coreService.showSuccessToast("Session extended successfully");
-          } else {
-            data["msg"] && this.coreService.showWarningToast(data["msg"]);
-          }
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }
-
   logout() {
-    this.authService.clearOldTimers();
-    this.authService.stopUserIdlenessTimer();
+    this.authService.clearTimers();
+    this.authService.stopWatching();
     this.authService.userDataSub.next(null);
+    this.authService.showSessionConfirm.next({ status: false });
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
     this.coreService.showSuccessToast("Logged Out Successfully.");

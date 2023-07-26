@@ -56,10 +56,7 @@
     </div>
   </div>
 
-  <div class="ptable" *ngIf="formRuleData.length">
-    <!-- <p-card class="p-col-12" *ngIf="!formRuleData">
-        {{ "noDataMsg" }}
-      </p-card> -->
+  <div class="ptable" *ngIf="formRuleData?.length">
 
     <p-table
       #dt
@@ -259,7 +256,7 @@
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!formRuleData.length && showNoDataFound">
+<div class="NorecordFound" *ngIf="!formRuleData?.length && showNoDataFound">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>

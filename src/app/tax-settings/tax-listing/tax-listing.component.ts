@@ -8,7 +8,11 @@ import { map, take } from "rxjs/operators";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { ConfirmationService, MessageService } from "primeng/api";
 import { ConfirmDialog } from "primeng/confirmdialog";
-import { UntypedFormBuilder, UntypedFormControl, Validators } from "@angular/forms";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-tax-listing",
@@ -23,7 +27,7 @@ export class TaxListingComponent implements OnInit {
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
 
-  showNoDataFound :boolean= false;
+  showNoDataFound: boolean = false;
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "10%" },
@@ -80,13 +84,11 @@ export class TaxListingComponent implements OnInit {
     this.taxSettingsService.moduleName = null;
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    console.log("userData", localStorage.getItem("userData"));
 
     this.setSelectAppModule();
 
     this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
       this.coreService.removeLoadingScreen();
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -114,7 +116,6 @@ export class TaxListingComponent implements OnInit {
     });
   }
 
-  
   get appCtrl() {
     return this.selectAppModule.get("applications");
   }
@@ -123,7 +124,6 @@ export class TaxListingComponent implements OnInit {
   }
 
   searchAppModule() {
-    console.log("Hi");
     this.getDecodedDataForListing(
       this.userData.userId,
       this.appCtrl.value.code,
@@ -131,13 +131,12 @@ export class TaxListingComponent implements OnInit {
     );
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
-    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
         this.formName,
         appValue,
-        moduleValue,
+        moduleValue
       ),
       taxSettingListingData: this.taxSettingsService.getTaxCodeData(
         userId,
@@ -152,7 +151,6 @@ export class TaxListingComponent implements OnInit {
           const criteriaMasterData = response.criteriaMasterData;
           const taxSettingListingData = response.taxSettingListingData;
 
-          console.log("::taxListingDataApi", taxSettingListingData);
           if (taxSettingListingData["data"]) {
             this.taxListingApiData = taxSettingListingData;
             this.taxListingApiData.data.forEach((tax) => {
@@ -166,11 +164,9 @@ export class TaxListingComponent implements OnInit {
                   [""]
                 ) as []
               ).join(", ");
-
-              // tax.criteriaMap = tax.criteriaMap.split("&&&&")[0];
             });
             this.taxListingData = [...this.taxListingApiData.data];
-           this.showNoDataFound = false;
+            this.showNoDataFound = false;
             this.linkedTaxCode = [...this.taxListingApiData.linkedTaxCode];
             this.taxCode = this.taxListingApiData.taxCode.map((code) => {
               return { label: code, value: code };
@@ -185,21 +181,6 @@ export class TaxListingComponent implements OnInit {
                 return { label: code, value: code };
               }
             );
-            // this.criteriaMap = this.taxListingApiData.criteriaMap.map(
-            //   (criteriaMap) => {
-            //     let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-            //       criteriaMap: criteriaMap.split("&&&&")[0],
-            //     });
-            //     let code = (
-            //       this.setCriteriaService.decodeFormattedCriteria(
-            //         criteriaCodeText,
-            //         criteriaMasterData,
-            //         [""]
-            //       ) as []
-            //     ).join(", ");
-            //     return { label: code, value: code };
-            //   }
-            // );
             this.status = this.taxListingApiData.status.map((code) => {
               return { label: code, value: code };
             });
@@ -213,8 +194,7 @@ export class TaxListingComponent implements OnInit {
       .subscribe(
         (res) => {
           if (!res["data"]) {
-            console.log("No data Found");
-            this.showNoDataFound =true;
+            this.showNoDataFound = true;
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
@@ -222,18 +202,12 @@ export class TaxListingComponent implements OnInit {
         (err) => {
           this.coreService.removeLoadingScreen();
           this.taxListingData = null;
-          this.showNoDataFound =true;
+          this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting tax seting list data", err);
         }
       );
   }
-
-
-  // getTaxCodeListData(id: string) {
-  //   this.getDecodedDataForListing(this.userData.userId,this.appCtrl.value.code,
-  //     this.moduleCtrl.value.code);
-  // }
 
   viewTaxSetting(data: any) {
     this.taxSettingsService.applicationName = this.appCtrl.value.code;
@@ -253,7 +227,6 @@ export class TaxListingComponent implements OnInit {
 
   confirmStatus(e: any, data: any) {
     e.preventDefault();
-    console.log("codeeeeee", status);
     let type = "";
     let reqStatus = "";
     if (e.target.checked) {
@@ -267,7 +240,6 @@ export class TaxListingComponent implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedTaxCode, data["taxCode"]);
     if (
       reqStatus == "Inactive" &&
       this.linkedTaxCode.includes(data["taxCode"])
@@ -278,8 +250,11 @@ export class TaxListingComponent implements OnInit {
         type +
         ` the Tax Record: ${data["taxCode"]}?`;
     } else {
-      completeMsg = `<img src="../../../assets/warning.svg"><br/><br/>`+
-        `Do you wish to ` + type + ` the Tax Record: ${data["taxCode"]}?`;
+      completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        `Do you wish to ` +
+        type +
+        ` the Tax Record: ${data["taxCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -309,7 +284,6 @@ export class TaxListingComponent implements OnInit {
   }
 
   updateStatus(e: any, reqStatus: any, data: any) {
-    console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
@@ -320,7 +294,6 @@ export class TaxListingComponent implements OnInit {
     formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateTaxCodeStatus(formData, e.target, data);
-    // }
   }
 
   updateTaxCodeStatus(formData: any, sliderElm: any, taxData: any) {
@@ -381,7 +354,6 @@ export class TaxListingComponent implements OnInit {
 
   setSelectedFilter(ms: MultiSelect, field: any) {
     this[`selectedFilter${field}`] = ms.value;
-    console.log(ms.value, this[`selectedFilter${field}`]);
   }
 
   fieldFilterVisible(field: any) {

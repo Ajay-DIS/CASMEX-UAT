@@ -209,7 +209,6 @@ export class CriteriaDataService {
       }
       tableCols.push(tableCol);
     });
-    console.log(tableCols);
     return tableCols;
   }
 
@@ -231,8 +230,6 @@ export class CriteriaDataService {
             to: +toVal,
           });
         });
-
-        // criteriaMapFirstSplit += `;${criteriaData["lcySlab"]} = Slab`;
       } else {
         criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
       }

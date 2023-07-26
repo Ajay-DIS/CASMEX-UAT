@@ -12,10 +12,6 @@ export class TaxSettingsService {
   applicationName: any = null;
   moduleName: any = null;
 
-  // appName = "Web Application";
-  // moduleName = "Remittance";
-  // formName = "Bank Routings";
-
   getTaxCodeData(id: string,formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getTaxCodeList`,
@@ -36,13 +32,7 @@ export class TaxSettingsService {
   updateTaxSettingsStatus(data: any) {
     return this.http.post(
       `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
-      data,
-      // {
-      //   headers: new HttpHeaders()
-      //     .set("applications", appName)
-      //     .set("moduleName", moduleName)
-      //     .set("form", formName),
-      // }
+      data
     );
   }
 

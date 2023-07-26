@@ -11,7 +11,6 @@ export class CriteriaSettingsService {
     return this.http.get(`/applicationSettings/getListOfCriteria`);
   }
 
-  // criteria details
   getCriteriaAppFormsList() {
     return this.http.get(`/applicationSettings/criteriaTypes`);
   }

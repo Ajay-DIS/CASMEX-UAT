@@ -58,20 +58,6 @@
   </p-dialog>
   <div class="dropdowns-select-container mb-3">
     <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
-      <!-- <p-dropdown
-            class="mr-3"
-            [options]="criteriaMapDdlOptions"
-            optionLabel="name"
-            placeholder="Select Criteria"
-            (onChange)="onCriteriaSelect($event.value)"
-            formControlName="criteria"
-          >
-            <ng-template let-criteria pTemplate="item">
-              <div [pTooltip]="getTooltip(criteria)">
-                {{ criteria.name }}
-              </div>
-            </ng-template>
-          </p-dropdown> -->
 
       <p-treeSelect
         class="mr-3"

@@ -40,7 +40,6 @@ export class SearchListingComponent implements OnInit {
   createdDate: any[];
   createdBy: any[];
   status: any[];
-  //suresh
   clickforview = false;
   searchDataArrayView = [];
 
@@ -52,7 +51,6 @@ export class SearchListingComponent implements OnInit {
   selectedFiltercreatedDate: any[] = [];
   selectedFiltercreatedBy: any[] = [];
   selectedFilterstatus: any[] = [];
-  //suresh
 
   userData: any = {};
 
@@ -93,9 +91,7 @@ export class SearchListingComponent implements OnInit {
     });
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    //
     this.getSearchSettingListData();
-    //
   }
 
   getSearchSettingListData() {
@@ -103,7 +99,6 @@ export class SearchListingComponent implements OnInit {
       .getSearchSettingListing()
       .subscribe(
         (res) => {
-          console.log(res);
           this.searchSettingApiData = res;
           if (res["data"]) {
             this.searchSettingData = res["data"];
@@ -123,11 +118,6 @@ export class SearchListingComponent implements OnInit {
         this.loading = false;
         this.coreService.removeLoadingScreen();
       });
-  }
-
-  filter(a: any, b: any) {
-    console.log("a:", a);
-    console.log("b:", b);
   }
 
   formatApiData() {
@@ -176,7 +166,6 @@ export class SearchListingComponent implements OnInit {
 
   confirmStatus(e: any, data: any) {
     e.preventDefault();
-    console.log("codeeeeee", data);
     let type = "";
     let reqStatus = "";
     if (e.target.checked) {
@@ -190,7 +179,6 @@ export class SearchListingComponent implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedSearchSetting, data["id"]);
     if (
       reqStatus == "Inactive" &&
       this.linkedSearchSetting.includes(data["id"])
@@ -235,7 +223,6 @@ export class SearchListingComponent implements OnInit {
   }
 
   updateStatus(e: any, reqStatus: any, data: any) {
-    console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
@@ -243,7 +230,6 @@ export class SearchListingComponent implements OnInit {
     formData.append("searchId", data["id"]);
     formData.append("status", reqStatus);
     this.updateSearchSettingStatus(formData, e.target, data);
-    // }
   }
 
   updateSearchSettingStatus(formData: any, sliderElm: any, searchData: any) {
@@ -271,7 +257,6 @@ export class SearchListingComponent implements OnInit {
   }
 
   openClickForView(data) {
-    console.log("data", data);
     this.searchDataArrayView = data.settingSearchQueryCriteria;
     this.searchDataArrayView["applicationName"] = data["applicationName"];
     this.searchDataArrayView["formName"] = data["formName"];
@@ -281,13 +266,6 @@ export class SearchListingComponent implements OnInit {
     this.clickforview = true;
   }
   openClickForClone(data: any, type: any) {
-    // this.router.navigate([
-    //   "navbar",
-    //   "search-settings",
-    //   "add-search-settings",
-    //   data.id,
-    //   type,
-    // ]);
 
     let state = {
       appName: data.applicationName,
@@ -311,14 +289,6 @@ export class SearchListingComponent implements OnInit {
       this.coreService.removeLoadingScreen();
     }, 1000);
   }
-  // openClickForEdit(data: any) {
-  //   this.router.navigate([
-  //     "navbar",
-  //     "search-settings",
-  //     "add-search-settings",
-  //     data.id,
-  //   ]);
-  // }
 
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];
@@ -334,7 +304,6 @@ export class SearchListingComponent implements OnInit {
 
   setSelectedFilter(ms: MultiSelect, field: any) {
     this[`selectedFilter${field}`] = ms.value;
-    console.log(ms.value, this[`selectedFilter${field}`]);
   }
 
   fieldFilterVisible(field: any) {

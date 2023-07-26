@@ -1,5 +1,5 @@
 <div class="visible-main-section">
-  <div class="pagetitle" >
+  <div class="pagetitle">
     <div class="infoicon">
       <i class="pi pi-info-circle"></i>
       List of taxes.
@@ -55,10 +55,6 @@
     </div>
   </div>
   <div class="ptable" *ngIf="taxListingData">
-    <!-- <p-card class="p-col-12" *ngIf="!taxListingData">
-      {{ "noDataMsg" }}
-    </p-card> -->
-
     <p-table
       #dt
       [columns]="cols"

@@ -32,8 +32,6 @@ export class AddNewTaxComponent implements OnInit {
   taxID = "";
   mode = "add";
   formName = "Tax Settings";
-  // applicationName = "Web Application";
-  // moduleName = "Remittance";
 
   taxCode = "No Data";
   taxDescription = "";
@@ -68,7 +66,6 @@ export class AddNewTaxComponent implements OnInit {
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
 
-  // suresh Work start -->
   appliedCriteriaDataCols = [];
   appliedCriteriaData: any = [];
   taxMin = 0;
@@ -76,7 +73,6 @@ export class AddNewTaxComponent implements OnInit {
   taxAmountMax = 100000;
 
   appliedCriteriaDatajson: any = {};
-  // suresh Work end -->
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
@@ -118,9 +114,7 @@ export class AddNewTaxComponent implements OnInit {
       );
       this.taxID = params.id;
     }
-    console.log(this.mode);
     this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -216,7 +210,6 @@ export class AddNewTaxComponent implements OnInit {
           this.appModuleDataPresent = true;
           if (!res["msg"]) {
             this.editTaxSettingApiData = res;
-            console.log("edit data", res);
 
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editTaxSettingApiData
@@ -287,13 +280,11 @@ export class AddNewTaxComponent implements OnInit {
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
-              console.log(data["criteriaType"]);
               if (data["criteriaType"] == "Slab") {
                 this.cmCriteriaSlabType.push(data["fieldName"]);
               }
             }
           );
-          console.log(" Slabs fields", this.cmCriteriaSlabType);
 
           if (this.mode == "add") {
             this.taxCode = this.criteriaDataDetailsJson.data.taxCode;
@@ -305,7 +296,6 @@ export class AddNewTaxComponent implements OnInit {
             ...this.criteriaDataDetailsJson.data.listCriteria
               .cmCriteriaDataDetails,
           ];
-          console.log("this.cmCriteriaDataDetails", this.cmCriteriaDataDetails);
 
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
@@ -328,13 +318,11 @@ export class AddNewTaxComponent implements OnInit {
             criteriaDependencyTreeData["criteriaMapDdlOptions"];
           this.independantCriteriaArr =
             criteriaDependencyTreeData["independantCriteriaArr"];
-          console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
       )
       .subscribe(
         (res) => {
-          console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
             if (
@@ -376,7 +364,6 @@ export class AddNewTaxComponent implements OnInit {
   }
   formatMasterData(masterData: any) {
     const formattedMasterData = [].concat.apply([], Object.values(masterData));
-    console.log(formattedMasterData);
     this.formattedMasterData = formattedMasterData;
   }
   getCorrespondentValues(
@@ -399,13 +386,11 @@ export class AddNewTaxComponent implements OnInit {
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
-          console.log(res);
           if (res[fieldName]) {
             this.setCriteriaSharedComponent.valueCtrl.enable();
             this.setCriteriaSharedComponent.hideValuesDropdown = false;
             this.setCriteriaSharedComponent.showValueInput = false;
 
-            console.log(res[fieldName]);
             this.correspondentDdlOptions = res[fieldName].map((val) => {
               return { name: val["codeName"], code: val["code"] };
             });
@@ -455,7 +440,6 @@ export class AddNewTaxComponent implements OnInit {
           }, 1000);
         },
       });
-      console.log("CANNNNOT UPDATE ITTT");
     } else {
       this.taxCriteriaSearchApi(postDataCriteria);
     }
@@ -469,7 +453,6 @@ export class AddNewTaxComponent implements OnInit {
       .postTaxCriteriaSearch(formData)
       .subscribe(
         (res) => {
-          console.log("criteriasearch DATA", res);
           if (!res["msg"]) {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
@@ -543,7 +526,6 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   getAllTemplates() {
-    console.log("::", this.userId);
     this.taxSettingsService
       .getAllCriteriaTemplates(
         this.userId,
@@ -553,7 +535,6 @@ export class AddNewTaxComponent implements OnInit {
       )
       .subscribe((response) => {
         if (response.data && response.data.length) {
-          console.log("::templates", response);
           this.criteriaTemplatesDdlOptions = response.data;
           this.criteriaTemplatesDdlOptions.forEach((val) => {
             val["name"] = val["criteriaName"];
@@ -566,9 +547,6 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveAddNewTax(action) {
-    console.log(this.setCriteriaSharedComponent.getCurrentCriteriaMap());
-    console.log(this.appliedCriteriaCriteriaMap);
-
     if (
       this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
       this.appliedCriteriaCriteriaMap
@@ -597,7 +575,6 @@ export class AddNewTaxComponent implements OnInit {
         function isNullValue(arr) {
           return arr.some((el) => el == null);
         }
-        console.log("::::", element);
         if (isNullValue(Object.values(element))) {
           isRequiredFields = true;
         }
@@ -625,14 +602,12 @@ export class AddNewTaxComponent implements OnInit {
             this.moduleCtrl.value.code,
             this.formName
           );
-          console.log("EDIT MODE - UPDATE TAX SERVICE");
         } else {
           let data = {
             data: this.appliedCriteriaData,
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
           };
-          console.log("ADD MODE - ADD NEW TAX SERVICE");
           service = this.taxSettingsService.addNewTax(
             data,
             this.appCtrl.value.code,
@@ -651,9 +626,7 @@ export class AddNewTaxComponent implements OnInit {
                 } else if (action == "saveAndAddNew") {
                   this.taxSettingsService.applicationName = null;
                   this.taxSettingsService.moduleName = null;
-                  // this.reset();
                   this.router.navigate([`navbar/tax-settings/add-tax`]);
-                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
@@ -769,7 +742,6 @@ export class AddNewTaxComponent implements OnInit {
     });
   }
 
-  // suresh Work start -->
   isMandatoryCol(heading: any) {
     return heading.includes("*") ? true : false;
   }
@@ -778,7 +750,6 @@ export class AddNewTaxComponent implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
-    console.log(selectCol, value, index);
     if (selectCol == "setAsOption") {
       if (selectCol == "setAsOption" && value["code"] == "Percentage") {
         this.appliedCriteriaData[index]["tax"] = 0;
@@ -786,12 +757,10 @@ export class AddNewTaxComponent implements OnInit {
         this.coreService.showWarningToast("Please enter tax greater than zero");
       } else {
         if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
-          console.log("SLAB");
           this.appliedCriteriaData[index]["tax"] = Number(
             this.appliedCriteriaData[index].lcyAmountFrom
           );
         } else {
-          console.log("NOT SLAB");
           if (this.appliedCriteriaData[index].lcyAmount) {
             let lcyAmountNum =
               this.appliedCriteriaData[index].lcyAmount.split(" ")[3];
@@ -814,7 +783,6 @@ export class AddNewTaxComponent implements OnInit {
     }
     this.appliedCriteriaData[index][selectCol.split("Option")[0]] =
       value.codeName;
-    console.log("this.appliedCriteriaData", this.appliedCriteriaData[index]);
   }
 
   changeValueInput(
@@ -825,14 +793,6 @@ export class AddNewTaxComponent implements OnInit {
     valueInputElm: any
   ) {
     this.appliedCriteriaData[index]["invalidTaxAmount"] = false;
-    console.log(
-      "selectCol",
-      event,
-      "valueInputElm",
-      valueInputElm,
-      this.appliedCriteriaData[index][selectCol.split("Option")[0]],
-      this.appliedCriteriaData[index].lcyAmountFrom
-    );
     let max = 0;
     let min = 0;
     let lcyAmountEqualTo =
@@ -845,7 +805,6 @@ export class AddNewTaxComponent implements OnInit {
       this.appliedCriteriaData[index].lcyAmount.substring(
         this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1
       );
-    // console.log("lcyAmount",lcyAmount);
     if (
       this.appliedCriteriaData[index][selectCol.split("Option")[0]] ==
       "Percentage"
@@ -900,27 +859,17 @@ export class AddNewTaxComponent implements OnInit {
       this.delete(index);
     } else if (operation == "clone") {
       this.clone(index, selectRow, fieldName);
-    } else {
-      console.log("Nor Clone neither Delete");
     }
   }
 
   clone(index: any, selectRow: any, fieldName: any) {
-    console.log("clone", index, selectRow);
     let clonedRow = {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
-    console.log(clonedRow);
     this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
-    setTimeout(() => {
-      console.log(this.appliedCriteriaData[index]);
-      console.log(this.appliedCriteriaData[index + 1]);
-    }, 100);
   }
   delete(index: any) {
     this.appliedCriteriaData.splice(index, 1);
-    console.log("delete", index);
   }
-  // suresh Work end -->
 }

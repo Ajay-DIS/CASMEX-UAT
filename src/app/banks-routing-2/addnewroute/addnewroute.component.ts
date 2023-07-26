@@ -34,10 +34,6 @@ export class AddnewrouteComponent2 implements OnInit {
   routeID = "";
   mode = "add";
   formName = "Bank Routings";
-  // applicationName = "Web Application";
-  // moduleName = "Remittance";
-
-  //
   appliedCriteriaData: any = [];
   appliedCriteriaDataOrg: any = [];
   appliedCriteriaCriteriaMap: any = null;
@@ -45,11 +41,8 @@ export class AddnewrouteComponent2 implements OnInit {
   appliedCriteriaDataCols: any = [];
   objectKeys = Object.keys;
   isEditMode = false;
-  //
 
-  //
   formattedMasterData: any = [];
-  //
 
   editBankRouteApiData: any = [];
 
@@ -119,7 +112,6 @@ export class AddnewrouteComponent2 implements OnInit {
     }
 
     this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -216,7 +208,6 @@ export class AddnewrouteComponent2 implements OnInit {
           this.appModuleDataPresent = true;
           if (!res["msg"]) {
             this.editBankRouteApiData = res;
-            console.log("edit data", res);
 
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editBankRouteApiData
@@ -237,7 +228,6 @@ export class AddnewrouteComponent2 implements OnInit {
             this.appliedCriteriaDataOrg = [...res["data"]];
             this.appliedCriteriaData = [...res["data"]];
             this.setSelectedOptions();
-            console.log(this.appliedCriteriaData);
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
             this.showContent = true;
@@ -285,13 +275,11 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
-              console.log(data["criteriaType"]);
               if (data["criteriaType"] == "Slab") {
                 this.cmCriteriaSlabType.push(data["fieldName"]);
               }
             }
           );
-          console.log(" Slabs fields", this.cmCriteriaSlabType);
 
           if (this.mode == "add") {
             this.routeCode = this.criteriaDataDetailsJson.data.routeCode;
@@ -303,7 +291,6 @@ export class AddnewrouteComponent2 implements OnInit {
             ...this.criteriaDataDetailsJson.data.listCriteria
               .cmCriteriaDataDetails,
           ];
-          console.log("this.cmCriteriaDataDetails", this.cmCriteriaDataDetails);
 
           this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
             .replace(/["|\[|\]]/g, "")
@@ -326,13 +313,11 @@ export class AddnewrouteComponent2 implements OnInit {
             criteriaDependencyTreeData["criteriaMapDdlOptions"];
           this.independantCriteriaArr =
             criteriaDependencyTreeData["independantCriteriaArr"];
-          console.log(this.criteriaMapDdlOptions);
           return criteriaMasterData;
         })
       )
       .subscribe(
         (res) => {
-          console.log(res);
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
             if (
@@ -375,7 +360,6 @@ export class AddnewrouteComponent2 implements OnInit {
 
   formatMasterData(masterData: any) {
     const formattedMasterData = [].concat.apply([], Object.values(masterData));
-    console.log(formattedMasterData);
     this.formattedMasterData = formattedMasterData;
   }
 
@@ -399,13 +383,11 @@ export class AddnewrouteComponent2 implements OnInit {
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
-          console.log(res);
           if (res[fieldName]) {
             this.setCriteriaSharedComponent.valueCtrl.enable();
             this.setCriteriaSharedComponent.hideValuesDropdown = false;
             this.setCriteriaSharedComponent.showValueInput = false;
 
-            console.log(res[fieldName]);
             this.correspondentDdlOptions = res[fieldName].map((val) => {
               return { name: val["codeName"], code: val["code"] };
             });
@@ -455,7 +437,6 @@ export class AddnewrouteComponent2 implements OnInit {
           }, 1000);
         },
       });
-      console.log("CANNNNOT UPDATE ITTT");
     } else {
       this.routeBankCriteriaSearchApi(postDataCriteria);
     }
@@ -469,13 +450,11 @@ export class AddnewrouteComponent2 implements OnInit {
       .postRouteBankCriteriaSearch(formData)
       .subscribe(
         (res) => {
-          console.log("criteriasearch DATA", res);
           if (!res["msg"]) {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
               this.appliedCriteriaData = [...res["data"]];
               this.setSelectedOptions();
-              console.log(this.appliedCriteriaData);
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
               this.appliedCriteriaIsDuplicate = res["duplicate"];
               this.appliedCriteriaDataCols = [
@@ -549,7 +528,6 @@ export class AddnewrouteComponent2 implements OnInit {
       )
       .subscribe((response) => {
         if (response.data && response.data.length) {
-          console.log("::templates", response);
           this.criteriaTemplatesDdlOptions = response.data;
           this.criteriaTemplatesDdlOptions.forEach((val) => {
             val["name"] = val["criteriaName"];
@@ -566,7 +544,6 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   selectedColumn(column, value, index) {
-    console.log(column, value, index);
     let selectedColField = column.split("Option")[0];
     this.appliedCriteriaData[index][selectedColField] = value["codeName"];
   }
@@ -574,7 +551,6 @@ export class AddnewrouteComponent2 implements OnInit {
   setSelectedOptions() {
     this.appliedCriteriaData.forEach((data) => {
       data["routeToBankNameOption"].filter((option) => {
-        console.log(option["code"], data["routeToBankName"]);
         option["code"] == data["routeToBankName"];
       });
       if (data["routeToBankName"]) {
@@ -692,9 +668,6 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveAddNewRoute(action) {
-    console.log(this.setCriteriaSharedComponent.getCurrentCriteriaMap());
-    console.log(this.appliedCriteriaCriteriaMap);
-
     if (
       this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
       this.appliedCriteriaCriteriaMap
@@ -719,7 +692,6 @@ export class AddnewrouteComponent2 implements OnInit {
         function isNullValue(arr) {
           return arr.some((el) => el == null);
         }
-        console.log("::::", element);
         if (isNullValue(Object.values(element))) {
           isRequiredFields = true;
         }
@@ -744,7 +716,6 @@ export class AddnewrouteComponent2 implements OnInit {
             this.moduleCtrl.value.code,
             this.formName
           );
-          console.log("EDIT MODE - UPDATE CRITERIA SERVICE");
         } else {
           let data = {
             data: this.appliedCriteriaData,
@@ -768,9 +739,7 @@ export class AddnewrouteComponent2 implements OnInit {
                 } else if (action == "saveAndAddNew") {
                   this.bankRoutingService.applicationName = null;
                   this.bankRoutingService.moduleName = null;
-                  // this.reset();
                   this.router.navigate([`navbar/bank-routing/addnewroute`]);
-                  // this.coreService.removeLoadingScreen();
                 }
               }
             },
