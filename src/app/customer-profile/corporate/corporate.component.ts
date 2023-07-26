@@ -3,13 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { CoreService } from 'src/app/core.service';
 
 @Component({
-  selector: 'app-add-customer',
-  templateUrl: './add-customer.component.html',
-  styleUrls: ['./add-customer.component.scss']
+  selector: 'app-corporate',
+  templateUrl: './corporate.component.html',
+  styleUrls: ['./corporate.component.scss']
 })
-export class AddCustomerComponent implements OnInit {
+export class CorporateComponent implements OnInit {
 
-  Select:"Select"
   constructor(private coreService: CoreService,private route: ActivatedRoute,) { }
   minDate = new Date();
   eighteenYearsAgo = new Date(this.minDate.setFullYear(this.minDate.getFullYear()-18));
@@ -36,15 +35,8 @@ export class AddCustomerComponent implements OnInit {
     {name: "25", code: "25"},{name: "26", code: "26"},{name: "27", code: "27"},{name: "28", code: "28"},
     {name: "29", code: "29"},{name: "30", code: "30"},{name: "31", code: "31"}],
   }
-
   ngOnInit(): void {
-    this.coreService.displayLoadingScreen();
-    this.route.data.subscribe((data) => {
-      this.coreService.setBreadCrumbMenu(Object.values(data));
-    });
-    this.coreService.removeLoadingScreen();
   }
-
   onChange(section, controlId, controlType, event) {
 
   }
@@ -83,5 +75,4 @@ export class AddCustomerComponent implements OnInit {
     (msgList.length) && (flag = true) && (this.coreService.showWarningToast(msg));
     return flag;
   }
-
 }
