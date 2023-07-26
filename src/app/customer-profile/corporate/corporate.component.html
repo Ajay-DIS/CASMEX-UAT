@@ -1,0 +1,283 @@
+<div class="row">
+    <div class="col-12">
+        <p-panel header="Company Details" [toggleable]="true">
+            <div class="row">
+                <div class="col-2">
+                    <label>Name of the Corporate</label><span class="required">*</span>
+                    <input [required]="true" type="text" pInputText [(ngModel)]="customerInfo.firstName"> 
+                </div>
+                <div class="col-2">
+                    <label>Country of Establishment</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>Date Of Establishment</label><span class="required">*</span>
+                    <p-calendar [maxDate]="eighteenYearsAgo" [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>Business Purpose</label><br>
+                    <p-dropdown class="colorInput" [options]=""
+                   [(ngModel)]="customerInfo.profession" optionValue="code" optionLabel="name"
+                    ></p-dropdown>
+                </div>
+                <div class="col-2">
+                    <label>Country of Operation</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                
+                <div class="col-2">
+                    <label>Business Activities</label><br>
+                    <p-dropdown class="colorInput" [options]=""
+                   [(ngModel)]="customerInfo.profession" optionValue="code" optionLabel="name"
+                    ></p-dropdown>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label>Country of Trade</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.natoinality"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>License No</label>
+                    <input type="number" pInputText [(ngModel)]="customerInfo.mobileNumber">
+                </div>
+                <div class="col-2">
+                    <label>License Expiry Date</label><span class="required">*</span>
+                    <p-calendar [maxDate]="eighteenYearsAgo" [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2 creditToParty">
+                    <p-checkbox name="groupname" value="val1" [(ngModel)]="customerInfo.creditToParty"></p-checkbox>
+                    <label> <span class="creditToPartycolor">Credit to party</span></label>
+                </div>
+                <div class="col-2 creditToParty">
+                    <p-checkbox name="groupname" value="val1" [(ngModel)]="customerInfo.accountPaymentMode"></p-checkbox>
+                    <label> <span class="creditToPartycolor">On Account Payment Mode</span></label>
+                </div>
+            </div>
+        </p-panel><br/>
+        <p-panel header="Contact Details" [toggleable]="true">
+            <div class="row">
+                <div class="col-2">
+                    <label>Country</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>Mobile Number</label>
+                    <input type="number" pInputText [(ngModel)]="customerInfo.mobileNumber">
+                </div>
+                <div class="col-2">
+                    <label>Phone Number</label>
+                    <input type="number" pInputText [(ngModel)]="customerInfo.phoneNumber">
+                </div>
+                <div class="col-2">
+                    <label>Email Id</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.email"> 
+                </div>
+                <div class="col-2">
+                    <label>House/Building number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.houseNumber"> 
+                </div>
+                <div class="col-2">
+                    <label>Block number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.blockNumber"> 
+                </div>
+                
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label>Street number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.streetNumber"> 
+                </div>
+                <div class="col-2">
+                    <label>City</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.city"> 
+                </div>
+                <div class="col-2">
+                    <label>Pin/Zip Code</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.pinZipCode"> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <p style="font-weight: bold;font-size: 13px;margin-top: 7px;">Permanent Address</p>
+                </div>
+                <div class="col-2">
+                    <p-checkbox name="groupname" value="val1" [(ngModel)]="customerInfo.permanentAddressIsSameAsAbove"></p-checkbox>
+                    <label> <span class="creditToPartycolor">Same as above</span></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label>Country</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>House/Building number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.houseNumber"> 
+                </div>
+                <div class="col-2">
+                    <label>Block number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.blockNumber"> 
+                </div>
+                <div class="col-2">
+                    <label>Street number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.streetNumber"> 
+                </div>
+                <div class="col-2">
+                    <label>City</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.city"> 
+                </div>
+                <div class="col-2">
+                    <label>Pin/Zip Code</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.pinZipCode"> 
+                </div>
+            </div>
+        </p-panel>
+        <p-panel header="KYC/Doc Upload" [toggleable]="true">
+            <div class="row">
+                <div class="col-2">
+                    <label>Document Type</label><br>
+                    <p-dropdown class="colorInput" [options]=""
+                   [(ngModel)]="customerInfo.profession" optionValue="code" optionLabel="name"
+                    ></p-dropdown>
+                </div>
+                <div class="col-2">
+                    <label>ID Number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.employerName"> 
+                </div>
+                <div class="col-2">
+                    <label>ID Issue Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>ID Expiry Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>ID Issue Authority</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.employerName"> 
+                </div>
+                <div class="col-2">
+                    <label>ID Issue Country</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+            </div>
+            
+        </p-panel>
+        <p-panel header="Representative Details" [toggleable]="true">
+            <div class="row">
+                <div class="col-2">
+                    <label>First Name</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.firstName"> 
+                </div>
+                <div class="col-2">
+                    <label>Middle Name</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.middleName"> 
+                </div>
+                <div class="col-2">
+                    <label>Last Name</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.lastName"> 
+                </div>
+                <div class="col-2">
+                    <label>Gender</label><br>
+                    <p-dropdown class="colorInput" [options]="customerInfoMeta.customerGenderOptions"
+                   [(ngModel)]="customerInfo.gender" optionValue="code" optionLabel="name"
+                   (onChange)="onChange('representative', 'gender', 'dropdown', $event.value)"
+                    ></p-dropdown>
+                </div>
+                <div class="col-2">
+                    <label>Date Of Birth</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>Country Of Birth</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.dateOfBirth"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label>Nationality</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.natoinality"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>Relationship</label>
+                    <p-dropdown class="colorInput" [options]=""
+                   [(ngModel)]="customerInfo.gender" optionValue="code" optionLabel="name"
+                    ></p-dropdown>
+                </div>
+                <div class="col-2">
+                    <label>Document Type</label><br>
+                    <p-dropdown class="colorInput" [options]=""
+                   [(ngModel)]="customerInfo.profession" optionValue="code" optionLabel="name"
+                    ></p-dropdown>
+                </div>
+                <div class="col-2">
+                    <label>ID Number</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.employerName"> 
+                </div>
+                <div class="col-2">
+                    <label>ID Issue Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>ID Expiry Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    <label>ID Issue Authority</label>
+                    <input type="text" pInputText [(ngModel)]="customerInfo.employerName"> 
+                </div>
+                <div class="col-2">
+                    <label>ID Issue Country</label>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                            placeholder="Type to Search">
+                    </span>
+                </div>
+                <div class="col-2">
+                    <label>Visa expiry Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+                <div class="col-2">
+                    <label>Authorization letter expiry Date</label>
+                    <p-calendar [(ngModel)]="customerInfo.dateOfBirth" placeholder="MM/DD/YYYY"></p-calendar>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
