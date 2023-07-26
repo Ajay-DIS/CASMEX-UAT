@@ -181,7 +181,6 @@ export class PaymentModeComponent implements OnInit {
       });
   }
   navigateToViewPayment(data: any) {
-    // localStorage.setItem('clickedPaymetData',JSON.stringify(data));
     this.router.navigate([`navbar/view-payment-mode/${data.id}`]);
   }
 

@@ -44,17 +44,6 @@
               (click)="$event.stopPropagation()"
               class="filter-icon"
             >
-              <!-- <img
-                height="12px"
-                class="pi pi-filter criteriaSettingFilterIcon"
-                (click)="toggleFilterVisibility(col.field)"
-                [src]="
-                  getSelectedFilterArr(col.field).length
-                    ? '../assets/ActiveFilter.svg'
-                    : '../assets/filter.svg'
-                "
-                alt=""
-              /> -->
               <i
                 [ngStyle]="{
                   color: getSelectedFilterArr(col.field).length

@@ -98,7 +98,6 @@ export class TransactionCriteriaModal {
     this.isRangeValueLessThanZero = false;
     if (this.txnCriteriaRange && this.txnCriteriaRange?.length) {
       this.txnCriteriaRange.controls.forEach((range) => {
-        console.log(range.value.from, range.value.to);
         if (range.value) {
           if (range.value.from == null || range.value.to == null) {
             this.isRangeEmpty = true;

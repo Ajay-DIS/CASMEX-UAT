@@ -83,14 +83,3 @@ export class ViewPaymentModeComponent implements OnInit {
     this.criteriaText.splice(i, 1);
   }
 }
-// const paymentData = localStorage.getItem('clickedPaymetData');
-// if(paymentData){
-//   this.selectedPaymentData = JSON.parse(paymentData);
-//   this.criteriaText = this.selectedPaymentData.criteriaMap.split(';');
-//   this.selectedPaymentData.cmPaymentApplicable.map((payment: any) =>{
-//     const test = payment.paymentModeDetails.split(':');
-//     payment.payment = test[0];
-//     payment.paymentMethod = test[1];
-//     this.getdata.push(payment);
-//   });
-// }

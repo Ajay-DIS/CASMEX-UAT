@@ -21,7 +21,6 @@ import {
 })
 export class FormRuleListingComponent implements OnInit {
   formName = "Form Rules";
-  // applicationName = "Web Application";
 
   formRuleListingData: any = [];
   formRuleData: any = [];
@@ -84,12 +83,10 @@ export class FormRuleListingComponent implements OnInit {
     this.formRuleService.applicationName = null;
     this.formRuleService.moduleName = null;
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    console.log("userData", localStorage.getItem("userData"));
     this.setSelectAppModule();
 
     this.formRuleService.getFormRulesAppModuleList().subscribe((res) => {
       this.coreService.removeLoadingScreen();
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -125,7 +122,6 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   searchAppModule() {
-    console.log("Hi");
     this.getDecodedDataForListing(
       this.userData.userId,
       this.appCtrl.value.code,
@@ -134,7 +130,6 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
-    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
@@ -156,7 +151,6 @@ export class FormRuleListingComponent implements OnInit {
           const criteriaMasterData = response.criteriaMasterData;
           const formRuleListingData = response.formRuleListingData;
 
-          console.log(":formRuleListingData", formRuleListingData);
           if (Object.keys(criteriaMasterData).length) {
             if (formRuleListingData["data"]) {
               this.formruleListingApiData = formRuleListingData;
@@ -219,10 +213,7 @@ export class FormRuleListingComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          console.log(this.formRuleData);
-          console.log(res);
           if (!res["data"]) {
-            console.log("No data Found");
             this.showNoDataFound = true;
           }
           this.coreService.removeLoadingScreen();
@@ -233,7 +224,6 @@ export class FormRuleListingComponent implements OnInit {
           this.formRuleData = null;
           this.loading = false;
           this.showNoDataFound = true;
-          console.log(this.formRuleData);
           console.log("Error in getting form rule list data", err);
         }
       );
@@ -257,7 +247,6 @@ export class FormRuleListingComponent implements OnInit {
 
   confirmStatus(e: any, data: any) {
     e.preventDefault();
-    console.log("codeeeeee", data);
     let type = "";
     let reqStatus = "";
     if (e.target.checked) {
@@ -271,7 +260,6 @@ export class FormRuleListingComponent implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedFormRuleCode, data["formRuleCode"]);
     if (
       reqStatus == "Inactive" &&
       this.linkedFormRuleCode.includes(data["formRuleCode"])
@@ -316,7 +304,6 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   updateStatus(e: any, reqStatus: any, data: any) {
-    console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
@@ -327,7 +314,6 @@ export class FormRuleListingComponent implements OnInit {
     formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateFormRuleStatus(formData, e.target, data);
-    // }
   }
 
   updateFormRuleStatus(formData: any, sliderElm: any, ruleData: any) {
@@ -386,7 +372,6 @@ export class FormRuleListingComponent implements OnInit {
 
   setSelectedFilter(ms: MultiSelect, field: any) {
     this[`selectedFilter${field}`] = ms.value;
-    console.log(ms.value, this[`selectedFilter${field}`]);
   }
 
   fieldFilterVisible(field: any) {

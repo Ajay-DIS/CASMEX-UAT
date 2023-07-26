@@ -11,10 +11,6 @@ export class BankRoutingService {
   applicationName: any = null;
   moduleName: any = null;
 
-  // appName = "Web Application";
-  // moduleName = "Remittance";
-  // formName = "Bank Routings";
-
   getBankRoutingData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(
       `/remittance/banksRoutingController/getBanksRoutingList`,
@@ -104,12 +100,6 @@ export class BankRoutingService {
       data
     );
   }
-  // postRouteBankCriteriaSearch(data: any) {
-  //   return this.http.post(
-  //     `/remittance/banksRoutingController/routeBankCriteriaSearch`,
-  //     data
-  //   );
-  // }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
@@ -136,13 +126,6 @@ export class BankRoutingService {
     );
   }
 
-  // addNewRoute(data): Observable<any> {
-  //   return this.http.post(
-  //     `/remittance/banksRoutingController/saveBanksRoutings`,
-  //     data
-  //   );
-  // }
-
   addNewRoute(
     data,
     appName: any,
@@ -161,17 +144,6 @@ export class BankRoutingService {
     );
   }
 
-  // updateRoute(routeCode, userId, data): Observable<any> {
-  //   return this.http.put(
-  //     `/remittance/banksRoutingController/updateBanksRoutingsDeatils/`,
-  //     data,
-  //     {
-  //       headers: new HttpHeaders()
-  //         .set("userId", userId)
-  //         .set("routeCode", routeCode),
-  //     }
-  //   );
-  // }
   updateRoute(
     userId,
     data,

@@ -27,9 +27,7 @@ export class GroupSettingsComponent implements OnInit {
   }
 
   Apply(){
-console.log("criteriaMapDes",this.criteriaMapDes)
 this.groupService.getRoutingData(this.criteriaMapDes).subscribe((res:any)=> {
-  console.log("response ", res);
   if(res.RouteData && res.RouteData.length) {
     this.routingData = res.RouteData;
   } else {
@@ -39,7 +37,6 @@ this.groupService.getRoutingData(this.criteriaMapDes).subscribe((res:any)=> {
   }
 
   getRoutingapiData(){ 
-    // let params = "'Coundstry'='IND'";
     let params = "Coundtry = IND";
   this.groupService.getRoutingData(params).subscribe((res:any)=> {
     console.log("response ", res);

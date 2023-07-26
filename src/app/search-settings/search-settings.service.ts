@@ -20,7 +20,6 @@ export class SearchSettingsService {
     );
   }
 
-  // search details
   getSearchAppFormsList() {
     return this.http.get(`/applicationSettings/searchSettings/criteriaTypes`);
   }

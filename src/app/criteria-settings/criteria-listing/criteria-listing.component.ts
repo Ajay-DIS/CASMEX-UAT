@@ -37,7 +37,7 @@ export class CriteriaListingComponent implements OnInit {
   totalListField: any = [];
   createdDate: any[];
   createdBy: any[];
-  //suresh
+
   clickforview = false;
   criteriaDataArrayView = [];
 
@@ -49,7 +49,6 @@ export class CriteriaListingComponent implements OnInit {
   selectedFiltertotalListField: any[] = [];
   selectedFiltercreatedDate: any[] = [];
   selectedFiltercreatedBy: any[] = [];
-  //suresh
 
   cols: any[] = [
     { field: "applications", header: "Applications", width: "15%" },
@@ -81,12 +80,10 @@ export class CriteriaListingComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
 
-    //
     this.criterisSettingsService
       .getCriteriaSettingListing()
       .subscribe(
         (res) => {
-          console.log(res);
           if (!res["msg"]) {
             this.criteriaSettingApiData = res;
             this.criteriaSettingData = res["data"];
@@ -109,12 +106,6 @@ export class CriteriaListingComponent implements OnInit {
         this.coreService.removeLoadingScreen();
       });
 
-    //
-  }
-
-  filter(a: any, b: any) {
-    console.log("a:", a);
-    console.log("b:", b);
   }
 
   formatApiData() {
@@ -160,7 +151,6 @@ export class CriteriaListingComponent implements OnInit {
     });
   }
   openClickForView(data) {
-    console.log("data", data);
     this.criteriaDataArrayView = data.cmCriteriaDataDetails;
     this.criteriaDataArrayView["applications"] = data["applications"];
     this.criteriaDataArrayView["form"] = data["form"];
@@ -188,14 +178,6 @@ export class CriteriaListingComponent implements OnInit {
       this.coreService.removeLoadingScreen();
     }, 1000);
   }
-  // openClickForEdit(data: any) {
-  //   this.router.navigate([
-  //     "navbar",
-  //     "criteria-settings",
-  //     "add-criteria-settings",
-  //     data.id,
-  //   ]);
-  // }
 
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];
@@ -211,7 +193,6 @@ export class CriteriaListingComponent implements OnInit {
 
   setSelectedFilter(ms: MultiSelect, field: any) {
     this[`selectedFilter${field}`] = ms.value;
-    console.log(ms.value, this[`selectedFilter${field}`]);
   }
 
   fieldFilterVisible(field: any) {

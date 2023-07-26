@@ -35,8 +35,6 @@ import {
 })
 export class BankRoutingComponent2 implements OnInit {
   formName = "Bank Routings";
-  // applicationName = "Web Application";
-  // moduleName = "Remittance";
   linkedRouteCode: any = [];
 
   inactiveData: boolean = false;
@@ -105,13 +103,11 @@ export class BankRoutingComponent2 implements OnInit {
     this.bankRoutingService.moduleName = null;
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    console.log("userData", localStorage.getItem("userData"));
 
     this.setSelectAppModule();
 
     this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
       this.coreService.removeLoadingScreen();
-      console.log("appModuleList", res);
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -147,7 +143,6 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   searchAppModule() {
-    console.log("Hi");
     this.getDecodedDataForListing(
       this.userData.userId,
       this.appCtrl.value.code,
@@ -156,7 +151,6 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
-    console.log(userId, appValue, moduleValue);
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
@@ -176,8 +170,6 @@ export class BankRoutingComponent2 implements OnInit {
         map((response) => {
           const criteriaMasterData = response.criteriaMasterData;
           const bankRoutingListingData = response.bankRoutingListingData;
-
-          console.log(criteriaMasterData, bankRoutingListingData);
 
           if (bankRoutingListingData["data"]) {
             this.bankRoutingApiData = bankRoutingListingData;
@@ -209,21 +201,6 @@ export class BankRoutingComponent2 implements OnInit {
                 return { label: code, value: code };
               }
             );
-            // this.criteriaMap = this.bankRoutingApiData.criteriaMap.map(
-            //   (criteriaMap) => {
-            //     let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-            //       criteriaMap: criteriaMap.split("&&&&")[0],
-            //     });
-            //     let code = (
-            //       this.setCriteriaService.decodeFormattedCriteria(
-            //         criteriaCodeText,
-            //         criteriaMasterData,
-            //         [""]
-            //       ) as []
-            //     ).join(", ");
-            //     return { label: code, value: code };
-            //   }
-            // );
             this.status = this.bankRoutingApiData.status.map((code) => {
               return { label: code, value: code };
             });
@@ -237,7 +214,6 @@ export class BankRoutingComponent2 implements OnInit {
       .subscribe(
         (res) => {
           if (!res["data"]) {
-            console.log("No data Found");
             this.showNoDataFound = true;
           }
           this.coreService.removeLoadingScreen();
@@ -292,7 +268,6 @@ export class BankRoutingComponent2 implements OnInit {
     this.coreService.setHeaderStickyStyle(false);
     let completeMsg = "";
     let isLinkedMsg = `Active Transactions Exist. </br>`;
-    console.log(reqStatus, this.linkedRouteCode, data["routeCode"]);
     if (
       reqStatus == "Inactive" &&
       this.linkedRouteCode.includes(data["routeCode"])
@@ -337,7 +312,6 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   updateStatus(e: any, reqStatus: any, data: any) {
-    console.log(e.target, reqStatus);
     this.coreService.displayLoadingScreen();
 
     const formData = new FormData();
@@ -396,9 +370,7 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   setSelectedFilter(ms: MultiSelect, field: any) {
-    console.log(field);
     this[`selectedFilter${field}`] = ms.value;
-    console.log(ms.value, this[`selectedFilter${field}`]);
   }
 
   fieldFilterVisible(field: any) {

@@ -52,7 +52,6 @@ export class AuthService {
   }
 
   autoLogout(expiryTimer: any) {
-    console.log("::expire in ", expiryTimer / 1000, "sec");
     if (expiryTimer <= 0) {
       this.logout();
     } else {
@@ -75,7 +74,6 @@ export class AuthService {
   sessionTimeoutWarning(expiryTimer: any) {
     if (expiryTimer >= 120000) {
       this.clearWarningTimer = setTimeout(() => {
-        console.log("::expires in", expiryTimer - 120000);
         this.showSessionConfirm.next({ status: true, timer: "2 Minutes" });
       }, expiryTimer - 120000);
     } else {
@@ -84,7 +82,6 @@ export class AuthService {
           ? `${Math.floor(expiryTimer / (1000 * 60))} Minute`
           : `less than 1 Minute`;
       this.showSessionConfirm.next({ status: true, timer: remainTime });
-      console.log("::expires in", remainTime);
     }
   }
 
@@ -113,9 +110,6 @@ export class AuthService {
     if (userData["expirationDate"] - new Date().getTime() <= 0) {
       this.logout();
     } else {
-      // if (user.token) {
-      //   this.userDataSub.next(user);
-      // }
       this.refreshTokenLogin();
     }
   }
@@ -130,7 +124,6 @@ export class AuthService {
       .subscribe(
         (data: any) => {
           if (data && data.jwt) {
-            console.log("::refreshToken", data);
             this.refreshUserSessionToken(data.jwt);
           } else {
             data["msg"] && this.coreService.showWarningToast(data["msg"]);
@@ -145,7 +138,6 @@ export class AuthService {
   refreshUserSessionToken(token: any) {
     let expiry = JSON.parse(atob(token.split(".")[1])).exp;
     let user = JSON.parse(localStorage.getItem("userData"));
-    console.log(user);
     let loggedUser = new User(
       user["useRole"],
       user["userGroup"],
@@ -153,11 +145,6 @@ export class AuthService {
       user["userName"],
       token,
       new Date(expiry * 1000).getTime()
-    );
-    console.log("updatedUSer", loggedUser);
-    console.log(
-      "updatedTimer",
-      new Date(expiry * 1000).getTime() - new Date().getTime()
     );
 
     this.userDataSub.next(loggedUser);
@@ -176,8 +163,6 @@ export class AuthService {
   // % USER IDLENESS DETECTOR
 
   startUserIdleDetector() {
-    console.log("::Watch START");
-
     //Start watching for user inactivity.
     this.startWatching();
 
@@ -187,7 +172,6 @@ export class AuthService {
         if (this.isLoggedIn()) {
           this.clearTimers();
           this.sessionTimeoutWarning(120000);
-          console.log("::expireTImer", count);
         }
       }
     });
@@ -196,20 +180,18 @@ export class AuthService {
     this.$onTimeOut = this.onTimeout().subscribe(() => {
       if (this.isLoggedIn()) {
         this.logout();
-        console.log("::Time is up!");
       }
     });
 
     // Refresh Token.
     this.$ping = this.userIdle.ping$.subscribe(() => {
       if (this.isLoggedIn()) {
-        console.log("::PING");
+        this.refreshTokenLogin();
       }
     });
   }
 
   stopTimer() {
-    console.log("STOPPED TIMER");
     this.userIdle.stopTimer();
   }
 
@@ -225,7 +207,6 @@ export class AuthService {
   }
 
   stopWatching() {
-    console.log("STOPPED WATCHING");
     this.$onTimeOut?.unsubscribe();
     this.$onTimerStart?.unsubscribe();
     this.$ping?.unsubscribe();

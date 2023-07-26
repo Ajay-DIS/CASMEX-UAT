@@ -43,7 +43,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.authService.autoLogin();
 
     this.authService.showSessionConfirm.subscribe((res) => {
-      console.log("::tokenexpiring", res);
       if (res.status) {
         this.confirmSessionContinuity(res.timer);
       } else {
@@ -52,7 +51,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
     });
 
     this.authService.userDataSub.subscribe((user) => {
-      console.log("::user", user);
       if (!user) {
         this.authService.stopWatching();
       } else {
@@ -72,7 +70,6 @@ export class AppComponent implements OnInit, AfterContentChecked {
       accept: () => {
         this.authService.clearTimers();
         this.authService.stopTimer();
-        // this.authService.startUserIdleDetector();
       },
       reject: () => {
         this.logout();

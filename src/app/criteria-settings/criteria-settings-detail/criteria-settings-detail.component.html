@@ -2,7 +2,6 @@
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
       <p class="description-text">
-        <!-- <img height="35px" src="../assets/description.svg" alt="" /> -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="41"
@@ -146,7 +145,6 @@
       ></button>
     </div>
 
-    <!-- Suresh start -->
     <div class="application-table">
       <div class="application-header" *ngIf="criteriaSettingtable.length">
         Application: {{ appCtrl.value && appCtrl.value.name }} | Module:
@@ -164,15 +162,6 @@
           [style]="{ width: '100%' }"
         >
           <ng-template pTemplate="header">
-            <!-- <tr>
-              <th>Field Name</th>
-              <th>Display Name</th>
-              <th>Field Type</th>
-              <th>Operator <span class="red-star">*</span></th>
-              <th>Criteria Priority <span class="red-star">*</span></th>
-              <th>Is Mandatory</th>
-              <th>Dependency <span class="red-star">*</span></th>
-            </tr> -->
             <tr>
               <th
                 *ngFor="let col of cols; let i = index"
@@ -223,13 +212,6 @@
                   [disabled]="true"
                 />
               </td>
-              <!-- <td>
-                <input
-                  type="text"
-                  placeholder="{{ product.fieldType }}"
-                  [disabled]="true"
-                />
-              </td> -->
               <td>
                 <p-multiSelect
                   id="operationsmulti"
@@ -296,7 +278,6 @@
       </div>
     </div>
 
-    <!-- Suresh end -->
   </div>
 </div>
 <p-confirmDialog

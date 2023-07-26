@@ -145,7 +145,6 @@
       "
     ></app-set-criteria>
   </div>
-  <!-- // suresh Work start -->
   <div
     class="details-page-card mt-2"
     *ngIf="showContent && appliedCriteriaData.length"
@@ -273,7 +272,6 @@
                         <ng-container
                           *ngFor="let btn of rowData[col['field']].split(',')"
                         >
-                          <!-- *ngIf="!isTaxSettingLinked" -->
                           <button
                             pButton
                             type="button"
@@ -308,7 +306,6 @@
       </div>
     </div>
   </div>
-  <!-- // suresh Work end -->
   <div
   class="NorecordFound"
   *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"

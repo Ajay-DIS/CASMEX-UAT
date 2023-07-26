@@ -56,7 +56,6 @@ export class LoginComponent implements OnInit {
         .subscribe(
           (data: any) => {
             if (data && data.jwt) {
-              console.log("::user", data);
               this.loginService.saveLoggedUserInfo(data);
               this.router.navigate(["/navbar"]);
               this.coreService.showSuccessToast("Login Successfull");
