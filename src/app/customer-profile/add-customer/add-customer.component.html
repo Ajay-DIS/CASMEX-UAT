@@ -11,8 +11,8 @@
                         <p-panel header="Personal Details" [toggleable]="true">
                             <div class="row">
                                 <div class="col-2">
-                                    <label>First Name</label><span class="required">*</span>
-                                    <input [required]="true" type="text" pInputText [(ngModel)]="customerInfo.firstName"> 
+                                    <label for="firstName">First Name</label><span class="required">*</span>
+                                    <input [required]="true" type="text" pInputText [(ngModel)]="customerInfo.firstName">
                                 </div>
                                 <div class="col-2">
                                     <label>Middle Name</label><span class="required">*</span>
@@ -79,13 +79,14 @@
                                     <label>Country</label><span class="required">*</span>
                                     <span class="p-input-icon-left">
                                         <i class="pi pi-search"></i>
-                                        <input style="width: 180px;" type="text" pInputText [(ngModel)]="customerInfo.country"
+                                        <input style="width: 180px;" [required]="true" type="text" pInputText [(ngModel)]="customerInfo.country"
                                             placeholder="Type to Search" [disabled]="true">
                                     </span>
                                 </div>
                                 <div class="col-2">
                                     <label>Mobile Number</label><span class="required">*</span>
-                                    <input type="number" pInputText [(ngModel)]="customerInfo.mobileNumber">
+                                    <input type="number" [required]="true" pInputText [(ngModel)]="customerInfo.mobileNumber">
+                                    <!-- <p-inputMask mask="" [(ngModel)]="customerInfo.mobileNumber"></p-inputMask> -->
                                 </div>
                                 <div class="col-2">
                                     <label>Phone Number</label>
@@ -97,7 +98,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label>House/Building number</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.houseNumber"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.houseNumber"> 
                                 </div>
                                 <div class="col-2">
                                     <label>Block number</label>
@@ -116,7 +117,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label>Pin/Zip Code</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.pinZipCode"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.pinZipCode"> 
                                 </div>
                             </div>
                             <div class="row">
@@ -139,7 +140,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label>House/Building number</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.houseNumber"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.houseNumber"> 
                                 </div>
                                 <div class="col-2">
                                     <label>Block number</label>
@@ -151,7 +152,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label>City</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.city"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.city"> 
                                 </div>
                                 <div class="col-2">
                                     <label>Pin/Zip Code</label><span class="required">*</span>
@@ -163,11 +164,11 @@
                             <div class="row">
                                 <div class="col-2">
                                     <label>Employer Name</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.employerName"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.employerName"> 
                                 </div>
                                 <div class="col-2">
                                     <label>Profession</label><span class="required">*</span><br>
-                                    <p-dropdown class="colorInput" [options]=""
+                                    <p-dropdown class="colorInput" [required]="true" [options]=""
                                    [(ngModel)]="customerInfo.profession" optionValue="code" optionLabel="name"
                                     ></p-dropdown>
                                 </div>
@@ -183,7 +184,7 @@
                                 </div>
                                 <div class="col-2">
                                     <label>Visa Status</label><span class="required">*</span><br>
-                                    <p-dropdown class="colorInput" [options]=""
+                                    <p-dropdown class="colorInput" [required]="true" [options]=""
                                    [(ngModel)]="customerInfo.visaStatus" optionValue="code" optionLabel="name"
                                     ></p-dropdown>
                                 </div>
@@ -194,21 +195,21 @@
                             <div class="row">
                                 <div class="col-2">
                                     <label>Document Type</label><span class="required">*</span><br>
-                                    <p-dropdown class="colorInput" [options]=""
+                                    <p-dropdown class="colorInput" [required]="true" [options]=""
                                    [(ngModel)]="customerInfo.documentType" optionValue="code" optionLabel="name"
                                     ></p-dropdown>
                                 </div>
                                 <div class="col-2">
                                     <label>ID Number</label><span class="required">*</span>
-                                    <input type="text" pInputText [(ngModel)]="customerInfo.idNumber"> 
+                                    <input type="text" [required]="true" pInputText [(ngModel)]="customerInfo.idNumber"> 
                                 </div>
                                 <div class="col-2">
                                     <label>ID Issue Date</label>
                                     <p-calendar [(ngModel)]="customerInfo.idIssueDate" placeholder="MM/DD/YYYY"></p-calendar>
                                 </div>
                                 <div class="col-2">
-                                    <label>ID Expiry Date</label><span class="required">*</span><span class="required">*</span>
-                                    <p-calendar [(ngModel)]="customerInfo.idExpiryDate" placeholder="MM/DD/YYYY"></p-calendar>
+                                    <label>ID Expiry Date</label><span class="required"></span><span class="required">*</span>
+                                    <p-calendar [minDate]="idExpiryDateMin" dateFormat="dd/mm/yy" [maxDate]="AfterTenYears" [(ngModel)]="customerInfo.idExpiryDate" placeholder="MM/DD/YYYY"></p-calendar>
                                 </div>
                                 <div class="col-2">
                                     <label>ID Issue Authority</label>
@@ -225,7 +226,29 @@
                             </div>
                             <div class="row">
                                 <div class="col-2">
-                                    <p-fileUpload #fubauto mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize="1000000" (onUpload)="myUploader($event)" [auto]="true" chooseLabel="Upload"></p-fileUpload>
+                                    <label>Upload Front Side</label>
+                                    <input type="text" pInputText [(ngModel)]="customerInfo.idNumber"> 
+                                </div>
+                                <div class="col-2">
+                                    <p-fileUpload #fubauto mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize="1000000" (onUpload)="myUploader($event)" [auto]="true" chooseLabel="Browse"></p-fileUpload>
+                                </div>
+                                <div class="col-2">
+                                    <label>Upload Back Side</label>
+                                    <input type="text" pInputText [(ngModel)]="customerInfo.idNumber"> 
+                                </div>
+                                <div class="col-2">
+                                    <p-fileUpload #fubauto mode="basic" name="demo[]" url="./upload.php" accept="image/*" maxFileSize="1000000" (onUpload)="myUploader($event)" [auto]="true" chooseLabel="Browse"></p-fileUpload>
+                                </div>
+                                <div class="col-1">
+                                    <button
+                                         #addCriteriaBtn
+                                        pButton
+                                        pRipple
+                                        style="position: relative; top: 15px; font-size: 1.5rem"
+                                        type="button"
+                                        label="+"
+                                        class="p-button-primary"
+                                    ></button>
                                 </div>
                             </div>
                         </p-panel><br/>

@@ -62,6 +62,7 @@ import { AddCustomerComponent } from "./customer-profile/add-customer/add-custom
 import { PanelModule } from "primeng/panel";
 import { TabViewModule } from "primeng/tabview";
 import { CalendarModule } from "primeng/calendar";
+import {InputMaskModule} from 'primeng/inputmask';
 import { FileUploadModule } from "primeng/fileupload";
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
@@ -131,6 +132,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     PickListModule,
     ConfirmDialogModule,
     TreeTableModule,
+    InputMaskModule,
     CheckboxModule,
     TreeSelectModule,
     ToastModule,
