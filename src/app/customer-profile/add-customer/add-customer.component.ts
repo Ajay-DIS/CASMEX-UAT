@@ -12,7 +12,12 @@ export class AddCustomerComponent implements OnInit {
   Select:"Select"
   constructor(private coreService: CoreService,private route: ActivatedRoute,) { }
   minDate = new Date();
+  idExpiryDateMin:Date = new Date();
   eighteenYearsAgo = new Date(this.minDate.setFullYear(this.minDate.getFullYear()-18));
+  AfterTenYears = new Date('07/31/2028');
+ 
+
+
   customerInfo = {
     firstName: "",middleName:"",lastName:"" ,gender:"", dateOfBirth: "",countryOfBirth:""
     ,natoinality:"", customerGroup:"",politicallyExposedPerson:"",creditToParty:"",accountPaymentMode:"",country:"",
