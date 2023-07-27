@@ -41,10 +41,17 @@ export class AddCustomerComponent implements OnInit {
   individualForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
+
+  Options =[
+    {name: 'first', code: 'NY'},
+    {name: 'second', code: 'RM'},
+    {name: 'third', code: 'LDN'},
+  ]
+
   // prettier-ignore
   customerIndividual: any[] = [
     {
-      section: "personal Details",
+      section: "Personal Details",
       fields: [
         {
           fieldName: "firstName",
@@ -138,7 +145,7 @@ export class AddCustomerComponent implements OnInit {
       ],
     },
     {
-      section: "contact Details",
+      section: "Contact Details",
       fields: [
         {
           fieldName: "country",
@@ -223,7 +230,7 @@ export class AddCustomerComponent implements OnInit {
       ],
     },
     {
-      section: "employment Details",
+      section: "Employment Details",
       fields: [
         {
           fieldName: "employerName",
@@ -268,7 +275,7 @@ export class AddCustomerComponent implements OnInit {
       ],
     },
     {
-      section: "kyc Doc Upload",
+      section: "KYC Doc Upload",
       fields: [
         {
           fieldName: "documentType",
@@ -355,7 +362,7 @@ export class AddCustomerComponent implements OnInit {
       ],
     },
     {
-      section: "representative Details",
+      section: "Representative Details",
       fields: [
         {
           fieldName: "firstName",

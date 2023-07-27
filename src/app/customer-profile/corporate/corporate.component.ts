@@ -31,82 +31,98 @@ export class CorporateComponent implements OnInit {
   corporateForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
+
+  Options =[
+    {name: 'first', code: 'NY'},
+    {name: 'second', code: 'RM'},
+    {name: 'third', code: 'LDN'},
+  ]
+
   // prettier-ignore
   customerCorporate: any[] = [
     {
-      section: "personal Details",
+      section: "Company Details",
       fields: [
         {
-          fieldName: "firstName",
-          fieldLabel: "First Name",
+          fieldName: "nameOfTheCorporate",
+          fieldLabel: "Name Of The Corporate",
           fieldType: "input",
           fieldSubtype: "text",
           isMandatory: true,
           regex: "^[a-zA-Z ]*$",
         },
         {
-          fieldName: "middleName",
-          fieldLabel: "Middle Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "lastName",
-          fieldLabel: "Last Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "gender",
-          fieldLabel: "Gender",
+          fieldName: "countryOfEstablishment",
+          fieldLabel: "Country of Establishment",
           fieldType: "select",
-          fieldSubtype: null,
+          fieldSubtype: "search",
           isMandatory: true,
-          regex: null,
+          regex: null
         },
         {
-          fieldName: "dob",
-          fieldLabel: "Date Of Birth",
+          fieldName: "dateOfEstablishment",
+          fieldLabel: "Date of Establishment",
           fieldType: "input",
           fieldSubtype: "date",
           isMandatory: true,
-          dateType: "dob",
+          dateType: "issue",
           regex: null,
         },
         {
-          fieldName: "countryOfBirth",
-          fieldLabel: "Country Of Birth",
+          fieldName: "businessPurpose",
+          fieldLabel: "Business Purpose",
+          fieldType: "select",
+          fieldSubtype: null,
+          isMandatory: true,
+          regex: null,
+        },
+        {
+          fieldName: "countryOfOperation ",
+          fieldLabel: "Country of Operation ",
           fieldType: "select",
           fieldSubtype: "search",
-          isMandatory: false,
+          isMandatory: true,
           regex: null,
         },
         {
-          fieldName: "nationality",
-          fieldLabel: "Nationality",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "customerGroup",
-          fieldLabel: "Customer Group",
+          fieldName: "businessActivities ",
+          fieldLabel: "Business Activities",
           fieldType: "select",
           fieldSubtype: null,
           isMandatory: false,
           regex: null,
         },
         {
-          fieldName: "politicallyExposedPerson",
-          fieldLabel: "Politically exposed person?",
+          fieldName: "legalStatus ",
+          fieldLabel: "Legal status",
           fieldType: "select",
           fieldSubtype: null,
-          isMandatory: false,
+          isMandatory: true,
+          regex: null,
+        },
+        {
+          fieldName: "countryOfTrade",
+          fieldLabel: "Country of Trade ",
+          fieldType: "select",
+          fieldSubtype: "search",
+          isMandatory: true,
+          regex: null,
+        },
+        {
+          fieldName: "licenseNumber",
+          fieldLabel: "License Number",
+          fieldType: "input",
+          fieldSubtype: "text",
+          isMandatory: true,
+          regex: null,
+        },
+        {
+          fieldName: "licenseExpiryDate",
+          fieldLabel: "License Expiry Date",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory: true,
+          dateType: "expiry",
           regex: null,
         },
         {
@@ -128,7 +144,7 @@ export class CorporateComponent implements OnInit {
       ],
     },
     {
-      section: "contact Details",
+      section: "Contact Details",
       fields: [
         {
           fieldName: "country",
@@ -167,192 +183,153 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "House/Building number",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: true,
-          regex: null,
+          isMandatory:true
         },
         {
           fieldName: "blockNumber",
           fieldLabel: "Block number",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "streetName",
           fieldLabel: "Street Name",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "city",
           fieldLabel: "City",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
+          isMandatory:false
         },
         {
           fieldName: "pinZipCode",
           fieldLabel: "Pin/Zip Code",
           fieldType: "input",
           fieldSubtype: "number",
-          isMandatory: true,
-          regex: "^(\\d{4}|\\d{6})$",
+          isMandatory:true
         },
         {
           fieldName: "sameAsAbove",
           fieldLabel: "Same as above",
           fieldType: "input",
           fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
       ],
     },
     {
-      section: "employment Details",
-      fields: [
-        {
-          fieldName: "employerName",
-          fieldLabel: "Employer Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "profession",
-          fieldLabel: "Profession",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "salaryDate",
-          fieldLabel: "Salary Date",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "monthlySalary",
-          fieldLabel: "Monthly Salary",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^[0-9]+$",
-        },
-        {
-          fieldName: "visaStatus",
-          fieldLabel: "Visa Status",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-      ],
-    },
-    {
-      section: "kyc Doc Upload",
+      section: "KYC Doc Upload",
       fields: [
         {
           fieldName: "documentType",
           fieldLabel: "Document Type",
           fieldType: "select",
           fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
+          isMandatory:true
         },
         {
           fieldName: "idNumber",
           fieldLabel: "ID Number",
           fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: null,
+          fieldSubtype: "number",
+          isMandatory:true
         },
         {
           fieldName: "idIssueDate",
           fieldLabel: "ID Issue Date",
           fieldType: "input",
           fieldSubtype: "date",
-          dateType: "issue",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "idExpiryDate",
           fieldLabel: "ID Expiry Date",
           fieldType: "input",
           fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: true,
-          regex: null,
+          isMandatory:true
         },
         {
           fieldName: "idIssueAuthority",
           fieldLabel: "ID Issue Authority",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
+          isMandatory:false
         },
         {
           fieldName: "idIssueCountry",
           fieldLabel: "ID Issue Country",
           fieldType: "select",
           fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "uploadFrontSide",
           fieldLabel: "Upload Front Side",
           fieldType: "input",
           fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "uploadBackSide",
           fieldLabel: "Upload Back Side",
           fieldType: "input",
           fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "imagebypassed",
           fieldLabel: "Image bypassed",
           fieldType: "input",
           fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "herebyConfirmthatIdDetailsProvidedAreVerified",
           fieldLabel: "Hereby confirm that ID details provided are verified",
           fieldType: "input",
           fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
       ],
     },
     {
-      section: "representative Details",
+      section: "Beneficial Owner Details",
       fields: [
+        {
+          fieldName: "ownershipType",
+          fieldLabel: "Ownership Type",
+          fieldType: "select",
+          fieldSubtype: null,
+          isMandatory:true,
+          regex:null
+        },
+        {
+          fieldName: "NoOfPartner",
+          fieldLabel: "No. of Partner",
+          fieldType: "input",
+          fieldSubtype: "number",
+          isMandatory:true,
+          regex:"^[0-9]+$"
+        },
+        {
+          fieldName: "Percentage",
+          fieldLabel: "Percentage",
+          fieldType: "input",
+          fieldSubtype: "number",
+          isMandatory:true,
+          regex:null
+        },
         {
           fieldName: "firstName",
           fieldLabel: "First Name",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
+          isMandatory: true,
           regex: "^[a-zA-Z ]*$",
         },
         {
@@ -360,7 +337,7 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "Middle Name",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
+          isMandatory: true,
           regex: "^[a-zA-Z ]*$",
         },
         {
@@ -368,7 +345,7 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "Last Name",
           fieldType: "input",
           fieldSubtype: "text",
-          isMandatory: false,
+          isMandatory: true,
           regex: "^[a-zA-Z ]*$",
         },
         {
@@ -472,23 +449,6 @@ export class CorporateComponent implements OnInit {
           regex: null,
         },
         {
-          fieldName: "authorizationLetterExpiryDate",
-          fieldLabel: "Authorization letter expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "maximumAllowedAmount",
-          fieldLabel: "Maximum allowed amount",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^[0-9]+$",
-        },
-        {
           fieldName: "idCopyUpload",
           fieldLabel: "ID copy upload",
           fieldType: "input",
@@ -496,21 +456,150 @@ export class CorporateComponent implements OnInit {
           isMandatory: false,
           regex: null,
         },
+      ],
+    },
+    {
+      section: "Representative Details",
+      fields: [
+        {
+          fieldName: "firstName",
+          fieldLabel: "First Name",
+          fieldType: "input",
+          fieldSubtype: "text",
+          isMandatory:false
+        },
+        {
+          fieldName: "middleName",
+          fieldLabel: "Middle Name",
+          fieldType: "input",
+          fieldSubtype: "text",
+          isMandatory:false
+        },
+        {
+          fieldName: "lastName",
+          fieldLabel: "Last Name",
+          fieldType: "input",
+          fieldSubtype: "text",
+          isMandatory:false
+        },
+        {
+          fieldName: "gender",
+          fieldLabel: "Gender",
+          fieldType: "select",
+          fieldSubtype: null,
+          isMandatory:false
+        },
+        {
+          fieldName: "dob",
+          fieldLabel: "Date Of Birth",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory:false
+        },
+        {
+          fieldName: "countryOfBirth",
+          fieldLabel: "Country Of Birth",
+          fieldType: "select",
+          fieldSubtype: "search",
+          isMandatory:false
+        },
+        {
+          fieldName: "nationality",
+          fieldLabel: "Nationality",
+          fieldType: "select",
+          fieldSubtype: "search",
+          isMandatory:false
+        },
+        {
+          fieldName: "relationship",
+          fieldLabel: "Relationship",
+          fieldType: "select",
+          fieldSubtype: null,
+          isMandatory:false
+        },
+        {
+          fieldName: "documentType",
+          fieldLabel: "Document Type",
+          fieldType: "select",
+          fieldSubtype: null,
+          isMandatory:false
+        },
+        {
+          fieldName: "idNumber",
+          fieldLabel: "ID Number",
+          fieldType: "input",
+          fieldSubtype: "number",
+          isMandatory:false
+        },
+        {
+          fieldName: "idIssueDate",
+          fieldLabel: "ID Issue Date",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory:false
+        },
+        {
+          fieldName: "idExpiryDate",
+          fieldLabel: "ID Expiry Date",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory:false
+        },
+        {
+          fieldName: "idIssueAuthority",
+          fieldLabel: "ID Issue Authority",
+          fieldType: "input",
+          fieldSubtype: "text",
+          isMandatory:false
+        },
+        {
+          fieldName: "idIssueCountry",
+          fieldLabel: "ID Issue Country",
+          fieldType: "select",
+          fieldSubtype: "search",
+          isMandatory:false
+        },
+        {
+          fieldName: "visaExpiryDate",
+          fieldLabel: "Visa expiry Date",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory:false
+        },
+        {
+          fieldName: "authorizationLetterExpiryDate",
+          fieldLabel: "Authorization letter expiry Date",
+          fieldType: "input",
+          fieldSubtype: "date",
+          isMandatory:false
+        },
+        {
+          fieldName: "maximumAllowedAmount",
+          fieldLabel: "Maximum allowed amount",
+          fieldType: "input",
+          fieldSubtype: "number",
+          isMandatory:false
+        },
+        {
+          fieldName: "idCopyUpload",
+          fieldLabel: "ID copy upload",
+          fieldType: "input",
+          fieldSubtype: "file",
+          isMandatory:false
+        },
         {
           fieldName: "authorizationLetterUpload",
           fieldLabel: "Authorization letter upload",
           fieldType: "input",
           fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
         {
           fieldName: "otherDocumentUpload",
           fieldLabel: "Other Document upload",
           fieldType: "input",
           fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
+          isMandatory:false
         },
       ],
     },
@@ -653,4 +742,6 @@ export class CorporateComponent implements OnInit {
     this.submitted = false;
     if (this.corporateForm) this.corporateForm.reset();
   }
+
+ 
 }

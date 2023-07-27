@@ -90,11 +90,10 @@
                         <p-dropdown
                           *ngSwitchCase="null"
                           class="block"
-                          [options]="cities"
+                          [options]="Options"
                           [formControlName]="field.name"
-                          placeholder=""
+                          placeholder="&nbsp;"
                           optionLabel="name"
-                          [showClear]="true"
                         ></p-dropdown>
                         <p-dropdown
                           *ngSwitchCase="'search'"
@@ -104,7 +103,6 @@
                           optionLabel="name"
                           [filter]="true"
                           filterBy="name"
-                          [showClear]="true"
                           placeholder="Type to search"
                         >
                           <ng-template pTemplate="selectedItem">
