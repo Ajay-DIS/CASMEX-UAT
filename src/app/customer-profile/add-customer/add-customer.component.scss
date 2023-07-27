@@ -77,3 +77,32 @@ div.checkbox {
   flex-basis: fit-content;
   gap: 15px;
 }
+
+div.btn-grp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav {
+  background: transparent;
+  border-bottom: 1px solid gainsboro;
+  margin-bottom: 20px;
+}
+:host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
+  color: #000;
+  font-weight: 500;
+  background: transparent;
+  padding: 1.25rem 1.25rem 0.75rem 1rem;
+  border: none;
+}
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  border-bottom: 5px solid var(--primary-color);
+  color: var(--primary-color);
+}
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  background: transparent;
+  padding: 0;
+}

@@ -32,11 +32,11 @@ export class CorporateComponent implements OnInit {
   formSections: any[] = [];
   apiData: any = [];
 
-  Options =[
-    {name: 'first', code: 'NY'},
-    {name: 'second', code: 'RM'},
-    {name: 'third', code: 'LDN'},
-  ]
+  Options = [
+    { name: "first", code: "NY" },
+    { name: "second", code: "RM" },
+    { name: "third", code: "LDN" },
+  ];
 
   // prettier-ignore
   customerCorporate: any[] = [
@@ -244,14 +244,16 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "ID Issue Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "issue",
         },
         {
           fieldName: "idExpiryDate",
           fieldLabel: "ID Expiry Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:true
+          isMandatory:true,
+          dateType: "expiry",
         },
         {
           fieldName: "idIssueAuthority",
@@ -494,7 +496,8 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "Date Of Birth",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "dob",
         },
         {
           fieldName: "countryOfBirth",
@@ -536,14 +539,16 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "ID Issue Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "issue",
         },
         {
           fieldName: "idExpiryDate",
           fieldLabel: "ID Expiry Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "expiry",
         },
         {
           fieldName: "idIssueAuthority",
@@ -564,14 +569,16 @@ export class CorporateComponent implements OnInit {
           fieldLabel: "Visa expiry Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "expiry",
         },
         {
           fieldName: "authorizationLetterExpiryDate",
           fieldLabel: "Authorization letter expiry Date",
           fieldType: "input",
           fieldSubtype: "date",
-          isMandatory:false
+          isMandatory:false,
+          dateType: "expiry",
         },
         {
           fieldName: "maximumAllowedAmount",
@@ -611,7 +618,9 @@ export class CorporateComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.setFormByData(this.customerCorporate);
-    this.coreService.removeLoadingScreen();
+    setTimeout(()=>{
+      this.coreService.removeLoadingScreen();
+    },1000)
   }
 
   getMinDate(dateType: any) {
@@ -742,6 +751,4 @@ export class CorporateComponent implements OnInit {
     this.submitted = false;
     if (this.corporateForm) this.corporateForm.reset();
   }
-
- 
 }

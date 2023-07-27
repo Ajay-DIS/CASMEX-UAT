@@ -1,22 +1,4 @@
 <div class="row visible-main-section">
-  <div class="btnRight">
-    <button
-      pButton
-      pRipple
-      type="button"
-      (click)="saveCustomer()"
-      label="Save"
-      class="ml-2"
-    ></button>
-    <button
-      pButton
-      pRipple
-      type="button"
-      (click)="resetCustomerInfo()"
-      label="Reset"
-      class="p-button-warning ml-2"
-    ></button>
-  </div>
   <div *ngIf="showForm" class="col-12">
     <p-tabView>
       <p-tabPanel header="Individual">
@@ -24,7 +6,6 @@
           *ngIf="apiData.length"
           class="custom-form"
           [formGroup]="individualForm"
-          (ngSubmit)="onSubmit()"
         >
           <ng-container *ngFor="let section of formSections">
             <p-panel
@@ -74,6 +55,7 @@
                           [maxDate]="field.maxDate"
                           [defaultDate]="field.defaultDate"
                           [readonlyInput]="true"
+                          [appendTo]="'body'"
                         ></p-calendar>
                         <p-checkbox
                           *ngSwitchCase="'checkbox'"
@@ -187,15 +169,23 @@
               No Visible fields available.
             </p-panel>
           </ng-container>
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary mr-2">Save</button>
+          <div class="form-group btn-grp buttons-section">
             <button
+              pButton
+              pRipple
               type="button"
+              label="Save"
+              class="p-button-raised"
+              (click)="onSubmit()"
+            ></button>
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Reset"
+              class="p-button-warning"
               (click)="onReset()"
-              class="btn btn-warning float-right"
-            >
-              Reset
-            </button>
+            ></button>
           </div>
         </form>
       </p-tabPanel>
