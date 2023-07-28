@@ -309,7 +309,11 @@
                           [style.maxWidth]="'85%'"
                           pInputText
                           [placeholder]="
-                            rowData[col.field] ? rowData[col.field] : ''
+                            rowData[col.field]
+                              ? rowData[col.field]
+                              : rowData['fieldType'] == 'Date'
+                              ? 'MM/DD/YYYY'
+                              : ''
                           "
                           [(ngModel)]="rowData[col.field]"
                           (ngModelChange)="
@@ -371,6 +375,14 @@
                           *ngIf="col.type == 'checkbox'"
                           [(ngModel)]="rowData[col.field]"
                           [binary]="true"
+                          [disabled]="
+                            (col.field == 'isVisibile' ||
+                              col.field == 'isEnable') &&
+                            rowData['isMandatory']
+                          "
+                          (onChange)="
+                            toggleCheckbox($event, rowData, col.field)
+                          "
                         ></p-checkbox>
                       </ng-container>
                     </td>

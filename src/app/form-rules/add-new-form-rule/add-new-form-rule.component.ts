@@ -346,23 +346,12 @@ export class AddNewFormRuleComponent implements OnInit {
               });
             }
 
-            this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-              this.editFromRulesApiData
-            );
-
-            this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
-              this.criteriaCodeText,
-              this.criteriaMasterData,
-              this.cmCriteriaSlabType
-            );
-
             this.formRuleCode = this.editFromRulesApiData["formRuleCode"];
             if (this.editFromRulesApiData["formRuleDesc"]) {
               this.ruleDescription = this.editFromRulesApiData["formRuleDesc"];
             }
             this.isFromRulesLinked =
               !this.editFromRulesApiData["criteriaUpdate"];
-
 
             let reqData =
               this.criteriaDataService.decodeCriteriaMapIntoTableFields(
@@ -372,6 +361,13 @@ export class AddNewFormRuleComponent implements OnInit {
             this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
               this.editFromRulesApiData
             );
+
+            this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
+              reqData.critMap,
+              this.criteriaMasterData,
+              ["LCY Amount"]
+            );
+
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
@@ -1013,7 +1009,6 @@ export class AddNewFormRuleComponent implements OnInit {
                 }
               }
 
-
               this.coreService.showSuccessToast(
                 `Criteria Applied Successfully`
               );
@@ -1409,6 +1404,18 @@ export class AddNewFormRuleComponent implements OnInit {
       this.defValueInpTooltip = "Please set min max length correctly";
     } else {
       this.defValueInpTooltip = "";
+    }
+  }
+
+  toggleCheckbox(e: any, rowData: any, field: any) {
+    if (field == "isMandatory") {
+      if (e.checked) {
+        rowData["isVisibile"] = true;
+        rowData["isEnable"] = true;
+      } else {
+        rowData["isVisibile"] = false;
+        rowData["isEnable"] = false;
+      }
     }
   }
 
