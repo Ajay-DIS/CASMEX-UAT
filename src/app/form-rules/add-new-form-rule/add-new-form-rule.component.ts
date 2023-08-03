@@ -927,6 +927,11 @@ export class AddNewFormRuleComponent implements OnInit {
                   childRow["data"]["fieldType"] = detail["fieldType"];
                   childRow["data"]["fieldLabel"] = detail["fieldLabel"];
                   childRow["data"]["apiKey"] = detail["apiKey"];
+                  childRow["data"]["obscure"] = detail["obscure"];
+                  childRow["data"]["multiSelect"] = detail["multiSelect"];
+                  childRow["data"]["minDate"] = detail["minDate"];
+                  childRow["data"]["maxDate"] = detail["maxDate"];
+                  childRow["data"]["initialDate"] = detail["initialDate"];
                   formattedRowData["children"].push(childRow);
                 });
                 completeData.push(formattedRowData);
