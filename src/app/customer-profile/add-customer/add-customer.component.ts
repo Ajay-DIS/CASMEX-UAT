@@ -29,6 +29,8 @@ export class AddCustomerComponent implements OnInit {
 
   // --------------------AJAY STSARTSSSSSSSSSSSSSS
 
+  activeTabIndex = 0;
+
   pastYear = new Date("01/01/1950");
   futureYear = new Date("01/01/2050");
   dobMaxDate = new Date().setFullYear(new Date().getFullYear() - 18);
@@ -545,9 +547,13 @@ export class AddCustomerComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.setFormByData(this.customerIndividual);
-    setTimeout(()=>{
+    setTimeout(() => {
       this.coreService.removeLoadingScreen();
-    },1000)
+    }, 1000);
+  }
+
+  handleChange(event: any) {
+    this.activeTabIndex = event.index;
   }
 
   getMinDate(dateType: any) {

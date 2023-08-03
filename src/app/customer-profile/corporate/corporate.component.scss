@@ -72,11 +72,11 @@ div.checkbox {
   justify-content: space-evenly;
   flex-direction: row-reverse;
   align-items: center;
-  flex-basis: fit-content;
+  // flex-basis: fit-content;
   gap: 15px;
 }
 
-div.btn-grp{
+div.btn-grp {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -103,4 +103,68 @@ div.btn-grp{
 :host ::ng-deep .p-tabview .p-tabview-panels {
   background: transparent;
   padding: 0;
+}
+
+// fileupload
+.file-upload {
+  width: 180px;
+}
+
+.file-upload .file-upload-select {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  background: #f4f6fa;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  height: 37px;
+}
+.file-upload .file-upload-select .file-select-button {
+  background: #55c78a;
+  position: absolute;
+  right: 0;
+  top: 0px;
+  padding: 7px 12px;
+  color: #ffffff;
+}
+.file-upload .file-upload-select .file-select-name {
+  text-align: center;
+  font-size: 12px;
+}
+.file-upload .file-upload-select:hover .file-select-button {
+  transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+}
+.file-upload .file-upload-select input[type="file"] {
+  display: none;
+}
+// fileupload end
+
+.NorecordFound {
+  background-color: #fff;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 10px;
+  padding-bottom: 60px;
+}
+.NorecordFound p {
+  padding-bottom: 10px;
+  font-weight: 500;
+  color: rgb(0 0 0);
+  font-size: 16px;
+  line-height: 1px;
+  font-family: "IBM Plex Sans", sans-serif;
+}
+.NorecordFound button {
+  margin-bottom: 40px;
+}
+
+.NorecordFound img {
+  width: 27%;
+  margin-top: 70px;
 }

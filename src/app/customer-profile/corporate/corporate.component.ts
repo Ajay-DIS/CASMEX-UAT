@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Component, Input, OnChanges, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -13,24 +14,34 @@ import { CoreService } from "src/app/core.service";
   templateUrl: "./corporate.component.html",
   styleUrls: ["./corporate.component.scss"],
 })
-export class CorporateComponent implements OnInit {
+export class CorporateComponent implements OnInit, OnChanges {
   constructor(
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private http: HttpClient
   ) {}
+
+  @Input("activeIndex") activeTabIndex: any;
+
+  userId = null;
+  today = new Date();
   pastYear = new Date("01/01/1950");
   futureYear = new Date("01/01/2050");
-  dobMaxDate = new Date().setFullYear(new Date().getFullYear() - 18);
+  dobMaxDate = new Date(this.today.setFullYear(this.today.getFullYear() - 18));
   expiryMinDate = new Date();
   issueMaxDate = new Date();
   objectKeys = Object.keys;
-  showForm: boolean = true;
+  showForm: boolean = false;
   submitted = false;
 
   corporateForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
+
+  uploadedFiles: any[] = [];
+
+  noDataMsg = null;
 
   Options = [
     { name: "first", code: "NY" },
@@ -39,588 +50,345 @@ export class CorporateComponent implements OnInit {
   ];
 
   // prettier-ignore
-  customerCorporate: any[] = [
+
+  masterData = {
+    nationality: [
+      {
+        code: "Indian",
+        codeName: "Indian",
+      },
+      {
+        code: "Japanese",
+        codeName: "Japanese",
+      },
+      {
+        code: "American",
+        codeName: "American",
+      },
+    ],
+	representativeNationality: [
+      {
+        code: "Indian",
+        codeName: "Indian",
+      },
+      {
+        code: "Japanese",
+        codeName: "Japanese",
+      },
+      {
+        code: "American",
+        codeName: "American",
+      },
+    ],
+    countryOfEstablishment: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfOperation: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfTrade: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	contactCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	permanentCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfBirth: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	idIssueCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	representativeCountryOfBirth: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	representativeIssueCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+    relationship: [
+      {
+        code: "Brother",
+        codeName: "Brother",
+      },
+      {
+        code: "Uncle",
+        codeName: "Uncle",
+      },
+    ],
+	representativeRelationship: [
     {
-      section: "Company Details",
-      fields: [
-        {
-          fieldName: "nameOfTheCorporate",
-          fieldLabel: "Name Of The Corporate",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "countryOfEstablishment",
-          fieldLabel: "Country of Establishment",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: true,
-          regex: null
-        },
-        {
-          fieldName: "dateOfEstablishment",
-          fieldLabel: "Date of Establishment",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory: true,
-          dateType: "issue",
-          regex: null,
-        },
-        {
-          fieldName: "businessPurpose",
-          fieldLabel: "Business Purpose",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "countryOfOperation ",
-          fieldLabel: "Country of Operation ",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "businessActivities ",
-          fieldLabel: "Business Activities",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "legalStatus ",
-          fieldLabel: "Legal status",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "countryOfTrade",
-          fieldLabel: "Country of Trade ",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "licenseNumber",
-          fieldLabel: "License Number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "licenseExpiryDate",
-          fieldLabel: "License Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory: true,
-          dateType: "expiry",
-          regex: null,
-        },
-        {
-          fieldName: "creditToParty",
-          fieldLabel: "Credit to party",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "onAccountPaymentMode",
-          fieldLabel: "On Account Payment Mode",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
+      code: "Brother",
+      codeName: "Brother",
     },
     {
-      section: "Contact Details",
-      fields: [
-        {
-          fieldName: "country",
-          fieldLabel: "Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "mobileNumber",
-          fieldLabel: "Mobile Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: true,
-          regex: "^((\\+91-?)|0)?[0-9]{10}$",
-        },
-        {
-          fieldName: "phoneNumber",
-          fieldLabel: "Phone Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^((\\+91-?)|0)?[0-9]{10}$",
-        },
-        {
-          fieldName: "emailId",
-          fieldLabel: "Email Id",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$",
-        },
-        {
-          fieldName: "houseBuildingNo",
-          fieldLabel: "House/Building number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:true
-        },
-        {
-          fieldName: "blockNumber",
-          fieldLabel: "Block number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "streetName",
-          fieldLabel: "Street Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "city",
-          fieldLabel: "City",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "pinZipCode",
-          fieldLabel: "Pin/Zip Code",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:true
-        },
-        {
-          fieldName: "sameAsAbove",
-          fieldLabel: "Same as above",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory:false
-        },
-      ],
+      code: "Uncle",
+      codeName: "Uncle",
+    },
+    ],
+    documentType: [
+      {
+        code: "Aadhar",
+        codeName: "Aadhar",
+      },
+      {
+        code: "Voter",
+        codeName: "Voter",
+      },
+    ],
+	representativeDocumentType: [
+    {
+      code: "Aadhar",
+      codeName: "Aadhar",
     },
     {
-      section: "KYC Doc Upload",
-      fields: [
-        {
-          fieldName: "documentType",
-          fieldLabel: "Document Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory:true
-        },
-        {
-          fieldName: "idNumber",
-          fieldLabel: "ID Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:true
-        },
-        {
-          fieldName: "idIssueDate",
-          fieldLabel: "ID Issue Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "issue",
-        },
-        {
-          fieldName: "idExpiryDate",
-          fieldLabel: "ID Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:true,
-          dateType: "expiry",
-        },
-        {
-          fieldName: "idIssueAuthority",
-          fieldLabel: "ID Issue Authority",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "idIssueCountry",
-          fieldLabel: "ID Issue Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory:false
-        },
-        {
-          fieldName: "uploadFrontSide",
-          fieldLabel: "Upload Front Side",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory:false
-        },
-        {
-          fieldName: "uploadBackSide",
-          fieldLabel: "Upload Back Side",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory:false
-        },
-        {
-          fieldName: "imagebypassed",
-          fieldLabel: "Image bypassed",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory:false
-        },
-        {
-          fieldName: "herebyConfirmthatIdDetailsProvidedAreVerified",
-          fieldLabel: "Hereby confirm that ID details provided are verified",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory:false
-        },
-      ],
+      code: "Voter",
+      codeName: "Voter",
+    },
+    ],
+    gender: [
+      {
+        code: "Male",
+        codeName: "Male",
+      },
+      {
+        code: "Female",
+        codeName: "Female",
+      },
+      {
+        code: "Others",
+        codeName: "Others",
+      },
+    ],
+	representativeGender: [
+    {
+      code: "Male",
+      codeName: "Male",
     },
     {
-      section: "Beneficial Owner Details",
-      fields: [
-        {
-          fieldName: "ownershipType",
-          fieldLabel: "Ownership Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory:true,
-          regex:null
-        },
-        {
-          fieldName: "NoOfPartner",
-          fieldLabel: "No. of Partner",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:true,
-          regex:"^[0-9]+$"
-        },
-        {
-          fieldName: "Percentage",
-          fieldLabel: "Percentage",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:true,
-          regex:null
-        },
-        {
-          fieldName: "firstName",
-          fieldLabel: "First Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "middleName",
-          fieldLabel: "Middle Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "lastName",
-          fieldLabel: "Last Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "gender",
-          fieldLabel: "Gender",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "dob",
-          fieldLabel: "Date Of Birth",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "dob",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "countryOfBirth",
-          fieldLabel: "Country Of Birth",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "nationality",
-          fieldLabel: "Nationality",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "relationship",
-          fieldLabel: "Relationship",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "documentType",
-          fieldLabel: "Document Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idNumber",
-          fieldLabel: "ID Number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueDate",
-          fieldLabel: "ID Issue Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "issue",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idExpiryDate",
-          fieldLabel: "ID Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueAuthority",
-          fieldLabel: "ID Issue Authority",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "idIssueCountry",
-          fieldLabel: "ID Issue Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "visaExpiryDate",
-          fieldLabel: "Visa expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idCopyUpload",
-          fieldLabel: "ID copy upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
+      code: "Female",
+      codeName: "Female",
     },
     {
-      section: "Representative Details",
-      fields: [
-        {
-          fieldName: "firstName",
-          fieldLabel: "First Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "middleName",
-          fieldLabel: "Middle Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "lastName",
-          fieldLabel: "Last Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "gender",
-          fieldLabel: "Gender",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory:false
-        },
-        {
-          fieldName: "dob",
-          fieldLabel: "Date Of Birth",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "dob",
-        },
-        {
-          fieldName: "countryOfBirth",
-          fieldLabel: "Country Of Birth",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory:false
-        },
-        {
-          fieldName: "nationality",
-          fieldLabel: "Nationality",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory:false
-        },
-        {
-          fieldName: "relationship",
-          fieldLabel: "Relationship",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory:false
-        },
-        {
-          fieldName: "documentType",
-          fieldLabel: "Document Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory:false
-        },
-        {
-          fieldName: "idNumber",
-          fieldLabel: "ID Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:false
-        },
-        {
-          fieldName: "idIssueDate",
-          fieldLabel: "ID Issue Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "issue",
-        },
-        {
-          fieldName: "idExpiryDate",
-          fieldLabel: "ID Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "expiry",
-        },
-        {
-          fieldName: "idIssueAuthority",
-          fieldLabel: "ID Issue Authority",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory:false
-        },
-        {
-          fieldName: "idIssueCountry",
-          fieldLabel: "ID Issue Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory:false
-        },
-        {
-          fieldName: "visaExpiryDate",
-          fieldLabel: "Visa expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "expiry",
-        },
-        {
-          fieldName: "authorizationLetterExpiryDate",
-          fieldLabel: "Authorization letter expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory:false,
-          dateType: "expiry",
-        },
-        {
-          fieldName: "maximumAllowedAmount",
-          fieldLabel: "Maximum allowed amount",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory:false
-        },
-        {
-          fieldName: "idCopyUpload",
-          fieldLabel: "ID copy upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory:false
-        },
-        {
-          fieldName: "authorizationLetterUpload",
-          fieldLabel: "Authorization letter upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory:false
-        },
-        {
-          fieldName: "otherDocumentUpload",
-          fieldLabel: "Other Document upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory:false
-        },
-      ],
+      code: "Others",
+      codeName: "Others",
     },
-  ];
+    ],
+    businessActivites: [
+      {
+        code: "Manufacturing",
+        codeName: "Manufacturing",
+      },
+      {
+        code: "Trading",
+        codeName: "Trading",
+      },
+      {
+        code: "Services",
+        codeName: "Services",
+      },
+    ],
+    legalStatus: [
+      {
+        code: "Private Limited",
+        codeName: "Private Limited",
+      },
+      {
+        code: "Public Limited",
+        codeName: "Public Limited",
+      },
+      {
+        code: "Sole Proprietorship",
+        codeName: "Sole Proprietorship",
+      },
+      {
+        code: "Partnership",
+        codeName: "Partnership",
+      },
+      {
+        code: "Limited Liability Partnership",
+        codeName: "Limited Liability Partnership",
+      },
+    ],
+    ownershipType: [
+      {
+        code: "Sponsor",
+        codeName: "Sponsor",
+      },
+      {
+        code: "Partner",
+        codeName: "Partner",
+      },
+      {
+        code: "Both",
+        codeName: "Both",
+      },
+    ],
+    category: [
+      {
+        code: "First",
+        codeName: "First",
+      },
+      {
+        code: "Second",
+        codeName: "Second",
+      },
+    ],
+  };
+
+  mode = "edit";
+
+  ngOnChanges(changes: any) {
+    if (changes["activeTabIndex"]) {
+      if (changes["activeTabIndex"]["currentValue"] != 1) {
+        this.coreService.showWarningToast("Unsaved change has been reset");
+        this.onReset();
+      }
+    }
+  }
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-    this.setFormByData(this.customerCorporate);
-    setTimeout(()=>{
-      this.coreService.removeLoadingScreen();
-    },1000)
+    this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+
+    if (this.corporateForm) this.onReset();
+    this.http
+      .get(`/remittance/formRulesController/getFormRules`, {
+        headers: new HttpHeaders()
+          .set(
+            "criteriaMap",
+            "Country = IND;Form = Customer Profile;Customer Type = COR"
+          )
+          .set("form", "Form Rules")
+          .set("moduleName", "Remittance")
+          .set("applications", "Casmex Core"),
+      })
+      .subscribe(
+        (res) => {
+          this.showForm = true;
+          if (res["msg"]) {
+            this.noDataMsg = res["msg"];
+            this.apiData = {};
+            this.coreService.removeLoadingScreen();
+          } else {
+            this.coreService.removeLoadingScreen();
+            this.setFormByData(res);
+            if (this.mode == "edit") {
+              this.getCorporateCustomer("49");
+            }
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.noDataMsg = true;
+          this.coreService.removeLoadingScreen();
+        }
+      );
   }
 
   getMinDate(dateType: any) {
@@ -666,21 +434,35 @@ export class CorporateComponent implements OnInit {
     this.corporateForm = this.formBuilder.group({});
 
     let allFormSections = [];
-    this.apiData.forEach((sectionObj) => {
+    Object.keys(data).forEach((key) => {
       let formSection = {
-        formName: sectionObj.section,
-        fields: sectionObj.fields.map((secData) => {
+        formName: key,
+        fields: data[key].map((secData) => {
           let fieldData = {
             name: secData["fieldName"],
             fieldName: secData["fieldName"],
             fieldType: secData["fieldType"],
             fieldSubtype: secData["fieldSubtype"],
             fieldLabel: secData["fieldLabel"],
-            required: secData["isMandatory"],
+            required: secData["isMandatory"] == "Y" ? true : false,
             enable: secData["isEnable"] == "Y" ? true : false,
-            visible: secData["isVisibile"] == "Y" ? true : false,
+            visible:
+              !secData["isVisibile"] || secData["isVisibile"] == "Y"
+                ? true
+                : false,
             validLength: secData["validLength"],
             defaultValue: secData["defaultValue"],
+            apiKey: secData["apiKey"],
+            minLength:
+              secData["validLength"]?.length > 0 &&
+              secData["validLength"] != "null"
+                ? +secData["validLength"].split("-")[0]
+                : false,
+            maxLength:
+              secData["validLength"]?.length > 0 &&
+              secData["validLength"] != "null"
+                ? +secData["validLength"].split("-")[1]
+                : 40,
             regex:
               secData["regex"] &&
               secData["regex"] != "null" &&
@@ -688,11 +470,23 @@ export class CorporateComponent implements OnInit {
                 ? secData["regex"]
                 : false,
             minDate:
-              secData["dateType"] && this.getMinDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["minDate"]
+                  ? new Date(secData["minDate"])
+                  : this.pastYear
+                : secData["minDate"],
             maxDate:
-              secData["dateType"] && this.getMaxDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["maxDate"]
+                  ? new Date(secData["maxDate"])
+                  : this.pastYear
+                : secData["maxDate"],
             defaultDate:
-              secData["dateType"] && this.getDefaultDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["initialDate"]
+                  ? new Date(secData["initialDate"])
+                  : this.pastYear
+                : secData["initialDate"],
           };
           return fieldData;
         }),
@@ -706,7 +500,9 @@ export class CorporateComponent implements OnInit {
       let haveVisibleFields = true;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
-        console.log(field);
+        if (field.visible) {
+          haveVisibleFields = true;
+        }
         let validators = [];
         if (field.validLength?.length > 0 && field.validLength != "null") {
           let min = +field.validLength?.split("-")[0];
@@ -737,14 +533,220 @@ export class CorporateComponent implements OnInit {
     console.log(this.corporateForm);
   }
 
+  onUpload(event: any) {
+    console.log(event);
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+
+    this.coreService.showWarningToast("File Uploaded");
+  }
+
+  sameAddress(event: any, fieldName: any) {
+    if (fieldName == "permanentAddressSameAsAbove") {
+      let address;
+      if (event.checked) {
+        address = {
+          permanentCountry: this.corporateForm
+            .get("Contact Details")
+            ?.get("contractCountry")?.value,
+          permanentHouseBuildingNumber: this.corporateForm
+            .get("Contact Details")
+            ?.get("contactHouseBulidingNumber")?.value,
+          permanentBlockNumber: this.corporateForm
+            .get("Contact Details")
+            ?.get("contactBlockNumber")?.value,
+          permanentStreetNumber: this.corporateForm
+            .get("Contact Details")
+            ?.get("contactStreetNumber")?.value,
+          permanentCity: this.corporateForm
+            .get("Contact Details")
+            ?.get("contactCity")?.value,
+          permanentPinZipcode: this.corporateForm
+            .get("Contact Details")
+            ?.get("contactPinZipcode")?.value,
+        };
+      } else {
+        address = {
+          permanentCountry: "",
+          permanentHouseBuildingNumber: "",
+          permanentBlockNumber: "",
+          permanentStreetNumber: "",
+          permanentCity: "",
+          permanentPinZipcode: "",
+        };
+      }
+
+      console.log(address);
+
+      this.corporateForm.get("Contact Details").patchValue(address);
+    }
+  }
+
   onSubmit(): void {
     this.submitted = true;
 
     if (this.corporateForm.invalid) {
       return;
     }
+    let payloadData = Object.assign(
+      {},
+      ...Object.values(this.corporateForm.value)
+    );
 
-    console.log(JSON.stringify(this.corporateForm.value, null, 2));
+    this.formSections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field.fieldType == "select" || field.fieldType == "smart-search") {
+          let value = payloadData[field["fieldName"]]
+            ? payloadData[field["fieldName"]]["codeName"]
+            : "";
+          payloadData[field["fieldName"]] = value;
+        }
+        if (field.fieldType == "checkbox") {
+          let value = payloadData[field["fieldName"]] == true ? true : false;
+          payloadData[field["fieldName"]] = value;
+        }
+        if (field.fieldType == "date") {
+          let dateFormatted = payloadData[field["fieldName"]]
+            ? new Date(payloadData[field["fieldName"]])
+                .toLocaleDateString("en-GB")
+                .split("/")
+                .reverse()
+                .join("-")
+            : "";
+          payloadData[field["fieldName"]] = dateFormatted;
+        }
+      });
+    });
+
+    payloadData["status"] = "A";
+    if (this.mode == "edit") {
+      payloadData["id"] = "49";
+      this.updateCorporateCustomer(payloadData);
+    } else {
+      this.saveCorporateCustomer(payloadData);
+    }
+    console.log(JSON.stringify(payloadData, null, 2));
+  }
+
+  saveCorporateCustomer(payload: any) {
+    this.http
+      .post(
+        `/remittance/cooperateCustomerController/saveCooperateCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            this.coreService.showSuccessToast(res["data"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+  getCorporateCustomer(custId: any) {
+    this.http
+      .get(
+        `/remittance/cooperateCustomerController/getCooperateCustomerDetails/${custId}`,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            console.log(res["data"]);
+            this.setCustomerFormData(res["data"]);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+  setCustomerFormData(data: any) {
+    this.formSections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field["fieldName"] in data) {
+          if (
+            field.fieldType == "select" ||
+            field.fieldType == "smart-search"
+          ) {
+            let value = data[field["fieldName"]]
+              ? {
+                  code: data[field["fieldName"]],
+                  codeName: data[field["fieldName"]],
+                }
+              : "";
+            this.corporateForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(value);
+          } else if (field.fieldType == "checkbox") {
+            let value = data[field["fieldName"]] == true ? true : false;
+            this.corporateForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(value);
+          } else if (field.fieldType == "date") {
+            let dateFormatted = data[field["fieldName"]]
+              ? new Date(data[field["fieldName"]]).toLocaleDateString("en-US")
+              : "";
+            this.corporateForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(dateFormatted);
+          } else {
+            this.corporateForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(data[field["fieldName"]]);
+          }
+        }
+      });
+    });
+  }
+
+  updateCorporateCustomer(payload: any) {
+    this.http
+      .put(
+        `/remittance/cooperateCustomerController/updateCooperateCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            this.coreService.showSuccessToast(res["data"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
   }
 
   onReset(): void {

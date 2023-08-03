@@ -1,6 +1,6 @@
 <div class="row visible-main-section">
   <div *ngIf="showForm" class="col-12">
-    <p-tabView>
+    <p-tabView (onChange)="handleChange($event)">
       <p-tabPanel header="Individual">
         <form
           *ngIf="apiData.length"
@@ -260,7 +260,9 @@
         </form>
       </p-tabPanel>
       <p-tabPanel header="Corporate">
-        <app-corporate></app-corporate>
+        <ng-template pTemplate="content">
+          <app-corporate [activeIndex]="activeTabIndex"></app-corporate>
+        </ng-template>
       </p-tabPanel>
     </p-tabView>
   </div>

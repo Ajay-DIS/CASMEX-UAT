@@ -106,6 +106,15 @@ div.btn-grp {
   background: transparent;
   padding: 0;
 }
+
+:host ::ng-deep .p-calendar {
+  width: 180px;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only {
+  width: 2.5rem;
+}
+
 // fileupload
 .file-upload {
   width: 180px;
@@ -145,4 +154,3 @@ div.btn-grp {
   display: none;
 }
 // fileupload end
-
