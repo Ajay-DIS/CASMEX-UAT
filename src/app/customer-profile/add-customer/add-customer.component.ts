@@ -18,7 +18,8 @@ export class AddCustomerComponent implements OnInit {
   constructor(
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute
   ) {}
   minDate = new Date();
   idExpiryDateMin: Date = new Date();
@@ -50,7 +51,7 @@ export class AddCustomerComponent implements OnInit {
     { name: "third", code: "LDN" },
   ];
 
-  kycData=[];
+  kycData = [];
   // prettier-ignore
   customerIndividual: any[] = [
     {
@@ -538,22 +539,42 @@ export class AddCustomerComponent implements OnInit {
     },
   ];
 
+  mode = "add";
+  custId = null;
+  custType = "IND";
+
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
   ngOnInit(): void {
-    this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+
+    const params = this.activatedRoute.snapshot.params;
+    if (params && params.id) {
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      this.custId = params.id;
+      this.custType = params.type;
+      if (this.custType == "COR") {
+        this.activeTabIndex = 1;
+      } else {
+        this.activeTabIndex = 0;
+      }
+    }
+    console.log(this.custId, this.custType);
+
     this.setFormByData(this.customerIndividual);
-    setTimeout(() => {
-      this.coreService.removeLoadingScreen();
-    }, 1000);
   }
 
   handleChange(event: any) {
     this.activeTabIndex = event.index;
+    if (this.activeTabIndex != 0) {
+      this.coreService.showWarningToast("Unsaved change has been reset");
+      this.onReset();
+    }
   }
 
   getMinDate(dateType: any) {
@@ -629,7 +650,7 @@ export class AddCustomerComponent implements OnInit {
           };
           return fieldData;
         }),
-        uploadedKyc : sectionObj.uploadedKyc ? sectionObj.uploadedKyc : null 
+        uploadedKyc: sectionObj.uploadedKyc ? sectionObj.uploadedKyc : null,
       };
       allFormSections.push(formSection);
     });
@@ -674,68 +695,103 @@ export class AddCustomerComponent implements OnInit {
   selectRowForEdit(row) {
     console.log("row", row);
     // this.individualForm.setValue()
-    this.individualForm.get("KYC Doc Upload").get("documentType").patchValue(this.Options.filter(opt => opt.name == row.docType)[0]);
-    this.individualForm.get("KYC Doc Upload").get("idNumber").patchValue(row.idNumber);
-    this.individualForm.get("KYC Doc Upload").get("idIssueDate").patchValue(row.idIssueDate);
-    this.individualForm.get("KYC Doc Upload").get("idExpiryDate").patchValue(row.idExpiryDate);
-    console.log("gett", this.individualForm.get("KYC Doc Upload").get("idExpiryDate"));
-    console.log("roww",row.idExpiryDate)
-    this.individualForm.get("KYC Doc Upload").get("idIssueAuthority").patchValue(row.idIssueAuthority);
-    this.individualForm.get("KYC Doc Upload").get("idIssueCountry").patchValue(row.idIssueCountry);
-    this.individualForm.get("KYC Doc Upload").get("uploadFrontSide").setValue('fileName', row.uploadFrontSide);
-    this.individualForm.get("KYC Doc Upload").get("uploadBackSide").patchValue(row.uploadBackSide);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("documentType")
+      .patchValue(this.Options.filter((opt) => opt.name == row.docType)[0]);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("idNumber")
+      .patchValue(row.idNumber);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("idIssueDate")
+      .patchValue(row.idIssueDate);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("idExpiryDate")
+      .patchValue(row.idExpiryDate);
+    console.log(
+      "gett",
+      this.individualForm.get("KYC Doc Upload").get("idExpiryDate")
+    );
+    console.log("roww", row.idExpiryDate);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("idIssueAuthority")
+      .patchValue(row.idIssueAuthority);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("idIssueCountry")
+      .patchValue(row.idIssueCountry);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("uploadFrontSide")
+      .setValue("fileName", row.uploadFrontSide);
+    this.individualForm
+      .get("KYC Doc Upload")
+      .get("uploadBackSide")
+      .patchValue(row.uploadBackSide);
   }
 
-  addKyc(){
+  addKyc() {
     // console.log("fields", this.individualForm)
     let kycData = this.individualForm.value["KYC Doc Upload"];
     let kycDataObj = {
       docType: kycData.documentType.name,
       idNumber: kycData.idNumber,
-      idIssueDate: kycData.idIssueDate ? new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      }).format(new Date(kycData.idIssueDate)) : "",
-      idExpiryDate: kycData.idExpiryDate ? new Intl.DateTimeFormat("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      }).format(new Date(kycData.idExpiryDate)) : "",
+      idIssueDate: kycData.idIssueDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(kycData.idIssueDate))
+        : "",
+      idExpiryDate: kycData.idExpiryDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(kycData.idExpiryDate))
+        : "",
       idIssueAuthority: kycData.idIssueAuthority,
       idIssueCountry: kycData.idIssueCountry,
-      uploadFrontSide:  kycData.uploadFrontSide ? this.getUploadedFileName(kycData.uploadFrontSide) : "",
-      uploadBackSide: kycData.uploadBackSide ? this.getUploadedFileName(kycData.uploadBackSide) : ""
-    }
+      uploadFrontSide: kycData.uploadFrontSide
+        ? this.getUploadedFileName(kycData.uploadFrontSide)
+        : "",
+      uploadBackSide: kycData.uploadBackSide
+        ? this.getUploadedFileName(kycData.uploadBackSide)
+        : "",
+    };
     this.individualForm.reset();
     // console.log("kycDaat", kycData)
-    this.kycData=[
+    this.kycData = [
       {
-        docType:"passport",
-        idNumber:"964955",
-        idIssueDate:"23/06/2016",
-        idExpiryDate:"35/05/2026",
-        idIssueAuthority:"deparment of Ap",
-        idIssueCountry:"india",
-        uploadFrontSide:"passportFont.pdf",
-        uploadBackSide:"passportBack.pdf",
-      
+        docType: "passport",
+        idNumber: "964955",
+        idIssueDate: "23/06/2016",
+        idExpiryDate: "35/05/2026",
+        idIssueAuthority: "deparment of Ap",
+        idIssueCountry: "india",
+        uploadFrontSide: "passportFont.pdf",
+        uploadBackSide: "passportBack.pdf",
       },
       {
-        docType:"drivingLicense",
-        idNumber:"964955",
-        idIssueDate:"23/06/2016",
-        idExpiryDate:"35/05/2026",
-        idIssueAuthority:"deparment of Ap",
-        idIssueCountry:"india",
-        uploadFrontSide:"driveLicenseFont.pdf",
-        uploadBackSide:"driveLicenseBack.pdf",
-      
+        docType: "drivingLicense",
+        idNumber: "964955",
+        idIssueDate: "23/06/2016",
+        idExpiryDate: "35/05/2026",
+        idIssueAuthority: "deparment of Ap",
+        idIssueCountry: "india",
+        uploadFrontSide: "driveLicenseFont.pdf",
+        uploadBackSide: "driveLicenseBack.pdf",
       },
-        ];
-    let index = this.customerIndividual[3].uploadedKyc.findIndex(x=> x.idNumber == kycDataObj.idNumber);
+    ];
+    let index = this.customerIndividual[3].uploadedKyc.findIndex(
+      (x) => x.idNumber == kycDataObj.idNumber
+    );
     console.log("index", index);
-    if(index == -1) { 
+    if (index == -1) {
       this.customerIndividual[3].uploadedKyc.push(kycDataObj);
     } else {
       this.customerIndividual[3].uploadedKyc[index] = kycDataObj;

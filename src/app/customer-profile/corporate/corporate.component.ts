@@ -19,7 +19,8 @@ export class CorporateComponent implements OnInit, OnChanges {
     private coreService: CoreService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   @Input("activeIndex") activeTabIndex: any;
@@ -336,7 +337,11 @@ export class CorporateComponent implements OnInit, OnChanges {
     ],
   };
 
-  mode = "edit";
+  mode = "add";
+  custId = null;
+  custType = null;
+
+  CustomerData: any = null;
 
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
@@ -354,7 +359,16 @@ export class CorporateComponent implements OnInit, OnChanges {
     });
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
 
-    if (this.corporateForm) this.onReset();
+    const params = this.activatedRoute.snapshot.params;
+    if (params && params.id) {
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      this.custId = params.id;
+      this.custType = params.type;
+    }
+    console.log(this.custId, this.custType);
+
     this.http
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
@@ -374,10 +388,9 @@ export class CorporateComponent implements OnInit, OnChanges {
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
-            this.coreService.removeLoadingScreen();
             this.setFormByData(res);
             if (this.mode == "edit") {
-              this.getCorporateCustomer("49");
+              this.getCorporateCustomer(this.custId);
             }
           }
         },
@@ -429,7 +442,6 @@ export class CorporateComponent implements OnInit, OnChanges {
   }
 
   setFormByData(data: any) {
-    console.log(data);
     this.apiData = data;
     this.corporateForm = this.formBuilder.group({});
 
@@ -529,8 +541,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       section["isVisible"] = haveVisibleFields ? true : false;
       this.corporateForm.addControl(section.formName, sectionGroup);
     });
-    console.log(allFormSections);
-    console.log(this.corporateForm);
+
+    this.coreService.removeLoadingScreen();
   }
 
   onUpload(event: any) {
@@ -621,7 +633,12 @@ export class CorporateComponent implements OnInit, OnChanges {
 
     payloadData["status"] = "A";
     if (this.mode == "edit") {
-      payloadData["id"] = "49";
+      payloadData["createdBy"] = this.CustomerData["createdBy"];
+      payloadData["createdDateTime"] = this.CustomerData["createdDateTime"];
+      payloadData["updatedBy"] = this.CustomerData["updatedBy"];
+      payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"];
+      payloadData["idExpireDate"] = this.CustomerData["idExpireDate"];
+      payloadData["id"] = this.custId;
       this.updateCorporateCustomer(payloadData);
     } else {
       this.saveCorporateCustomer(payloadData);
@@ -681,6 +698,7 @@ export class CorporateComponent implements OnInit, OnChanges {
   }
 
   setCustomerFormData(data: any) {
+    this.CustomerData = data;
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
         if (field["fieldName"] in data) {
