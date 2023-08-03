@@ -319,6 +319,19 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "customer-profile/addnewcustomer/:type/:id/edit",
+        component: AddCustomerComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/customer-profile" },
+          {
+            label: "Customer Profile",
+            routerLink: "../navbar/customer-profile",
+          },
+          { label: "Edit Customer", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];
