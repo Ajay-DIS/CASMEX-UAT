@@ -8,19 +8,17 @@
             <div class="row">
                 <div class="col-2">
                     <p-dropdown class="colorInput" [options]="customerInfoMeta.ddlUserTypeOptions"
-                        [(ngModel)]="customerMap.userType" optionValue="code" optionLabel="name"
-                        (onChange)="onChange('customerMap', 'userType', 'dropdown', $event.value)" ></p-dropdown>
+                        [(ngModel)]="customerMap.userType" optionValue="code" optionLabel="name"></p-dropdown>
                 </div>
                 <div class="col-10">
                     <p-dropdown [options]="customerInfoMeta.ddlUserUniqueIdentifierOptions"
-                        [(ngModel)]="customerMap.uniqueIdentifier" optionLabel="name" optionValue="code"
-                        (onChange)="onChange('customerMap', 'uniqueIdentifier', 'dropdown', $event.value)"></p-dropdown>
+                        [(ngModel)]="customerMap.uniqueIdentifier" optionLabel="name" optionValue="code"></p-dropdown>
                     <span class="p-input-icon-right">
                         <i class="pi pi-search"></i>
                         <input type="text" pInputText [(ngModel)]="customerMap.uniqueIdentifierValue"
                             placeholder="Search">
                     </span>
-                    <button pButton pRipple type="button" (click)="searchCustomerMap()" label="Search" class="ml-2"></button>
+                    <button pButton pRipple type="button" (click)="searchCustomerMap(customerMap.userType)" label="Search" class="ml-2"></button>
                     <button pButton pRipple type="button" label="Clear" class="p-button-warning ml-2"></button>
                 </div>
             </div>
@@ -64,22 +62,206 @@
     </span>
         </div>
     </div>
-    <div class="ptable mt-5">
-        <p-table [columns]="customerInfoMeta.tblCustomerMetaData" [value]="customerInfoMeta.tblCustomerDataArray" [tableStyle]="{'min-width': '50rem'}">
-            <ng-template pTemplate="header" let-columns>
-                <tr>
-                    <th *ngFor="let col of columns">
-                        {{col.header}}
-                    </th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                <tr>
-                    <td *ngFor="let col of columns">
-                        {{rowData[col.field]}}
-                    </td>
-                </tr>
-            </ng-template>
+
+    <div class="ptable" *ngIf="showTable">
+        <p-table
+          #dt
+          [columns]="cols"
+          [value]="customerData"
+          [paginator]="true"
+          [rows]="10"
+          [resizableColumns]="true"
+          columnResizeMode="fit"
+          [rowHover]="true"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th
+                *ngFor="let col of columns; let c = index"
+                pReorderableColumn
+                [pSortableColumn]="col.field"
+                pResizableColumn
+                [style.width]="col.width"
+              >
+                {{ col.header }}
+                <div
+                  *ngIf="c < columns.length-3"
+                  (click)="$event.stopPropagation()"
+                  class="filter-icon"
+                >
+                  <i
+                    [ngStyle]="{
+                      color: getSelectedFilterArr(col.field).length
+                        ? 'var(--primary-color)'
+                        : 'rgb(105 105 105)',
+                      fontSize: '11px'
+                    }"
+                    class="pi pi-filter-fill"
+                    (click)="toggleFilterVisibility(col.field)"
+                  ></i>
+                  <p-multiSelect
+                    #ms
+                    [options]="fieldFilterOptions(col.field)"
+                    [filter]="true"
+                    [displaySelectedLabel]="false"
+                    [overlayVisible]="fieldFilterVisible(col.field)"
+                    [defaultLabel]="'Search'"
+                    [appendTo]="'body'"
+                    [autoWidth]="false"
+                    (onChange)="
+                      dt.filter($event.value, col.field, 'in');
+                      setSelectedFilter(ms, col.field)
+                    "
+                    (onPanelHide)="hideFilterVisibility(col.field)"
+                  >
+                  </p-multiSelect>
+                </div>
+              </th>
+            </tr>
+            <tr class="search-row">
+              <th *ngFor="let col of cols;let c = index"  [style.width]="col.width" >
+                <span
+                  style="width: 100%"
+                  class="p-input-icon-left"
+                  *ngIf="c < columns.length-3"
+                >
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="text"
+                    class="p-inputtext table-search"
+                    placeholder="Search"
+                    (input)="dt.filter($event.target.value, col.field, 'contains')"
+                  />
+                </span>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-index="rowIndex"
+          >
+            <tr [pReorderableRow]="index">
+              <ng-container *ngFor="let col of columns; let i = index">
+                <td *ngIf="i < columns.length-3">
+                  <div
+                    *ngIf="!(i == 0)"
+                    style="display: inline-block"
+                  >
+                    {{ rowData[col["field"]] }}
+                  </div>
+                  <a
+                    *ngIf="i == 0"
+                    style="text-decoration: underline !important"
+                    [ngStyle]="{
+                      color: 'var(--primary-color)',
+                      fontSize: '11px',
+                      cursor: 'pointer'
+                    }"
+                    (click)="editCustomerIndividual(rowData)"
+                    >{{ rowData[col["field"]] }}</a
+                  >
+                  
+                </td>
+                <td
+                  *ngIf="col.field == 'addBenificiary'"
+                  style="border: none; text-align: center"
+                >
+                  <span class="image-text">
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-plus"
+                      class="operation-btns mr-2"
+                    ></button>
+                  </span>
+                </td>
+                <td
+                  *ngIf="col.field == 'pastTxns'"
+                  style="border: none; text-align: center"
+                >
+                  <span class="image-text">
+                    <button
+                      pButton
+                      type="button"
+                      icon="pi pi-eye"
+                      class="operation-btns mr-2"
+                    ></button>
+                  </span>
+                </td>
+                <td
+                *ngIf="col.field == 'status'"
+                style="border: none; text-align: center"
+              >
+                <label class="switch" style="border: none">
+                  <input
+                    #statusInp
+                    [value]="rowData[col['field']]"
+                    type="checkbox"
+                    (click)="confirmStatus($event, rowData, customerMap.userType)"
+                    [checked]="
+                      rowData[col['field']] == 'Active' ||
+                      rowData[col['field']] == 'A'
+                        ? true
+                        : false
+                    "
+                  />
+                  <span class="slider round"></span>
+                </label>
+              </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="cols.length">No Data found.</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorleft" let-state>
+            {{ state.page * state.rows + 1 }} -
+            {{
+              state.rows * (state.page + 1) > state.totalRecords
+                ? state.totalRecords
+                : state.rows * (state.page + 1)
+            }}
+            of {{ state.totalRecords }}
+          </ng-template>
         </p-table>
+      </div>
     </div>
-</div>
+    <div class="NorecordFound" *ngIf="!showTable">
+      <div class="row">
+        <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p>Select search criterias to find the details</p>
+        </div>
+      </div>
+    </div>
+    <p-confirmDialog
+      key="activeDeactiveStatus"
+      class="status-confirm confirm-popup"
+      #cd
+      [closable]="false"
+    >
+      <p-footer>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          label="Yes"
+          (click)="cd.accept()"
+        ></button>
+    
+        <button
+          type="button"
+          pButton
+          icon="pi pi-times"
+          label="No"
+          (click)="cd.reject()"
+        ></button>
+      </p-footer>
+    </p-confirmDialog>
+    
