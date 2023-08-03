@@ -50,6 +50,7 @@ export class AddCustomerComponent implements OnInit {
     { name: "third", code: "LDN" },
   ];
 
+  kycData=[];
   // prettier-ignore
   customerIndividual: any[] = [
     {
@@ -362,6 +363,8 @@ export class AddCustomerComponent implements OnInit {
           regex: null,
         },
       ],
+      uploadedKyc:[
+      ],
     },
     {
       section: "Representative Details",
@@ -626,6 +629,7 @@ export class AddCustomerComponent implements OnInit {
           };
           return fieldData;
         }),
+        uploadedKyc : sectionObj.uploadedKyc ? sectionObj.uploadedKyc : null 
       };
       allFormSections.push(formSection);
     });
@@ -665,6 +669,82 @@ export class AddCustomerComponent implements OnInit {
     });
     console.log(allFormSections);
     console.log(this.individualForm);
+  }
+
+  selectRowForEdit(row) {
+    console.log("row", row);
+    // this.individualForm.setValue()
+    this.individualForm.get("KYC Doc Upload").get("documentType").patchValue(this.Options.filter(opt => opt.name == row.docType)[0]);
+    this.individualForm.get("KYC Doc Upload").get("idNumber").patchValue(row.idNumber);
+    this.individualForm.get("KYC Doc Upload").get("idIssueDate").patchValue(row.idIssueDate);
+    this.individualForm.get("KYC Doc Upload").get("idExpiryDate").patchValue(row.idExpiryDate);
+    console.log("gett", this.individualForm.get("KYC Doc Upload").get("idExpiryDate"));
+    console.log("roww",row.idExpiryDate)
+    this.individualForm.get("KYC Doc Upload").get("idIssueAuthority").patchValue(row.idIssueAuthority);
+    this.individualForm.get("KYC Doc Upload").get("idIssueCountry").patchValue(row.idIssueCountry);
+    this.individualForm.get("KYC Doc Upload").get("uploadFrontSide").setValue('fileName', row.uploadFrontSide);
+    this.individualForm.get("KYC Doc Upload").get("uploadBackSide").patchValue(row.uploadBackSide);
+  }
+
+  addKyc(){
+    // console.log("fields", this.individualForm)
+    let kycData = this.individualForm.value["KYC Doc Upload"];
+    let kycDataObj = {
+      docType: kycData.documentType.name,
+      idNumber: kycData.idNumber,
+      idIssueDate: kycData.idIssueDate ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date(kycData.idIssueDate)) : "",
+      idExpiryDate: kycData.idExpiryDate ? new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).format(new Date(kycData.idExpiryDate)) : "",
+      idIssueAuthority: kycData.idIssueAuthority,
+      idIssueCountry: kycData.idIssueCountry,
+      uploadFrontSide:  kycData.uploadFrontSide ? this.getUploadedFileName(kycData.uploadFrontSide) : "",
+      uploadBackSide: kycData.uploadBackSide ? this.getUploadedFileName(kycData.uploadBackSide) : ""
+    }
+    this.individualForm.reset();
+    // console.log("kycDaat", kycData)
+    this.kycData=[
+      {
+        docType:"passport",
+        idNumber:"964955",
+        idIssueDate:"23/06/2016",
+        idExpiryDate:"35/05/2026",
+        idIssueAuthority:"deparment of Ap",
+        idIssueCountry:"india",
+        uploadFrontSide:"passportFont.pdf",
+        uploadBackSide:"passportBack.pdf",
+      
+      },
+      {
+        docType:"drivingLicense",
+        idNumber:"964955",
+        idIssueDate:"23/06/2016",
+        idExpiryDate:"35/05/2026",
+        idIssueAuthority:"deparment of Ap",
+        idIssueCountry:"india",
+        uploadFrontSide:"driveLicenseFont.pdf",
+        uploadBackSide:"driveLicenseBack.pdf",
+      
+      },
+        ];
+    let index = this.customerIndividual[3].uploadedKyc.findIndex(x=> x.idNumber == kycDataObj.idNumber);
+    console.log("index", index);
+    if(index == -1) { 
+      this.customerIndividual[3].uploadedKyc.push(kycDataObj);
+    } else {
+      this.customerIndividual[3].uploadedKyc[index] = kycDataObj;
+    }
+  }
+
+  getUploadedFileName(fileUrl) {
+    var n = fileUrl.lastIndexOf("\\");
+    return fileUrl.substring(n + 1);
   }
 
   onSubmit(): void {
