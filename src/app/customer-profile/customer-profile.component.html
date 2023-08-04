@@ -21,10 +21,13 @@
             [(ngModel)]="customerMap.uniqueIdentifier"
             optionLabel="name"
             optionValue="code"
+            class="primarydropdown"
           ></p-dropdown>
-          <span class="p-input-icon-right">
+          <span class="p-input-icon-right" style="width: 450px;border: solid 1px#a2a2a2;border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px">
             <i class="pi pi-search"></i>
             <input
+            style="width: 448px;border-top-left-radius: initial;border-bottom-left-radius: initial;"
               type="text"
               pInputText
               [(ngModel)]="customerMap.uniqueIdentifierValue"
