@@ -1,4 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Component, Input, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -15,26 +16,23 @@ import { CoreService } from "src/app/core.service";
 })
 export class AddCustomerComponent implements OnInit {
   Select: "Select";
+
   constructor(
     private coreService: CoreService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
+    private http: HttpClient,
     private activatedRoute: ActivatedRoute
   ) {}
-  minDate = new Date();
-  idExpiryDateMin: Date = new Date();
-  eighteenYearsAgo = new Date(
-    this.minDate.setFullYear(this.minDate.getFullYear() - 18)
-  );
-  AfterTenYears = new Date("07/31/2028");
+  @Input("activeIndex") activeTabIndex: any;
 
   // --------------------AJAY STSARTSSSSSSSSSSSSSS
 
-  activeTabIndex = 0;
-
+  userId = null;
+  today = new Date();
   pastYear = new Date("01/01/1950");
   futureYear = new Date("01/01/2050");
-  dobMaxDate = new Date().setFullYear(new Date().getFullYear() - 18);
+  dobMaxDate = new Date(this.today.setFullYear(this.today.getFullYear() - 18));
   expiryMinDate = new Date();
   issueMaxDate = new Date();
   objectKeys = Object.keys;
@@ -45,511 +43,378 @@ export class AddCustomerComponent implements OnInit {
   formSections: any[] = [];
   apiData: any = [];
 
+  uploadedFiles: any[] = [];
+
+  noDataMsg = null;
+
   Options = [
     { name: "first", code: "NY" },
     { name: "second", code: "RM" },
     { name: "third", code: "LDN" },
   ];
 
+  masterData = {
+    profession: [
+      {
+        code: "plumber",
+        codeName: "plumer",
+      },
+      {
+        code: "driver",
+        codeName: "driver",
+      },
+    ],
+    politicallyExposedPerson: [
+      {
+        code: "yes",
+        codeName: "yes",
+      },
+      {
+        code: "no",
+        codeName: "no",
+      },
+    ],
+    visaStatus: [
+      {
+        code: "Work Permit",
+        codeName: "Work Permit",
+      },
+      {
+        code: "Resident",
+        codeName: "Resident",
+      },
+      {
+        code: "Non Resident",
+        codeName: "Non Resident",
+      },
+      {
+        code: "Citizen",
+        codeName: "Citizen",
+      },
+      {
+        code: "Tourist",
+        codeName: "Tourist",
+      },
+      {
+        code: "Other",
+        codeName: "Other",
+      },
+    ],
+    salaryDate:[],
+    customerGroup: [
+      {
+        code: "1",
+        codeName: "1",
+      },
+      {
+        code: "2",
+        codeName: "2",
+      },
+    ],
+    nationality: [
+      {
+        code: "Indian",
+        codeName: "Indian",
+      },
+      {
+        code: "Japanese",
+        codeName: "Japanese",
+      },
+      {
+        code: "American",
+        codeName: "American",
+      },
+    ],
+	representativeNationality: [
+      {
+        code: "Indian",
+        codeName: "Indian",
+      },
+      {
+        code: "Japanese",
+        codeName: "Japanese",
+      },
+      {
+        code: "American",
+        codeName: "American",
+      },
+    ],
+    countryOfEstablishment: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfOperation: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfTrade: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	contactCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	permanentCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	countryOfBirth: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	idIssueCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+	representativeCountryOfBirth: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+    representativeIdIssueCountry: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America ",
+      },
+    ],
+    relationship: [
+      {
+        code: "Brother",
+        codeName: "Brother",
+      },
+      {
+        code: "Uncle",
+        codeName: "Uncle",
+      },
+    ],
+	representativeRelationship: [
+    {
+      code: "Brother",
+      codeName: "Brother",
+    },
+    {
+      code: "Uncle",
+      codeName: "Uncle",
+    },
+    ],
+    documentType: [
+      {
+        code: "Aadhar",
+        codeName: "Aadhar",
+      },
+      {
+        code: "Voter",
+        codeName: "Voter",
+      },
+    ],
+	representativeDocumentType: [
+    {
+      code: "Aadhar",
+      codeName: "Aadhar",
+    },
+    {
+      code: "Voter",
+      codeName: "Voter",
+    },
+    ],
+    gender: [
+      {
+        code: "Male",
+        codeName: "Male",
+      },
+      {
+        code: "Female",
+        codeName: "Female",
+      },
+      {
+        code: "Others",
+        codeName: "Others",
+      },
+    ],
+	representativeGender: [
+    {
+      code: "Male",
+      codeName: "Male",
+    },
+    {
+      code: "Female",
+      codeName: "Female",
+    },
+    {
+      code: "Others",
+      codeName: "Others",
+    },
+    ],
+    businessActivites: [
+      {
+        code: "Manufacturing",
+        codeName: "Manufacturing",
+      },
+      {
+        code: "Trading",
+        codeName: "Trading",
+      },
+      {
+        code: "Services",
+        codeName: "Services",
+      },
+    ],
+    legalStatus: [
+      {
+        code: "Private Limited",
+        codeName: "Private Limited",
+      },
+      {
+        code: "Public Limited",
+        codeName: "Public Limited",
+      },
+      {
+        code: "Sole Proprietorship",
+        codeName: "Sole Proprietorship",
+      },
+      {
+        code: "Partnership",
+        codeName: "Partnership",
+      },
+      {
+        code: "Limited Liability Partnership",
+        codeName: "Limited Liability Partnership",
+      },
+    ],
+    ownershipType: [
+      {
+        code: "Sponsor",
+        codeName: "Sponsor",
+      },
+      {
+        code: "Partner",
+        codeName: "Partner",
+      },
+      {
+        code: "Both",
+        codeName: "Both",
+      },
+    ],
+    category: [
+      {
+        code: "First",
+        codeName: "First",
+      },
+      {
+        code: "Second",
+        codeName: "Second",
+      },
+    ],
+  };
+
+
   kycData = [];
   // prettier-ignore
-  customerIndividual: any[] = [
-    {
-      section: "Personal Details",
-      fields: [
-        {
-          fieldName: "firstName",
-          fieldLabel: "First Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "middleName",
-          fieldLabel: "Middle Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "lastName",
-          fieldLabel: "Last Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "gender",
-          fieldLabel: "Gender",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "dob",
-          fieldLabel: "Date Of Birth",
-          fieldType: "input",
-          fieldSubtype: "date",
-          isMandatory: true,
-          dateType: "dob",
-          regex: null,
-        },
-        {
-          fieldName: "countryOfBirth",
-          fieldLabel: "Country Of Birth",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "nationality",
-          fieldLabel: "Nationality",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "customerGroup",
-          fieldLabel: "Customer Group",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "politicallyExposedPerson",
-          fieldLabel: "Politically exposed person?",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "creditToParty",
-          fieldLabel: "Credit to party",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "onAccountPaymentMode",
-          fieldLabel: "On Account Payment Mode",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
-    },
-    {
-      section: "Contact Details",
-      fields: [
-        {
-          fieldName: "country",
-          fieldLabel: "Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "mobileNumber",
-          fieldLabel: "Mobile Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: true,
-          regex: "^((\\+91-?)|0)?[0-9]{10}$",
-        },
-        {
-          fieldName: "phoneNumber",
-          fieldLabel: "Phone Number",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^((\\+91-?)|0)?[0-9]{10}$",
-        },
-        {
-          fieldName: "emailId",
-          fieldLabel: "Email Id",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$",
-        },
-        {
-          fieldName: "houseBuildingNo",
-          fieldLabel: "House/Building number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "blockNumber",
-          fieldLabel: "Block number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "streetName",
-          fieldLabel: "Street Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "city",
-          fieldLabel: "City",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "pinZipCode",
-          fieldLabel: "Pin/Zip Code",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: true,
-          regex: "^(\\d{4}|\\d{6})$",
-        },
-        {
-          fieldName: "sameAsAbove",
-          fieldLabel: "Same as above",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
-    },
-    {
-      section: "Employment Details",
-      fields: [
-        {
-          fieldName: "employerName",
-          fieldLabel: "Employer Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "profession",
-          fieldLabel: "Profession",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "salaryDate",
-          fieldLabel: "Salary Date",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "monthlySalary",
-          fieldLabel: "Monthly Salary",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^[0-9]+$",
-        },
-        {
-          fieldName: "visaStatus",
-          fieldLabel: "Visa Status",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-      ],
-    },
-    {
-      section: "KYC Doc Upload",
-      fields: [
-        {
-          fieldName: "documentType",
-          fieldLabel: "Document Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "idNumber",
-          fieldLabel: "ID Number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueDate",
-          fieldLabel: "ID Issue Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "issue",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idExpiryDate",
-          fieldLabel: "ID Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: true,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueAuthority",
-          fieldLabel: "ID Issue Authority",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "idIssueCountry",
-          fieldLabel: "ID Issue Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "uploadFrontSide",
-          fieldLabel: "Upload Front Side",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "uploadBackSide",
-          fieldLabel: "Upload Back Side",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "imagebypassed",
-          fieldLabel: "Image bypassed",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "herebyConfirmthatIdDetailsProvidedAreVerified",
-          fieldLabel: "Hereby confirm that ID details provided are verified",
-          fieldType: "input",
-          fieldSubtype: "checkbox",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
-      uploadedKyc:[
-      ],
-    },
-    {
-      section: "Representative Details",
-      fields: [
-        {
-          fieldName: "firstName",
-          fieldLabel: "First Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "middleName",
-          fieldLabel: "Middle Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "lastName",
-          fieldLabel: "Last Name",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "gender",
-          fieldLabel: "Gender",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "dob",
-          fieldLabel: "Date Of Birth",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "dob",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "countryOfBirth",
-          fieldLabel: "Country Of Birth",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "nationality",
-          fieldLabel: "Nationality",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "relationship",
-          fieldLabel: "Relationship",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "documentType",
-          fieldLabel: "Document Type",
-          fieldType: "select",
-          fieldSubtype: null,
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idNumber",
-          fieldLabel: "ID Number",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueDate",
-          fieldLabel: "ID Issue Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "issue",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idExpiryDate",
-          fieldLabel: "ID Expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "idIssueAuthority",
-          fieldLabel: "ID Issue Authority",
-          fieldType: "input",
-          fieldSubtype: "text",
-          isMandatory: false,
-          regex: "^[a-zA-Z ]*$",
-        },
-        {
-          fieldName: "idIssueCountry",
-          fieldLabel: "ID Issue Country",
-          fieldType: "select",
-          fieldSubtype: "search",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "visaExpiryDate",
-          fieldLabel: "Visa expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "authorizationLetterExpiryDate",
-          fieldLabel: "Authorization letter expiry Date",
-          fieldType: "input",
-          fieldSubtype: "date",
-          dateType: "expiry",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "maximumAllowedAmount",
-          fieldLabel: "Maximum allowed amount",
-          fieldType: "input",
-          fieldSubtype: "number",
-          isMandatory: false,
-          regex: "^[0-9]+$",
-        },
-        {
-          fieldName: "idCopyUpload",
-          fieldLabel: "ID copy upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "authorizationLetterUpload",
-          fieldLabel: "Authorization letter upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-        {
-          fieldName: "otherDocumentUpload",
-          fieldLabel: "Other Document upload",
-          fieldType: "input",
-          fieldSubtype: "file",
-          isMandatory: false,
-          regex: null,
-        },
-      ],
-    },
-  ];
+  
 
   mode = "add";
   custId = null;
   custType = "IND";
 
+  CustomerData: any = null;
+
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
   ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
 
     const params = this.activatedRoute.snapshot.params;
     if (params && params.id) {
@@ -565,9 +430,44 @@ export class AddCustomerComponent implements OnInit {
       }
     }
     console.log(this.custId, this.custType);
+    for(let i=1; i<=30; i++){
+    this.masterData.salaryDate.push({code: i,codeName:i})
+    }
 
-    this.setFormByData(this.customerIndividual);
+    this.http.get(`/remittance/formRulesController/getFormRules`, {
+      headers: new HttpHeaders()
+        .set(
+          "criteriaMap",
+          "Country = IND;Form = Customer Profile;Customer Type = IND"
+        )
+        .set("form", "Form Rules")
+        .set("moduleName", "Remittance")
+        .set("applications", "Casmex Core"),
+    })
+    .subscribe(
+      (res) => {
+        this.showForm = true;
+        if (res["msg"]) {
+          this.noDataMsg = res["msg"];
+          this.apiData = {};
+          this.coreService.removeLoadingScreen();
+        } else {
+          this.setFormByData(res);
+          if (this.mode == "edit") {
+            this.getIndividualCustomer(this.custId);
+          }
+        }
+      },
+      (err) => {
+        this.coreService.showWarningToast(
+          "Some error while fetching data, Try again in sometime"
+        );
+        this.noDataMsg = true;
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
+
 
   handleChange(event: any) {
     this.activeTabIndex = event.index;
@@ -577,64 +477,42 @@ export class AddCustomerComponent implements OnInit {
     }
   }
 
-  getMinDate(dateType: any) {
-    let minDate = new Date();
-    if (dateType == "expiry") {
-    } else if (dateType == "issue") {
-      minDate.setFullYear(1950);
-    } else if (dateType == "dob") {
-      minDate.setFullYear(1950);
-    } else {
-      minDate.setFullYear(1950);
-    }
-    return minDate;
-  }
-
-  getMaxDate(dateType: any) {
-    let maxDate = new Date();
-    if (dateType == "expiry") {
-      maxDate.setFullYear(2050);
-    } else if (dateType == "issue") {
-    } else if (dateType == "dob") {
-      maxDate.setFullYear(maxDate.getFullYear() - 18);
-    } else {
-      maxDate.setFullYear(2050);
-    }
-    return maxDate;
-  }
-
-  getDefaultDate(dateType: any) {
-    let defDate = new Date();
-    if (dateType == "expiry") {
-    } else if (dateType == "issue") {
-    } else if (dateType == "dob") {
-      defDate.setFullYear(defDate.getFullYear() - 18);
-    } else {
-    }
-    return defDate;
-  }
-
   setFormByData(data: any) {
-    console.log(data);
     this.apiData = data;
     this.individualForm = this.formBuilder.group({});
-
+console.log(data)
     let allFormSections = [];
-    this.apiData.forEach((sectionObj) => {
+    Object.keys(data).forEach((key) => {
+
       let formSection = {
-        formName: sectionObj.section,
-        fields: sectionObj.fields.map((secData) => {
+        formName: key,
+        fields: data[key].map((secData) => {
           let fieldData = {
             name: secData["fieldName"],
+            formLableFieldSequence: secData["formLableFieldSequence"],
             fieldName: secData["fieldName"],
             fieldType: secData["fieldType"],
             fieldSubtype: secData["fieldSubtype"],
             fieldLabel: secData["fieldLabel"],
-            required: secData["isMandatory"],
+            required: secData["isMandatory"] == "Y" ? true : false,
             enable: secData["isEnable"] == "Y" ? true : false,
-            visible: secData["isVisibile"] == "Y" ? true : false,
+            visible:
+              !secData["isVisibile"] || secData["isVisibile"] == "Y"
+                ? true
+                : false,
             validLength: secData["validLength"],
             defaultValue: secData["defaultValue"],
+            apiKey: secData["apiKey"],
+            minLength:
+              secData["validLength"]?.length > 0 &&
+              secData["validLength"] != "null"
+                ? +secData["validLength"].split("-")[0]
+                : false,
+            maxLength:
+              secData["validLength"]?.length > 0 &&
+              secData["validLength"] != "null"
+                ? +secData["validLength"].split("-")[1]
+                : 100,
             regex:
               secData["regex"] &&
               secData["regex"] != "null" &&
@@ -642,26 +520,39 @@ export class AddCustomerComponent implements OnInit {
                 ? secData["regex"]
                 : false,
             minDate:
-              secData["dateType"] && this.getMinDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["minDate"]
+                  ? new Date(secData["minDate"])
+                  : this.pastYear
+                : secData["minDate"],
             maxDate:
-              secData["dateType"] && this.getMaxDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["maxDate"]
+                  ? new Date(secData["maxDate"])
+                  : this.pastYear
+                : secData["maxDate"],
             defaultDate:
-              secData["dateType"] && this.getDefaultDate(secData["dateType"]),
+              secData["fieldType"] == "date"
+                ? secData["initialDate"]
+                  ? new Date(secData["initialDate"])
+                  : this.pastYear
+                : secData["initialDate"],
           };
           return fieldData;
-        }),
-        uploadedKyc: sectionObj.uploadedKyc ? sectionObj.uploadedKyc : null,
+        }).sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
       };
       allFormSections.push(formSection);
     });
 
     this.formSections = allFormSections;
-
+console.log(this.formSections)
     this.formSections.forEach((section) => {
       let haveVisibleFields = true;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
-        console.log(field);
+        if (field.visible) {
+          haveVisibleFields = true;
+        }
         let validators = [];
         if (field.validLength?.length > 0 && field.validLength != "null") {
           let min = +field.validLength?.split("-")[0];
@@ -688,8 +579,58 @@ export class AddCustomerComponent implements OnInit {
       section["isVisible"] = haveVisibleFields ? true : false;
       this.individualForm.addControl(section.formName, sectionGroup);
     });
-    console.log(allFormSections);
-    console.log(this.individualForm);
+
+    this.coreService.removeLoadingScreen();
+  }
+
+  onUpload(event: any) {
+    console.log(event);
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+
+    this.coreService.showWarningToast("File Uploaded");
+  }
+
+  sameAddress(event: any, fieldName: any) {
+    if (fieldName == "permanentAddressSameAsAbove") {
+      let address;
+      if (event.checked) {
+        address = {
+          permanentCountry: this.individualForm
+            .get("Contact Details")
+            ?.get("contactCountry")?.value,
+          permanentHouseBuildingNumber: this.individualForm
+            .get("Contact Details")
+            ?.get("contactHouseBuildingNo")?.value,
+          permanentBlockNumber: this.individualForm
+            .get("Contact Details")
+            ?.get("contactBlockNumber")?.value,
+          permanentStreetName: this.individualForm
+            .get("Contact Details")
+            ?.get("contactStreetName")?.value,
+          permanentCity: this.individualForm
+            .get("Contact Details")
+            ?.get("contactCity")?.value,
+          permanentPinZipCode: this.individualForm
+            .get("Contact Details")
+            ?.get("contactPinZipCode")?.value,
+        };
+      } else {
+        address = {
+          permanentCountry: "",
+          permanentHouseBuildingNumber: "",
+          permanentBlockNumber: "",
+          permanentStreetName: "",
+          permanentCity: "",
+          permanentPinZipCode: "",
+        };
+      }
+
+      console.log(address);
+
+      this.individualForm.get("Contact Details").patchValue(address);
+    }
   }
 
   selectRowForEdit(row) {
@@ -736,66 +677,44 @@ export class AddCustomerComponent implements OnInit {
 
   addKyc() {
     // console.log("fields", this.individualForm)
-    let kycData = this.individualForm.value["KYC Doc Upload"];
-    let kycDataObj = {
-      docType: kycData.documentType.name,
-      idNumber: kycData.idNumber,
-      idIssueDate: kycData.idIssueDate
-        ? new Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }).format(new Date(kycData.idIssueDate))
-        : "",
-      idExpiryDate: kycData.idExpiryDate
-        ? new Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-          }).format(new Date(kycData.idExpiryDate))
-        : "",
-      idIssueAuthority: kycData.idIssueAuthority,
-      idIssueCountry: kycData.idIssueCountry,
-      uploadFrontSide: kycData.uploadFrontSide
-        ? this.getUploadedFileName(kycData.uploadFrontSide)
-        : "",
-      uploadBackSide: kycData.uploadBackSide
-        ? this.getUploadedFileName(kycData.uploadBackSide)
-        : "",
-    };
-    this.individualForm.reset();
-    // console.log("kycDaat", kycData)
-    this.kycData = [
-      {
-        docType: "passport",
-        idNumber: "964955",
-        idIssueDate: "23/06/2016",
-        idExpiryDate: "35/05/2026",
-        idIssueAuthority: "deparment of Ap",
-        idIssueCountry: "india",
-        uploadFrontSide: "passportFont.pdf",
-        uploadBackSide: "passportBack.pdf",
-      },
-      {
-        docType: "drivingLicense",
-        idNumber: "964955",
-        idIssueDate: "23/06/2016",
-        idExpiryDate: "35/05/2026",
-        idIssueAuthority: "deparment of Ap",
-        idIssueCountry: "india",
-        uploadFrontSide: "driveLicenseFont.pdf",
-        uploadBackSide: "driveLicenseBack.pdf",
-      },
-    ];
-    let index = this.customerIndividual[3].uploadedKyc.findIndex(
-      (x) => x.idNumber == kycDataObj.idNumber
-    );
-    console.log("index", index);
-    if (index == -1) {
-      this.customerIndividual[3].uploadedKyc.push(kycDataObj);
-    } else {
-      this.customerIndividual[3].uploadedKyc[index] = kycDataObj;
-    }
+    // let kycData = this.individualForm.value["KYC Doc Upload"];
+    // let kycDataObj = {
+    //   docType: kycData.documentType.name,
+    //   idNumber: kycData.idNumber,
+    //   idIssueDate: kycData.idIssueDate
+    //     ? new Intl.DateTimeFormat("en-US", {
+    //         year: "numeric",
+    //         month: "2-digit",
+    //         day: "2-digit",
+    //       }).format(new Date(kycData.idIssueDate))
+    //     : "",
+    //   idExpiryDate: kycData.idExpiryDate
+    //     ? new Intl.DateTimeFormat("en-US", {
+    //         year: "numeric",
+    //         month: "2-digit",
+    //         day: "2-digit",
+    //       }).format(new Date(kycData.idExpiryDate))
+    //     : "",
+    //   idIssueAuthority: kycData.idIssueAuthority,
+    //   idIssueCountry: kycData.idIssueCountry,
+    //   uploadFrontSide: kycData.uploadFrontSide
+    //     ? this.getUploadedFileName(kycData.uploadFrontSide)
+    //     : "",
+    //   uploadBackSide: kycData.uploadBackSide
+    //     ? this.getUploadedFileName(kycData.uploadBackSide)
+    //     : "",
+    // };
+    // this.individualForm.reset();
+    
+    // let index = this.customerIndividual[3].uploadedKyc.findIndex(
+    //   (x) => x.idNumber == kycDataObj.idNumber
+    // );
+    // console.log("index", index);
+    // if (index == -1) {
+    //   this.customerIndividual[3].uploadedKyc.push(kycDataObj);
+    // } else {
+    //   this.customerIndividual[3].uploadedKyc[index] = kycDataObj;
+    // }
   }
 
   getUploadedFileName(fileUrl) {
@@ -805,11 +724,175 @@ export class AddCustomerComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(JSON.stringify(this.individualForm.value, null, 2));
 
     if (this.individualForm.invalid) {
       return;
     }
+    let payloadData = Object.assign(
+      {},
+      ...Object.values(this.individualForm.value)
+    );
+
+    this.formSections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field.fieldType == "select" || field.fieldType == "smart-search") {
+          let value = payloadData[field["fieldName"]]
+            ? payloadData[field["fieldName"]]["codeName"]
+            : "";
+          payloadData[field["fieldName"]] = value;
+        }
+        if (field.fieldType == "checkbox") {
+          let value = payloadData[field["fieldName"]] == true ? true : false;
+          payloadData[field["fieldName"]] = value;
+        }
+        if (field.fieldType == "date") {
+          let dateFormatted = payloadData[field["fieldName"]]
+            ? new Date(payloadData[field["fieldName"]])
+                .toLocaleDateString("en-GB")
+                .split("/")
+                .reverse()
+                .join("-")
+            : "";
+          payloadData[field["fieldName"]] = dateFormatted;
+        }
+      });
+    });
+
+    payloadData["status"] = "A";
+    if (this.mode == "edit") {
+      payloadData["createdBy"] = this.CustomerData["createdBy"];
+      payloadData["createdDateTime"] = this.CustomerData["createdDateTime"];
+      payloadData["updatedBy"] = this.CustomerData["updatedBy"];
+      payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"];
+      payloadData["idExpireDate"] = this.CustomerData["idExpireDate"];
+      payloadData["id"] = this.custId;
+      this.updateIndividualCustomer(payloadData);
+    } else {
+      this.saveIndividualCustomer(payloadData);
+    }
+    console.log(JSON.stringify(payloadData, null, 2));
+  }
+
+  saveIndividualCustomer(payload: any) {
+    this.http
+      .post(
+        `/remittance/individualCustomerController/saveIndividualCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            this.coreService.showSuccessToast(res["data"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+
+  getIndividualCustomer(custId: any) {
+    this.http
+      .get(
+        `/remittance/individualCustomerController/getIndividualCustomerDetails/${custId}`,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            console.log(res["data"]);
+            this.setCustomerFormData(res["data"]);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+  setCustomerFormData(data: any) {
+    this.CustomerData = data;
+    this.formSections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field["fieldName"] in data) {
+          if (
+            field.fieldType == "select" ||
+            field.fieldType == "smart-search"
+          ) {
+            let value = data[field["fieldName"]]
+              ? {
+                  code: data[field["fieldName"]],
+                  codeName: data[field["fieldName"]],
+                }
+              : "";
+            this.individualForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(value);
+          } else if (field.fieldType == "checkbox") {
+            let value = data[field["fieldName"]] == true ? true : false;
+            this.individualForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(value);
+          } else if (field.fieldType == "date") {
+            let dateFormatted = data[field["fieldName"]]
+              ? new Date(data[field["fieldName"]]).toLocaleDateString("en-US")
+              : "";
+            this.individualForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(dateFormatted);
+          } else {
+            this.individualForm
+              .get(section.formName)
+              .get(field.fieldName)
+              .patchValue(data[field["fieldName"]]);
+          }
+        }
+      });
+    });
+  }
+
+  updateIndividualCustomer(payload: any) {
+    this.http
+      .put(
+        `/remittance/individualCustomerController/updateIndividualCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders().set("userId", this.userId),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            this.coreService.showSuccessToast(res["data"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
   }
 
   onReset(): void {
