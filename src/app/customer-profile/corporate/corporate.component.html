@@ -28,8 +28,6 @@
                 class="block"
                 pInputText
                 [formControlName]="field.name"
-                maxlength="40"
-                minlength="2"
               />
               <input
                 *ngSwitchCase="'number'"
@@ -141,7 +139,8 @@
                   .errors?.minlength
               "
               class="p-error block"
-              >{{ field.fieldLabel }} must be 2 characters long.</small
+              >{{ field.fieldLabel }} must be {{ field.minLength }} characters
+              long.</small
             >
             <small
               *ngIf="
@@ -159,7 +158,8 @@
                   .errors?.maxlength
               "
               class="p-error block"
-              >{{ field.fieldLabel }} must not exceed 40 characters.</small
+              >{{ field.fieldLabel }} must not exceed
+              {{ field.maxLength }} characters.</small
             >
           </div>
         </ng-container>

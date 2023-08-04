@@ -404,43 +404,6 @@ export class CorporateComponent implements OnInit, OnChanges {
       );
   }
 
-  getMinDate(dateType: any) {
-    let minDate = new Date();
-    if (dateType == "expiry") {
-    } else if (dateType == "issue") {
-      minDate.setFullYear(1950);
-    } else if (dateType == "dob") {
-      minDate.setFullYear(1950);
-    } else {
-      minDate.setFullYear(1950);
-    }
-    return minDate;
-  }
-
-  getMaxDate(dateType: any) {
-    let maxDate = new Date();
-    if (dateType == "expiry") {
-      maxDate.setFullYear(2050);
-    } else if (dateType == "issue") {
-    } else if (dateType == "dob") {
-      maxDate.setFullYear(maxDate.getFullYear() - 18);
-    } else {
-      maxDate.setFullYear(2050);
-    }
-    return maxDate;
-  }
-
-  getDefaultDate(dateType: any) {
-    let defDate = new Date();
-    if (dateType == "expiry") {
-    } else if (dateType == "issue") {
-    } else if (dateType == "dob") {
-      defDate.setFullYear(defDate.getFullYear() - 18);
-    } else {
-    }
-    return defDate;
-  }
-
   setFormByData(data: any) {
     this.apiData = data;
     this.corporateForm = this.formBuilder.group({});
@@ -449,59 +412,62 @@ export class CorporateComponent implements OnInit, OnChanges {
     Object.keys(data).forEach((key) => {
       let formSection = {
         formName: key,
-        fields: data[key].map((secData) => {
-          let fieldData = {
-            name: secData["fieldName"],
-            fieldName: secData["fieldName"],
-            fieldType: secData["fieldType"],
-            fieldSubtype: secData["fieldSubtype"],
-            fieldLabel: secData["fieldLabel"],
-            required: secData["isMandatory"] == "Y" ? true : false,
-            enable: secData["isEnable"] == "Y" ? true : false,
-            visible:
-              !secData["isVisibile"] || secData["isVisibile"] == "Y"
-                ? true
-                : false,
-            validLength: secData["validLength"],
-            defaultValue: secData["defaultValue"],
-            apiKey: secData["apiKey"],
-            minLength:
-              secData["validLength"]?.length > 0 &&
-              secData["validLength"] != "null"
-                ? +secData["validLength"].split("-")[0]
-                : false,
-            maxLength:
-              secData["validLength"]?.length > 0 &&
-              secData["validLength"] != "null"
-                ? +secData["validLength"].split("-")[1]
-                : 40,
-            regex:
-              secData["regex"] &&
-              secData["regex"] != "null" &&
-              secData["regex"].trim().length
-                ? secData["regex"]
-                : false,
-            minDate:
-              secData["fieldType"] == "date"
-                ? secData["minDate"]
-                  ? new Date(secData["minDate"])
-                  : this.pastYear
-                : secData["minDate"],
-            maxDate:
-              secData["fieldType"] == "date"
-                ? secData["maxDate"]
-                  ? new Date(secData["maxDate"])
-                  : this.pastYear
-                : secData["maxDate"],
-            defaultDate:
-              secData["fieldType"] == "date"
-                ? secData["initialDate"]
-                  ? new Date(secData["initialDate"])
-                  : this.pastYear
-                : secData["initialDate"],
-          };
-          return fieldData;
-        }),
+        fields: data[key]
+          .map((secData) => {
+            let fieldData = {
+              name: secData["fieldName"],
+              formLableFieldSequence: secData["formLableFieldSequence"],
+              fieldName: secData["fieldName"],
+              fieldType: secData["fieldType"],
+              fieldSubtype: secData["fieldSubtype"],
+              fieldLabel: secData["fieldLabel"],
+              required: secData["isMandatory"] == "Y" ? true : false,
+              enable: secData["isEnable"] == "Y" ? true : false,
+              visible:
+                !secData["isVisibile"] || secData["isVisibile"] == "Y"
+                  ? true
+                  : false,
+              validLength: secData["validLength"],
+              defaultValue: secData["defaultValue"],
+              apiKey: secData["apiKey"],
+              minLength:
+                secData["validLength"]?.length > 0 &&
+                secData["validLength"] != "null"
+                  ? +secData["validLength"].split("-")[0]
+                  : false,
+              maxLength:
+                secData["validLength"]?.length > 0 &&
+                secData["validLength"] != "null"
+                  ? +secData["validLength"].split("-")[1]
+                  : 100,
+              regex:
+                secData["regex"] &&
+                secData["regex"] != "null" &&
+                secData["regex"].trim().length
+                  ? secData["regex"]
+                  : false,
+              minDate:
+                secData["fieldType"] == "date"
+                  ? secData["minDate"]
+                    ? new Date(secData["minDate"])
+                    : this.pastYear
+                  : secData["minDate"],
+              maxDate:
+                secData["fieldType"] == "date"
+                  ? secData["maxDate"]
+                    ? new Date(secData["maxDate"])
+                    : this.pastYear
+                  : secData["maxDate"],
+              defaultDate:
+                secData["fieldType"] == "date"
+                  ? secData["initialDate"]
+                    ? new Date(secData["initialDate"])
+                    : this.pastYear
+                  : secData["initialDate"],
+            };
+            return fieldData;
+          })
+          .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
       };
       allFormSections.push(formSection);
     });
@@ -561,7 +527,7 @@ export class CorporateComponent implements OnInit, OnChanges {
         address = {
           permanentCountry: this.corporateForm
             .get("Contact Details")
-            ?.get("contractCountry")?.value,
+            ?.get("contactCountry")?.value,
           permanentHouseBuildingNumber: this.corporateForm
             .get("Contact Details")
             ?.get("contactHouseBulidingNumber")?.value,
