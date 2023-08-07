@@ -178,7 +178,6 @@
               [(selection)]="selectedNodes"
               (onNodeSelect)="onNodeSelect($event)"
               (onNodeUnselect)="onNodeUnSelect($event)"
-              [resizableColumns]="true"
               [scrollable]="true"
               scrollHeight="250px"
             >
@@ -191,13 +190,16 @@
                 <tr>
                   <th
                     *ngFor="let col of columns; let k = index"
-                    ttResizableColumn
+                    [style.width]="col.width"
                   >
                     {{ col.header }}
                   </th>
                 </tr>
                 <tr class="search-row">
-                  <th *ngFor="let col of columns; let i = index">
+                  <th
+                    *ngFor="let col of columns; let i = index"
+                    [style.width]="col.width"
+                  >
                     <span
                       *ngIf="
                         !defCols.includes(col.field) || col.field == 'fieldName'
@@ -231,12 +233,14 @@
               >
                 <tr
                   [ngClass]="{
-                    groupHeading: rowData && !rowData.hasOwnProperty('Form')
+                    groupHeading:
+                      rowData && !rowData.hasOwnProperty('fieldType')
                   }"
                 >
                   <ng-container *ngFor="let col of columns; let i = index">
                     <td
                       [style]="setStyle(col, i)"
+                      [style.width]="col.width"
                       [pTooltip]="
                         col.type == 'input' &&
                         col.field == 'defaultValue' &&
@@ -265,8 +269,13 @@
                         <div
                           *ngIf="col.type == 'string'"
                           style="display: inline-block"
+                          [pTooltip]="rowData[col.field]"
+                          tooltipPosition="top"
                         >
-                          {{ rowData[col.field] }}
+                          {{
+                            rowData[col.field].slice(0, 30) +
+                              (rowData[col.field].length > 30 ? "..." : "")
+                          }}
                         </div>
                         <input
                           #validLengthInp

@@ -68,96 +68,7 @@ export class AddNewFormRuleComponent implements OnInit {
   isLcyAmount: boolean = false;
   isLcySlab: boolean = false;
 
-  formRulesData: any = [
-    {
-      id: 1,
-      fieldName: "First Name",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "4-8",
-      defaultValues: "",
-      regex: "",
-      groupBy: "Personal Details",
-    },
-    {
-      id: 2,
-      fieldName: "Middle Name",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "4-12",
-      defaultValues: "",
-      regex: "",
-      groupBy: "Personal Details",
-    },
-    {
-      id: 3,
-      fieldName: "Last Name",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "4-9",
-      defaultValues: "",
-      regex: "",
-      groupBy: "Personal Details",
-    },
-    {
-      id: 4,
-      fieldName: "Country",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "6-8",
-      defaultValues: "India",
-      regex: "",
-      groupBy: "Personal Details",
-    },
-    {
-      id: 5,
-      fieldName: "Currency",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "2-8",
-      defaultValues: "Rupee",
-      regex: "",
-      groupBy: "Personal Details",
-    },
-    {
-      id: 6,
-      fieldName: "Remarks",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "2-8",
-      defaultValues: "Rupee",
-      regex: "",
-      groupBy: "Payment Details",
-    },
-    {
-      id: 7,
-      fieldName: "Comments",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "2-8",
-      defaultValues: "Rupee",
-      regex: "",
-      groupBy: "Payment Details",
-    },
-    {
-      id: 8,
-      fieldName: "Description",
-      isMandatory: true,
-      isEnabled: false,
-      isVisible: true,
-      minFieldLengthMaxLength: "2-8",
-      defaultValues: "Rupee",
-      regex: "",
-      groupBy: "Payment Details",
-    },
-  ];
+  formRulesData: any = [];
 
   applyCriteriaFormattedData: any[] = [];
 
@@ -165,13 +76,43 @@ export class AddNewFormRuleComponent implements OnInit {
 
   cols: any[] = [
     { field: "fieldName", header: "Field Name", type: "string" },
-    { field: "fieldLabel", header: "Field Label", type: "input" },
-    { field: "isMandatory", header: "Is Mandatory", type: "checkbox" },
-    { field: "isEnable", header: "Is Enable", type: "checkbox" },
-    { field: "isVisibile", header: "Is Visible", type: "checkbox" },
-    { field: "validLength", header: "Min/Max Length", type: "input" },
-    { field: "defaultValue", header: "Default Values", type: "input" },
-    { field: "regex", header: "Regex", type: "input" },
+    {
+      field: "fieldLabel",
+      header: "Field Label",
+      type: "input",
+      width: "12%",
+    },
+    {
+      field: "isMandatory",
+      header: "Is Mandatory",
+      type: "checkbox",
+      width: "8%",
+    },
+    {
+      field: "isEnable",
+      header: "Is Enable",
+      type: "checkbox",
+      width: "8%",
+    },
+    {
+      field: "isVisibile",
+      header: "Is Visible",
+      type: "checkbox",
+      width: "8%",
+    },
+    {
+      field: "validLength",
+      header: "Min/Max Length",
+      type: "input",
+      width: "10%",
+    },
+    {
+      field: "defaultValue",
+      header: "Default Values",
+      type: "input",
+      width: "10%",
+    },
+    { field: "regex", header: "Regex", type: "input", width: "10%" },
   ];
 
   defCols = this.cols.map((col) => col.field);
@@ -424,12 +365,12 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.criteriaCodeText.includes("LCY Amount = Slab") &&
                   !lcySlabFieldInserted
                 ) {
-                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-7, 0, {
                     field: "amountFrom",
                     header: "Amount From",
                     type: "lcySlabFrom",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-7, 0, {
                     field: "amountTo",
                     header: "Amount To",
                     type: "lcySlabTo",
@@ -449,23 +390,24 @@ export class AddNewFormRuleComponent implements OnInit {
                   } else {
                     return;
                   }
-                } else {
-                  if (formatCrt.split("  ")[0] == "Country") {
-                    countryCol = {
-                      field: formatCrt.split("  ")[0],
-                      header: formatCrt.split("  ")[0],
-                      value: formatCrt.split("  ")[1],
-                      type: "string",
-                    };
-                  } else {
-                    this.applyCriteriaDataTableColumns.unshift({
-                      field: formatCrt.split("  ")[0],
-                      header: formatCrt.split("  ")[0],
-                      value: formatCrt.split("  ")[1],
-                      type: "string",
-                    });
-                  }
                 }
+                // else {
+                //   if (formatCrt.split("  ")[0] == "Country") {
+                //     countryCol = {
+                //       field: formatCrt.split("  ")[0],
+                //       header: formatCrt.split("  ")[0],
+                //       value: formatCrt.split("  ")[1],
+                //       type: "string",
+                //     };
+                //   } else {
+                //     this.applyCriteriaDataTableColumns.unshift({
+                //       field: formatCrt.split("  ")[0],
+                //       header: formatCrt.split("  ")[0],
+                //       value: formatCrt.split("  ")[1],
+                //       type: "string",
+                //     });
+                //   }
+                // }
               });
 
             if (Object.keys(countryCol).length) {
@@ -502,6 +444,7 @@ export class AddNewFormRuleComponent implements OnInit {
                     key: i,
                   },
                   expanded: true,
+                  leaf: false,
                   children: [],
                 };
 
@@ -509,6 +452,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   res["data"]["dataOperation"][0][res["labelData"]["label"][k]];
 
                 formattedChilds.forEach((child) => {
+                  child["leaf"] = true;
                   if (child["data"]["ruleSelected"] == "Y") {
                     child["partialSelected"] = false;
                     this.selectedNodes.push(child);
@@ -528,6 +472,7 @@ export class AddNewFormRuleComponent implements OnInit {
                         key: i,
                       },
                       expanded: true,
+                      leaf: false,
                       children: [],
                     };
                     let formattedChilds = res["data"]["dataOperation"][0][
@@ -540,6 +485,7 @@ export class AddNewFormRuleComponent implements OnInit {
                     formattedChilds.forEach((child) => {
                       child["data"]["amountFrom"] = slab["from"];
                       child["data"]["amountTo"] = slab["to"];
+                      child["leaf"] = true;
                       if (child["data"]["ruleSelected"] == "Y") {
                         child["partialSelected"] = false;
                         this.selectedNodes.push(child);
@@ -559,6 +505,7 @@ export class AddNewFormRuleComponent implements OnInit {
                         key: i,
                       },
                       expanded: true,
+                      leaf: false,
                       children: [],
                     };
                     let formattedChilds = res["data"]["dataOperation"][0][
@@ -566,6 +513,7 @@ export class AddNewFormRuleComponent implements OnInit {
                     ].filter((child) => child["data"]["key"] == oprField);
                     formattedChilds.forEach((child) => {
                       child["data"]["lcyAmount"] = oprField;
+                      child["leaf"] = true;
                       if (child["data"]["ruleSelected"] == "Y") {
                         child["partialSelected"] = false;
                         this.selectedNodes.push(child);
@@ -578,6 +526,9 @@ export class AddNewFormRuleComponent implements OnInit {
                 });
               }
             }
+
+            console.log("::", [...completeData]);
+            console.log("::", this.applyCriteriaDataTableColumns);
 
             this.applyCriteriaFormattedData = [...completeData];
             this.showContent = true;
@@ -869,23 +820,24 @@ export class AddNewFormRuleComponent implements OnInit {
                       });
                       lcyOprFieldInserted = true;
                     }
-                  } else {
-                    if (formatCrt.split("  ")[0] == "Country") {
-                      countryCol = {
-                        field: formatCrt.split("  ")[0],
-                        header: formatCrt.split("  ")[0],
-                        value: formatCrt.split("  ")[1],
-                        type: "string",
-                      };
-                    } else {
-                      this.applyCriteriaDataTableColumns.unshift({
-                        field: formatCrt.split("  ")[0],
-                        header: formatCrt.split("  ")[0],
-                        value: formatCrt.split("  ")[1],
-                        type: "string",
-                      });
-                    }
                   }
+                  // else {
+                  //   if (formatCrt.split("  ")[0] == "Country") {
+                  //     countryCol = {
+                  //       field: formatCrt.split("  ")[0],
+                  //       header: formatCrt.split("  ")[0],
+                  //       value: formatCrt.split("  ")[1],
+                  //       type: "string",
+                  //     };
+                  //   } else {
+                  //     this.applyCriteriaDataTableColumns.unshift({
+                  //       field: formatCrt.split("  ")[0],
+                  //       header: formatCrt.split("  ")[0],
+                  //       value: formatCrt.split("  ")[1],
+                  //       type: "string",
+                  //     });
+                  //   }
+                  // }
                 });
 
               if (Object.keys(countryCol).length) {
@@ -898,6 +850,7 @@ export class AddNewFormRuleComponent implements OnInit {
                     fieldName: res["labelData"]["label"][k],
                   },
                   expanded: true,
+                  leaf: false,
                   children: [],
                 };
 
@@ -932,6 +885,9 @@ export class AddNewFormRuleComponent implements OnInit {
                   childRow["data"]["minDate"] = detail["minDate"];
                   childRow["data"]["maxDate"] = detail["maxDate"];
                   childRow["data"]["initialDate"] = detail["initialDate"];
+
+                  childRow["leaf"] = true;
+
                   formattedRowData["children"].push(childRow);
                 });
                 completeData.push(formattedRowData);
@@ -961,12 +917,12 @@ export class AddNewFormRuleComponent implements OnInit {
                 ) {
                   this.isLcySlab = true;
                   this.isLcyAmount = false;
-                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-7, 0, {
                     field: "amountFrom",
                     header: "Amount From",
                     type: "lcySlabFrom",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-6, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-7, 0, {
                     field: "amountTo",
                     header: "Amount To",
                     type: "lcySlabTo",
@@ -1013,6 +969,9 @@ export class AddNewFormRuleComponent implements OnInit {
                   });
                 }
               }
+
+              console.log("::", this.applyCriteriaFormattedData);
+              console.log("::", this.applyCriteriaDataTableColumns);
 
               this.coreService.showSuccessToast(
                 `Criteria Applied Successfully`
