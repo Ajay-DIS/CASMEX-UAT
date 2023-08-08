@@ -76,8 +76,6 @@
   > tr.groupHeading
   td.dataCol {
   position: absolute;
-  left: 25px;
-  top: 7px;
 }
 
 .appliedCriteriaDataTable
@@ -90,6 +88,9 @@
   margin-right: 0.3rem;
 }
 
+.appliedCriteriaDataTable ::ng-deep .p-treetable table {
+  table-layout: auto;
+}
 // suresh Work start -->
 .details-page-card-content {
   border: 0.5px solid var(--surface-ground);

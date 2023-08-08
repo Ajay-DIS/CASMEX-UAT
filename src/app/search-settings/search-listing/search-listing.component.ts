@@ -107,6 +107,8 @@ export class SearchListingComponent implements OnInit {
             this.setFilterOptions();
           } else {
             this.coreService.showWarningToast(res["msg"]);
+            this.searchSettingData = [];
+            this.showNoDataFound = true;
           }
         },
         (err) => {
@@ -266,7 +268,6 @@ export class SearchListingComponent implements OnInit {
     this.clickforview = true;
   }
   openClickForClone(data: any, type: any) {
-
     let state = {
       appName: data.applicationName,
       moduleName: data.moduleName,

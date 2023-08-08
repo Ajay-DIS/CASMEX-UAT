@@ -16,6 +16,10 @@ label {
   font-size: 13px;
 }
 
+.custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  min-width: 100px;
+}
+
 .custom-form ::ng-deep .p-panel.p-component {
   margin-bottom: 15px;
 }
@@ -143,6 +147,12 @@ div.btn-grp {
 .file-upload .file-upload-select .file-select-name {
   text-align: center;
   font-size: 12px;
+  width: 128px;
+}
+.file-upload .file-upload-select .file-select-name input {
+  width: 100%;
+  border: none;
+  background: transparent;
 }
 .file-upload .file-upload-select:hover .file-select-button {
   transition: all 0.2s ease-in-out;
