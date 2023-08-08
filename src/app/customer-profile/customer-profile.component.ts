@@ -206,7 +206,25 @@ export class CustomerProfileComponent implements OnInit {
     this.coreService.removeLoadingScreen();
   }
 
+  onChange(section: any, controlId: any, controllType: any, event) {
+    console.log("event", event, section, controlId)
+    if(section=="customerMap") {
+      this.customerMap[controlId] = (event) && (event);
+      this.customerMap.uniqueIdentifierValue = "";
+      console.log("this.customerMap", this.customerMap)
+    }
+  }
+  
   searchCustomerMap(type: any) {
+    console.log("customerMap", this.customerMap)
+    let s = []; s.push(this.customerMap);
+    s = s.map(x=> {
+      return x.uniqueIdentifier+'='+x.uniqueIdentifierValue
+    })
+    let tempArr = []; Object.assign(tempArr, this.customerInfoMeta.customerMapConditions);
+    tempArr.push(s[0]);
+    this.customerInfoMeta.customerMapConditions = tempArr;
+    console.log("conditions", this.customerInfoMeta.customerMapConditions)
     this.coreService.displayLoadingScreen();
     console.log(type);
     this.showTable = false;

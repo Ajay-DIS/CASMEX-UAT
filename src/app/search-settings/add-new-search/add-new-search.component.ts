@@ -218,6 +218,11 @@ export class AddNewSearchComponent implements OnInit {
     };
 
     if (this.mode == "add") {
+      this.coreService.displayLoadingScreen();
+      this.selectFields = [];
+      this.selectedFields = [];
+      this.searchSettingtable = [];
+
       this.searchSettingsService
         .getSearchFieldsExecuteQueries(data)
         .pipe(take(1))
@@ -243,9 +248,6 @@ export class AddNewSearchComponent implements OnInit {
               this.coreService.showWarningToast(
                 "No data found for selected parameters"
               );
-              this.selectFields = [];
-              this.selectedFields = [];
-              this.searchSettingtable = [];
             } else if (res["msg"]) {
               this.isFieldsQueriesData = false;
               this.coreService.showWarningToast(res["msg"]);
@@ -383,7 +385,7 @@ export class AddNewSearchComponent implements OnInit {
       searchSetting["operations"].forEach((op) => {
         operations.push(op["label"]);
       });
-
+      delete  searchSetting["id"];
       searchSetting["operators"] = operations.join(",");
       data["settingSearchQueryCriteria"].push(searchSetting);
     });

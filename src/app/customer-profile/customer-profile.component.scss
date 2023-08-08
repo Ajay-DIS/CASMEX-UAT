@@ -2,11 +2,25 @@
 :host ::ng-deep .p-multiselect-label-container {
   display: none;
 }
+.pagetitle{
+  background-color: #fff;
+  padding-left: 20px;
+}
+.customerCriteria{
+  background-color: #fff;
+  padding-left: 40px;
+    margin-top: -5px;
+    padding-bottom: 20px;
+    font-family: "IBM Plex Sans", sans-serif !important;
+  font-size: 14px;
+  font-weight: 500;
+}
 .customerMapConditions {
-    background: #f4f6fa;
+    background: #eaedf4;
     padding: 5px 8px;
     border-radius: 5px;
-    margin-right: 5px
+    margin-right: 5px;
+    margin-left: 10px;
 }
 :host ::ng-deep .p-dropdown {
     align-items: center;
