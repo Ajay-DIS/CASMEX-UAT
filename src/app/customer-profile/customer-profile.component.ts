@@ -62,127 +62,103 @@ export class CustomerProfileComponent implements OnInit {
     private customerService: CustomerProfileService
   ) {}
 
-  customerMap = {
-    userType: "",
-    uniqueIdentifier: "",
-    uniqueIdentifierValue: "",
-  };
+  customerType = "";
+
   customerData: any = [];
-  customerIndividualDataApi = {
-    customerFullName: ["Test  bala User", "Test user bala bandi"],
-    idType: ["passport"],
-    nationality: ["inidan"],
-    data: {
-      CmIndividualCustomerDetails: [
-        {
-          customerCode: 64,
-          fullName: "Test  bala User",
-          nationality: "inidan",
-          mobileNumber: "23255",
-          status: "Active",
-          idType: "passport",
-          idNumber: 1234,
-        },
-        {
-          customerCode: 62,
-          fullName: "Test user bala bandi",
-          nationality: "inidan",
-          mobileNumber: "23255",
-          status: "Active",
-          idType: "passport",
-          idNumber: 1234,
-        },
-        {
-          customerCode: 63,
-          fullName: "Test  bala User",
-          nationality: "inidan",
-          mobileNumber: "23255",
-          status: "Active",
-          idType: "passport",
-          idNumber: 1234,
-        },
-      ],
+  userTypeOptions = [
+    { name: "Individual", code: "Individual" },
+    { name: "Corporate", code: "Corporate" },
+  ];
+
+  searchCriteriaApiData = [
+    {
+      id: 6,
+      applicationName: "Casmex Core",
+      formName: "Customer Profile Individual",
+      moduleName: "Remittance",
+      fieldName: "firstName",
+      displayName: "First Name",
+      operators: null,
+      orderID: 1,
+      sqlQueries: null,
+      iSMandatory: "N",
+      dependency: "N",
+      status: "A",
+      criteriaType: "String",
+      masterDataDependency: null,
+      hqlMasterData: null,
+      hqlDependency: null,
+      hqlDependencyData: null,
+      createdDate: null,
     },
-    mobileNumber: ["23255"],
-    customerCode: [64, 62, 63],
-    idNumber: [1234],
-    status: "200",
-  };
-  customerCorporateDataApi = {
-    customerFullName: [
-      "null null null",
-      "raju yogesh mishra",
-      "Test null ewhe",
-    ],
-    idType: ["passport"],
-    nationality: [null, "Japanese", "indian"],
-    data: {
-      CmCooperateCustomerDetails: [
-        {
-          customerCode: 50,
-          fullName: "Test null ewhe",
-          nationality: "Japanese",
-          mobileNumber: "4545454545",
-          status: "A",
-          idType: "passport",
-          idNumber: 123456,
-        },
-        {
-          customerCode: 48,
-          fullName: "null null null",
-          nationality: null,
-          mobileNumber: "5154545445",
-          status: "A",
-          idType: "passport",
-          idNumber: 123456,
-        },
-        {
-          customerCode: 43,
-          fullName: "raju yogesh mishra",
-          nationality: "indian",
-          mobileNumber: "2345",
-          status: "A",
-          idType: "passport",
-          idNumber: 123456,
-        },
-        {
-          customerCode: 46,
-          fullName: "raju yogesh mishra",
-          nationality: "indian",
-          mobileNumber: "2345",
-          status: "A",
-          idType: "passport",
-          idNumber: 123456,
-        },
-        {
-          customerCode: 47,
-          fullName: "null null null",
-          nationality: null,
-          mobileNumber: "5154545445",
-          status: "A",
-          idType: "passport",
-          idNumber: 123456,
-        },
-      ],
+    {
+      id: 7,
+      applicationName: "Casmex Core",
+      formName: "Customer Profile Individual",
+      moduleName: "Remittance",
+      fieldName: "middleName",
+      displayName: "Middle Name",
+      operators: null,
+      orderID: 2,
+      sqlQueries: null,
+      iSMandatory: "N",
+      dependency: "N",
+      status: "A",
+      criteriaType: "String",
+      masterDataDependency: null,
+      hqlMasterData: null,
+      hqlDependency: null,
+      hqlDependencyData: null,
+      createdDate: null,
     },
-    mobileNumber: ["2345", "4545454545", "5154545445"],
-    customerCode: [48, 50, 43, 46, 47],
-    idNumber: [123456],
-    status: "200",
-  };
-  customerInfoMeta = {
-    ddlUserTypeOptions: [
-      { name: "Individual", code: "Individual" },
-      { name: "Corporate", code: "Corporate" },
-    ],
-    ddlUserUniqueIdentifierOptions: [
-      { name: "Primary ID", code: "primaryId" },
-      { name: "Customer Code", code: "customerCode" },
-      { name: "Customer Name", code: "customerName" },
-    ],
-    customerMapConditions: [],
-    tblCustomerDataArray: [],
-  };
+    {
+      id: 8,
+      applicationName: "Casmex Core",
+      formName: "Customer Profile Individual",
+      moduleName: "Remittance",
+      fieldName: "lastName",
+      displayName: "Last Name",
+      operators: null,
+      orderID: 3,
+      sqlQueries: null,
+      iSMandatory: "N",
+      dependency: "N",
+      status: "A",
+      criteriaType: "String",
+      masterDataDependency: null,
+      hqlMasterData: null,
+      hqlDependency: null,
+      hqlDependencyData: null,
+      createdDate: null,
+    },
+    {
+      id: 9,
+      applicationName: "Casmex Core",
+      formName: "Customer Profile Individual",
+      moduleName: "Remittance",
+      fieldName: "gender",
+      displayName: "Gender",
+      operators: null,
+      orderID: 4,
+      sqlQueries: null,
+      iSMandatory: "N",
+      dependency: "N",
+      status: "A",
+      criteriaType: "Number",
+      masterDataDependency: null,
+      hqlMasterData: null,
+      hqlDependency: null,
+      hqlDependencyData: null,
+      createdDate: null,
+    },
+  ];
+
+  searchCriteriaOptions = [];
+  searchCriteria = [];
+  currentCriteriaKey = "";
+  currentCriteriaValue = "";
+  currentCriteria = "";
+
   cols: any[] = [
     { field: "customerCode", header: "Customer Code", width: "8%" },
     { field: "fullName", header: "Customer Full Name", width: "8%" },
@@ -206,25 +182,31 @@ export class CustomerProfileComponent implements OnInit {
     this.coreService.removeLoadingScreen();
   }
 
-  onChange(section: any, controlId: any, controllType: any, event) {
-    console.log("event", event, section, controlId)
-    if(section=="customerMap") {
-      this.customerMap[controlId] = (event) && (event);
-      this.customerMap.uniqueIdentifierValue = "";
-      console.log("this.customerMap", this.customerMap)
-    }
+  onUserTypeChange(value: any) {
+    console.log(value);
+    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
+      return { name: data.displayName, code: data.fieldName };
+    });
   }
-  
+
+  onCriteriaChange(value: any) {
+    console.log(value);
+    this.currentCriteriaKey = `${
+      this.searchCriteriaOptions.filter((opt) => {
+        return opt.code == value;
+      })[0]["name"]
+    } = `;
+    console.log(this.currentCriteriaKey);
+  }
+
   searchCustomerMap(type: any) {
-    console.log("customerMap", this.customerMap)
-    let s = []; s.push(this.customerMap);
-    s = s.map(x=> {
-      return x.uniqueIdentifier+'='+x.uniqueIdentifierValue
-    })
-    let tempArr = []; Object.assign(tempArr, this.customerInfoMeta.customerMapConditions);
-    tempArr.push(s[0]);
-    this.customerInfoMeta.customerMapConditions = tempArr;
-    console.log("conditions", this.customerInfoMeta.customerMapConditions)
+    if (this.currentCriteriaValue.trim().length) {
+      this.currentCriteria =
+        this.currentCriteriaKey + this.currentCriteriaValue;
+      console.log(this.currentCriteria);
+      this.searchCriteria.push(this.currentCriteria);
+    }
+
     this.coreService.displayLoadingScreen();
     console.log(type);
     this.showTable = false;
@@ -251,6 +233,24 @@ export class CustomerProfileComponent implements OnInit {
           } else {
             this.customerData = res.data.CmIndividualCustomerDetails;
           }
+          this.customerCode = res.customerCode.map((code) => {
+            if (code) return { label: code, value: code };
+          });
+          this.fullName = res.customerFullName.map((code) => {
+            if (code) return { label: code, value: code };
+          });
+          this.nationality = res.nationality.map((code) => {
+            if (code) return { label: code, value: code };
+          });
+          this.mobileNumber = res.mobileNumber.map((code) => {
+            if (code) return { label: code, value: code };
+          });
+          this.idType = res.idType.map((code) => {
+            if (code) return { label: code, value: code };
+          });
+          this.idNumber = res.idNumber.map((code) => {
+            if (code) return { label: code, value: code };
+          });
         }
       },
       (err) => {
@@ -259,32 +259,6 @@ export class CustomerProfileComponent implements OnInit {
         this.showTable = false;
       }
     );
-    this.customerCode = this.customerIndividualDataApi.customerCode.map(
-      (code) => {
-        return { label: code, value: code };
-      }
-    );
-    this.fullName = this.customerIndividualDataApi.customerFullName.map(
-      (code) => {
-        return { label: code, value: code };
-      }
-    );
-    this.nationality = this.customerIndividualDataApi.nationality.map(
-      (code) => {
-        return { label: code, value: code };
-      }
-    );
-    this.mobileNumber = this.customerIndividualDataApi.mobileNumber.map(
-      (code) => {
-        return { label: code, value: code };
-      }
-    );
-    this.idType = this.customerIndividualDataApi.idType.map((code) => {
-      return { label: code, value: code };
-    });
-    this.idNumber = this.customerIndividualDataApi.idNumber.map((code) => {
-      return { label: code, value: code };
-    });
   }
 
   addNewCustomer() {
@@ -377,7 +351,7 @@ export class CustomerProfileComponent implements OnInit {
         console.log(res);
         if (res["status"] == "200") {
           sliderElm.checked = sliderElm!.checked;
-          this.searchCustomerMap(this.customerMap.userType);
+          this.searchCustomerMap(this.customerType);
           this.coreService.showSuccessToast(res["data"]);
         } else {
           this.coreService.removeLoadingScreen();
