@@ -339,9 +339,16 @@ export class CorporateComponent implements OnInit, OnChanges {
 
   mode = "add";
   custId = null;
-  custType = null;
+  custType = "COR";
 
   CustomerData: any = null;
+
+  uploadedDoc = {};
+  uploadedKycData = [];
+  uploadedRepresentativeData = [];
+  uploadedBeneficialData = [];
+  uploadedRepresDoc = {};
+  uploadedBenefiDoc = {};
 
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
@@ -559,6 +566,526 @@ export class CorporateComponent implements OnInit, OnChanges {
 
       this.corporateForm.get("Contact Details").patchValue(address);
     }
+  }
+
+  disableInputsFile() {
+    this.corporateForm
+      ?.get("KYC Doc Upload")
+      ?.get("uploadFrontSide")
+      ?.disable();
+    this.corporateForm
+      ?.get("KYC Doc Upload")
+      ?.get("uploadBackSide")
+      ?.disable();
+  }
+
+  fileUploadChange(e: any, section: any, field: any, docId: any) {
+    console.log(e.target.files[0], field);
+    this.corporateForm
+      ?.get(section)
+      ?.get(field)
+      .patchValue(e.target.files[0].name);
+    if (this.uploadedDoc && this.uploadedDoc["idNumber"] == docId) {
+      this.uploadedDoc[field] = e.target.files[0].name;
+    } else {
+      this.uploadedDoc["idNumber"] = docId;
+      this.uploadedDoc[field] = e.target.files[0].name;
+    }
+    console.log(this.uploadedDoc);
+  }
+
+  selectRowForEdit(row) {
+    console.log("row", row);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("documentType")
+      .patchValue(
+        this.masterData["documentType"].filter(
+          (opt) => opt.codeName == row.docType
+        )[0]
+      );
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("idNumber")
+      .patchValue(row.idNumber);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("idIssueDate")
+      .patchValue(row.idIssueDate);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("idExpiryDate")
+      .patchValue(row.idExpiryDate);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("idIssueAuthority")
+      .patchValue(row.idIssueAuthority);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("idIssueCountry")
+      .patchValue(
+        this.masterData["idIssueCountry"].filter(
+          (opt) => opt.codeName == row.idIssueCountry
+        )[0]
+      );
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("uploadFrontSide")
+      .patchValue(row.uploadFrontSide);
+    this.corporateForm
+      .get("KYC Doc Upload")
+      .get("uploadBackSide")
+      .patchValue(row.uploadBackSide);
+
+    this.corporateForm.get("KYC Doc Upload").get("idNumber").disable();
+  }
+  selectRowForEditBeneficial(row) {
+    console.log("row", row);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("ownershipType")
+      .patchValue(
+        this.masterData["ownershipType"].filter(
+          (opt) => opt.codeName == row.ownershipType
+        )[0]
+      );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("category")
+      .patchValue(
+        this.masterData["category"].filter(
+          (opt) => opt.codeName == row.category
+        )[0]
+      );
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("noOfPartner")
+      .patchValue(row.noOfPartner);
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("percentage")
+      .patchValue(row.percentage);
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("firstName")
+      .patchValue(row.firstName);
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("middelName")
+      .patchValue(row.middelName);
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("lastName")
+      .patchValue(row.lastName);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("gender")
+      .patchValue(
+        this.masterData["gender"].filter(
+          (opt) => opt.codeName == row.gender
+        )[0]
+      );
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("dateOfBirth")
+      .patchValue(row.dateOfBirth);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("countryOfBirth")
+      .patchValue(
+        this.masterData["countryOfBirth"].filter(
+          (opt) => opt.codeName == row.countryOfBirth
+        )[0]
+      );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("nationality")
+      .patchValue(
+        this.masterData["nationality"].filter(
+          (opt) => opt.codeName == row.nationality
+        )[0]
+      );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("relationship")
+      .patchValue(
+        this.masterData["relationship"].filter(
+          (opt) => opt.codeName == row.relationship
+        )[0]
+      );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("documentType")
+      .patchValue(
+        this.masterData["documentType"].filter(
+          (opt) => opt.codeName == row.docType
+        )[0]
+      );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("idNumber")
+      .patchValue(row.idNumber);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("idIssueDate")
+      .patchValue(row.idIssueDate);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("IdExpireDate")
+      .patchValue(row.IdExpireDate);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("idIssueAuthority")
+      .patchValue(row.idIssueAuthority);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("idIssueCountry")
+      .patchValue(
+        this.masterData["idIssueCountry"].filter(
+          (opt) => opt.codeName == row.idIssueCountry
+        )[0]
+      );
+      this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("visaExpireDate")
+      .patchValue(row.visaExpireDate);
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("idCopyUpload")
+      .patchValue(row.idCopyUpload);
+
+    this.corporateForm.get("Beneficial Owner Details").get("idNumber").disable();
+  }
+  selectRowForEditRepresentative(row) {
+    console.log("row", row);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeFirstName")
+      .patchValue(row.representativeFirstName);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeMiddelName")
+      .patchValue(row.representativeMiddelName);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeLastName")
+      .patchValue(row.representativeLastName);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeGender")
+      .patchValue(
+        this.masterData["representativeGender"].filter(
+          (opt) => opt.codeName == row.representativeGender
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeDob")
+      .patchValue(row.representativeDob);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeCountryOfBirth")
+      .patchValue(
+        this.masterData["representativeCountryOfBirth"].filter(
+          (opt) => opt.codeName == row.representativeCountryOfBirth
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeNationality")
+      .patchValue(
+        this.masterData["representativeNationality"].filter(
+          (opt) => opt.codeName == row.representativeNationality
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeRelationship")
+      .patchValue(
+        this.masterData["representativeRelationship"].filter(
+          (opt) => opt.codeName == row.representativeRelationship
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeDocumentType")
+      .patchValue(
+        this.masterData["representativeDocumentType"].filter(
+          (opt) => opt.codeName == row.representativeDocumentType
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdNumber")
+      .patchValue(row.representativeIdNumber);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdIssueDate")
+      .patchValue(row.representativeIdIssueDate);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdExpireDate")
+      .patchValue(row.representativeIdExpireDate);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdIssueAuthority")
+      .patchValue(row.representativeIdIssueAuthority);
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdIssueCountry")
+      .patchValue(
+        this.masterData["representativeIdIssueCountry"].filter(
+          (opt) => opt.codeName == row.representativeIdIssueCountry
+        )[0]
+      );
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeVisaExpireDate")
+      .patchValue(row.representativeVisaExpireDate);
+    this.corporateForm
+      .get("Representative Details")
+      .get("authorizationLetterExpiryDate")
+      .patchValue(row.authorizationLetterExpiryDate);
+    this.corporateForm
+      .get("Representative Details")
+      .get("maximumAllowedAmount")
+      .patchValue(row.maximumAllowedAmount);
+    this.corporateForm
+      .get("Representative Details")
+      .get("idCopyUpload")
+      .patchValue(row.idCopyUpload);
+    this.corporateForm
+      .get("Representative Details")
+      .get("authorizationLetterUpload")
+      .patchValue(row.authorizationLetterUpload);
+    this.corporateForm
+      .get("Representative Details")
+      .get("otherDocumentUpload")
+      .patchValue(row.otherDocumentUpload);
+
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdNumber")
+      .disable();
+  }
+
+  addKyc() {
+    let kycData = this.corporateForm.get("KYC Doc Upload").getRawValue();
+    console.log("fields", kycData);
+    let kycDataObj = {
+      idNumber: this.uploadedDoc["idNumber"]
+        ? this.uploadedDoc["idNumber"]
+        : kycData.idNumber,
+      uploadBackSide: this.uploadedDoc["uploadBackSide"]
+        ? this.uploadedDoc["uploadBackSide"]
+        : kycData.uploadBackSide,
+      uploadFrontSide: this.uploadedDoc["uploadFrontSide"]
+        ? this.uploadedDoc["uploadFrontSide"]
+        : kycData.uploadFrontSide,
+      docType: kycData.documentType?.codeName,
+      idIssueDate: kycData.idIssueDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(kycData.idIssueDate))
+        : "",
+      idExpiryDate: kycData.idExpiryDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(kycData.idExpiryDate))
+        : "",
+      idIssueAuthority: kycData.idIssueAuthority,
+      idIssueCountry: kycData.idIssueCountry?.codeName,
+    };
+    let index = this.uploadedKycData.findIndex(
+      (x) => x.idNumber == kycDataObj["idNumber"]
+    );
+    console.log("index", index);
+    if (index == -1) {
+      this.uploadedKycData.push(kycDataObj);
+    } else {
+      this.uploadedKycData[index] = kycDataObj;
+    }
+    this.corporateForm.get("KYC Doc Upload").reset();
+    this.corporateForm.get("KYC Doc Upload").get("idNumber").enable();
+    this.uploadedDoc = {};
+  }
+  addBeneficial(){
+    let beneficialData = this.corporateForm
+      .get("Beneficial Owner Details")
+      .getRawValue();
+      console.log("fields", beneficialData);
+      let beneficialDataObj = {
+        ownershipType: beneficialData.ownershipType?.codeName,
+        category: beneficialData.category?.codeName,
+        noOfPartner: beneficialData.noOfPartner,
+        percentage: beneficialData.percentage,
+        firstName: beneficialData.firstName,
+        middelName: beneficialData.middelName,
+        lastName: beneficialData.lastName,
+        gender: beneficialData.gender?.codeName,
+        dateOfBirth: beneficialData.dateOfBirth
+          ? new Intl.DateTimeFormat("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).format(new Date(beneficialData.dateOfBirth))
+          : "",
+        countryOfBirth: beneficialData.countryOfBirth?.codeName,
+        nationality: beneficialData.nationality?.codeName,
+        relationship: beneficialData.relationship?.codeName,
+        docType: beneficialData.documentType?.codeName,
+        idNumber: this.uploadedBenefiDoc["idNumber"]
+        ? this.uploadedBenefiDoc["idNumber"]
+        : beneficialData.idNumber,
+        idIssueDate: beneficialData.idIssueDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(beneficialData.idIssueDate))
+        : "",
+        IdExpireDate: beneficialData.IdExpireDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(beneficialData.IdExpireDate))
+        : "",
+      idIssueAuthority: beneficialData.idIssueAuthority,
+      idIssueCountry: beneficialData.idIssueCountry?.codeName,
+      visaExpireDate: beneficialData.visaExpireDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(beneficialData.visaExpireDate))
+        : "",
+        idCopyUpload: this.uploadedBenefiDoc["idCopyUpload"]
+        ? this.uploadedBenefiDoc["idCopyUpload"]
+        : beneficialData.idCopyUpload,
+
+      };
+      let index = this.uploadedBeneficialData.findIndex(
+        (x) =>
+          x.idNumber ==
+          beneficialDataObj["idNumber"]
+      );
+      console.log("index", index);
+      if (index == -1) {
+        this.uploadedBeneficialData.push(beneficialDataObj);
+      } else {
+        this.uploadedBeneficialData[index] = beneficialDataObj;
+      }
+      this.corporateForm.get("Beneficial Owner Details").reset();
+      this.corporateForm
+        .get("Beneficial Owner Details")
+        .get("idNumber")
+        .enable();
+      this.uploadedBenefiDoc = {}; 
+  }
+  addRepresentative() {
+    let representativeData = this.corporateForm
+      .get("Representative Details")
+      .getRawValue();
+    console.log("fields", representativeData);
+    let representativeDataObj = {
+      representativeFirstName: representativeData.representativeFirstName,
+      representativeMiddelName: representativeData.representativeMiddelName,
+      representativeLastName: representativeData.representativeLastName,
+      representativeGender: representativeData.representativeGender?.codeName,
+      representativeDob: representativeData.representativeDob
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(representativeData.representativeDob))
+        : "",
+      representativeCountryOfBirth:
+        representativeData.representativeCountryOfBirth?.codeName,
+      representativeNationality:
+        representativeData.representativeNationality?.codeName,
+      representativeRelationship:
+        representativeData.representativeRelationship?.codeName,
+      representativeDocumentType:
+        representativeData.representativeDocumentType?.codeName,
+      representativeIdNumber: this.uploadedRepresDoc["representativeIdNumber"]
+        ? this.uploadedRepresDoc["representativeIdNumber"]
+        : representativeData.representativeIdNumber,
+      representativeIdIssueDate: representativeData.representativeIdIssueDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(representativeData.representativeIdIssueDate))
+        : "",
+      representativeIdExpireDate: representativeData.representativeIdExpireDate
+        ? new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          }).format(new Date(representativeData.representativeIdExpireDate))
+        : "",
+      representativeIdIssueAuthority:
+        representativeData.representativeIdIssueAuthority,
+      representativeIdIssueCountry:
+        representativeData.representativeIdIssueCountry?.codeName,
+      representativeVisaExpireDate:
+        representativeData.representativeVisaExpireDate
+          ? new Intl.DateTimeFormat("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).format(new Date(representativeData.representativeVisaExpireDate))
+          : "",
+      authorizationLetterExpiryDate:
+        representativeData.authorizationLetterExpiryDate
+          ? new Intl.DateTimeFormat("en-US", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+            }).format(
+              new Date(representativeData.authorizationLetterExpiryDate)
+            )
+          : "",
+      maximumAllowedAmount: representativeData.maximumAllowedAmount,
+      idCopyUpload: this.uploadedRepresDoc["idCopyUpload"]
+        ? this.uploadedRepresDoc["idCopyUpload"]
+        : representativeData.idCopyUpload,
+      authorizationLetterUpload: this.uploadedRepresDoc[
+        "authorizationLetterUpload"
+      ]
+        ? this.uploadedRepresDoc["authorizationLetterUpload"]
+        : representativeData.authorizationLetterUpload,
+      otherDocumentUpload: this.uploadedRepresDoc["otherDocumentUpload"]
+        ? this.uploadedRepresDoc["otherDocumentUpload"]
+        : representativeData.otherDocumentUpload,
+    };
+    let index = this.uploadedRepresentativeData.findIndex(
+      (x) =>
+        x.representativeIdNumber ==
+        representativeDataObj["representativeIdNumber"]
+    );
+    console.log("index", index);
+    if (index == -1) {
+      this.uploadedRepresentativeData.push(representativeDataObj);
+    } else {
+      this.uploadedRepresentativeData[index] = representativeDataObj;
+    }
+    this.corporateForm.get("Representative Details").reset();
+    this.corporateForm
+      .get("Representative Details")
+      .get("representativeIdNumber")
+      .enable();
+    this.uploadedRepresDoc = {};
+  }
+ 
+  getUploadedFileName(fileUrl) {
+    var n = fileUrl.lastIndexOf("\\");
+    return fileUrl.substring(n + 1);
   }
 
   onSubmit(): void {
