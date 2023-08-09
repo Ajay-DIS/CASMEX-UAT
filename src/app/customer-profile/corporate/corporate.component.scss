@@ -13,6 +13,9 @@
 label {
   font-size: 13px;
 }
+.custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  min-width: 100px;
+}
 
 .custom-form ::ng-deep .p-panel.p-component {
   margin-bottom: 15px;
@@ -104,6 +107,13 @@ div.btn-grp {
   background: transparent;
   padding: 0;
 }
+:host ::ng-deep .p-calendar {
+  width: 180px;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only {
+  width: 2.5rem;
+}
 
 // fileupload
 .file-upload {
@@ -133,6 +143,12 @@ div.btn-grp {
 .file-upload .file-upload-select .file-select-name {
   text-align: center;
   font-size: 12px;
+  width: 128px;
+}
+.file-upload .file-upload-select .file-select-name input {
+  width: 100%;
+  border: none;
+  background: transparent;
 }
 .file-upload .file-upload-select:hover .file-select-button {
   transition: all 0.2s ease-in-out;
