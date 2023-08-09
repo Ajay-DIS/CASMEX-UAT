@@ -2,52 +2,61 @@
 :host ::ng-deep .p-multiselect-label-container {
   display: none;
 }
-.pagetitle{
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 14px;
+}
+
+.flex-align-center {
+  display: flex;
+  align-items: center;
+}
+
+.pagetitle {
   background-color: #fff;
   padding-left: 20px;
 }
-.customerCriteria{
+.customerCriteria {
   background-color: #fff;
   padding-left: 40px;
-    margin-top: -5px;
-    padding-bottom: 20px;
-    font-family: "IBM Plex Sans", sans-serif !important;
+  margin-top: -5px;
+  padding-bottom: 20px;
+  font-family: "IBM Plex Sans", sans-serif !important;
   font-size: 14px;
   font-weight: 500;
 }
 .customerMapConditions {
-    background: #eaedf4;
-    padding: 5px 8px;
-    border-radius: 5px;
-    margin-right: 5px;
-    margin-left: 10px;
+  background: #eaedf4;
+  padding: 5px 8px;
+  border-radius: 5px;
+  margin-right: 5px;
+  margin-left: 10px;
 }
 :host ::ng-deep .p-dropdown {
-    align-items: center;
-    border: none !important;
-    background-Color:#4759E4 ;
-  }
-  :host ::ng-deep .primarydropdown .p-dropdown{
-    align-items: center;
-    background-Color:#f4f6fa !important ;
-    color: #4759E4 !important;
-    border: solid 1px#a2a2a2 !important;
-    border-top-right-radius: initial !important;
-    border-bottom-right-radius: initial !important;
-  }
+  align-items: center;
+  border: none !important;
+  background-color: #4759e4;
+}
+:host ::ng-deep .primarydropdown .p-dropdown {
+  align-items: center;
+  background-color: #f4f6fa !important ;
+  color: #4759e4 !important;
+  border: solid 1px#a2a2a2 !important;
+  border-top-right-radius: initial !important;
+  border-bottom-right-radius: initial !important;
+}
 :host ::ng-deep .primarydropdown .p-dropdown .p-dropdown-label {
-    color: #4759E4 ;
-  }
+  color: #4759e4;
+}
 :host ::ng-deep .primarydropdown .p-dropdown .p-dropdown-trigger {
-      color: #4759E4;
-    }
+  color: #4759e4;
+}
 :host ::ng-deep .p-dropdown .p-dropdown-label {
-    color: #fff;
-  }
+  color: #fff;
+}
 :host ::ng-deep .p-dropdown .p-dropdown-trigger {
-    color: #fff;
-  }
-  
+  color: #fff;
+}
+
 .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
   text-align: center;
 }

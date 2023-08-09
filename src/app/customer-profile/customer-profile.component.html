@@ -2,33 +2,46 @@
   <div class="pagetitle">
     <div class="col-10">
       <div class="row">
-        <div class="col-2">
+        <div class="col-2 flex-align-center">
           <p-dropdown
             class="colorInput"
-            [options]="customerInfoMeta.ddlUserTypeOptions"
-            [(ngModel)]="customerMap.userType"
-            (onChange)="onChange('customerMap', 'userType', 'dropdown', $event.value)"
+            [options]="userTypeOptions"
+            [(ngModel)]="customerType"
+            (onChange)="onUserTypeChange($event.value)"
             optionValue="code"
             optionLabel="name"
+            placeholder="Select Type"
           ></p-dropdown>
         </div>
-        <div class="col-10">
+        <div class="col-10 flex-align-center">
           <p-dropdown
-            [options]="customerInfoMeta.ddlUserUniqueIdentifierOptions"
-            [(ngModel)]="customerMap.uniqueIdentifier"
-            (onChange)="onChange('customerMap', 'uniqueIdentifier', 'dropdown', $event.value)"
+            [options]="searchCriteriaOptions"
+            (onChange)="onCriteriaChange($event.value)"
             optionLabel="name"
             optionValue="code"
             class="primarydropdown"
+            placeholder="Select Criteria"
+            [disabled]="!customerType"
           ></p-dropdown>
-          <span class="p-input-icon-right" style="width: 450px;border: solid 1px#a2a2a2;border-top-right-radius: 5px;
-          border-bottom-right-radius: 5px">
+          <span
+            class="p-input-icon-right"
+            style="
+              width: 450px;
+              border: solid 1px#a2a2a2;
+              border-top-right-radius: 5px;
+              border-bottom-right-radius: 5px;
+            "
+          >
             <i class="pi pi-search"></i>
             <input
-            style="width: 448px;border-top-left-radius: initial;border-bottom-left-radius: initial;"
+              style="
+                width: 448px;
+                border-top-left-radius: initial;
+                border-bottom-left-radius: initial;
+              "
               type="text"
               pInputText
-              [(ngModel)]="customerMap.uniqueIdentifierValue"
+              [(ngModel)]="currentCriteriaValue"
               placeholder="Search"
             />
           </span>
@@ -36,9 +49,10 @@
             pButton
             pRipple
             type="button"
-            (click)="searchCustomerMap(customerMap.userType)"
+            (click)="searchCustomerMap(customerType)"
             label="Search"
             class="ml-2"
+            [disabled]="!customerType"
           ></button>
           <button
             pButton
@@ -50,7 +64,7 @@
         </div>
       </div>
     </div>
-    <div class="col-2" style="margin-left: 30px;">
+    <div class="col-2" style="margin-left: 30px">
       <div class="addnew">
         <button
           pButton
@@ -64,14 +78,11 @@
     </div>
   </div>
   <div class="customerCriteria">
-    <div class="row" *ngIf="customerInfoMeta.customerMapConditions.length">
-      <div class="col-10 ">
+    <div class="row" *ngIf="searchCriteria.length">
+      <div class="col-10">
         You have searched on
         <span
-          *ngFor="
-            let criteria of customerInfoMeta.customerMapConditions;
-            let i = index
-          "
+          *ngFor="let criteria of searchCriteria; let i = index"
           class="customerMapConditions"
         >
           {{ criteria }}
@@ -100,7 +111,6 @@
       </div>
     </div>
   </div>
-  
 
   <div class="ptable" *ngIf="showTable">
     <p-table
@@ -195,7 +205,12 @@
                   fontSize: '11px',
                   cursor: 'pointer'
                 }"
-                (click)="editCustomer(rowData, customerMap.userType == 'Corporate' ? 'COR' : 'IND')"
+                (click)="
+                  editCustomer(
+                    rowData,
+                    customerType == 'Corporate' ? 'COR' : 'IND'
+                  )
+                "
                 >{{ rowData[col["field"]] }}</a
               >
             </td>
@@ -234,7 +249,7 @@
                   #statusInp
                   [value]="rowData[col['field']]"
                   type="checkbox"
-                  (click)="confirmStatus($event, rowData, customerMap.userType)"
+                  (click)="confirmStatus($event, rowData, customerType)"
                   [checked]="
                     rowData[col['field']] == 'Active' ||
                     rowData[col['field']] == 'A'
