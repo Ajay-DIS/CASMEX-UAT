@@ -184,7 +184,7 @@ export class AuthService {
     });
 
     // Refresh Token.
-    this.$ping = this.userIdle.ping$.subscribe(() => {
+    this.$ping = this.userIdle.ping$.pipe(take(1)).subscribe(() => {
       if (this.isLoggedIn()) {
         this.refreshTokenLogin();
       }

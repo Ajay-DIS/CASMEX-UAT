@@ -106,22 +106,27 @@ export class BankRoutingComponent2 implements OnInit {
 
     this.setSelectAppModule();
 
-    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
-      this.coreService.removeLoadingScreen();
-      if (!res["msg"]) {
-        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
-          (app) => {
+    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        if (!res["msg"]) {
+          this.searchApplicationOptions = res["data"][
+            "cmApplicationMaster"
+          ].map((app) => {
             return { name: app.name, code: app.name };
-          }
-        );
-        this.searchModuleOptions = res["data"][
-          "cmPrimaryModuleMasterDetails"
-        ].map((app) => {
-          return { name: app.codeName, code: app.codeName };
-        });
-      } else {
+          });
+          this.searchModuleOptions = res["data"][
+            "cmPrimaryModuleMasterDetails"
+          ].map((app) => {
+            return { name: app.codeName, code: app.codeName };
+          });
+        } else {
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
       }
-    });
+    );
   }
 
   setSelectAppModule() {
