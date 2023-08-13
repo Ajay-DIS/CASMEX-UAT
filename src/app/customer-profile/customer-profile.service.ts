@@ -9,11 +9,11 @@ export class CustomerProfileService {
   moduleName: any = null;
   constructor(private http: HttpClient) {}
 
-  getCustomerIndividualData(id: string, type: any) {
+  getCustomerIndividualData(id: string, type: any,criteriaMap:any) {
     return this.http.get(
       `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id).set("individual", type),
+        headers: new HttpHeaders().set("userId", id).set("individual", type).set("criteriaMap",criteriaMap)
       }
     );
   }
