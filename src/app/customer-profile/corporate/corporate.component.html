@@ -12,227 +12,247 @@
     >
       <div class="row">
         <div
-                  *ngIf="section.formName == 'KYC Doc Upload'"
-                  style="padding: 0; margin: 10px 0"
+          *ngIf="section.formName == 'KYC Doc Upload'"
+          style="padding: 0; margin: 10px 0"
+        >
+          <p-table [value]="uploadedKycData" *ngIf="uploadedKycData.length">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Document Type</th>
+                <th>ID Number</th>
+                <th>ID Issue Date</th>
+                <th>ID Expiry Date</th>
+                <th>ID Issue Authority</th>
+                <th>ID Issue Country</th>
+                <th>Front Side</th>
+                <th>Back Side</th>
+                <th>Doc History</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+              <tr>
+                <td
+                  style="
+                    cursor: pointer;
+                    color: blue;
+                    text-decoration: underline;
+                  "
+                  (click)="selectRowForEdit(product, rowIndex)"
                 >
-                  <p-table
-                    [value]="uploadedKycData"
-                    *ngIf="uploadedKycData.length"
-                  >
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Document Type</th>
-                        <th>ID Number</th>
-                        <th>ID Issue Date</th>
-                        <th>ID Expiry Date</th>
-                        <th>ID Issue Authority</th>
-                        <th>ID Issue Country</th>
-                        <th>Front Side</th>
-                        <th>Back Side</th>
-                        <th>Doc History</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-product>
-                      <tr>
-                        <td
-                          style="
-                            cursor: pointer;
-                            color: blue;
-                            text-decoration: underline;
-                          "
-                          (click)="selectRowForEdit(product)"
-                        >
-                          {{ product.docType }}
-                        </td>
-                        <td>{{ product.idNumber }}</td>
-                        <td>{{ product.idIssueDate }}</td>
-                        <td>{{ product.idExpiryDate }}</td>
-                        <td>{{ product.idIssueAuthority }}</td>
-                        <td>{{ product.idIssueCountry }}</td>
-                        <td>{{ product.uploadFrontSide }}</td>
-                        <td>{{ product.uploadBackSide }}</td>
-                        <td>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-eye"
-                            class="operation-btns"
-                          ></button>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-download"
-                            class="operation-btns"
-                          ></button>
-                        </td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-                </div>
+                  {{ product.documentType }}
+                </td>
+                <td>{{ product.idNumber }}</td>
+                <td>{{ product.idIssueDate }}</td>
+                <td>{{ product.idExpireDate }}</td>
+                <td>{{ product.idIssueAuthority }}</td>
+                <td>{{ product.idIssueCountry }}</td>
+                <td>{{ product.uploadFrontSideFileName }}</td>
+                <td>{{ product.uploadBackSideFileName }}</td>
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    class="operation-btns"
+                    [disabled]="!product.uploadFrontSide"
+                    (click)="viewDoc('kyc', product.uploadFrontSide)"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-download"
+                    class="operation-btns"
+                    [disabled]="!product.uploadFrontSide"
+                    (click)="downloadDoc('kyc', product.uploadFrontSide)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
         <div
-                  *ngIf="section.formName == 'Beneficial Owner Details'"
-                  style="padding: 0; margin: 10px 0"
+          *ngIf="section.formName == 'Beneficial Owner Details'"
+          style="padding: 0; margin: 10px 0"
+        >
+          <p-table
+            [value]="uploadedBeneficialData"
+            *ngIf="uploadedBeneficialData.length"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <!-- <th>Ownership Type</th> -->
+                <th>Category</th>
+                <th>No. of Partner</th>
+                <th>Percentage</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Date Of Birth</th>
+                <th>Country Of Birth</th>
+                <th>Nationality</th>
+                <th>Relationship</th>
+                <th>Document Type</th>
+                <th>ID Number</th>
+                <th>ID Issue Date</th>
+                <th>ID Expiry Date</th>
+                <th>ID Issue Authority</th>
+                <th>ID Issue Country</th>
+                <th>Visa expiry Date</th>
+                <th>ID copy upload</th>
+                <th>Doc History</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+              <tr>
+                <td
+                  style="
+                    cursor: pointer;
+                    color: blue;
+                    text-decoration: underline;
+                  "
+                  (click)="selectRowForEditBeneficial(product, rowIndex)"
                 >
-                  <p-table
-                    [value]="uploadedBeneficialData"
-                    *ngIf="uploadedBeneficialData.length"
-                  >
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Ownership Type</th>
-                        <th>Category</th>
-                        <th>No. of Partner</th>
-                        <th>Percentage</th>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Last Name</th>
-                        <th>Gender</th>
-                        <th>Date Of Birth</th>
-                        <th>Country Of Birth</th>
-                        <th>Nationality</th>
-                        <th>Relationship</th>
-                        <th>Document Type</th>
-                        <th>ID Number</th>
-                        <th>ID Issue Date</th>
-                        <th>ID Expiry Date</th>
-                        <th>ID Issue Authority</th>
-                        <th>ID Issue Country</th>
-                        <th>Visa expiry Date</th>
-                        <th>ID copy upload</th>
-                        <th>Doc History</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-product>
-                      <tr>
-                        <td
-                          style="
-                            cursor: pointer;
-                            color: blue;
-                            text-decoration: underline;
-                          "
-                          (click)="selectRowForEditBeneficial(product)"
-                        >
-                          {{ product.ownershipType }}
-                        </td>
-                        <td>{{ product.category }}</td>
-                        <td>{{ product.noOfPartner }}</td>
-                        <td>{{ product.percentage }}</td>
-                        <td>{{ product.firstName }}</td>
-                        <td>{{ product.middelName }}</td>
-                        <td>{{ product.lastName }}</td>
-                        <td>{{ product.gender }}</td>
-                        <td>{{ product.dateOfBirth }}</td>
-                        <td>{{ product.countryOfBirth }}</td>
-                        <td>{{ product.nationality }}</td>
-                        <td>{{ product.relationship }}</td>
-                        <td>{{ product.docType }}</td>
-                        <td>{{ product.idNumber }}</td>
-                        <td>{{ product.idIssueDate }}</td>
-                        <td>{{ product.IdExpireDate }}</td>
-                        <td>{{ product.idIssueAuthority }}</td>
-                        <td>{{ product.idIssueCountry }}</td>
-                        <td>{{ product.visaExpireDate }}</td>
-                        <td>{{ product.idCopyUpload }}</td>
-                        <td>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-eye"
-                            class="operation-btns"
-                          ></button>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-download"
-                            class="operation-btns"
-                          ></button>
-                        </td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-                </div>
-                <div
-                  *ngIf="section.formName == 'Representative Details'"
-                  style="padding: 0; margin: 10px 0"
+                  {{ product.category }}
+                </td>
+                <!-- <td>{{ product.ownershipType }}</td> -->
+                <td>{{ product.noOfPartner }}</td>
+                <td>{{ product.percentage }}</td>
+                <td>{{ product.firstName }}</td>
+                <td>{{ product.middelName }}</td>
+                <td>{{ product.lastName }}</td>
+                <td>{{ product.gender }}</td>
+                <td>{{ product.dateOfBirth }}</td>
+                <td>{{ product.countryOfBirth }}</td>
+                <td>{{ product.nationality }}</td>
+                <td>{{ product.relationship }}</td>
+                <td>{{ product.documentType }}</td>
+                <td>{{ product.idNumber }}</td>
+                <td>{{ product.idIssueDate }}</td>
+                <td>{{ product.idExpireDate }}</td>
+                <td>{{ product.idIssueAuthority }}</td>
+                <td>{{ product.idIssueCountry }}</td>
+                <td>{{ product.visaExpireDate }}</td>
+                <td>{{ product.idCopyUploadFileName }}</td>
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    class="operation-btns"
+                    [disabled]="!product.idCopyUploadName"
+                    (click)="viewDoc('benef', product.idCopyUploadName)"
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-download"
+                    class="operation-btns"
+                    [disabled]="!product.idCopyUploadName"
+                    (click)="downloadDoc('benef', product.idCopyUploadName)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+        <div
+          *ngIf="section.formName == 'Representative Details'"
+          style="padding: 0; margin: 10px 0"
+        >
+          <p-table
+            [value]="uploadedRepresentativeData"
+            *ngIf="uploadedRepresentativeData.length"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>Country of Birth</th>
+                <th>Nationality</th>
+                <th>Relationship</th>
+                <th>Document Type</th>
+                <th>ID Number</th>
+                <th>ID Issue Date</th>
+                <th>ID Expiry Date</th>
+                <th>ID Issue Authority</th>
+                <th>ID Issue Country</th>
+                <th>Visa Expiry Date</th>
+                <th>Authorization letter expiry date</th>
+                <th>Maximum allowed amount</th>
+                <th>ID copy upload</th>
+                <th>Authorization letter upload</th>
+                <th>Other Document upload</th>
+                <th>Doc History</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+              <tr>
+                <td
+                  style="
+                    cursor: pointer;
+                    color: blue;
+                    text-decoration: underline;
+                  "
+                  (click)="selectRowForEditRepresentative(product, rowIndex)"
                 >
-                  <p-table
-                    [value]="uploadedRepresentativeData"
-                    *ngIf="uploadedRepresentativeData.length"
-                  >
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>First Name</th>
-                        <th>Middle Name</th>
-                        <th>Last Name</th>
-                        <th>Gender</th>
-                        <th>Date of Birth</th>
-                        <th>Country of Birth</th>
-                        <th>Nationality</th>
-                        <th>Relationship</th>
-                        <th>Document Type</th>
-                        <th>ID Number</th>
-                        <th>ID Issue Date</th>
-                        <th>ID Expiry Date</th>
-                        <th>ID Issue Authority</th>
-                        <th>ID Issue Country</th>
-                        <th>Visa Expiry Date</th>
-                        <th>Authorization letter expiry date</th>
-                        <th>Maximum allowed amount</th>
-                        <th>ID copy upload</th>
-                        <th>Authorization letter upload</th>
-                        <th>Other Document upload</th>
-                        <th>Doc History</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-product>
-                      <tr>
-                        <td
-                          style="
-                            cursor: pointer;
-                            color: blue;
-                            text-decoration: underline;
-                          "
-                          (click)="selectRowForEditRepresentative(product)"
-                        >
-                          {{ product.representativeFirstName }}
-                        </td>
-                        <td>{{ product.representativeMiddelName }}</td>
-                        <td>{{ product.representativeLastName }}</td>
-                        <td>{{ product.representativeGender }}</td>
-                        <td>{{ product.representativeDob }}</td>
-                        <td>{{ product.representativeCountryOfBirth }}</td>
-                        <td>{{ product.representativeNationality }}</td>
-                        <td>{{ product.representativeRelationship }}</td>
-                        <td>{{ product.representativeDocumentType }}</td>
-                        <td>{{ product.representativeIdNumber }}</td>
-                        <td>{{ product.representativeIdIssueDate }}</td>
-                        <td>{{ product.representativeIdExpireDate }}</td>
-                        <td>{{ product.representativeIdIssueAuthority }}</td>
-                        <td>{{ product.representativeIdIssueCountry }}</td>
-                        <td>{{ product.representativeVisaExpireDate }}</td>
-                        <td>{{ product.authorizationLetterExpiryDate }}</td>
-                        <td>{{ product.maximumAllowedAmount }}</td>
-                        <td>{{ product.idCopyUpload }}</td>
-                        <td>{{ product.authorizationLetterUpload }}</td>
-                        <td>{{ product.otherDocumentUpload }}</td>
-                        <td>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-eye"
-                            class="operation-btns"
-                          ></button>
-                          <button
-                            pButton
-                            type="button"
-                            icon="pi pi-download"
-                            class="operation-btns"
-                          ></button>
-                        </td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-                </div>
+                  {{ product.representativeFirstName }}
+                </td>
+                <td>{{ product.representativeMiddelName }}</td>
+                <td>{{ product.representativeLastName }}</td>
+                <td>{{ product.representativeGender }}</td>
+                <td>{{ product.representativeDateOfBirth }}</td>
+                <td>{{ product.representativeCountryOfBirth }}</td>
+                <td>{{ product.representativeNationality }}</td>
+                <td>{{ product.representativeRelationship }}</td>
+                <td>{{ product.representativeDocumentType }}</td>
+                <td>{{ product.representativeIdNumber }}</td>
+                <td>{{ product.representativeIdIssueDate }}</td>
+                <td>{{ product.representativeIdExpiryDate }}</td>
+                <td>{{ product.representativeIdIssueAuthority }}</td>
+                <td>{{ product.representativeIssueCountry }}</td>
+                <td>{{ product.representativeVisaExpireDate }}</td>
+                <td>
+                  {{ product.representativeAuthorizationLetterExpireDate }}
+                </td>
+                <td>{{ product.representativeMaximumAllowedAmount }}</td>
+                <td>{{ product.representativeIdCopyUploadFileName }}</td>
+                <td>
+                  {{ product.representativeAuthorizationLetterFileName }}
+                </td>
+                <td>{{ product.otherDocumentUploadFileName }}</td>
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    class="operation-btns"
+                    [disabled]="!product.representativeIdCopyUploadName"
+                    (click)="
+                      viewDoc('repres', product.representativeIdCopyUploadName)
+                    "
+                  ></button>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-download"
+                    class="operation-btns"
+                    [disabled]="!product.representativeIdCopyUploadName"
+                    (click)="
+                      downloadDoc(
+                        'repres',
+                        product.representativeIdCopyUploadName
+                      )
+                    "
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
         <ng-container *ngFor="let field of section.fields">
           <div
             *ngIf="field.visible && field.fieldType != 'currency'"
@@ -261,7 +281,8 @@
               <p-calendar
                 *ngSwitchCase="'date'"
                 class="block"
-                placeholder="MM/DD/YYYY"
+                placeholder="DD/MM/YYYY"
+                dateFormat="dd/mm/yy"
                 [showIcon]="true"
                 [formControlName]="field.name"
                 [minDate]="field.minDate"
@@ -313,46 +334,50 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <div *ngSwitchCase="'file'" class="file-upload"
-              [pTooltip]="
-              corporateForm
-                .get(section.formName)
-                .get(
-                  section.formName == 'Representative Details'
-                    ? 'representativeIdNumber'
-                    : 'idNumber'
-                )?.value == '' ||
-                corporateForm
-                .get(section.formName)
-                .get(
-                  section.formName == 'Representative Details'
-                    ? 'representativeIdNumber'
-                    : 'idNumber'
-                )?.value == null
-                ? 'Enter Id Number first'
-                : ''
-            "
-              >
-                <div class="file-upload-select" 
-                [style.pointerEvents]="
-                corporateForm
-                  .get(section.formName)
-                  .get(
-                    section.formName == 'Representative Details'
-                      ? 'representativeIdNumber'
-                      : 'idNumber'
-                  )?.value == '' ||
+              <div
+                *ngSwitchCase="'file'"
+                class="file-upload"
+                [pTooltip]="
                   corporateForm
-                  .get(section.formName)
-                  .get(
-                    section.formName == 'Representative Details'
-                      ? 'representativeIdNumber'
-                      : 'idNumber'
-                  )?.value == null
-                  ? 'none'
-                  : ''
-              "
-                (click)="inpFile.click()">
+                    .get(section.formName)
+                    .get(
+                      section.formName == 'Representative Details'
+                        ? 'representativeIdNumber'
+                        : 'idNumber'
+                    )?.value == '' ||
+                  corporateForm
+                    .get(section.formName)
+                    .get(
+                      section.formName == 'Representative Details'
+                        ? 'representativeIdNumber'
+                        : 'idNumber'
+                    )?.value == null
+                    ? 'Enter Id Number first'
+                    : ''
+                "
+              >
+                <div
+                  class="file-upload-select"
+                  [style.pointerEvents]="
+                    corporateForm
+                      .get(section.formName)
+                      .get(
+                        section.formName == 'Representative Details'
+                          ? 'representativeIdNumber'
+                          : 'idNumber'
+                      )?.value == '' ||
+                    corporateForm
+                      .get(section.formName)
+                      .get(
+                        section.formName == 'Representative Details'
+                          ? 'representativeIdNumber'
+                          : 'idNumber'
+                      )?.value == null
+                      ? 'none'
+                      : ''
+                  "
+                  (click)="inpFile.click()"
+                >
                   <div class="file-select-name">
                     <input type="text" [formControlName]="field.name" />
                   </div>
@@ -362,38 +387,39 @@
                   <input
                     #inpFile
                     (change)="
-                    fileUploadChange(
-                      $event,
-                      section.formName,
-                      field.name,
+                      fileUploadChange(
+                        $event,
+                        section.formName,
+                        field.name,
+                        corporateForm
+                          .get(section.formName)
+                          .get(
+                            section.formName == 'Representative Details'
+                              ? 'representativeIdNumber'
+                              : 'idNumber'
+                          )?.value
+                      )
+                    "
+                    type="file"
+                    name="file-upload-input"
+                    id="file-upload-input"
+                    [disabled]="
                       corporateForm
                         .get(section.formName)
                         .get(
                           section.formName == 'Representative Details'
                             ? 'representativeIdNumber'
                             : 'idNumber'
-                        )?.value
-                    )
-                  "
-                    type="file"
-                    name="file-upload-input"
-                    id="file-upload-input"
-                    [disabled]="
-                    corporateForm
-                      .get(section.formName)
-                      .get(
-                        section.formName == 'Representative Details'
-                          ? 'representativeIdNumber'
-                          : 'idNumber'
-                      )?.value == '' ||
+                        )?.value == '' ||
                       corporateForm
-                      .get(section.formName)
-                      .get(
-                        section.formName == 'Representative Details'
-                          ? 'representativeIdNumber'
-                          : 'idNumber'
-                      )?.value == null
-                  "
+                        .get(section.formName)
+                        .get(
+                          section.formName == 'Representative Details'
+                            ? 'representativeIdNumber'
+                            : 'idNumber'
+                        )?.value == null ||
+                      !field.enable
+                    "
                   />
                 </div>
               </div>
@@ -464,14 +490,13 @@
             class="p-button-primary"
             (click)="addKyc()"
             [disabled]="
-            corporateForm.get('KYC Doc Upload').get('idNumber')
-                .value == '' ||
-                corporateForm.get('KYC Doc Upload').get('idNumber')
-                .value == null ||
-                corporateForm.get('KYC Doc Upload').get('documentType')
-                .value == '' ||
-                corporateForm.get('KYC Doc Upload').get('documentType')
-                .value == null
+              corporateForm.get('KYC Doc Upload').get('idNumber').value == '' ||
+              corporateForm.get('KYC Doc Upload').get('idNumber').value ==
+                null ||
+              corporateForm.get('KYC Doc Upload').get('documentType').value ==
+                '' ||
+              corporateForm.get('KYC Doc Upload').get('documentType').value ==
+                null
             "
           ></button>
         </div>
@@ -486,13 +511,13 @@
             class="p-button-primary"
             (click)="addBeneficial()"
             [disabled]="
-            corporateForm.get('Beneficial Owner Details').get('idNumber')
+              corporateForm.get('Beneficial Owner Details').get('idNumber')
                 .value == '' ||
-                corporateForm.get('Beneficial Owner Details').get('idNumber')
+              corporateForm.get('Beneficial Owner Details').get('idNumber')
                 .value == null ||
-                corporateForm.get('Beneficial Owner Details').get('documentType')
+              corporateForm.get('Beneficial Owner Details').get('documentType')
                 .value == '' ||
-                corporateForm.get('Beneficial Owner Details').get('documentType')
+              corporateForm.get('Beneficial Owner Details').get('documentType')
                 .value == null
             "
           ></button>
@@ -508,16 +533,16 @@
             class="p-button-primary"
             (click)="addRepresentative()"
             [disabled]="
-            corporateForm
+              corporateForm
                 .get('Representative Details')
                 .get('representativeIdNumber').value == '' ||
-                corporateForm
+              corporateForm
                 .get('Representative Details')
                 .get('representativeIdNumber').value == null ||
-                corporateForm
+              corporateForm
                 .get('Representative Details')
                 .get('representativeDocumentType').value == '' ||
-                corporateForm
+              corporateForm
                 .get('Representative Details')
                 .get('representativeDocumentType').value == null
             "
