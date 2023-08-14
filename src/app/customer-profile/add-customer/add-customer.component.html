@@ -72,9 +72,7 @@
                             icon="pi pi-eye"
                             class="operation-btns"
                             [disabled]="!product.uploadFrontSide"
-                            (click)="
-                              downloadDoc('kyc', product.uploadFrontSide)
-                            "
+                            (click)="viewDoc('kyc', product.uploadFrontSide)"
                           ></button>
                           <button
                             pButton
@@ -82,7 +80,9 @@
                             icon="pi pi-download"
                             class="operation-btns"
                             [disabled]="!product.uploadFrontSide"
-                            (click)="viewDoc('kyc', product.uploadFrontSide)"
+                            (click)="
+                              downloadDoc('kyc', product.uploadFrontSide)
+                            "
                           ></button>
                         </td>
                       </tr>
@@ -179,7 +179,7 @@
                             class="operation-btns"
                             [disabled]="!product.representativeIdCopyUploadName"
                             (click)="
-                              downloadDoc(
+                              viewDoc(
                                 'repres',
                                 product.representativeIdCopyUploadName
                               )
@@ -192,7 +192,7 @@
                             class="operation-btns"
                             [disabled]="!product.representativeIdCopyUploadName"
                             (click)="
-                              viewDoc(
+                              downloadDoc(
                                 'repres',
                                 product.representativeIdCopyUploadName
                               )
