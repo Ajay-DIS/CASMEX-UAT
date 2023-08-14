@@ -693,8 +693,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.idIssueDate);
     this.corporateForm
       .get("KYC Doc Upload")
-      .get("IdExpireDate")
-      ?.patchValue(row.idExpireDate);
+      .get("idExpireDate")
+      ?.patchValue(row.idExpiryDate);
     this.corporateForm
       .get("KYC Doc Upload")
       .get("idIssueAuthority")
@@ -844,7 +844,7 @@ export class CorporateComponent implements OnInit, OnChanges {
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("idExpireDate")
-      ?.patchValue(row.idExpireDate);
+      ?.patchValue(row.idExpiryDate);
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("idIssueAuthority")
@@ -1060,11 +1060,11 @@ export class CorporateComponent implements OnInit, OnChanges {
               kycData.idIssueDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
-      idExpireDate: kycData.IdExpireDate
-        ? !isNaN(Date.parse(kycData.IdExpireDate))
-          ? new Date(kycData.IdExpireDate).toLocaleDateString("en-GB")
+      idExpiryDate: kycData.idExpireDate
+        ? !isNaN(Date.parse(kycData.idExpireDate))
+          ? new Date(kycData.idExpireDate).toLocaleDateString("en-GB")
           : new Date(
-              kycData.IdExpireDate.split("/").reverse().join("-")
+              kycData.idExpireDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
       idIssueAuthority: kycData.idIssueAuthority,
@@ -1606,7 +1606,7 @@ export class CorporateComponent implements OnInit, OnChanges {
             if (
               key == "dateOfBirth" ||
               key == "idIssueDate" ||
-              key == "idExpireDate" ||
+              key == "idExpiryDate" ||
               key == "visaExpireDate"
             ) {
               let date = this.uploadedBeneficialData[i][key]
@@ -1683,9 +1683,6 @@ export class CorporateComponent implements OnInit, OnChanges {
         }
       } else {
       }
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
       this.updateCorporateCustomer(formData);
     } else {
       let formData = new FormData();
@@ -1699,7 +1696,7 @@ export class CorporateComponent implements OnInit, OnChanges {
         for (let i = 0; i < this.uploadedKycData.length; i++) {
           for (let key in this.uploadedKycData[i]) {
             if (key != "id") {
-              if (key == "idIssueDate" || key == "idExpireDate") {
+              if (key == "idIssueDate" || key == "idExpiryDate") {
                 let date = this.uploadedKycData[i][key]
                   ? this.uploadedKycData[i][key]
                   : "";
@@ -1808,10 +1805,6 @@ export class CorporateComponent implements OnInit, OnChanges {
       }
 
       this.saveCorporateCustomer(formData);
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
-      console.log(formData.values());
     }
     console.log(JSON.stringify(payloadData, null, 2));
   }
@@ -1966,11 +1959,11 @@ export class CorporateComponent implements OnInit, OnChanges {
                 key["idIssueDate"].split("/").reverse().join("-")
               ).toLocaleDateString("en-GB")
           : "";
-        docData["idExpireDate"] = key["idExpireDate"]
-          ? !isNaN(Date.parse(key["idExpireDate"]))
-            ? new Date(key["idExpireDate"]).toLocaleDateString("en-GB")
+        docData["idExpiryDate"] = key["idExpiryDate"]
+          ? !isNaN(Date.parse(key["idExpiryDate"]))
+            ? new Date(key["idExpiryDate"]).toLocaleDateString("en-GB")
             : new Date(
-                key["idExpireDate"].split("/").reverse().join("-")
+                key["idExpiryDate"].split("/").reverse().join("-")
               ).toLocaleDateString("en-GB")
           : "";
         (docData["idIssueAuthority"] = key["idIssueAuthority"]
