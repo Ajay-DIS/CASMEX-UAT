@@ -64,6 +64,8 @@ export class CustomerProfileComponent implements OnInit {
 
   customerType = "";
 
+  criteriaType: any="text";
+
   customerData: any = [];
   userTypeOptions = [
     { name: "Individual", code: "Individual" },
@@ -84,7 +86,7 @@ export class CustomerProfileComponent implements OnInit {
       iSMandatory: "N",
       dependency: "N",
       status: "A",
-      criteriaType: "String",
+      criteriaType: "text",
       masterDataDependency: null,
       hqlMasterData: null,
       hqlDependency: null,
@@ -96,15 +98,15 @@ export class CustomerProfileComponent implements OnInit {
       applicationName: "Casmex Core",
       formName: "Customer Profile Individual",
       moduleName: "Remittance",
-      fieldName: "middleName",
-      displayName: "Middle Name",
+      fieldName: "phoneNumber",
+      displayName:"Phone Number",
       operators: null,
       orderID: 2,
       sqlQueries: null,
       iSMandatory: "N",
       dependency: "N",
       status: "A",
-      criteriaType: "String",
+      criteriaType: "number",
       masterDataDependency: null,
       hqlMasterData: null,
       hqlDependency: null,
@@ -124,7 +126,7 @@ export class CustomerProfileComponent implements OnInit {
       iSMandatory: "N",
       dependency: "N",
       status: "A",
-      criteriaType: "String",
+      criteriaType: "text",
       masterDataDependency: null,
       hqlMasterData: null,
       hqlDependency: null,
@@ -132,19 +134,19 @@ export class CustomerProfileComponent implements OnInit {
       createdDate: null,
     },
     {
-      id: 9,
+      id: 10,
       applicationName: "Casmex Core",
       formName: "Customer Profile Individual",
       moduleName: "Remittance",
-      fieldName: "gender",
-      displayName: "Gender",
+      fieldName: "dateOfBirth",
+      displayName: "Date Of Birth",
       operators: null,
       orderID: 4,
       sqlQueries: null,
       iSMandatory: "N",
       dependency: "N",
       status: "A",
-      criteriaType: "Number",
+      criteriaType: "date",
       masterDataDependency: null,
       hqlMasterData: null,
       hqlDependency: null,
@@ -206,6 +208,9 @@ export class CustomerProfileComponent implements OnInit {
         return opt.code == value;
       })[0]["code"]
     } = `;
+    this.criteriaType = this.searchCriteriaApiData.filter((opt) => {
+      return opt.fieldName == value;
+    })[0].criteriaType
     console.log(this.currentCriteriaKey);
     console.log(this.currentCriteriaMapKey);
   }

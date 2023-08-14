@@ -2,8 +2,18 @@
 :host ::ng-deep .p-multiselect-label-container {
   display: none;
 }
-:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+:host ::ng-deep .p-dropdown {
   font-size: 14px;
+  width: 150px;
+}
+:host ::ng-deep .p-calendar {
+  width: 448px;
+}
+:host ::ng-deep .p-inputtext:enabled {
+  border-color: #2455cf;
+  width: 448px;
+  border-top-left-radius: initial;
+  border-bottom-left-radius: initial;
 }
 
 .flex-align-center {
