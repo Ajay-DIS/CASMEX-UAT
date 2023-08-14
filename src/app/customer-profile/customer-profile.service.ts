@@ -8,12 +8,12 @@ export class CustomerProfileService {
   applicationName: any = null;
   moduleName: any = null;
   constructor(private http: HttpClient) {}
-
-  getCustomerIndividualData(id: string, type: any,criteriaMap:any) {
+  // .set("criteriaMap",criteriaMap) ,criteriaMap:any
+  getCustomerIndividualData(id: string, type: any) {
     return this.http.get(
       `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id).set("individual", type).set("criteriaMap",criteriaMap)
+        headers: new HttpHeaders().set("userId", id).set("individual", type)
       }
     );
   }
