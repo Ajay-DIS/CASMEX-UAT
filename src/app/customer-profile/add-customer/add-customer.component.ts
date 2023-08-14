@@ -56,7 +56,7 @@ export class AddCustomerComponent implements OnInit {
   masterData = {
     profession: [
       {
-        code: "plumber",
+        code: "plumer",
         codeName: "plumer",
       },
       {
@@ -150,7 +150,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     countryOfOperation: [
@@ -164,7 +164,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     countryOfTrade: [
@@ -178,7 +178,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     contactCountry: [
@@ -192,7 +192,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     permanentCountry: [
@@ -206,7 +206,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     countryOfBirth: [
@@ -220,7 +220,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     idIssueCountry: [
@@ -234,7 +234,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     representativeCountryOfBirth: [
@@ -248,7 +248,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     representativeIdIssueCountry: [
@@ -262,7 +262,7 @@ export class AddCustomerComponent implements OnInit {
       },
       {
         code: "America",
-        codeName: "America ",
+        codeName: "America",
       },
     ],
     relationship: [
@@ -476,7 +476,7 @@ export class AddCustomerComponent implements OnInit {
         );
     }
     for (let i = 1; i <= 30; i++) {
-      this.masterData.salaryDate.push({ code: i, codeName: i });
+      this.masterData.salaryDate.push({ code: `${i}`, codeName: `${i}` });
     }
   }
 
@@ -1570,6 +1570,7 @@ export class AddCustomerComponent implements OnInit {
                   codeName: data[field["fieldName"]],
                 }
               : "";
+            console.log("::", value, field["fieldName"]);
             this.individualForm
               .get(section.formName)
               .get(field.fieldName)
@@ -1900,6 +1901,7 @@ export class AddCustomerComponent implements OnInit {
   }
 
   downloadDoc(type: any, dbFileName: any) {
+    this.coreService.displayLoadingScreen();
     let service;
     service = this.http.get(
       `/remittance/kycUpload/fileDownload/${dbFileName}`,
@@ -1917,8 +1919,11 @@ export class AddCustomerComponent implements OnInit {
         let blob: Blob = res.body as Blob;
         let a = document.createElement("a");
         a.download = dbFileName;
-        a.href = window.URL.createObjectURL(blob);
+        const blobUrl = window.URL.createObjectURL(blob);
+        a.href = blobUrl;
         a.click();
+        window.URL.revokeObjectURL(blobUrl);
+        this.coreService.showSuccessToast("File downloaded successfully");
       },
       (err) => {
         this.coreService.showWarningToast(
@@ -1929,6 +1934,7 @@ export class AddCustomerComponent implements OnInit {
     );
   }
   viewDoc(type: any, dbFileName: any) {
+    this.coreService.displayLoadingScreen();
     let service;
     service = this.http.get(`/remittance/kycUpload/view/${dbFileName}`, {
       headers: new HttpHeaders().set("userId", this.userId),
@@ -1940,12 +1946,13 @@ export class AddCustomerComponent implements OnInit {
         this.coreService.removeLoadingScreen();
         console.log(":::", res);
         const blobData = new Blob([res], { type: "image/jpeg" });
-        const blobUrl = URL.createObjectURL(blobData);
+        const blobUrl = window.URL.createObjectURL(blobData);
 
         window.open(blobUrl, "_blank");
-        URL.revokeObjectURL(blobUrl);
+        window.URL.revokeObjectURL(blobUrl);
       },
       (err) => {
+        this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast(
           "Some error while fetching file details, Try again in sometime"
         );
