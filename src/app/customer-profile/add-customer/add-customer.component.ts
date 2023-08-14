@@ -906,10 +906,10 @@ export class AddCustomerComponent implements OnInit {
       ?.patchValue(row.representativeIdIssueAuthority);
     this.individualForm
       .get("Representative Details")
-      .get("representativeIdIssueCountry")
+      .get("representativeIssueCountry")
       ?.patchValue(
         this.masterData["representativeIdIssueCountry"].filter(
-          (opt) => opt.codeName == row.representativeIdIssueCountry
+          (opt) => opt.codeName == row.representativeIssueCountry
         )[0]
       );
     this.individualForm
@@ -1099,9 +1099,9 @@ export class AddCustomerComponent implements OnInit {
         : "",
       representativeIdIssueAuthority:
         representativeData.representativeIdIssueAuthority,
-      representativeIdIssueCountry: representativeData
-        .representativeIdIssueCountry?.codeName
-        ? representativeData.representativeIdIssueCountry?.codeName
+      representativeIssueCountry: representativeData.representativeIssueCountry
+        ?.codeName
+        ? representativeData.representativeIssueCountry?.codeName
         : "",
       representativeVisaExpireDate:
         representativeData.representativeVisaExpireDate
@@ -1404,9 +1404,6 @@ export class AddCustomerComponent implements OnInit {
         }
       } else {
       }
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
       this.updateIndividualCustomer(formData);
     } else {
       let formData = new FormData();
@@ -1492,10 +1489,6 @@ export class AddCustomerComponent implements OnInit {
       }
 
       this.saveIndividualCustomer(formData);
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
-      console.log(formData.values());
     }
     console.log(JSON.stringify(payloadData, null, 2));
   }
@@ -1795,10 +1788,10 @@ export class AddCustomerComponent implements OnInit {
           ]
             ? key["representativeIdIssueAuthority"]
             : "";
-          docData["representativeIdIssueCountry"] = key[
-            "representativeIdIssueCountry"
+          docData["representativeIssueCountry"] = key[
+            "representativeIssueCountry"
           ]
-            ? key["representativeIdIssueCountry"]
+            ? key["representativeIssueCountry"]
             : "";
           docData["representativeMaximumAllowedAmount"] = key[
             "representativeMaximumAllowedAmount"

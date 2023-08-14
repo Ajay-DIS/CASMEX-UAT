@@ -119,7 +119,7 @@
                         <th>ID copy upload</th>
                         <th>Authorization letter upload</th>
                         <th>Other Document upload</th>
-                        <!-- <th>Doc History</th> -->
+                        <th>Doc History</th>
                       </tr>
                     </ng-template>
                     <ng-template
@@ -152,7 +152,7 @@
                         <td>{{ product.representativeIdIssueDate }}</td>
                         <td>{{ product.representativeIdExpiryDate }}</td>
                         <td>{{ product.representativeIdIssueAuthority }}</td>
-                        <td>{{ product.representativeIdIssueCountry }}</td>
+                        <td>{{ product.representativeIssueCountry }}</td>
                         <td>{{ product.representativeVisaExpireDate }}</td>
                         <td>
                           {{
@@ -171,31 +171,34 @@
                           }}
                         </td>
                         <td>{{ product.otherDocumentUploadFileName }}</td>
-                        <!-- <td>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-eye"
-                    class="operation-btns"
-                    [disabled]="!product.representativeIdCopyUploadName"
-                    (click)="
-                      downloadDoc(
-                        'repres',
-                        product.representativeIdCopyUploadName
-                      )
-                    "
-                  ></button>
-                  <button
-                    pButton
-                    type="button"
-                    icon="pi pi-download"
-                    class="operation-btns"
-                    [disabled]="!product.representativeIdCopyUploadName"
-                    (click)="
-                      viewDoc('repres', product.representativeIdCopyUploadName)
-                    "
-                  ></button>
-                </td> -->
+                        <td>
+                          <button
+                            pButton
+                            type="button"
+                            icon="pi pi-eye"
+                            class="operation-btns"
+                            [disabled]="!product.representativeIdCopyUploadName"
+                            (click)="
+                              downloadDoc(
+                                'repres',
+                                product.representativeIdCopyUploadName
+                              )
+                            "
+                          ></button>
+                          <button
+                            pButton
+                            type="button"
+                            icon="pi pi-download"
+                            class="operation-btns"
+                            [disabled]="!product.representativeIdCopyUploadName"
+                            (click)="
+                              viewDoc(
+                                'repres',
+                                product.representativeIdCopyUploadName
+                              )
+                            "
+                          ></button>
+                        </td>
                       </tr>
                     </ng-template>
                   </p-table>
