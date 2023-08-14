@@ -33,7 +33,7 @@
             "
           >
             <i class="pi pi-search"></i>
-            <input
+            <!-- <input
               style="
                 width: 448px;
                 border-top-left-radius: initial;
@@ -43,7 +43,48 @@
               pInputText
               [(ngModel)]="currentCriteriaValue"
               placeholder="Search"
+            /> -->
+            <ng-container [ngSwitch]="criteriaType">
+              <input
+              style="
+              width: 448px;
+              border-top-left-radius: initial;
+              border-bottom-left-radius: initial;
+            "
+              *ngSwitchCase="'text'"
+              type="text"
+              class="block"
+              pInputText
+              [(ngModel)]="currentCriteriaValue"
+              placeholder="Search"
             />
+            <!-- <input
+            style="
+            width: 448px;
+            border-top-left-radius: initial;
+            border-bottom-left-radius: initial;
+          "
+              *ngSwitchCase="'number'"
+              type="text"
+              class="block"
+              pInputText
+              [(ngModel)]="currentCriteriaValue"
+              placeholder="Search"
+            /> -->
+            <p-inputNumber *ngSwitchCase="'number'" [(ngModel)]="currentCriteriaValue" mode="decimal" [useGrouping]="false" placeholder="Search">
+            </p-inputNumber>
+            <p-calendar
+              *ngSwitchCase="'date'"
+              class="block"
+              placeholder="DD/MM/YYYY"
+              dateFormat="dd/mm/yy"
+              [(ngModel)]="currentCriteriaValue"
+              [readonlyInput]="true"
+              [appendTo]="'body'"
+            ></p-calendar>
+
+            </ng-container>
+            
           </span>
           <button
             pButton
