@@ -7,22 +7,29 @@ import { Injectable } from "@angular/core";
 export class CustomerProfileService {
   applicationName: any = null;
   moduleName: any = null;
+
   constructor(private http: HttpClient) {}
   // .set("criteriaMap",criteriaMap) ,criteriaMap:any
-  getCustomerIndividualData(id: string, type: any) {
+  getCustomerIndividualData(id: string,criteriaMap:any,pageNumber:any,pageSize:any) {
     return this.http.get(
       `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id).set("individual", type)
+        headers: new HttpHeaders().set("userId", id)
+        .set("criteriaMap",criteriaMap)
+        .set("pageNumber",pageNumber)
+        .set("pageSize",pageSize)
       }
     );
   }
 
-  getCustomerCorporateData(id: string, type: any) {
+  getCustomerCorporateData(id: string,criteriaMap:any,pageNumber:any,pageSize:any) {
     return this.http.get(
       `/remittance/cooperateCustomerController/getCooperateCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id).set("cooperate", type),
+        headers: new HttpHeaders().set("userId", id)
+        .set("criteriaMap",criteriaMap)
+        .set("pageNumber",pageNumber)
+        .set("pageSize",pageSize)
       }
     );
   }

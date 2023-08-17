@@ -10,7 +10,6 @@
             (onChange)="onUserTypeChange($event.value)"
             optionValue="code"
             optionLabel="name"
-            placeholder="Select Type"
           ></p-dropdown>
         </div>
         <div class="col-10 flex-align-center">
@@ -19,9 +18,8 @@
             (onChange)="onCriteriaChange($event.value)"
             optionLabel="name"
             optionValue="code"
+            placeholder="Customer ID"
             class="primarydropdown"
-            placeholder="Select Criteria"
-            [disabled]="!customerType"
           ></p-dropdown>
           <span
             class="p-input-icon-right"
@@ -33,17 +31,7 @@
             "
           >
             <i class="pi pi-search"></i>
-            <!-- <input
-              style="
-                width: 448px;
-                border-top-left-radius: initial;
-                border-bottom-left-radius: initial;
-              "
-              type="text"
-              pInputText
-              [(ngModel)]="currentCriteriaValue"
-              placeholder="Search"
-            /> -->
+           
             <ng-container [ngSwitch]="criteriaType">
               <input
               style="
@@ -58,19 +46,7 @@
               [(ngModel)]="currentCriteriaValue"
               placeholder="Search"
             />
-            <!-- <input
-            style="
-            width: 448px;
-            border-top-left-radius: initial;
-            border-bottom-left-radius: initial;
-          "
-              *ngSwitchCase="'number'"
-              type="text"
-              class="block"
-              pInputText
-              [(ngModel)]="currentCriteriaValue"
-              placeholder="Search"
-            /> -->
+           
             <p-inputNumber *ngSwitchCase="'number'" [(ngModel)]="currentCriteriaValue" mode="decimal" [useGrouping]="false" placeholder="Search">
             </p-inputNumber>
             <p-calendar
@@ -176,7 +152,7 @@
           >
             {{ col.header }}
             <div
-              *ngIf="c < columns.length - 3"
+              *ngIf="c < columns.length - 3 && c != 0"
               (click)="$event.stopPropagation()"
               class="filter-icon"
             >
