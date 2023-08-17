@@ -48,6 +48,7 @@ export class CustomerProfileComponent implements OnInit {
 
   showTable = false;
 
+
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
 
@@ -198,6 +199,10 @@ export class CustomerProfileComponent implements OnInit {
     this.formName ="Customer Profile Individual"
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
+    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaKey = "Customer ID = ";
+
+    
   }
  getApiDataForsearchCriteria(){
   this.coreService.displayLoadingScreen();
@@ -263,7 +268,7 @@ export class CustomerProfileComponent implements OnInit {
   searchCustomerMap(type: any) {
     console.log(typeof this.currentCriteriaValue)
     console.log("::",this.criteriaTypechange)
-    if(this.criteriaTypechange?.length){
+    
       console.log("::",this.currentCriteriaMapKey)
       console.log("::",this.searchCriteriaMap)
       console.log("::",this.searchCriteriaMap.filter(crt => {return crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]}))
@@ -289,7 +294,7 @@ export class CustomerProfileComponent implements OnInit {
           console.log(this.criteriaMap);
         }
       }
-    }
+    
     this.getCustomerListData();
   
   }
@@ -326,7 +331,7 @@ export class CustomerProfileComponent implements OnInit {
           this.fullName = res.customerFullName.map((code) => {
             if (code) return { label: code, value: code };
           });
-          this.nationality = res.nationality.map((code) => {
+          this.nationality = res.nationality?.map((code) => {
             if (code) return { label: code, value: code };
           });
           this.mobileNumber = res.mobileNumber.map((code) => {
@@ -342,7 +347,7 @@ export class CustomerProfileComponent implements OnInit {
       },
       (err) => {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Error in fething data");
+        // this.coreService.showWarningToast("Error in fething data");
         this.showTable = false;
       }
     );
