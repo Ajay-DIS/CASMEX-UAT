@@ -12,6 +12,7 @@ import {
   SafeUrl,
 } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 
 @Component({
@@ -31,7 +32,6 @@ export class CorporateComponent implements OnInit, OnChanges {
 
   @Input("activeIndex") activeTabIndex: any;
 
-  pdfUrl: any = null;
   userId = null;
   today = new Date();
   pastYear = new Date("01/01/1950");
@@ -474,19 +474,19 @@ export class CorporateComponent implements OnInit, OnChanges {
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
                     : this.pastYear
-                  : secData["minDate"],
+                  : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.pastYear
-                  : secData["maxDate"],
+                    : this.futureYear
+                  : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : this.pastYear
-                  : secData["initialDate"],
+                    : new Date()
+                  : new Date(),
             };
             return fieldData;
           })
@@ -733,7 +733,7 @@ export class CorporateComponent implements OnInit, OnChanges {
         idCopyUploadOriginalName: row["idCopyUploadOriginalName"],
       }),
       ...(row["idCopyUploadName"]?.length && {
-        idCopyUpload: row["idCopyUploadName"],
+        idCopyUploadName: row["idCopyUploadName"],
       }),
       ...(row["customerId"] && { customerId: row["customerId"] }),
       ...(row["status"]?.length && { status: row["status"] }),
@@ -755,14 +755,14 @@ export class CorporateComponent implements OnInit, OnChanges {
     if (row.id && row.id != "") {
       this.editApiIdBeneficial = row.id;
     }
-    // this.corporateForm
-    //   .get("Beneficial Owner Details")
-    //   .get("ownershipType")
-    //   ?.patchValue(
-    //     this.masterData["ownershipType"].filter(
-    //       (opt) => opt.codeName == row.ownershipType
-    //     )[0]
-    //   );
+    this.corporateForm
+      .get("Beneficial Owner Details")
+      .get("ownershipType")
+      ?.patchValue(
+        this.masterData["ownershipType"].filter(
+          (opt) => opt.codeName == row.ownershipType
+        )[0]
+      );
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("category")
@@ -1137,7 +1137,9 @@ export class CorporateComponent implements OnInit, OnChanges {
       .getRawValue();
     console.log("fields", beneficialData);
     let beneficialDataObj = {
-      // ownershipType: beneficialData.ownershipType?.codeName,
+      ownershipType: beneficialData.ownershipType?.codeName
+        ? beneficialData.ownershipType?.codeName
+        : "",
       category: beneficialData.category?.codeName
         ? beneficialData.category?.codeName
         : "",
@@ -1204,7 +1206,7 @@ export class CorporateComponent implements OnInit, OnChanges {
           this.uploadedBeneficialDoc["idCopyUploadOriginalName"],
       }),
       ...(this.uploadedBeneficialDoc["idCopyUploadName"]?.length && {
-        idCopyUpload: this.uploadedBeneficialDoc["idCopyUploadName"],
+        idCopyUploadName: this.uploadedBeneficialDoc["idCopyUploadName"],
       }),
       ...(this.uploadedBeneficialDoc["customerId"] && {
         customerId: this.uploadedBeneficialDoc["customerId"],
@@ -1995,6 +1997,9 @@ export class CorporateComponent implements OnInit, OnChanges {
           docData["operation"] = "null";
           docData["idNumber"] = key["idNumber"] ? key["idNumber"] : "";
           docData["category"] = key["category"] ? key["category"] : "";
+          docData["ownershipType"] = key["ownershipType"]
+            ? key["ownershipType"]
+            : "";
           docData["noOfPartner"] = key["noOfPartner"] ? key["noOfPartner"] : "";
           docData["percentage"] = key["percentage"] ? key["percentage"] : "";
           docData["firstName"] = key["firstName"] ? key["firstName"] : "";
@@ -2301,34 +2306,40 @@ export class CorporateComponent implements OnInit, OnChanges {
       );
   }
 
-  downloadDoc(type: any, dbFileName: any) {
+  downloadDoc(type: any, dbFileNames: any) {
     this.coreService.displayLoadingScreen();
-    let service;
-    service = this.http.get(
-      `/remittance/kycUpload/fileDownload/${dbFileName}`,
-      {
-        headers: new HttpHeaders().set("userId", this.userId),
-        observe: "response",
-        responseType: "blob",
-      }
-    );
+    let services = dbFileNames
+      .filter((name) => {
+        return name && name != "";
+      })
+      .map((name) => {
+        return this.http.get(`/remittance/kycUpload/fileDownload/${name}`, {
+          headers: new HttpHeaders().set("userId", this.userId),
+          observe: "response",
+          responseType: "blob",
+        });
+      });
+    const downloadAllFiles = zip(...services);
 
-    service.subscribe(
+    downloadAllFiles.subscribe(
       (res) => {
         this.coreService.removeLoadingScreen();
-        console.log(":::", res);
-        let blob: Blob = res.body as Blob;
-        let a = document.createElement("a");
-        a.download = dbFileName;
-        const blobUrl = window.URL.createObjectURL(blob);
-        a.href = blobUrl;
-        a.click();
-        window.URL.revokeObjectURL(blobUrl);
-        this.coreService.showSuccessToast("File downloaded successfully");
+        if (res && res.length > 0) {
+          res.forEach((file: any) => {
+            let blob: Blob = file.body as Blob;
+            let a = document.createElement("a");
+            a.download = file.url && file.url.split("/").pop();
+            const blobUrl = window.URL.createObjectURL(blob);
+            a.href = blobUrl;
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+          });
+          this.coreService.showSuccessToast("Files downloaded successfully");
+        }
       },
       (err) => {
         this.coreService.showWarningToast(
-          "Some error while downloading file, Try again in sometime"
+          "Some error while downloading files, Try again in sometime"
         );
         this.coreService.removeLoadingScreen();
       }
