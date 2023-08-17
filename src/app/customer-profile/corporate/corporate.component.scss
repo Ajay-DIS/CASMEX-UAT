@@ -184,3 +184,7 @@ div.btn-grp {
   width: 27%;
   margin-top: 70px;
 }
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}

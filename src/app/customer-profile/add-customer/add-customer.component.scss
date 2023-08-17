@@ -164,3 +164,7 @@ div.btn-grp {
   display: none;
 }
 // fileupload end
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}

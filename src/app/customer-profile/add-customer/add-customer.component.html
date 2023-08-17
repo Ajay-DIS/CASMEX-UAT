@@ -250,7 +250,6 @@
                         *ngSwitchCase="'checkbox'"
                         [formControlName]="field.name"
                         [binary]="true"
-                        inputId="binary"
                         (onChange)="sameAddress($event, field.name)"
                       ></p-checkbox>
                       <p-dropdown
@@ -526,3 +525,28 @@
     </p-tabView>
   </div>
 </div>
+
+<p-confirmDialog
+  key="resetINDWarning"
+  class="confirm-popup"
+  #cd
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
