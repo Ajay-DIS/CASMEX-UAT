@@ -48,6 +48,7 @@ export class CustomerProfileComponent implements OnInit {
 
   showTable = false;
 
+
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
 
@@ -56,6 +57,8 @@ export class CustomerProfileComponent implements OnInit {
   formName = null;
   applicationName = "Casmex Core";
   moduleName = "Remittance";
+  pageNumber = "0";
+  pageSize = "0";
 
   linkedFormRuleCode: any = [];
   constructor(
@@ -67,6 +70,8 @@ export class CustomerProfileComponent implements OnInit {
   ) {}
 
   customerType = "";
+  criteriaTypechange ="";
+  type="";
 
   criteriaType: any="text";
 
@@ -168,15 +173,15 @@ export class CustomerProfileComponent implements OnInit {
   currentCriteriaMapKey = "";
   searchCriteriaMap = [];
   currentCriteriaMap = ""; 
-  criteriaMap = "";
+  criteriaMap = "NA";
 
   cols: any[] = [
     { field: "customerCode", header: "Customer Code", width: "8%" },
-    { field: "fullName", header: "Customer Full Name", width: "8%" },
-    { field: "nationality", header: "Nationality", width: "8%" },
-    { field: "mobileNumber", header: "Mobile Number", width: "7%" },
+    { field: "fullName", header: "Customer Full Name", width: "15%" },
+    { field: "nationality", header: "Nationality", width: "15%" },
+    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
     { field: "idType", header: "ID Type", width: "8%" },
-    { field: "idNumber", header: "ID Number", width: "8%" },
+    { field: "idNumber", header: "ID Number", width: "15%" },
     // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
     { field: "addBenificiary", header: "Add Benf", width: "8%" },
     { field: "pastTxns", header: "Past Txns", width: "8%" },
@@ -191,12 +196,17 @@ export class CustomerProfileComponent implements OnInit {
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.coreService.removeLoadingScreen();
+    this.formName ="Customer Profile Individual"
+    this.getApiDataForsearchCriteria();
+    this.getCustomerListData();
+    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaKey = "Customer ID = ";
 
-
+    
   }
  getApiDataForsearchCriteria(){
   this.coreService.displayLoadingScreen();
-  this.customerService.getDataForsearchCriteria(this.userData["userId"],this.applicationName,this.moduleName,this.formName
+  this.customerService.getDataForsearchCriteria(this.userData["userId"],this.applicationName,this.moduleName,this.formName 
    ).subscribe((res) =>{
     this.coreService.removeLoadingScreen();
     console.log(res);
@@ -220,12 +230,15 @@ export class CustomerProfileComponent implements OnInit {
     });
 
     this.formName = "Customer Profile " + value;
+    this.type = value;
     console.log(this.formName);
     this.getApiDataForsearchCriteria();
+   
   }
 
   onCriteriaChange(value: any) {
     console.log(value);
+    this.criteriaTypechange = value;
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = `${
       this.searchCriteriaOptions.filter((opt) => {
@@ -254,40 +267,51 @@ export class CustomerProfileComponent implements OnInit {
   }
   searchCustomerMap(type: any) {
     console.log(typeof this.currentCriteriaValue)
-    if(this.criteriaType?.length && this.currentCriteriaValue == null) {
-      this.coreService.showWarningToast("please enter the value");
-    } 
-    // else if (this.currentCriteriaMapKey.split("=")[0] == this.searchCriteriaMap[0]){
-    //   this.coreService.showWarningToast("field already exits");
-    // }
-    else if ((typeof this.currentCriteriaValue == "string" && this.currentCriteriaValue?.trim().length) || this.currentCriteriaValue) {
-  
-      this.currentCriteria =
-        this.currentCriteriaKey + this.currentCriteriaValue;
-      console.log(this.currentCriteria);
-      this.searchCriteria.push(this.currentCriteria);
-
-      this.currentCriteriaMap = this.currentCriteriaMapKey + this.currentCriteriaValue;
-      console.log(this.currentCriteriaMap);
-      this.searchCriteriaMap.push(this.currentCriteriaMap);
-      this.criteriaMap = this.searchCriteriaMap.join(";");
-      console.log(this.criteriaMap);
-    }
+    console.log("::",this.criteriaTypechange)
     
+      console.log("::",this.currentCriteriaMapKey)
+      console.log("::",this.searchCriteriaMap)
+      console.log("::",this.searchCriteriaMap.filter(crt => {return crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]}))
+
+      if (this.searchCriteriaMap.filter(crt => {return crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]}).length > 0){
+        this.coreService.showWarningToast("field already exits");
+      }
+      else{
+        if(this.currentCriteriaValue == null || this.currentCriteriaValue == "") {
+          this.coreService.showWarningToast("please enter the value");
+        } 
+        else if ((typeof this.currentCriteriaValue == "string" && this.currentCriteriaValue?.trim().length) || this.currentCriteriaValue) {
+      
+          this.currentCriteria =
+            this.currentCriteriaKey + this.currentCriteriaValue;
+          console.log(this.currentCriteria);
+          this.searchCriteria.push(this.currentCriteria);
+    
+          this.currentCriteriaMap = this.currentCriteriaMapKey + this.currentCriteriaValue;
+          console.log(this.currentCriteriaMap);
+          this.searchCriteriaMap.push(this.currentCriteriaMap);
+          this.criteriaMap = this.searchCriteriaMap.join(";");
+          console.log(this.criteriaMap);
+        }
+      }
+    
+    this.getCustomerListData();
+  
+  }
+
+  getCustomerListData(){
     console.log( this.searchCriteria);
     this.coreService.displayLoadingScreen();
-    console.log(type);
+    console.log(this.type);
     this.showTable = false;
     let service: Observable<any>;
-    if (type == "Corporate") {
+    if (this.type == "Corporate") {
       service = this.customerService.getCustomerCorporateData(
-        this.userData["userId"],
-        "COR"
+        this.userData["userId"],this.criteriaMap,this.pageNumber,this.pageSize
       );
     } else {
       service = this.customerService.getCustomerIndividualData(
-        this.userData["userId"],
-        "IND"
+        this.userData["userId"],this.criteriaMap,this.pageNumber,this.pageSize,
       );
     }
     service.subscribe(
@@ -296,7 +320,7 @@ export class CustomerProfileComponent implements OnInit {
         if (res["status"] == "200") {
           this.showTable = true;
           this.coreService.removeLoadingScreen();
-          if (type == "Corporate") {
+          if (this.type == "Corporate") {
             this.customerData = res.data.CmCooperateCustomerDetails;
           } else {
             this.customerData = res.data.CmIndividualCustomerDetails;
@@ -307,7 +331,7 @@ export class CustomerProfileComponent implements OnInit {
           this.fullName = res.customerFullName.map((code) => {
             if (code) return { label: code, value: code };
           });
-          this.nationality = res.nationality.map((code) => {
+          this.nationality = res.nationality?.map((code) => {
             if (code) return { label: code, value: code };
           });
           this.mobileNumber = res.mobileNumber.map((code) => {
@@ -323,12 +347,11 @@ export class CustomerProfileComponent implements OnInit {
       },
       (err) => {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Error in fething data");
+        // this.coreService.showWarningToast("Error in fething data");
         this.showTable = false;
       }
     );
   }
-
   addNewCustomer() {
     this.router.navigate(["navbar", "customer-profile", "addnewcustomer"]);
   }
