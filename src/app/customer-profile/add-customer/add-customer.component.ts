@@ -7,6 +7,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 
 @Component({
@@ -535,19 +536,19 @@ export class AddCustomerComponent implements OnInit {
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
                     : this.pastYear
-                  : secData["minDate"],
+                  : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.pastYear
-                  : secData["maxDate"],
+                    : this.futureYear
+                  : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : this.pastYear
-                  : secData["initialDate"],
+                    : new Date()
+                  : new Date(),
             };
             return fieldData;
           })
@@ -1900,34 +1901,40 @@ export class AddCustomerComponent implements OnInit {
       );
   }
 
-  downloadDoc(type: any, dbFileName: any) {
+  downloadDoc(type: any, dbFileNames: any) {
     this.coreService.displayLoadingScreen();
-    let service;
-    service = this.http.get(
-      `/remittance/kycUpload/fileDownload/${dbFileName}`,
-      {
-        headers: new HttpHeaders().set("userId", this.userId),
-        observe: "response",
-        responseType: "blob",
-      }
-    );
+    let services = dbFileNames
+      .filter((name) => {
+        return name && name != "";
+      })
+      .map((name) => {
+        return this.http.get(`/remittance/kycUpload/fileDownload/${name}`, {
+          headers: new HttpHeaders().set("userId", this.userId),
+          observe: "response",
+          responseType: "blob",
+        });
+      });
+    const downloadAllFiles = zip(...services);
 
-    service.subscribe(
+    downloadAllFiles.subscribe(
       (res) => {
         this.coreService.removeLoadingScreen();
-        console.log(":::", res);
-        let blob: Blob = res.body as Blob;
-        let a = document.createElement("a");
-        a.download = dbFileName;
-        const blobUrl = window.URL.createObjectURL(blob);
-        a.href = blobUrl;
-        a.click();
-        window.URL.revokeObjectURL(blobUrl);
-        this.coreService.showSuccessToast("File downloaded successfully");
+        if (res && res.length > 0) {
+          res.forEach((file: any) => {
+            let blob: Blob = file.body as Blob;
+            let a = document.createElement("a");
+            a.download = file.url && file.url.split("/").pop();
+            const blobUrl = window.URL.createObjectURL(blob);
+            a.href = blobUrl;
+            a.click();
+            window.URL.revokeObjectURL(blobUrl);
+          });
+          this.coreService.showSuccessToast("Files downloaded successfully");
+        }
       },
       (err) => {
         this.coreService.showWarningToast(
-          "Some error while downloading file, Try again in sometime"
+          "Some error while downloading files, Try again in sometime"
         );
         this.coreService.removeLoadingScreen();
       }

@@ -81,7 +81,10 @@
                             class="operation-btns"
                             [disabled]="!product.uploadFrontSide"
                             (click)="
-                              downloadDoc('kyc', product.uploadFrontSide)
+                              downloadDoc('kyc', [
+                                product.uploadFrontSide,
+                                product.uploadBackSide
+                              ])
                             "
                           ></button>
                         </td>
@@ -192,10 +195,11 @@
                             class="operation-btns"
                             [disabled]="!product.representativeIdCopyUploadName"
                             (click)="
-                              downloadDoc(
-                                'repres',
-                                product.representativeIdCopyUploadName
-                              )
+                              downloadDoc('repres', [
+                                product.representativeIdCopyUploadName,
+                                product.representativeAuthorizationLetterName,
+                                product.otherDocumentUpload
+                              ])
                             "
                           ></button>
                         </td>

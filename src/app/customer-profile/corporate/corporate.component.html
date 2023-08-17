@@ -63,7 +63,12 @@
                     icon="pi pi-download"
                     class="operation-btns"
                     [disabled]="!product.uploadFrontSide"
-                    (click)="downloadDoc('kyc', product.uploadFrontSide)"
+                    (click)="
+                      downloadDoc('kyc', [
+                        product.uploadFrontSide,
+                        product.uploadBackSide
+                      ])
+                    "
                   ></button>
                 </td>
               </tr>
@@ -80,7 +85,7 @@
           >
             <ng-template pTemplate="header">
               <tr>
-                <!-- <th>Ownership Type</th> -->
+                <th>Ownership Type</th>
                 <th>Category</th>
                 <th>No. of Partner</th>
                 <th>Percentage</th>
@@ -113,9 +118,9 @@
                   "
                   (click)="selectRowForEditBeneficial(product, rowIndex)"
                 >
-                  {{ product.category }}
+                  {{ product.ownershipType }}
                 </td>
-                <!-- <td>{{ product.ownershipType }}</td> -->
+                <td>{{ product.category }}</td>
                 <td>{{ product.noOfPartner }}</td>
                 <td>{{ product.percentage }}</td>
                 <td>{{ product.firstName }}</td>
@@ -149,7 +154,7 @@
                     icon="pi pi-download"
                     class="operation-btns"
                     [disabled]="!product.idCopyUploadName"
-                    (click)="downloadDoc('benef', product.idCopyUploadName)"
+                    (click)="downloadDoc('benef', [product.idCopyUploadName])"
                   ></button>
                 </td>
               </tr>
@@ -242,10 +247,11 @@
                     class="operation-btns"
                     [disabled]="!product.representativeIdCopyUploadName"
                     (click)="
-                      downloadDoc(
-                        'repres',
-                        product.representativeIdCopyUploadName
-                      )
+                      downloadDoc('repres', [
+                        product.representativeIdCopyUploadName,
+                        product.representativeAuthorizationLetterName,
+                        product.otherDocumentUpload
+                      ])
                     "
                   ></button>
                 </td>
