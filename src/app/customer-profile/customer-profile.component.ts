@@ -53,6 +53,10 @@ export class CustomerProfileComponent implements OnInit {
 
   showNoDataFound: boolean = false;
 
+  formName = null;
+  applicationName = "Casmex Core";
+  moduleName = "Remittance";
+
   linkedFormRuleCode: any = [];
   constructor(
     private router: Router,
@@ -73,86 +77,86 @@ export class CustomerProfileComponent implements OnInit {
   ];
 
   searchCriteriaApiData = [
-    {
-      id: 6,
-      applicationName: "Casmex Core",
-      formName: "Customer Profile Individual",
-      moduleName: "Remittance",
-      fieldName: "firstName",
-      displayName: "First Name",
-      operators: null,
-      orderID: 1,
-      sqlQueries: null,
-      iSMandatory: "N",
-      dependency: "N",
-      status: "A",
-      criteriaType: "text",
-      masterDataDependency: null,
-      hqlMasterData: null,
-      hqlDependency: null,
-      hqlDependencyData: null,
-      createdDate: null,
-    },
-    {
-      id: 7,
-      applicationName: "Casmex Core",
-      formName: "Customer Profile Individual",
-      moduleName: "Remittance",
-      fieldName: "phoneNumber",
-      displayName:"Phone Number",
-      operators: null,
-      orderID: 2,
-      sqlQueries: null,
-      iSMandatory: "N",
-      dependency: "N",
-      status: "A",
-      criteriaType: "number",
-      masterDataDependency: null,
-      hqlMasterData: null,
-      hqlDependency: null,
-      hqlDependencyData: null,
-      createdDate: null,
-    },
-    {
-      id: 8,
-      applicationName: "Casmex Core",
-      formName: "Customer Profile Individual",
-      moduleName: "Remittance",
-      fieldName: "lastName",
-      displayName: "Last Name",
-      operators: null,
-      orderID: 3,
-      sqlQueries: null,
-      iSMandatory: "N",
-      dependency: "N",
-      status: "A",
-      criteriaType: "text",
-      masterDataDependency: null,
-      hqlMasterData: null,
-      hqlDependency: null,
-      hqlDependencyData: null,
-      createdDate: null,
-    },
-    {
-      id: 10,
-      applicationName: "Casmex Core",
-      formName: "Customer Profile Individual",
-      moduleName: "Remittance",
-      fieldName: "dateOfBirth",
-      displayName: "Date Of Birth",
-      operators: null,
-      orderID: 4,
-      sqlQueries: null,
-      iSMandatory: "N",
-      dependency: "N",
-      status: "A",
-      criteriaType: "date",
-      masterDataDependency: null,
-      hqlMasterData: null,
-      hqlDependency: null,
-      hqlDependencyData: null,
-      createdDate: null,
-    },
+    // {
+    //   id: 6,
+    //   applicationName: "Casmex Core",
+    //   formName: "Customer Profile Individual",
+    //   moduleName: "Remittance",
+    //   fieldName: "firstName",
+    //   displayName: "First Name",
+    //   operators: null,
+    //   orderID: 1,
+    //   sqlQueries: null,
+    //   iSMandatory: "N",
+    //   dependency: "N",
+    //   status: "A",
+    //   criteriaType: "text",
+    //   masterDataDependency: null,
+    //   hqlMasterData: null,
+    //   hqlDependency: null,
+    //   hqlDependencyData: null,
+    //   createdDate: null,
+    // },
+    // {
+    //   id: 7,
+    //   applicationName: "Casmex Core",
+    //   formName: "Customer Profile Individual",
+    //   moduleName: "Remittance",
+    //   fieldName: "phoneNumber",
+    //   displayName:"Phone Number",
+    //   operators: null,
+    //   orderID: 2,
+    //   sqlQueries: null,
+    //   iSMandatory: "N",
+    //   dependency: "N",
+    //   status: "A",
+    //   criteriaType: "number",
+    //   masterDataDependency: null,
+    //   hqlMasterData: null,
+    //   hqlDependency: null,
+    //   hqlDependencyData: null,
+    //   createdDate: null,
+    // },
+    // {
+    //   id: 8,
+    //   applicationName: "Casmex Core",
+    //   formName: "Customer Profile Individual",
+    //   moduleName: "Remittance",
+    //   fieldName: "lastName",
+    //   displayName: "Last Name",
+    //   operators: null,
+    //   orderID: 3,
+    //   sqlQueries: null,
+    //   iSMandatory: "N",
+    //   dependency: "N",
+    //   status: "A",
+    //   criteriaType: "text",
+    //   masterDataDependency: null,
+    //   hqlMasterData: null,
+    //   hqlDependency: null,
+    //   hqlDependencyData: null,
+    //   createdDate: null,
+    // },
+    // {
+    //   id: 10,
+    //   applicationName: "Casmex Core",
+    //   formName: "Customer Profile Individual",
+    //   moduleName: "Remittance",
+    //   fieldName: "dateOfBirth",
+    //   displayName: "Date Of Birth",
+    //   operators: null,
+    //   orderID: 4,
+    //   sqlQueries: null,
+    //   iSMandatory: "N",
+    //   dependency: "N",
+    //   status: "A",
+    //   criteriaType: "date",
+    //   masterDataDependency: null,
+    //   hqlMasterData: null,
+    //   hqlDependency: null,
+    //   hqlDependencyData: null,
+    //   createdDate: null,
+    // },
   ];
 
   searchCriteriaOptions = [];
@@ -187,17 +191,42 @@ export class CustomerProfileComponent implements OnInit {
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.coreService.removeLoadingScreen();
-  }
 
+
+  }
+ getApiDataForsearchCriteria(){
+  this.coreService.displayLoadingScreen();
+  this.customerService.getDataForsearchCriteria(this.userData["userId"],this.applicationName,this.moduleName,this.formName
+   ).subscribe((res) =>{
+    this.coreService.removeLoadingScreen();
+    console.log(res);
+    this.searchCriteriaApiData = res["data"];
+    console.log( this.searchCriteriaApiData);
+    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
+      return { name: data.displayName, code: data.fieldName };
+    });
+    
+   },
+   (err) => {
+    this.coreService.removeLoadingScreen();
+    this.coreService.showWarningToast("Error in fething data");
+  }
+   )
+ }
   onUserTypeChange(value: any) {
     console.log(value);
     this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
       return { name: data.displayName, code: data.fieldName };
     });
+
+    this.formName = "Customer Profile " + value;
+    console.log(this.formName);
+    this.getApiDataForsearchCriteria();
   }
 
   onCriteriaChange(value: any) {
     console.log(value);
+    this.currentCriteriaValue = null;
     this.currentCriteriaKey = `${
       this.searchCriteriaOptions.filter((opt) => {
         return opt.code == value;
@@ -217,23 +246,35 @@ export class CustomerProfileComponent implements OnInit {
   ondeletecriteria(i:any,criteria:any){
     this.searchCriteria.splice(i, 1);
     console.log(i)
-    console.log(criteria)
+    console.log(criteria);
+    this.searchCriteriaMap.splice(i, 1);
+    this.criteriaMap = this.searchCriteriaMap.join(";");
+    console.log(this.criteriaMap);
+
   }
   searchCustomerMap(type: any) {
-    if (this.currentCriteriaValue.trim().length) {
+    console.log(typeof this.currentCriteriaValue)
+    if(this.criteriaType?.length && this.currentCriteriaValue == null) {
+      this.coreService.showWarningToast("please enter the value");
+    } 
+    else if (this.currentCriteriaMapKey.split("=")[0] == this.searchCriteriaMap[0]){
+      this.coreService.showWarningToast("field already exits");
+    }
+    else if ((typeof this.currentCriteriaValue == "string" && this.currentCriteriaValue?.trim().length) || this.currentCriteriaValue) {
+  
       this.currentCriteria =
         this.currentCriteriaKey + this.currentCriteriaValue;
       console.log(this.currentCriteria);
       this.searchCriteria.push(this.currentCriteria);
-    }
-    console.log( this.searchCriteria);
-    if(this.currentCriteriaValue.trim().length){
+
       this.currentCriteriaMap = this.currentCriteriaMapKey + this.currentCriteriaValue;
       console.log(this.currentCriteriaMap);
       this.searchCriteriaMap.push(this.currentCriteriaMap);
       this.criteriaMap = this.searchCriteriaMap.join(";");
       console.log(this.criteriaMap);
     }
+    
+    console.log( this.searchCriteria);
     this.coreService.displayLoadingScreen();
     console.log(type);
     this.showTable = false;
