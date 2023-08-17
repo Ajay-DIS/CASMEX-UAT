@@ -7,6 +7,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService } from "primeng/api";
 import { zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 
@@ -23,7 +24,8 @@ export class AddCustomerComponent implements OnInit {
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private confirmationService: ConfirmationService
   ) {}
   @Input("activeIndex") activeTabIndex: any;
 
@@ -485,7 +487,9 @@ export class AddCustomerComponent implements OnInit {
     this.activeTabIndex = event.index;
     if (this.activeTabIndex != 0) {
       this.coreService.showWarningToast("Unsaved change has been reset");
-      this.onReset();
+      if (this.individualForm) {
+        this.individualForm.reset();
+      }
     }
   }
 
@@ -1306,7 +1310,7 @@ export class AddCustomerComponent implements OnInit {
       }
     });
 
-    payloadData["status"] = "active";
+    // payloadData["status"] = "Active";
     if (this.mode == "edit") {
       payloadData["createdBy"] = this.CustomerData["createdBy"]
         ? this.CustomerData["createdBy"]
@@ -1514,11 +1518,7 @@ export class AddCustomerComponent implements OnInit {
                 "Profile data successfully saved"
               );
             }
-            this.router.navigate([
-              "navbar",
-              "customer-profile",
-              "addnewcustomer",
-            ]);
+            this.router.navigate(["navbar", "customer-profile"]);
             // this.onReset()
           }
         },
@@ -1969,8 +1969,35 @@ export class AddCustomerComponent implements OnInit {
   }
 
   onReset(): void {
-    this.submitted = false;
-    if (this.individualForm) this.individualForm.reset();
+    this.coreService.setHeaderStickyStyle(false);
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.confirmationService.confirm({
+      message:
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        "Resetting will result in the removal of all data. Are you sure you want to proceed ?",
+      key: "resetINDWarning",
+      accept: () => {
+        this.submitted = false;
+        if (this.individualForm) {
+          this.individualForm.reset();
+        }
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS

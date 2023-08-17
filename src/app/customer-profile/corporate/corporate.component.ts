@@ -12,6 +12,7 @@ import {
   SafeUrl,
 } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService } from "primeng/api";
 import { zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 
@@ -27,7 +28,8 @@ export class CorporateComponent implements OnInit, OnChanges {
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    private confirmationService: ConfirmationService
   ) {}
 
   @Input("activeIndex") activeTabIndex: any;
@@ -369,7 +371,10 @@ export class CorporateComponent implements OnInit, OnChanges {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
         this.coreService.showWarningToast("Unsaved change has been reset");
-        this.onReset();
+        this.submitted = false;
+        if (this.corporateForm) {
+          this.corporateForm.reset();
+        }
       }
     }
   }
@@ -1527,7 +1532,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       }
     });
 
-    payloadData["status"] = "active";
+    // payloadData["status"] = "Active";
     if (this.mode == "edit") {
       payloadData["createdBy"] = this.CustomerData["createdBy"]
         ? this.CustomerData["createdBy"]
@@ -1831,11 +1836,7 @@ export class CorporateComponent implements OnInit, OnChanges {
                 "Profile data successfully saved"
               );
             }
-            this.router.navigate([
-              "navbar",
-              "customer-profile",
-              "addnewcustomer",
-            ]);
+            this.router.navigate(["navbar", "customer-profile"]);
             // this.onReset()
           }
         },
@@ -2374,7 +2375,34 @@ export class CorporateComponent implements OnInit, OnChanges {
   }
 
   onReset(): void {
-    this.submitted = false;
-    if (this.corporateForm) this.corporateForm.reset();
+    this.coreService.setHeaderStickyStyle(false);
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.confirmationService.confirm({
+      message:
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        "Resetting will result in the removal of all data. Are you sure you want to proceed ?",
+      key: "resetCORWarning",
+      accept: () => {
+        this.submitted = false;
+        if (this.corporateForm) {
+          this.corporateForm.reset();
+        }
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 }
