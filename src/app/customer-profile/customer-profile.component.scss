@@ -10,10 +10,13 @@
   width: 448px;
 }
 :host ::ng-deep .p-inputtext:enabled {
-  border-color: #2455cf;
+  // border-color: #2455cf;
   width: 448px;
   border-top-left-radius: initial;
   border-bottom-left-radius: initial;
+}
+:host ::ng-deep .p-inputtext:enabled:hover {
+  border-color: #2455cf;
 }
 
 .flex-align-center {

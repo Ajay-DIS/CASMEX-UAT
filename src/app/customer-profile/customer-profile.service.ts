@@ -26,7 +26,14 @@ export class CustomerProfileService {
       }
     );
   }
-
+  getDataForsearchCriteria(id: string, appName:any, moduleName:any, formName: any){
+    return this.http.get(
+      `/remittance/individualCustomerController/getCustomerSearchSetting`,
+      {
+        headers: new HttpHeaders().set("userId", id).set("applicationName", appName).set("moduleName", moduleName).set("formName", formName)
+      }
+    );
+  }
   updateCustomerIndividualStatus(userId: any, status: any, id: any) {
     return this.http.get(
       `/remittance/individualCustomerController/updateIndividualStatus`,
