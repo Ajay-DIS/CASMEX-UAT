@@ -257,9 +257,9 @@ export class CustomerProfileComponent implements OnInit {
     if(this.criteriaType?.length && this.currentCriteriaValue == null) {
       this.coreService.showWarningToast("please enter the value");
     } 
-    else if (this.currentCriteriaMapKey.split("=")[0] == this.searchCriteriaMap[0]){
-      this.coreService.showWarningToast("field already exits");
-    }
+    // else if (this.currentCriteriaMapKey.split("=")[0] == this.searchCriteriaMap[0]){
+    //   this.coreService.showWarningToast("field already exits");
+    // }
     else if ((typeof this.currentCriteriaValue == "string" && this.currentCriteriaValue?.trim().length) || this.currentCriteriaValue) {
   
       this.currentCriteria =
