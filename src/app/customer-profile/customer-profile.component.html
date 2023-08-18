@@ -211,7 +211,7 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i < columns.length - 3">
+            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3) ">
               <div *ngIf="!(i == 0)" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>

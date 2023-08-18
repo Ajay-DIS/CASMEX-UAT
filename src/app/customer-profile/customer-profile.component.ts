@@ -174,8 +174,21 @@ export class CustomerProfileComponent implements OnInit {
   searchCriteriaMap = [];
   currentCriteriaMap = ""; 
   criteriaMap = "NA";
+  cols = [];
 
-  cols: any[] = [
+  colsIND: any[] = [
+    { field: "customerCode", header: "Customer Code", width: "8%" },
+    { field: "fullName", header: "Customer Full Name", width: "15%" },
+    { field: "nationality", header: "Nationality", width: "15%" },
+    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
+    { field: "idType", header: "ID Type", width: "8%" },
+    { field: "idNumber", header: "ID Number", width: "15%" },
+    // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
+    // { field: "addBenificiary", header: "Add Benf", width: "8%" },
+    { field: "pastTxns", header: "Past Txns", width: "8%" },
+    { field: "status", header: "Profile Status", width: "8%" },
+  ];
+  colsCOR: any[] = [
     { field: "customerCode", header: "Customer Code", width: "8%" },
     { field: "fullName", header: "Customer Full Name", width: "15%" },
     { field: "nationality", header: "Nationality", width: "15%" },
@@ -193,7 +206,7 @@ export class CustomerProfileComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-
+ 
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.coreService.removeLoadingScreen();
     this.formName ="Customer Profile Individual"
@@ -201,9 +214,10 @@ export class CustomerProfileComponent implements OnInit {
     this.getCustomerListData();
     this.currentCriteriaMapKey = "id = ";
     this.currentCriteriaKey = "Customer ID = ";
-
+    this.cols = this.colsIND;
     
   }
+
  getApiDataForsearchCriteria(){
   this.coreService.displayLoadingScreen();
   this.customerService.getDataForsearchCriteria(this.userData["userId"],this.applicationName,this.moduleName,this.formName 
@@ -232,7 +246,13 @@ export class CustomerProfileComponent implements OnInit {
     this.formName = "Customer Profile " + value;
     this.type = value;
     console.log(this.formName);
+    this.criteriaMap = "NA";
+    this.searchCriteria = [];
+    this.currentCriteriaValue = null;
+    this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
+    this.getCustomerListData();
+
    
   }
 
@@ -270,7 +290,7 @@ export class CustomerProfileComponent implements OnInit {
     console.log("::",this.criteriaTypechange)
     
       console.log("::",this.currentCriteriaMapKey)
-      console.log("::",this.searchCriteriaMap)
+      console.log("::",this.searchCriteriaMap);
       console.log("::",this.searchCriteriaMap.filter(crt => {return crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]}))
 
       if (this.searchCriteriaMap.filter(crt => {return crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]}).length > 0){
@@ -321,8 +341,10 @@ export class CustomerProfileComponent implements OnInit {
           this.showTable = true;
           this.coreService.removeLoadingScreen();
           if (this.type == "Corporate") {
+            this.cols = this.colsCOR;
             this.customerData = res.data.CmCooperateCustomerDetails;
           } else {
+            this.cols = this.colsIND;
             this.customerData = res.data.CmIndividualCustomerDetails;
           }
           this.customerCode = res.customerCode.map((code) => {
