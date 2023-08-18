@@ -59,8 +59,8 @@ export class AddCustomerComponent implements OnInit {
   masterData = {
     profession: [
       {
-        code: "plumer",
-        codeName: "plumer",
+        code: "plumber",
+        codeName: "plumber",
       },
       {
         code: "driver",
