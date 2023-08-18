@@ -188,3 +188,17 @@ div.btn-grp {
 .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
   text-align: center;
 }
+
+.view-link {
+  cursor: pointer;
+  color: var(--primary-color) !important;
+  text-decoration: underline;
+}
+
+.file-name {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}

@@ -39,7 +39,7 @@
                         <th>ID Issue Country</th>
                         <th>Front Side</th>
                         <th>Back Side</th>
-                        <th>Doc History</th>
+                        <th style="text-align: center">Doc History</th>
                       </tr>
                     </ng-template>
                     <ng-template
@@ -49,11 +49,7 @@
                     >
                       <tr>
                         <td
-                          style="
-                            cursor: pointer;
-                            color: blue;
-                            text-decoration: underline;
-                          "
+                          class="file-name view-link"
                           (click)="selectRowForEdit(product, rowIndex)"
                         >
                           {{ product.documentType }}
@@ -63,17 +59,113 @@
                         <td>{{ product.idExpiryDate }}</td>
                         <td>{{ product.idIssueAuthority }}</td>
                         <td>{{ product.idIssueCountry }}</td>
-                        <td>{{ product.uploadFrontSideFileName }}</td>
-                        <td>{{ product.uploadBackSideFileName }}</td>
-                        <td>
-                          <button
+                        <td style="position: relative">
+                          <span
+                            class="file-name view-link"
+                            *ngIf="product.uploadFrontSide"
+                            (click)="viewDoc('kyc', product.uploadFrontSide)"
+                            pTooltip="View Document"
+                            >{{ product.uploadFrontSideFileName }}</span
+                          >
+                          <span
+                            class="file-name"
+                            *ngIf="!product.uploadFrontSide"
+                            >{{ product.uploadFrontSideFileName }}</span
+                          >
+                          <!-- <span
+                            role="button"
+                            class="remove-file-btn"
+                            *ngIf="
+                              product.uploadFrontSideFileName &&
+                              product.uploadFrontSideFileName != ''
+                            "
+                            (click)="
+                              onRemoveFile(
+                                'kyc',
+                                product,
+                                rowIndex,
+                                'uploadFrontSideFileName',
+                                'uploadFrontSide'
+                              )
+                            "
+                            pTooltip="Remove Document"
+                          >
+                            <svg
+                              style="margin-bottom: 4px"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12.6"
+                              height="12.6"
+                              fill="#dc3545"
+                              class="bi bi-x-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                              />
+                              <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                              />
+                            </svg>
+                          </span> -->
+                        </td>
+                        <td style="position: relative">
+                          <span
+                            class="file-name view-link"
+                            *ngIf="product.uploadBackSide"
+                            (click)="viewDoc('kyc', product.uploadBackSide)"
+                            pTooltip="View Document"
+                            >{{ product.uploadBackSideFileName }}</span
+                          >
+                          <span
+                            class="file-name"
+                            *ngIf="!product.uploadBackSide"
+                            >{{ product.uploadBackSideFileName }}</span
+                          >
+                          <!-- <span
+                            role="button"
+                            class="remove-file-btn"
+                            *ngIf="
+                              product.uploadBackSideFileName &&
+                              product.uploadBackSideFileName != ''
+                            "
+                            (click)="
+                              onRemoveFile(
+                                'kyc',
+                                product,
+                                rowIndex,
+                                'uploadBackSideFileName',
+                                'uploadBackSide'
+                              )
+                            "
+                            pTooltip="Remove Document"
+                          >
+                            <svg
+                              style="margin-bottom: 4px"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12.6"
+                              height="12.6"
+                              fill="#dc3545"
+                              class="bi bi-x-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                              />
+                              <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                              />
+                            </svg>
+                          </span> -->
+                        </td>
+                        <td style="text-align: center">
+                          <!-- <button
                             pButton
                             type="button"
                             icon="pi pi-eye"
                             class="operation-btns"
                             [disabled]="!product.uploadFrontSide"
                             (click)="viewDoc('kyc', product.uploadFrontSide)"
-                          ></button>
+                          ></button> -->
                           <button
                             pButton
                             type="button"
@@ -122,7 +214,7 @@
                         <th>ID copy upload</th>
                         <th>Authorization letter upload</th>
                         <th>Other Document upload</th>
-                        <th>Doc History</th>
+                        <th style="text-align: center">Doc History</th>
                       </tr>
                     </ng-template>
                     <ng-template
@@ -132,11 +224,7 @@
                     >
                       <tr>
                         <td
-                          style="
-                            cursor: pointer;
-                            color: blue;
-                            text-decoration: underline;
-                          "
+                          class="file-name view-link"
                           (click)="
                             selectRowForEditRepresentative(product, rowIndex)
                           "
@@ -165,17 +253,180 @@
                         <td>
                           {{ product.representativeMaximumAllowedAmount }}
                         </td>
-                        <td>
-                          {{ product.representativeIdCopyUploadFileName }}
+                        <td style="position: relative">
+                          <span
+                            class="file-name view-link"
+                            *ngIf="product.representativeIdCopyUploadName"
+                            (click)="
+                              viewDoc(
+                                'kyc',
+                                product.representativeIdCopyUploadName
+                              )
+                            "
+                            pTooltip="View Document"
+                            >{{
+                              product.representativeIdCopyUploadFileName
+                            }}</span
+                          >
+                          <span
+                            class="file-name"
+                            *ngIf="!product.representativeIdCopyUploadName"
+                            >{{
+                              product.representativeIdCopyUploadFileName
+                            }}</span
+                          >
+                          <!-- <span
+                            role="button"
+                            class="remove-file-btn"
+                            *ngIf="
+                              product.representativeIdCopyUploadFileName &&
+                              product.representativeIdCopyUploadFileName != ''
+                            "
+                            (click)="
+                              onRemoveFile(
+                                'repres',
+                                product,
+                                rowIndex,
+                                'representativeIdCopyUploadFileName',
+                                'representativeIdCopyUploadName'
+                              )
+                            "
+                            pTooltip="Remove Document"
+                          >
+                            <svg
+                              style="margin-bottom: 4px"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12.6"
+                              height="12.6"
+                              fill="#dc3545"
+                              class="bi bi-x-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                              />
+                              <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                              />
+                            </svg>
+                          </span> -->
                         </td>
-                        <td>
-                          {{
-                            product.representativeAuthorizationLetterFileName
-                          }}
+                        <td style="position: relative">
+                          <span
+                            class="file-name view-link"
+                            *ngIf="
+                              product.representativeAuthorizationLetterName
+                            "
+                            (click)="
+                              viewDoc(
+                                'kyc',
+                                product.representativeAuthorizationLetterName
+                              )
+                            "
+                            pTooltip="View Document"
+                            >{{
+                              product.representativeAuthorizationLetterFileName
+                            }}</span
+                          >
+                          <span
+                            class="file-name"
+                            *ngIf="
+                              !product.representativeAuthorizationLetterName
+                            "
+                            >{{
+                              product.representativeAuthorizationLetterFileName
+                            }}</span
+                          >
+                          <!-- <span
+                            role="button"
+                            class="remove-file-btn"
+                            *ngIf="
+                              product.representativeAuthorizationLetterFileName &&
+                              product.representativeAuthorizationLetterFileName !=
+                                ''
+                            "
+                            (click)="
+                              onRemoveFile(
+                                'repres',
+                                product,
+                                rowIndex,
+                                'representativeAuthorizationLetterFileName',
+                                'representativeAuthorizationLetterName'
+                              )
+                            "
+                            pTooltip="Remove Document"
+                          >
+                            <svg
+                              style="margin-bottom: 4px"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12.6"
+                              height="12.6"
+                              fill="#dc3545"
+                              class="bi bi-x-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                              />
+                              <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                              />
+                            </svg>
+                          </span> -->
                         </td>
-                        <td>{{ product.otherDocumentUploadFileName }}</td>
-                        <td>
-                          <button
+                        <td style="position: relative">
+                          <span
+                            class="file-name view-link"
+                            *ngIf="product.otherDocumentUpload"
+                            (click)="
+                              viewDoc('kyc', product.otherDocumentUpload)
+                            "
+                            pTooltip="View Document"
+                            >{{ product.otherDocumentUploadFileName }}</span
+                          >
+                          <span
+                            class="file-name"
+                            *ngIf="!product.otherDocumentUpload"
+                            >{{ product.otherDocumentUploadFileName }}</span
+                          >
+                          <!-- <span
+                            role="button"
+                            class="remove-file-btn"
+                            *ngIf="
+                              product.otherDocumentUploadFileName &&
+                              product.otherDocumentUploadFileName != ''
+                            "
+                            (click)="
+                              onRemoveFile(
+                                'repres',
+                                product,
+                                rowIndex,
+                                'otherDocumentUploadFileName',
+                                'otherDocumentUpload'
+                              )
+                            "
+                            pTooltip="Remove Document"
+                          >
+                            <svg
+                              style="margin-bottom: 4px"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="12.6"
+                              height="12.6"
+                              fill="#dc3545"
+                              class="bi bi-x-circle"
+                              viewBox="0 0 16 16"
+                            >
+                              <path
+                                d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+                              />
+                              <path
+                                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                              />
+                            </svg>
+                          </span> -->
+                        </td>
+                        <td style="text-align: center">
+                          <!-- <button
                             pButton
                             type="button"
                             icon="pi pi-eye"
@@ -187,7 +438,7 @@
                                 product.representativeIdCopyUploadName
                               )
                             "
-                          ></button>
+                          ></button> -->
                           <button
                             pButton
                             type="button"
