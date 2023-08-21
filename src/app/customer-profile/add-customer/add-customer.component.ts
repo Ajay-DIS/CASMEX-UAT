@@ -693,6 +693,32 @@ export class AddCustomerComponent implements OnInit {
     }
   }
 
+  onRemoveFile(docType: any, row: any, index: any, uiName: any, dbName: any) {
+    console.log(uiName, dbName);
+    if (uiName in row) {
+      row[uiName] = "";
+    }
+    if (dbName in row) {
+      row[dbName] = "";
+    }
+
+    if ("operation" in row) {
+      row["operation"] = "edit";
+    }
+
+    if (docType == "kyc") {
+      this.uploadedKycData[index][uiName] = "";
+      this.uploadedKycData[index][dbName] = "";
+      this.uploadedKycData[index]["operation"] = "edit";
+      console.log(this.uploadedKycData);
+    } else if (docType == "repres") {
+      this.uploadedRepresentativeData[index][uiName] = "";
+      this.uploadedRepresentativeData[index][dbName] = "";
+      this.uploadedRepresentativeData[index]["operation"] = "edit";
+      console.log(this.uploadedRepresentativeData);
+    }
+  }
+
   selectRowForEdit(row: any, index: any) {
     this.uploadedKycDoc = {
       uploadFrontSideFile: row["uploadFrontSideFile"],
