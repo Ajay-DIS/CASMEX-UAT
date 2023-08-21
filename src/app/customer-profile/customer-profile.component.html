@@ -15,6 +15,7 @@
         <div class="col-10 flex-align-center">
           <p-dropdown
             [options]="searchCriteriaOptions"
+            [(ngModel)]="customerFieldType"
             (onChange)="onCriteriaChange($event.value)"
             optionLabel="name"
             optionValue="code"

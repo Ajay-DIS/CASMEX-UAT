@@ -70,6 +70,7 @@ export class CustomerProfileComponent implements OnInit {
   ) {}
 
   customerType = "";
+  customerFieldType ="";
   criteriaTypechange ="";
   type="";
 
@@ -239,9 +240,7 @@ export class CustomerProfileComponent implements OnInit {
  }
   onUserTypeChange(value: any) {
     console.log(value);
-    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
-      return { name: data.displayName, code: data.fieldName };
-    });
+    
 
     this.formName = "Customer Profile " + value;
     this.type = value;
@@ -252,7 +251,10 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-
+    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
+      return { name: data.displayName, code: data.fieldName };
+    });
+    this.customerFieldType = null;
    
   }
 
@@ -283,6 +285,8 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteriaMap.splice(i, 1);
     this.criteriaMap = this.searchCriteriaMap.join(";");
     console.log(this.criteriaMap);
+    this.criteriaMap = "NA";
+    this.getCustomerListData();
 
   }
   searchCustomerMap(type: any) {
@@ -316,6 +320,7 @@ export class CustomerProfileComponent implements OnInit {
       }
     
     this.getCustomerListData();
+    this.currentCriteriaValue = null;
   
   }
 
