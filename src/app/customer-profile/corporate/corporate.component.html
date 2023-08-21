@@ -54,11 +54,9 @@
                     pTooltip="View Document"
                     >{{ product.uploadFrontSideFileName }}</span
                   >
-                  <span
-                    class="file-name"
-                    *ngIf="!product.uploadFrontSide"
-                    >{{ product.uploadFrontSideFileName }}</span
-                  >
+                  <span class="file-name" *ngIf="!product.uploadFrontSide">{{
+                    product.uploadFrontSideFileName
+                  }}</span>
                   <!-- <span
                     role="button"
                     class="remove-file-btn"
@@ -103,11 +101,9 @@
                     pTooltip="View Document"
                     >{{ product.uploadBackSideFileName }}</span
                   >
-                  <span
-                    class="file-name"
-                    *ngIf="!product.uploadBackSide"
-                    >{{ product.uploadBackSideFileName }}</span
-                  >
+                  <span class="file-name" *ngIf="!product.uploadBackSide">{{
+                    product.uploadBackSideFileName
+                  }}</span>
                   <!-- <span
                     role="button"
                     class="remove-file-btn"
@@ -220,7 +216,7 @@
                 <td>{{ product.noOfPartner }}</td>
                 <td>{{ product.percentage }}</td>
                 <td>{{ product.firstName }}</td>
-                <td>{{ product.middelName }}</td>
+                <td>{{ product.middleName }}</td>
                 <td>{{ product.lastName }}</td>
                 <td>{{ product.gender }}</td>
                 <td>{{ product.dateOfBirth }}</td>
@@ -230,10 +226,10 @@
                 <td>{{ product.documentType }}</td>
                 <td>{{ product.idNumber }}</td>
                 <td>{{ product.idIssueDate }}</td>
-                <td>{{ product.idExpireDate }}</td>
+                <td>{{ product.idExpiryDate }}</td>
                 <td>{{ product.idIssueAuthority }}</td>
                 <td>{{ product.idIssueCountry }}</td>
-                <td>{{ product.visaExpireDate }}</td>
+                <td>{{ product.visaExpiryDate }}</td>
                 <td style="position: relative">
                   <span
                     class="file-name view-link"
@@ -242,11 +238,9 @@
                     pTooltip="View Document"
                     >{{ product.idCopyUploadFileName }}</span
                   >
-                  <span
-                    class="file-name"
-                    *ngIf="!product.idCopyUploadName"
-                    >{{ product.idCopyUploadFileName }}</span
-                  >
+                  <span class="file-name" *ngIf="!product.idCopyUploadName">{{
+                    product.idCopyUploadFileName
+                  }}</span>
                 </td>
                 <td style="text-align: center">
                   <!-- <button
@@ -315,7 +309,7 @@
                 >
                   {{ product.representativeFirstName }}
                 </td>
-                <td>{{ product.representativeMiddelName }}</td>
+                <td>{{ product.representativeMiddleName }}</td>
                 <td>{{ product.representativeLastName }}</td>
                 <td>{{ product.representativeGender }}</td>
                 <td>{{ product.representativeDateOfBirth }}</td>
@@ -327,10 +321,10 @@
                 <td>{{ product.representativeIdIssueDate }}</td>
                 <td>{{ product.representativeIdExpiryDate }}</td>
                 <td>{{ product.representativeIdIssueAuthority }}</td>
-                <td>{{ product.representativeIssueCountry }}</td>
-                <td>{{ product.representativeVisaExpireDate }}</td>
+                <td>{{ product.representativeIdIssueCountry }}</td>
+                <td>{{ product.representativeVisaExpiryDate }}</td>
                 <td>
-                  {{ product.representativeAuthorizationLetterExpireDate }}
+                  {{ product.representativeAuthorizationLetterExpiryDate }}
                 </td>
                 <td>{{ product.representativeMaximumAllowedAmount }}</td>
                 <td style="position: relative">
@@ -346,9 +340,7 @@
                   <span
                     class="file-name"
                     *ngIf="!product.representativeIdCopyUploadName"
-                    >{{
-                      product.representativeIdCopyUploadFileName
-                    }}</span
+                    >{{ product.representativeIdCopyUploadFileName }}</span
                   >
                   <!-- <span
                     role="button"
@@ -549,6 +541,15 @@
                 pInputText
                 [formControlName]="field.name"
               />
+              <div *ngSwitchCase="'currency'">
+                <input
+                  type="text"
+                  class="block"
+                  pInputText
+                  [formControlName]="field.name"
+                />
+                <span>AED</span>
+              </div>
               <p-calendar
                 *ngSwitchCase="'date'"
                 class="block"
