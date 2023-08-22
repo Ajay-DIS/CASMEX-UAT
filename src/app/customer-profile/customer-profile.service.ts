@@ -10,34 +10,55 @@ export class CustomerProfileService {
 
   constructor(private http: HttpClient) {}
   // .set("criteriaMap",criteriaMap) ,criteriaMap:any
-  getCustomerIndividualData(id: string,criteriaMap:any,pageNumber:any,pageSize:any) {
+  getCustomerIndividualData(
+    id: string,
+    criteriaMap: any,
+    pageNumber: any,
+    pageSize: any
+  ) {
     return this.http.get(
       `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id)
-        .set("criteriaMap",criteriaMap)
-        .set("pageNumber",pageNumber)
-        .set("pageSize",pageSize)
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("criteriaMap", criteriaMap)
+          .set("pageNumber", pageNumber)
+          .set("pageSize", pageSize),
       }
     );
   }
 
-  getCustomerCorporateData(id: string,criteriaMap:any,pageNumber:any,pageSize:any) {
+  getCustomerCorporateData(
+    id: string,
+    criteriaMap: any,
+    pageNumber: any,
+    pageSize: any
+  ) {
     return this.http.get(
-      `/remittance/cooperateCustomerController/getCooperateCustomerDetailsList`,
+      `/remittance/corporateCustomerController/getCorporateCustomerDetailsList`,
       {
-        headers: new HttpHeaders().set("userId", id)
-        .set("criteriaMap",criteriaMap)
-        .set("pageNumber",pageNumber)
-        .set("pageSize",pageSize)
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("criteriaMap", criteriaMap)
+          .set("pageNumber", pageNumber)
+          .set("pageSize", pageSize),
       }
     );
   }
-  getDataForsearchCriteria(id: string, appName:any, moduleName:any, formName: any){
+  getDataForsearchCriteria(
+    id: string,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ) {
     return this.http.get(
       `/remittance/individualCustomerController/getCustomerSearchSetting`,
       {
-        headers: new HttpHeaders().set("userId", id).set("applicationName", appName).set("moduleName", moduleName).set("formName", formName)
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("applicationName", appName)
+          .set("moduleName", moduleName)
+          .set("formName", formName),
       }
     );
   }
@@ -54,7 +75,7 @@ export class CustomerProfileService {
   }
   updateCustomerCorporateStatus(userId: any, status: any, id: any) {
     return this.http.get(
-      `/remittance/cooperateCustomerController/updateCorperateStatus`,
+      `/remittance/corporateCustomerController/updateCorporateStatus`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)

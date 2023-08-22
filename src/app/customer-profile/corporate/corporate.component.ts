@@ -202,7 +202,7 @@ export class CorporateComponent implements OnInit, OnChanges {
         codeName: "America",
       },
     ],
-	representativeIssueCountry: [
+    representativeIssueCountry: [
       {
         code: "Japan",
         codeName: "Japan",
@@ -698,7 +698,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.idIssueDate);
     this.corporateForm
       .get("KYC Doc Upload")
-      .get("idExpireDate")
+      .get("idExpiryDate")
       ?.patchValue(row.idExpiryDate);
     this.corporateForm
       .get("KYC Doc Upload")
@@ -790,8 +790,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.firstName);
     this.corporateForm
       .get("Beneficial Owner Details")
-      .get("middelName")
-      ?.patchValue(row.middelName);
+      .get("middleName")
+      ?.patchValue(row.middleName);
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("lastName")
@@ -848,8 +848,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.idIssueDate);
     this.corporateForm
       .get("Beneficial Owner Details")
-      .get("idExpireDate")
-      ?.patchValue(row.idExpireDate);
+      .get("idExpiryDate")
+      ?.patchValue(row.idExpiryDate);
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("idIssueAuthority")
@@ -864,8 +864,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       );
     this.corporateForm
       .get("Beneficial Owner Details")
-      .get("visaExpireDate")
-      ?.patchValue(row.visaExpireDate);
+      .get("visaExpiryDate")
+      ?.patchValue(row.visaExpiryDate);
     this.corporateForm
       .get("Beneficial Owner Details")
       .get("idCopyUploadFile")
@@ -935,8 +935,8 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.representativeFirstName);
     this.corporateForm
       .get("Representative Details")
-      .get("representativeMiddelName")
-      ?.patchValue(row.representativeMiddelName);
+      .get("representativeMiddleName")
+      ?.patchValue(row.representativeMiddleName);
     this.corporateForm
       .get("Representative Details")
       .get("representativeLastName")
@@ -1003,20 +1003,20 @@ export class CorporateComponent implements OnInit, OnChanges {
       ?.patchValue(row.representativeIdIssueAuthority);
     this.corporateForm
       .get("Representative Details")
-      .get("representativeIssueCountry")
+      .get("representativeIdIssueCountry")
       ?.patchValue(
         this.masterData["representativeIssueCountry"].filter(
-          (opt) => opt.codeName == row.representativeIssueCountry
+          (opt) => opt.codeName == row.representativeIdIssueCountry
         )[0]
       );
     this.corporateForm
       .get("Representative Details")
-      .get("representativeVisaExpireDate")
-      ?.patchValue(row.representativeVisaExpireDate);
+      .get("representativeVisaExpiryDate")
+      ?.patchValue(row.representativeVisaExpiryDate);
     this.corporateForm
       .get("Representative Details")
-      .get("representativeAuthorizationLetterExpireDate")
-      ?.patchValue(row.representativeAuthorizationLetterExpireDate);
+      .get("representativeAuthorizationLetterExpiryDate")
+      ?.patchValue(row.representativeAuthorizationLetterExpiryDate);
     this.corporateForm
       .get("Representative Details")
       .get("representativeMaximumAllowedAmount")
@@ -1065,11 +1065,11 @@ export class CorporateComponent implements OnInit, OnChanges {
               kycData.idIssueDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
-      idExpiryDate: kycData.idExpireDate
-        ? !isNaN(Date.parse(kycData.idExpireDate))
-          ? new Date(kycData.idExpireDate).toLocaleDateString("en-GB")
+      idExpiryDate: kycData.idExpiryDate
+        ? !isNaN(Date.parse(kycData.idExpiryDate))
+          ? new Date(kycData.idExpiryDate).toLocaleDateString("en-GB")
           : new Date(
-              kycData.idExpireDate.split("/").reverse().join("-")
+              kycData.idExpiryDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
       idIssueAuthority: kycData.idIssueAuthority,
@@ -1151,7 +1151,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       noOfPartner: beneficialData.noOfPartner,
       percentage: beneficialData.percentage,
       firstName: beneficialData.firstName,
-      middelName: beneficialData.middelName,
+      middleName: beneficialData.middleName,
       lastName: beneficialData.lastName,
       gender: beneficialData.gender?.codeName
         ? beneficialData.gender?.codeName
@@ -1183,22 +1183,22 @@ export class CorporateComponent implements OnInit, OnChanges {
               beneficialData.idIssueDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
-      idExpireDate: beneficialData.idExpireDate
-        ? !isNaN(Date.parse(beneficialData.idExpireDate))
-          ? new Date(beneficialData.idExpireDate).toLocaleDateString("en-GB")
+      idExpiryDate: beneficialData.idExpiryDate
+        ? !isNaN(Date.parse(beneficialData.idExpiryDate))
+          ? new Date(beneficialData.idExpiryDate).toLocaleDateString("en-GB")
           : new Date(
-              beneficialData.idExpireDate.split("/").reverse().join("-")
+              beneficialData.idExpiryDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
       idIssueAuthority: beneficialData.idIssueAuthority,
       idIssueCountry: beneficialData.idIssueCountry?.codeName
         ? beneficialData.idIssueCountry?.codeName
         : "",
-      visaExpireDate: beneficialData.visaExpireDate
-        ? !isNaN(Date.parse(beneficialData.visaExpireDate))
-          ? new Date(beneficialData.visaExpireDate).toLocaleDateString("en-GB")
+      visaExpiryDate: beneficialData.visaExpiryDate
+        ? !isNaN(Date.parse(beneficialData.visaExpiryDate))
+          ? new Date(beneficialData.visaExpiryDate).toLocaleDateString("en-GB")
           : new Date(
-              beneficialData.visaExpireDate.split("/").reverse().join("-")
+              beneficialData.visaExpiryDate.split("/").reverse().join("-")
             ).toLocaleDateString("en-GB")
         : "",
       idCopyUploadFileName: beneficialData.idCopyUploadFile,
@@ -1261,7 +1261,7 @@ export class CorporateComponent implements OnInit, OnChanges {
     console.log("fields", representativeData);
     let representativeDataObj = {
       representativeFirstName: representativeData.representativeFirstName,
-      representativeMiddelName: representativeData.representativeMiddelName,
+      representativeMiddleName: representativeData.representativeMiddleName,
       representativeLastName: representativeData.representativeLastName,
       representativeGender: representativeData.representativeGender?.codeName
         ? representativeData.representativeGender?.codeName
@@ -1321,35 +1321,35 @@ export class CorporateComponent implements OnInit, OnChanges {
         : "",
       representativeIdIssueAuthority:
         representativeData.representativeIdIssueAuthority,
-      representativeIssueCountry: representativeData.representativeIssueCountry
-        ?.codeName
-        ? representativeData.representativeIssueCountry?.codeName
+      representativeIdIssueCountry: representativeData
+        .representativeIdIssueCountry?.codeName
+        ? representativeData.representativeIdIssueCountry?.codeName
         : "",
-      representativeVisaExpireDate:
-        representativeData.representativeVisaExpireDate
-          ? !isNaN(Date.parse(representativeData.representativeVisaExpireDate))
+      representativeVisaExpiryDate:
+        representativeData.representativeVisaExpiryDate
+          ? !isNaN(Date.parse(representativeData.representativeVisaExpiryDate))
             ? new Date(
-                representativeData.representativeVisaExpireDate
+                representativeData.representativeVisaExpiryDate
               ).toLocaleDateString("en-GB")
             : new Date(
-                representativeData.representativeVisaExpireDate
+                representativeData.representativeVisaExpiryDate
                   .split("/")
                   .reverse()
                   .join("-")
               ).toLocaleDateString("en-GB")
           : "",
-      representativeAuthorizationLetterExpireDate:
-        representativeData.representativeAuthorizationLetterExpireDate
+      representativeAuthorizationLetterExpiryDate:
+        representativeData.representativeAuthorizationLetterExpiryDate
           ? !isNaN(
               Date.parse(
-                representativeData.representativeAuthorizationLetterExpireDate
+                representativeData.representativeAuthorizationLetterExpiryDate
               )
             )
             ? new Date(
-                representativeData.representativeAuthorizationLetterExpireDate
+                representativeData.representativeAuthorizationLetterExpiryDate
               ).toLocaleDateString("en-GB")
             : new Date(
-                representativeData.representativeAuthorizationLetterExpireDate
+                representativeData.representativeAuthorizationLetterExpiryDate
                   .split("/")
                   .reverse()
                   .join("-")
@@ -1567,7 +1567,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       // formData.append("uploadDocuments[0].status", "Active");
       // formData.append("uploadDocuments[0].customerType", "COR");
       // formData.append("uploadDocuments[0].idIssueDate", "23/01/2023");
-      // formData.append("uploadDocuments[0].idExpireDate", "23/01/2023");
+      // formData.append("uploadDocuments[0].idExpiryDate", "23/01/2023");
       // formData.append("uploadDocuments[0].createdBy", "");
       // formData.append("uploadDocuments[0].updatedBy", "yogeshm");
       // formData.append("uploadDocuments[0].createdDateTime", "");
@@ -1576,7 +1576,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       if (this.uploadedKycData.length) {
         for (let i = 0; i < this.uploadedKycData.length; i++) {
           for (let key in this.uploadedKycData[i]) {
-            if (key == "idIssueDate" || key == "idExpireDate") {
+            if (key == "idIssueDate" || key == "idExpiryDate") {
               let date = this.uploadedKycData[i][key]
                 ? this.uploadedKycData[i][key]
                 : "";
@@ -1613,8 +1613,8 @@ export class CorporateComponent implements OnInit, OnChanges {
             if (
               key == "dateOfBirth" ||
               key == "idIssueDate" ||
-              key == "idExpireDate" ||
-              key == "visaExpireDate"
+              key == "idExpiryDate" ||
+              key == "visaExpiryDate"
             ) {
               let date = this.uploadedBeneficialData[i][key]
                 ? this.uploadedBeneficialData[i][key]
@@ -1653,8 +1653,8 @@ export class CorporateComponent implements OnInit, OnChanges {
               key == "representativeDateOfBirth" ||
               key == "representativeIdIssueDate" ||
               key == "representativeIdExpiryDate" ||
-              key == "representativeVisaExpireDate" ||
-              key == "representativeAuthorizationLetterExpireDate"
+              key == "representativeVisaExpiryDate" ||
+              key == "representativeAuthorizationLetterExpiryDate"
             ) {
               let date = this.uploadedRepresentativeData[i][key]
                 ? this.uploadedRepresentativeData[i][key]
@@ -1738,8 +1738,8 @@ export class CorporateComponent implements OnInit, OnChanges {
               if (
                 key == "dateOfBirth" ||
                 key == "idIssueDate" ||
-                key == "idExpireDate" ||
-                key == "visaExpireDate"
+                key == "idExpiryDate" ||
+                key == "visaExpiryDate"
               ) {
                 let date = this.uploadedBeneficialData[i][key]
                   ? this.uploadedBeneficialData[i][key]
@@ -1776,8 +1776,8 @@ export class CorporateComponent implements OnInit, OnChanges {
                 key == "representativeDateOfBirth" ||
                 key == "representativeIdIssueDate" ||
                 key == "representativeIdExpiryDate" ||
-                key == "representativeVisaExpireDate" ||
-                key == "representativeAuthorizationLetterExpireDate"
+                key == "representativeVisaExpiryDate" ||
+                key == "representativeAuthorizationLetterExpiryDate"
               ) {
                 let date = this.uploadedRepresentativeData[i][key]
                   ? this.uploadedRepresentativeData[i][key]
@@ -1819,7 +1819,7 @@ export class CorporateComponent implements OnInit, OnChanges {
   saveCorporateCustomer(payload: any) {
     this.http
       .post(
-        `/remittance/cooperateCustomerController/saveCooperateCustomer`,
+        `/remittance/corporateCustomerController/saveCorporateCustomer`,
         payload,
         {
           headers: new HttpHeaders().set("userId", this.userId),
@@ -1852,7 +1852,7 @@ export class CorporateComponent implements OnInit, OnChanges {
   getCorporateCustomer(custId: any) {
     this.http
       .get(
-        `/remittance/cooperateCustomerController/getCooperateCustomerDetails/${custId}`,
+        `/remittance/corporateCustomerController/getCorporateCustomerDetails/${custId}`,
         {
           headers: new HttpHeaders().set("userId", this.userId),
         }
@@ -2004,7 +2004,7 @@ export class CorporateComponent implements OnInit, OnChanges {
           docData["noOfPartner"] = key["noOfPartner"] ? key["noOfPartner"] : "";
           docData["percentage"] = key["percentage"] ? key["percentage"] : "";
           docData["firstName"] = key["firstName"] ? key["firstName"] : "";
-          docData["middelName"] = key["middelName"] ? key["middelName"] : "";
+          docData["middleName"] = key["middleName"] ? key["middleName"] : "";
           docData["lastName"] = key["lastName"] ? key["lastName"] : "";
           docData["gender"] = key["gender"] ? key["gender"] : "";
           docData["dateOfBirth"] = key["dateOfBirth"]
@@ -2031,11 +2031,11 @@ export class CorporateComponent implements OnInit, OnChanges {
                   key["idIssueDate"].split("/").reverse().join("-")
                 ).toLocaleDateString("en-GB")
             : "";
-          docData["idExpireDate"] = key["idExpireDate"]
-            ? !isNaN(Date.parse(key["idExpireDate"]))
-              ? new Date(key["idExpireDate"]).toLocaleDateString("en-GB")
+          docData["idExpiryDate"] = key["idExpiryDate"]
+            ? !isNaN(Date.parse(key["idExpiryDate"]))
+              ? new Date(key["idExpiryDate"]).toLocaleDateString("en-GB")
               : new Date(
-                  key["idExpireDate"].split("/").reverse().join("-")
+                  key["idExpiryDate"].split("/").reverse().join("-")
                 ).toLocaleDateString("en-GB")
             : "";
           (docData["idIssueAuthority"] = key["idIssueAuthority"]
@@ -2044,11 +2044,11 @@ export class CorporateComponent implements OnInit, OnChanges {
             (docData["idIssueCountry"] = key["idIssueCountry"]
               ? key["idIssueCountry"]
               : "");
-          docData["visaExpireDate"] = key["visaExpireDate"]
-            ? !isNaN(Date.parse(key["visaExpireDate"]))
-              ? new Date(key["visaExpireDate"]).toLocaleDateString("en-GB")
+          docData["visaExpiryDate"] = key["visaExpiryDate"]
+            ? !isNaN(Date.parse(key["visaExpiryDate"]))
+              ? new Date(key["visaExpiryDate"]).toLocaleDateString("en-GB")
               : new Date(
-                  key["visaExpireDate"].split("/").reverse().join("-")
+                  key["visaExpiryDate"].split("/").reverse().join("-")
                 ).toLocaleDateString("en-GB")
             : "";
           docData["idCopyUploadFileName"] = key["idCopyUploadOriginalName"]
@@ -2090,8 +2090,8 @@ export class CorporateComponent implements OnInit, OnChanges {
           docData["representativeFirstName"] = key["representativeFirstName"]
             ? key["representativeFirstName"]
             : "";
-          docData["representativeMiddelName"] = key["representativeMiddelName"]
-            ? key["representativeMiddelName"]
+          docData["representativeMiddleName"] = key["representativeMiddleName"]
+            ? key["representativeMiddleName"]
             : "";
           docData["representativeLastName"] = key["representativeLastName"]
             ? key["representativeLastName"]
@@ -2161,31 +2161,31 @@ export class CorporateComponent implements OnInit, OnChanges {
                     .join("-")
                 ).toLocaleDateString("en-GB")
             : "";
-          docData["representativeVisaExpireDate"] = key[
-            "representativeVisaExpireDate"
+          docData["representativeVisaExpiryDate"] = key[
+            "representativeVisaExpiryDate"
           ]
-            ? !isNaN(Date.parse(key["representativeVisaExpireDate"]))
+            ? !isNaN(Date.parse(key["representativeVisaExpiryDate"]))
               ? new Date(
-                  key["representativeVisaExpireDate"]
+                  key["representativeVisaExpiryDate"]
                 ).toLocaleDateString("en-GB")
               : new Date(
-                  key["representativeVisaExpireDate"]
+                  key["representativeVisaExpiryDate"]
                     .split("/")
                     .reverse()
                     .join("-")
                 ).toLocaleDateString("en-GB")
             : "";
-          docData["representativeAuthorizationLetterExpireDate"] = key[
-            "representativeAuthorizationLetterExpireDate"
+          docData["representativeAuthorizationLetterExpiryDate"] = key[
+            "representativeAuthorizationLetterExpiryDate"
           ]
             ? !isNaN(
-                Date.parse(key["representativeAuthorizationLetterExpireDate"])
+                Date.parse(key["representativeAuthorizationLetterExpiryDate"])
               )
               ? new Date(
-                  key["representativeAuthorizationLetterExpireDate"]
+                  key["representativeAuthorizationLetterExpiryDate"]
                 ).toLocaleDateString("en-GB")
               : new Date(
-                  key["representativeAuthorizationLetterExpireDate"]
+                  key["representativeAuthorizationLetterExpiryDate"]
                     .split("/")
                     .reverse()
                     .join("-")
@@ -2196,10 +2196,10 @@ export class CorporateComponent implements OnInit, OnChanges {
           ]
             ? key["representativeIdIssueAuthority"]
             : "";
-          docData["representativeIssueCountry"] = key[
-            "representativeIssueCountry"
+          docData["representativeIdIssueCountry"] = key[
+            "representativeIdIssueCountry"
           ]
-            ? key["representativeIssueCountry"]
+            ? key["representativeIdIssueCountry"]
             : "";
           docData["representativeMaximumAllowedAmount"] = key[
             "representativeMaximumAllowedAmount"
@@ -2278,7 +2278,7 @@ export class CorporateComponent implements OnInit, OnChanges {
   updateCorporateCustomer(payload: any) {
     this.http
       .put(
-        `/remittance/cooperateCustomerController/updateCooperateCustomer`,
+        `/remittance/corporateCustomerController/updateCorporateCustomer`,
         payload,
         {
           headers: new HttpHeaders().set("userId", this.userId),
@@ -2387,6 +2387,9 @@ export class CorporateComponent implements OnInit, OnChanges {
         if (this.corporateForm) {
           this.corporateForm.reset();
         }
+        this.uploadedKycData = [];
+        this.uploadedRepresentativeData = [];
+        this.uploadedBeneficialData = [];
         this.setHeaderSidebarBtn();
       },
       reject: () => {
