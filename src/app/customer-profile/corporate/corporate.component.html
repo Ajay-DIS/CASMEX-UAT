@@ -518,7 +518,7 @@
         </div>
         <ng-container *ngFor="let field of section.fields">
           <div
-            *ngIf="field.visible && field.fieldType != 'currency'"
+            *ngIf="field.visible"
             [ngClass]="{
               'col-2': true,
               checkbox: field.fieldType == 'checkbox'
@@ -541,13 +541,8 @@
                 pInputText
                 [formControlName]="field.name"
               />
-              <div *ngSwitchCase="'currency'">
-                <input
-                  type="text"
-                  class="block"
-                  pInputText
-                  [formControlName]="field.name"
-                />
+              <div class="currency-Inp" *ngSwitchCase="'currency'">
+                <input type="text" pInputText [formControlName]="field.name" />
                 <span>AED</span>
               </div>
               <p-calendar

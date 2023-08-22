@@ -202,3 +202,17 @@ div.btn-grp {
   text-overflow: ellipsis;
   max-width: 90px;
 }
+
+.currency-Inp {
+  position: relative;
+}
+.currency-Inp input {
+  width: 100%;
+  padding-right: 40px;
+}
+.currency-Inp span {
+  font-size: 0.8rem;
+  position: absolute;
+  right: 5%;
+  top: 8px;
+}
