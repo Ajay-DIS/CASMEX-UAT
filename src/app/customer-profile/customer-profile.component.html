@@ -76,6 +76,7 @@
             pButton
             pRipple
             type="button"
+            (click)="clearCriteria()"
             label="Clear"
             class="p-button-warning ml-2"
           ></button>
@@ -133,15 +134,15 @@
 
   <div class="ptable" *ngIf="showTable">
     <p-table
-      #dt
-      [columns]="cols"
-      [value]="customerData"
-      [paginator]="true"
-      [rows]="10"
-      [resizableColumns]="true"
-      columnResizeMode="fit"
-      [rowHover]="true"
-    >
+    #dt
+    [columns]="cols"
+    [value]="customerData"
+    [paginator]="true"
+    [rows]="10"
+    [resizableColumns]="true"
+    columnResizeMode="fit"
+    [rowHover]="true"
+  >
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th
