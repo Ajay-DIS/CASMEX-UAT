@@ -1966,32 +1966,48 @@ export class AddCustomerComponent implements OnInit {
       }
     );
   }
-  viewDoc(type: any, dbFileName: any) {
-    this.coreService.displayLoadingScreen();
-    let service;
-    service = this.http.get(`/remittance/kycUpload/view/${dbFileName}`, {
-      headers: new HttpHeaders().set("userId", this.userId),
-      responseType: "blob",
-    });
 
-    service.subscribe(
-      (res) => {
-        this.coreService.removeLoadingScreen();
-        console.log(":::", res);
-        const blobData = new Blob([res], { type: "image/jpeg" });
-        const blobUrl = window.URL.createObjectURL(blobData);
+  viewDoc(fileUI: any, dbFileName: any) {
+    console.log("::", fileUI);
+    if (fileUI && fileUI != "") {
+      const file = fileUI;
+      file.arrayBuffer().then((arrayBuffer) => {
+        const blob = new Blob([new Uint8Array(arrayBuffer)], {
+          type: file.type,
+        });
+        const blobUrl = window.URL.createObjectURL(blob);
 
         window.open(blobUrl, "_blank");
         window.URL.revokeObjectURL(blobUrl);
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast(
-          "Some error while fetching file details, Try again in sometime"
-        );
-        this.coreService.removeLoadingScreen();
-      }
-    );
+        console.log(blob);
+      });
+    } else {
+      this.coreService.displayLoadingScreen();
+      let service;
+      service = this.http.get(`/remittance/kycUpload/view/${dbFileName}`, {
+        headers: new HttpHeaders().set("userId", this.userId),
+        responseType: "blob",
+      });
+
+      service.subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          console.log(":::", res);
+          const blobData = new Blob([res], { type: "image/jpeg" });
+          const blobUrl = window.URL.createObjectURL(blobData);
+
+          window.open(blobUrl, "_blank");
+          window.URL.revokeObjectURL(blobUrl);
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(
+            "Some error while fetching file details, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+    }
   }
 
   onReset(): void {
@@ -2007,8 +2023,8 @@ export class AddCustomerComponent implements OnInit {
         if (this.individualForm) {
           this.individualForm.reset();
         }
-        this.uploadedKycData = []
-        this.uploadedRepresentativeData = []
+        this.uploadedKycData = [];
+        this.uploadedRepresentativeData = [];
         this.setHeaderSidebarBtn();
       },
       reject: () => {

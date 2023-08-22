@@ -62,14 +62,27 @@
                         <td style="position: relative">
                           <span
                             class="file-name view-link"
-                            *ngIf="product.uploadFrontSide"
-                            (click)="viewDoc('kyc', product.uploadFrontSide)"
+                            *ngIf="
+                              product.uploadFrontSide ||
+                              product.uploadFrontSideFile
+                            "
+                            (click)="
+                              viewDoc(
+                                product.uploadFrontSideFile,
+                                product.uploadFrontSide
+                              )
+                            "
                             pTooltip="View Document"
                             >{{ product.uploadFrontSideFileName }}</span
                           >
                           <span
                             class="file-name"
-                            *ngIf="!product.uploadFrontSide"
+                            *ngIf="
+                              !(
+                                product.uploadFrontSide ||
+                                product.uploadFrontSideFile
+                              )
+                            "
                             >{{ product.uploadFrontSideFileName }}</span
                           >
                           <!-- <span
@@ -111,14 +124,27 @@
                         <td style="position: relative">
                           <span
                             class="file-name view-link"
-                            *ngIf="product.uploadBackSide"
-                            (click)="viewDoc('kyc', product.uploadBackSide)"
+                            *ngIf="
+                              product.uploadBackSide ||
+                              product.uploadBackSideFile
+                            "
+                            (click)="
+                              viewDoc(
+                                product.uploadBackSideFile,
+                                product.uploadBackSide
+                              )
+                            "
                             pTooltip="View Document"
                             >{{ product.uploadBackSideFileName }}</span
                           >
                           <span
                             class="file-name"
-                            *ngIf="!product.uploadBackSide"
+                            *ngIf="
+                              !(
+                                product.uploadBackSide ||
+                                product.uploadBackSideFile
+                              )
+                            "
                             >{{ product.uploadBackSideFileName }}</span
                           >
                           <!-- <span
@@ -171,7 +197,14 @@
                             type="button"
                             icon="pi pi-download"
                             class="operation-btns"
-                            [disabled]="!product.uploadFrontSide"
+                            [disabled]="
+                              !(
+                                product.uploadFrontSide ||
+                                product.uploadBackSide
+                              ) ||
+                              product.uploadFrontSideFile ||
+                              product.uploadBackSideFile
+                            "
                             (click)="
                               downloadDoc('kyc', [
                                 product.uploadFrontSide,
@@ -256,10 +289,13 @@
                         <td style="position: relative">
                           <span
                             class="file-name view-link"
-                            *ngIf="product.representativeIdCopyUploadName"
+                            *ngIf="
+                              product.representativeIdCopyUploadName ||
+                              product.representativeIdCopyUploadFile
+                            "
                             (click)="
                               viewDoc(
-                                'kyc',
+                                product.representativeIdCopyUploadFile,
                                 product.representativeIdCopyUploadName
                               )
                             "
@@ -270,7 +306,12 @@
                           >
                           <span
                             class="file-name"
-                            *ngIf="!product.representativeIdCopyUploadName"
+                            *ngIf="
+                              !(
+                                product.representativeIdCopyUploadName ||
+                                product.representativeIdCopyUploadFile
+                              )
+                            "
                             >{{
                               product.representativeIdCopyUploadFileName
                             }}</span
@@ -315,11 +356,12 @@
                           <span
                             class="file-name view-link"
                             *ngIf="
-                              product.representativeAuthorizationLetterName
+                              product.representativeAuthorizationLetterName ||
+                              product.representativeAuthorizationLetterFile
                             "
                             (click)="
                               viewDoc(
-                                'kyc',
+                                product.representativeAuthorizationLetterFile,
                                 product.representativeAuthorizationLetterName
                               )
                             "
@@ -331,7 +373,10 @@
                           <span
                             class="file-name"
                             *ngIf="
-                              !product.representativeAuthorizationLetterName
+                              !(
+                                product.representativeAuthorizationLetterName ||
+                                product.representativeAuthorizationLetterFile
+                              )
                             "
                             >{{
                               product.representativeAuthorizationLetterFileName
@@ -377,16 +422,27 @@
                         <td style="position: relative">
                           <span
                             class="file-name view-link"
-                            *ngIf="product.otherDocumentUpload"
+                            *ngIf="
+                              product.otherDocumentUpload ||
+                              product.otherDocumentUploadFile
+                            "
                             (click)="
-                              viewDoc('kyc', product.otherDocumentUpload)
+                              viewDoc(
+                                product.otherDocumentUploadFile,
+                                product.otherDocumentUpload
+                              )
                             "
                             pTooltip="View Document"
                             >{{ product.otherDocumentUploadFileName }}</span
                           >
                           <span
                             class="file-name"
-                            *ngIf="!product.otherDocumentUpload"
+                            *ngIf="
+                              !(
+                                product.otherDocumentUpload ||
+                                product.otherDocumentUploadFile
+                              )
+                            "
                             >{{ product.otherDocumentUploadFileName }}</span
                           >
                           <!-- <span
@@ -444,7 +500,16 @@
                             type="button"
                             icon="pi pi-download"
                             class="operation-btns"
-                            [disabled]="!product.representativeIdCopyUploadName"
+                            [disabled]="
+                              !(
+                                product.representativeIdCopyUploadName ||
+                                product.otherDocumentUpload ||
+                                product.representativeAuthorizationLetterName
+                              ) ||
+                              product.representativeIdCopyUploadFile ||
+                              product.otherDocumentUploadFile ||
+                              product.representativeAuthorizationLetterFile
+                            "
                             (click)="
                               downloadDoc('repres', [
                                 product.representativeIdCopyUploadName,
