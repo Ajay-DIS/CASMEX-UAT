@@ -32,36 +32,40 @@
             "
           >
             <i class="pi pi-search"></i>
-           
+
             <ng-container [ngSwitch]="criteriaType">
               <input
-              style="
-              width: 448px;
-              border-top-left-radius: initial;
-              border-bottom-left-radius: initial;
-            "
-              *ngSwitchCase="'text'"
-              type="text"
-              class="block"
-              pInputText
-              [(ngModel)]="currentCriteriaValue"
-              placeholder="Search"
-            />
-           
-            <p-inputNumber *ngSwitchCase="'number'" [(ngModel)]="currentCriteriaValue" mode="decimal" [useGrouping]="false" placeholder="Search">
-            </p-inputNumber>
-            <p-calendar
-              *ngSwitchCase="'date'"
-              class="block"
-              placeholder="DD/MM/YYYY"
-              dateFormat="dd/mm/yy"
-              [(ngModel)]="currentCriteriaValue"
-              [readonlyInput]="true"
-              [appendTo]="'body'"
-            ></p-calendar>
+                style="
+                  width: 448px;
+                  border-top-left-radius: initial;
+                  border-bottom-left-radius: initial;
+                "
+                *ngSwitchCase="'text'"
+                type="text"
+                class="block"
+                pInputText
+                [(ngModel)]="currentCriteriaValue"
+                placeholder="Search"
+              />
 
+              <p-inputNumber
+                *ngSwitchCase="'number'"
+                [(ngModel)]="currentCriteriaValue"
+                mode="decimal"
+                [useGrouping]="false"
+                placeholder="Search"
+              >
+              </p-inputNumber>
+              <p-calendar
+                *ngSwitchCase="'date'"
+                class="block"
+                placeholder="DD/MM/YYYY"
+                dateFormat="dd/mm/yy"
+                [(ngModel)]="currentCriteriaValue"
+                [readonlyInput]="true"
+                [appendTo]="'body'"
+              ></p-calendar>
             </ng-container>
-            
           </span>
           <button
             pButton
@@ -107,7 +111,7 @@
           <span
             role="button"
             style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
-            (click)="ondeletecriteria(i,criteria)"
+            (click)="ondeletecriteria(i, criteria)"
           >
             <svg
               style="margin-bottom: 4px"
@@ -136,23 +140,25 @@
       #dt
       [columns]="cols"
       [value]="customerData"
+      [lazy]="true"
+      (onLazyLoad)="loadCustomers($event)"
       [paginator]="true"
       [rows]="10"
+      [totalRecords]="totalRecords"
       [resizableColumns]="true"
       columnResizeMode="fit"
       [rowHover]="true"
     >
       <ng-template pTemplate="header" let-columns>
         <tr>
+          <!-- [pSortableColumn]="col.field" -->
           <th
             *ngFor="let col of columns; let c = index"
-            pReorderableColumn
-            [pSortableColumn]="col.field"
             pResizableColumn
             [style.width]="col.width"
           >
             {{ col.header }}
-            <div
+            <!-- <div
               *ngIf="c < columns.length - 3 && c != 0"
               (click)="$event.stopPropagation()"
               class="filter-icon"
@@ -183,10 +189,10 @@
                 (onPanelHide)="hideFilterVisibility(col.field)"
               >
               </p-multiSelect>
-            </div>
+            </div> -->
           </th>
         </tr>
-        <tr class="search-row">
+        <!-- <tr class="search-row">
           <th *ngFor="let col of cols; let c = index" [style.width]="col.width">
             <span
               style="width: 100%"
@@ -202,7 +208,7 @@
               />
             </span>
           </th>
-        </tr>
+        </tr> -->
       </ng-template>
       <ng-template
         pTemplate="body"
@@ -212,7 +218,7 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3) ">
+            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3)">
               <div *ngIf="!(i == 0)" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>

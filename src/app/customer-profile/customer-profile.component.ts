@@ -57,7 +57,7 @@ export class CustomerProfileComponent implements OnInit {
   applicationName = "Casmex Core";
   moduleName = "Remittance";
   pageNumber = "0";
-  pageSize = "0";
+  pageSize = "10";
 
   linkedFormRuleCode: any = [];
   constructor(
@@ -81,88 +81,7 @@ export class CustomerProfileComponent implements OnInit {
     { name: "Corporate", code: "Corporate" },
   ];
 
-  searchCriteriaApiData = [
-    // {
-    //   id: 6,
-    //   applicationName: "Casmex Core",
-    //   formName: "Customer Profile Individual",
-    //   moduleName: "Remittance",
-    //   fieldName: "firstName",
-    //   displayName: "First Name",
-    //   operators: null,
-    //   orderID: 1,
-    //   sqlQueries: null,
-    //   iSMandatory: "N",
-    //   dependency: "N",
-    //   status: "A",
-    //   criteriaType: "text",
-    //   masterDataDependency: null,
-    //   hqlMasterData: null,
-    //   hqlDependency: null,
-    //   hqlDependencyData: null,
-    //   createdDate: null,
-    // },
-    // {
-    //   id: 7,
-    //   applicationName: "Casmex Core",
-    //   formName: "Customer Profile Individual",
-    //   moduleName: "Remittance",
-    //   fieldName: "phoneNumber",
-    //   displayName:"Phone Number",
-    //   operators: null,
-    //   orderID: 2,
-    //   sqlQueries: null,
-    //   iSMandatory: "N",
-    //   dependency: "N",
-    //   status: "A",
-    //   criteriaType: "number",
-    //   masterDataDependency: null,
-    //   hqlMasterData: null,
-    //   hqlDependency: null,
-    //   hqlDependencyData: null,
-    //   createdDate: null,
-    // },
-    // {
-    //   id: 8,
-    //   applicationName: "Casmex Core",
-    //   formName: "Customer Profile Individual",
-    //   moduleName: "Remittance",
-    //   fieldName: "lastName",
-    //   displayName: "Last Name",
-    //   operators: null,
-    //   orderID: 3,
-    //   sqlQueries: null,
-    //   iSMandatory: "N",
-    //   dependency: "N",
-    //   status: "A",
-    //   criteriaType: "text",
-    //   masterDataDependency: null,
-    //   hqlMasterData: null,
-    //   hqlDependency: null,
-    //   hqlDependencyData: null,
-    //   createdDate: null,
-    // },
-    // {
-    //   id: 10,
-    //   applicationName: "Casmex Core",
-    //   formName: "Customer Profile Individual",
-    //   moduleName: "Remittance",
-    //   fieldName: "dateOfBirth",
-    //   displayName: "Date Of Birth",
-    //   operators: null,
-    //   orderID: 4,
-    //   sqlQueries: null,
-    //   iSMandatory: "N",
-    //   dependency: "N",
-    //   status: "A",
-    //   criteriaType: "date",
-    //   masterDataDependency: null,
-    //   hqlMasterData: null,
-    //   hqlDependency: null,
-    //   hqlDependencyData: null,
-    //   createdDate: null,
-    // },
-  ];
+  searchCriteriaApiData = [];
 
   searchCriteriaOptions = [];
   searchCriteria = [];
@@ -201,6 +120,8 @@ export class CustomerProfileComponent implements OnInit {
     { field: "status", header: "Profile Status", width: "8%" },
   ];
 
+  totalRecords = 55;
+
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
@@ -214,6 +135,14 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaMapKey = "id = ";
     this.currentCriteriaKey = "Customer ID = ";
     this.cols = this.colsIND;
+  }
+
+  loadCustomers(e: any) {
+    const pageSize = 10;
+    const pageNumber = e.first ? e.first / +this.pageSize + 1 : 1;
+    console.log("::lazy event", e);
+    console.log("::pageSize", pageSize);
+    console.log("::pageNumber", pageNumber);
   }
 
   getApiDataForsearchCriteria() {
@@ -377,6 +306,7 @@ export class CustomerProfileComponent implements OnInit {
             this.cols = this.colsIND;
             this.customerData = res.data.CmIndividualCustomerDetails;
           }
+          // this.totalRecords = res.data.PaginationDetails.totalCount;
           this.customerCode = res.customerCode?.map((code) => {
             if (code) return { label: code, value: code };
           });
