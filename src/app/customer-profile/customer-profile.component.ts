@@ -57,7 +57,7 @@ export class CustomerProfileComponent implements OnInit {
   applicationName = "Casmex Core";
   moduleName = "Remittance";
   pageNumber = "0";
-  pageSize = "0";
+  pageSize = "10";
 
   linkedFormRuleCode: any = [];
   constructor(
@@ -120,6 +120,8 @@ export class CustomerProfileComponent implements OnInit {
     { field: "status", header: "Profile Status", width: "8%" },
   ];
 
+  totalRecords = 55;
+
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
     this.route.data.subscribe((data) => {
@@ -133,6 +135,14 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaMapKey = "id = ";
     this.currentCriteriaKey = "Customer ID = ";
     this.cols = this.colsIND;
+  }
+
+  loadCustomers(e: any) {
+    const pageSize = 10;
+    const pageNumber = e.first ? e.first / +this.pageSize + 1 : 1;
+    console.log("::lazy event", e);
+    console.log("::pageSize", pageSize);
+    console.log("::pageNumber", pageNumber);
   }
 
   getApiDataForsearchCriteria() {

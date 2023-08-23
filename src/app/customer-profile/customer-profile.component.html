@@ -32,36 +32,40 @@
             "
           >
             <i class="pi pi-search"></i>
-           
+
             <ng-container [ngSwitch]="criteriaType">
               <input
-              style="
-              width: 448px;
-              border-top-left-radius: initial;
-              border-bottom-left-radius: initial;
-            "
-              *ngSwitchCase="'text'"
-              type="text"
-              class="block"
-              pInputText
-              [(ngModel)]="currentCriteriaValue"
-              placeholder="Search"
-            />
-           
-            <p-inputNumber *ngSwitchCase="'number'" [(ngModel)]="currentCriteriaValue" mode="decimal" [useGrouping]="false" placeholder="Search">
-            </p-inputNumber>
-            <p-calendar
-              *ngSwitchCase="'date'"
-              class="block"
-              placeholder="DD/MM/YYYY"
-              dateFormat="dd/mm/yy"
-              [(ngModel)]="currentCriteriaValue"
-              [readonlyInput]="true"
-              [appendTo]="'body'"
-            ></p-calendar>
+                style="
+                  width: 448px;
+                  border-top-left-radius: initial;
+                  border-bottom-left-radius: initial;
+                "
+                *ngSwitchCase="'text'"
+                type="text"
+                class="block"
+                pInputText
+                [(ngModel)]="currentCriteriaValue"
+                placeholder="Search"
+              />
 
+              <p-inputNumber
+                *ngSwitchCase="'number'"
+                [(ngModel)]="currentCriteriaValue"
+                mode="decimal"
+                [useGrouping]="false"
+                placeholder="Search"
+              >
+              </p-inputNumber>
+              <p-calendar
+                *ngSwitchCase="'date'"
+                class="block"
+                placeholder="DD/MM/YYYY"
+                dateFormat="dd/mm/yy"
+                [(ngModel)]="currentCriteriaValue"
+                [readonlyInput]="true"
+                [appendTo]="'body'"
+              ></p-calendar>
             </ng-container>
-            
           </span>
           <button
             pButton
@@ -108,7 +112,7 @@
           <span
             role="button"
             style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
-            (click)="ondeletecriteria(i,criteria)"
+            (click)="ondeletecriteria(i, criteria)"
           >
             <svg
               style="margin-bottom: 4px"
@@ -146,9 +150,8 @@
       <ng-template pTemplate="header" let-columns>
         <tr>
           <th
-            *ngFor="let col of columns; let c = index"
-            pReorderableColumn
-            [pSortableColumn]="col.field"
+          *ngFor="let col of columns; let c = index"
+          [pSortableColumn]="col.field"
             pResizableColumn
             [style.width]="col.width"
           >
@@ -213,7 +216,7 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3) ">
+            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3)">
               <div *ngIf="!(i == 0)" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>
