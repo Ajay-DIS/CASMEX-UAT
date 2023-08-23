@@ -480,8 +480,7 @@ export class CustomerProfileComponent implements OnInit {
     return this[field];
   }
 
-
-  clearCriteria(){
+  clearCriteria() {
     this.criteriaMap = "NA";
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
@@ -491,5 +490,13 @@ export class CustomerProfileComponent implements OnInit {
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
     this.customerFieldType = null;
+  }
+
+  searchByEnter(e: any) {
+    if (this.customerType) {
+      this.searchCustomerMap(this.customerType);
+    } else {
+      this.coreService.showWarningToast("Please select customer type");
+    }
   }
 }

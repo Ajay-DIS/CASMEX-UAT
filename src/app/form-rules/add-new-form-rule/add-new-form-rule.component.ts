@@ -31,7 +31,7 @@ export class AddNewFormRuleComponent implements OnInit {
   userId = "";
   ruleID = "";
   mode = "add";
-  formName = "Form Rules";
+  // formName = "Form Rules";
 
   formRuleCode = "No Data";
   ruleDescription = "";
@@ -75,7 +75,7 @@ export class AddNewFormRuleComponent implements OnInit {
   applyCriteriaDataTableColumns: any[] = [];
 
   cols: any[] = [
-    { field: "fieldName", header: "Field Name", type: "string" },
+    { field: "fieldName", header: "Field Name", type: "string", width: "20%" },
     {
       field: "fieldLabel",
       header: "Field Label",
@@ -133,6 +133,7 @@ export class AddNewFormRuleComponent implements OnInit {
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
+  searchFormOptions: any[] = [];
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
@@ -181,10 +182,18 @@ export class AddNewFormRuleComponent implements OnInit {
         ].map((app) => {
           return { name: app.codeName, code: app.codeName };
         });
+        this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
+          .filter((form) => {
+            return form.criteriaForms.includes("_Form Rules");
+          })
+          .map((form) => {
+            return { name: form.criteriaForms, code: form.criteriaForms };
+          });
         if (
           !(
             this.formRuleService.applicationName ||
-            this.formRuleService.moduleName
+            this.formRuleService.moduleName ||
+            this.formRuleService.formName
           )
         ) {
           if (this.mode != "add") {
@@ -202,9 +211,14 @@ export class AddNewFormRuleComponent implements OnInit {
               name: this.formRuleService.moduleName,
               code: this.formRuleService.moduleName,
             });
+            this.formCtrl.setValue({
+              name: this.formRuleService.formName,
+              code: this.formRuleService.formName,
+            });
             this.appModuleDataPresent = true;
             this.appCtrl.disable();
             this.moduleCtrl.disable();
+            this.formCtrl.disable();
             this.searchAppModule();
           }
         }
@@ -222,6 +236,9 @@ export class AddNewFormRuleComponent implements OnInit {
       modules: new UntypedFormControl({ value: "", disabled: true }, [
         Validators.required,
       ]),
+      forms: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
     });
   }
 
@@ -231,12 +248,22 @@ export class AddNewFormRuleComponent implements OnInit {
   get moduleCtrl() {
     return this.selectAppModule.get("modules");
   }
+  get formCtrl() {
+    return this.selectAppModule.get("forms");
+  }
 
   onAppValueChange() {
     this.showContent = false;
     this.appModuleDataPresent = false;
     this.moduleCtrl.reset();
+    this.formCtrl.reset();
     this.moduleCtrl.enable();
+  }
+  onModValueChange() {
+    this.showContent = false;
+    this.appModuleDataPresent = false;
+    this.formCtrl.reset();
+    this.formCtrl.enable();
   }
 
   searchAppModule() {
@@ -259,7 +286,7 @@ export class AddNewFormRuleComponent implements OnInit {
         operation,
         this.formRuleService.applicationName,
         this.formRuleService.moduleName,
-        this.formName
+        this.formRuleService.formName
       )
       .subscribe(
         (res) => {
@@ -380,7 +407,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
                 if (formatCrt.split("  ")[0] == "LCY Amount") {
                   if (!lcyOprFieldInserted) {
-                    this.applyCriteriaDataTableColumns.unshift({
+                    this.applyCriteriaDataTableColumns.splice(-7, 0, {
                       field: "lcyAmount",
                       header: formatCrt.split("  ")[0],
                       value: formatCrt.split("  ")[1],
@@ -563,13 +590,13 @@ export class AddNewFormRuleComponent implements OnInit {
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
         this.userId,
-        this.formName,
+        this.formCtrl.value.code,
         this.appCtrl.value.code,
         this.moduleCtrl.value.code
       ),
       addFormRuleCriteriaData: this.formRuleService.getAddFormRuleCriteriaData(
         this.userId,
-        this.formName,
+        this.formCtrl.value.code,
         this.appCtrl.value.code,
         this.moduleCtrl.value.code
       ),
@@ -630,7 +657,8 @@ export class AddNewFormRuleComponent implements OnInit {
             if (
               !(
                 this.formRuleService.applicationName ||
-                this.formRuleService.moduleName
+                this.formRuleService.moduleName ||
+                this.formRuleService.formName
               )
             ) {
               this.appModuleDataPresent = false;
@@ -643,7 +671,8 @@ export class AddNewFormRuleComponent implements OnInit {
             if (
               !(
                 this.formRuleService.applicationName ||
-                this.formRuleService.moduleName
+                this.formRuleService.moduleName ||
+                this.formRuleService.formName
               )
             ) {
               this.appModuleDataPresent = false;
@@ -675,7 +704,7 @@ export class AddNewFormRuleComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .getCorrespondentValuesData(
-        this.formName,
+        this.formCtrl.value.code,
         this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
@@ -719,7 +748,7 @@ export class AddNewFormRuleComponent implements OnInit {
     postDataCriteria.append("formRuleCode", this.ruleID);
     postDataCriteria.append("operation", this.mode);
     postDataCriteria.append("applications", this.appCtrl.value.code);
-    postDataCriteria.append("form", this.formName);
+    postDataCriteria.append("form", this.formCtrl.value.code);
     postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isFromRulesLinked && this.mode != "clone") {
@@ -812,7 +841,7 @@ export class AddNewFormRuleComponent implements OnInit {
                         formatCrt.split("  ")[1]
                     );
                     if (!lcyOprFieldInserted) {
-                      this.applyCriteriaDataTableColumns.unshift({
+                      this.applyCriteriaDataTableColumns.splice(-7, 0, {
                         field: "lcyAmount",
                         header: formatCrt.split("  ")[0],
                         value: formatCrt.split("  ")[1],
@@ -992,6 +1021,9 @@ export class AddNewFormRuleComponent implements OnInit {
           }
         },
         (err) => {
+          this.coreService.showWarningToast(
+            "Some error in fetching applied criteria data, please try again"
+          );
           console.log("error in FormRuleCriteriaSearchApi", err);
         }
       )
@@ -1011,7 +1043,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
   saveCriteriaAsTemplate(templateFormData: any) {
     templateFormData.append("applications", this.appCtrl.value.code);
-    templateFormData.append("form", this.formName);
+    templateFormData.append("form", this.formCtrl.value.code);
     templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.formRuleService
@@ -1045,7 +1077,7 @@ export class AddNewFormRuleComponent implements OnInit {
         this.userId,
         this.appCtrl.value.code,
         this.moduleCtrl.value.code,
-        this.formName
+        this.formCtrl.value.code
       )
       .subscribe((response) => {
         if (response.data && response.data.length) {
@@ -1168,14 +1200,14 @@ export class AddNewFormRuleComponent implements OnInit {
             payloadData,
             this.appCtrl.value.code,
             this.moduleCtrl.value.code,
-            this.formName
+            this.formCtrl.value.code
           );
         } else {
           service = this.formRuleService.addNewFormRule(
             payloadData,
             this.appCtrl.value.code,
             this.moduleCtrl.value.code,
-            this.formName
+            this.formCtrl.value.code
           );
         }
 
@@ -1189,6 +1221,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 } else if (action == "saveAndAddNew") {
                   this.formRuleService.applicationName = null;
                   this.formRuleService.moduleName = null;
+                  this.formRuleService.formName = null;
                   this.router.navigate([`navbar/form-rules/addnewformrule`]);
                 }
               }
@@ -1272,6 +1305,8 @@ export class AddNewFormRuleComponent implements OnInit {
           this.appCtrl.reset();
           this.moduleCtrl.reset();
           this.moduleCtrl.disable();
+          this.formCtrl.reset();
+          this.formCtrl.disable();
           this.showContent = false;
           this.appModuleDataPresent = false;
         },
