@@ -451,7 +451,7 @@ export class AddCustomerComponent implements OnInit {
               "criteriaMap",
               "Country = IND;Form = Customer Profile;Customer Type = IND"
             )
-            .set("form", "Form Rules")
+            .set("form", "Customer Profile Individual_Form Rules")
             .set("moduleName", "Remittance")
             .set("applications", "Casmex Core"),
         })

@@ -403,7 +403,7 @@ export class CorporateComponent implements OnInit, OnChanges {
             "criteriaMap",
             "Country = IND;Form = Customer Profile;Customer Type = COR"
           )
-          .set("form", "Form Rules")
+          .set("form", "Customer Profile Corporate_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
       })
