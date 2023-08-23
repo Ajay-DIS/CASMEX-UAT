@@ -67,7 +67,7 @@
       </div>
     </div>
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
-      <div class="d-flex field col-4 md-4">
+      <div class="d-flex field col-3 md-3">
         <label class="detail-page-section-heading" for="application"
           >Application</label
         >
@@ -81,7 +81,7 @@
           (onChange)="onAppValueChange()"
         ></p-dropdown>
       </div>
-      <div class="d-flex field col-4 md-4">
+      <div class="d-flex field col-3 md-3">
         <label class="detail-page-section-heading" for="module">Module</label>
         <p-dropdown
           name="module"
@@ -90,6 +90,18 @@
           placeholder="Select"
           optionLabel="name"
           formControlName="modules"
+          (onChange)="onModValueChange()"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="form">Form</label>
+        <p-dropdown
+          name="form"
+          inputId="form"
+          [options]="searchFormOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="forms"
           (onChange)="searchAppModule()"
         ></p-dropdown>
       </div>

@@ -20,7 +20,7 @@ import {
   styleUrls: ["./form-rule-listing.component.scss"],
 })
 export class FormRuleListingComponent implements OnInit {
-  formName = "Form Rules";
+  // formName = "Form Rules";
 
   formRuleListingData: any = [];
   formRuleData: any = [];
@@ -64,6 +64,7 @@ export class FormRuleListingComponent implements OnInit {
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
+  searchFormOptions: any[] = [];
 
   constructor(
     private router: Router,
@@ -82,6 +83,7 @@ export class FormRuleListingComponent implements OnInit {
     });
     this.formRuleService.applicationName = null;
     this.formRuleService.moduleName = null;
+    this.formRuleService.formName = null;
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setSelectAppModule();
 
@@ -98,6 +100,13 @@ export class FormRuleListingComponent implements OnInit {
         ].map((app) => {
           return { name: app.codeName, code: app.codeName };
         });
+        this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
+          .filter((form) => {
+            return form.criteriaForms.includes("_Form Rules");
+          })
+          .map((form) => {
+            return { name: form.criteriaForms, code: form.criteriaForms };
+          });
       } else {
       }
     });
@@ -111,6 +120,9 @@ export class FormRuleListingComponent implements OnInit {
       modules: new UntypedFormControl({ value: "", disabled: false }, [
         Validators.required,
       ]),
+      forms: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
     });
   }
 
@@ -120,27 +132,36 @@ export class FormRuleListingComponent implements OnInit {
   get moduleCtrl() {
     return this.selectAppModule.get("modules");
   }
+  get formCtrl() {
+    return this.selectAppModule.get("forms");
+  }
 
   searchAppModule() {
     this.getDecodedDataForListing(
       this.userData.userId,
       this.appCtrl.value.code,
-      this.moduleCtrl.value.code
+      this.moduleCtrl.value.code,
+      this.formCtrl.value.code
     );
   }
 
-  getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
+  getDecodedDataForListing(
+    userId: any,
+    appValue: any,
+    moduleValue: any,
+    formValue: any
+  ) {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
         userId,
-        this.formName,
+        formValue,
         appValue,
         moduleValue
       ),
       formRuleListingData: this.formRuleService.getRuleCodeData(
         userId,
-        this.formName,
+        formValue,
         appValue,
         moduleValue
       ),
@@ -232,6 +253,7 @@ export class FormRuleListingComponent implements OnInit {
   viewFormRules(data: any) {
     this.formRuleService.applicationName = this.appCtrl.value.code;
     this.formRuleService.moduleName = this.moduleCtrl.value.code;
+    this.formRuleService.formName = this.formCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",
@@ -312,7 +334,7 @@ export class FormRuleListingComponent implements OnInit {
     formData.append("status", reqStatus);
     formData.append("applications", this.appCtrl.value.code);
     formData.append("moduleName", this.moduleCtrl.value.code);
-    formData.append("form", this.formName);
+    formData.append("form", this.formCtrl.value.code);
     this.updateFormRuleStatus(formData, e.target, data);
   }
 
@@ -330,7 +352,8 @@ export class FormRuleListingComponent implements OnInit {
           this.getDecodedDataForListing(
             this.userData.userId,
             this.appCtrl.value.code,
-            this.moduleCtrl.value.code
+            this.moduleCtrl.value.code,
+            this.formCtrl.value.code
           );
           this.coreService.showSuccessToast(message);
         } else {
@@ -345,6 +368,7 @@ export class FormRuleListingComponent implements OnInit {
   cloneFormRule(data: any) {
     this.formRuleService.applicationName = this.appCtrl.value.code;
     this.formRuleService.moduleName = this.moduleCtrl.value.code;
+    this.formRuleService.formName = this.formCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",

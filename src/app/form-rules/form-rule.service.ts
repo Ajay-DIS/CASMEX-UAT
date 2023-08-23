@@ -9,6 +9,7 @@ export class FormRuleService {
   constructor(private http: HttpClient) {}
   applicationName: any = null;
   moduleName: any = null;
+  formName: any = null;
 
   getRuleCodeData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(`/remittance/formRulesController/getFormRuleList`, {
