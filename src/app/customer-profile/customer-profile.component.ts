@@ -181,6 +181,8 @@ export class CustomerProfileComponent implements OnInit {
     this.criteriaMap = "NA";
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
+    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaMapKey = "id = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
@@ -270,6 +272,9 @@ export class CustomerProfileComponent implements OnInit {
 
     this.getCustomerListData();
     this.currentCriteriaValue = null;
+    this.customerFieldType = null;
+    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaMapKey = "id = ";
   }
 
   getCustomerListData() {
@@ -473,5 +478,18 @@ export class CustomerProfileComponent implements OnInit {
 
   fieldFilterOptions(field: any): [] {
     return this[field];
+  }
+
+
+  clearCriteria(){
+    this.criteriaMap = "NA";
+    this.searchCriteria = [];
+    this.currentCriteriaValue = null;
+    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaMapKey = "id = ";
+    this.searchCriteriaMap = [];
+    this.getApiDataForsearchCriteria();
+    this.getCustomerListData();
+    this.customerFieldType = null;
   }
 }

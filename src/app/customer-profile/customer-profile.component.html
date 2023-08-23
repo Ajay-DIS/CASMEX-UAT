@@ -80,6 +80,7 @@
             pButton
             pRipple
             type="button"
+            (click)="clearCriteria()"
             label="Clear"
             class="p-button-warning ml-2"
           ></button>
@@ -137,28 +138,25 @@
 
   <div class="ptable" *ngIf="showTable">
     <p-table
-      #dt
-      [columns]="cols"
-      [value]="customerData"
-      [lazy]="true"
-      (onLazyLoad)="loadCustomers($event)"
-      [paginator]="true"
-      [rows]="10"
-      [totalRecords]="totalRecords"
-      [resizableColumns]="true"
-      columnResizeMode="fit"
-      [rowHover]="true"
-    >
+    #dt
+    [columns]="cols"
+    [value]="customerData"
+    [paginator]="true"
+    [rows]="10"
+    [resizableColumns]="true"
+    columnResizeMode="fit"
+    [rowHover]="true"
+  >
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <!-- [pSortableColumn]="col.field" -->
           <th
-            *ngFor="let col of columns; let c = index"
+          *ngFor="let col of columns; let c = index"
+          [pSortableColumn]="col.field"
             pResizableColumn
             [style.width]="col.width"
           >
             {{ col.header }}
-            <!-- <div
+            <div
               *ngIf="c < columns.length - 3 && c != 0"
               (click)="$event.stopPropagation()"
               class="filter-icon"
@@ -189,10 +187,10 @@
                 (onPanelHide)="hideFilterVisibility(col.field)"
               >
               </p-multiSelect>
-            </div> -->
+            </div>
           </th>
         </tr>
-        <!-- <tr class="search-row">
+        <tr class="search-row">
           <th *ngFor="let col of cols; let c = index" [style.width]="col.width">
             <span
               style="width: 100%"
@@ -208,7 +206,7 @@
               />
             </span>
           </th>
-        </tr> -->
+        </tr>
       </ng-template>
       <ng-template
         pTemplate="body"
