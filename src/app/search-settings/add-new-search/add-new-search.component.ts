@@ -106,6 +106,18 @@ export class AddNewSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (res["data"]) {
             this.searchApplicationOptions = res["data"][
               "cmApplicationMaster"
@@ -146,11 +158,13 @@ export class AddNewSearchComponent implements OnInit {
             this.appCtrl.disable();
             this.formCtrl.disable();
           }
+        }
         },
         (err) => {
           this.appCtrl.disable();
           this.formCtrl.disable();
           console.log("Error in Criteria App Form List", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {
@@ -228,6 +242,18 @@ export class AddNewSearchComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (res) => {
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ){
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast("Some error in fetching data");
+              }
+            }
+            else {
             if (res["data"]["cmCriteriaOperationsMasters"].length) {
               this.isFieldsQueriesData = true;
               this.fieldsQueriesData =
@@ -255,9 +281,11 @@ export class AddNewSearchComponent implements OnInit {
               this.selectedFields = [];
               this.searchSettingtable = [];
             }
+          }
           },
           (err) => {
             console.log("error in getting fields queries", err);
+            this.coreService.showWarningToast("Some error in fetching data");
           }
         )
         .add(() => {
@@ -307,6 +335,18 @@ export class AddNewSearchComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (res["appForm"] && res["appForm"].length) {
             this.duplicateCriteria = false;
             res["appForm"].forEach((appForm) => {
@@ -343,12 +383,14 @@ export class AddNewSearchComponent implements OnInit {
           } else {
             this.saveCriteriaFields(action);
           }
+        }
         },
         (err) => {
           console.log(
             "error in getting search setting list for checking duplication",
             err
           );
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {
@@ -400,6 +442,18 @@ export class AddNewSearchComponent implements OnInit {
       .postSearchFieldsToSave(data, operation, this.userData.userId)
       .subscribe(
         (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (res["msg"]) {
             if (this.mode == "clone") {
               if (this.duplicateCriteria) {
@@ -437,9 +491,11 @@ export class AddNewSearchComponent implements OnInit {
               ]);
             }
           }
+        }
         },
         (err) => {
           console.log("Error in saving Search setting", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -590,6 +646,18 @@ export class AddNewSearchComponent implements OnInit {
         })
       )
       .subscribe((data) => {
+        if (
+          data["status"] &&
+          typeof data["status"] == "string" &&
+          data["status"] != "200"
+        ){
+          if (data["error"]) {
+            this.coreService.showWarningToast(data["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        }
+        else {
         if (data) {
           this.searchSettingtable = data["settingSearchQueryCriteria"];
           this.searchSettingtable.forEach((item, i) => {
@@ -609,6 +677,7 @@ export class AddNewSearchComponent implements OnInit {
           );
           this.moduleCtrl.setValue(moduleValue);
         }
+      }
       })
       .add(() => {
         if (this.params && this.params.id) {

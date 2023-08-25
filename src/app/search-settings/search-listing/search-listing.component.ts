@@ -99,6 +99,19 @@ export class SearchListingComponent implements OnInit {
       .getSearchSettingListing()
       .subscribe(
         (res) => {
+          this.coreService.removeLoadingScreen();
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           this.searchSettingApiData = res;
           if (res["data"]) {
             this.searchSettingData = res["data"];
@@ -110,10 +123,12 @@ export class SearchListingComponent implements OnInit {
             this.searchSettingData = [];
             this.showNoDataFound = true;
           }
+        }
         },
         (err) => {
           console.log("Error in criterisSettingListing", err);
           this.showNoDataFound = true;
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {
@@ -255,6 +270,10 @@ export class SearchListingComponent implements OnInit {
             this.coreService.showWarningToast(message);
           }
         }
+      },
+      (err) => {
+        this.coreService.showWarningToast("Something went wrong, Please try again later");
+        this.coreService.removeLoadingScreen();
       });
   }
 
