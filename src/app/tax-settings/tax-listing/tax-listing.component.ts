@@ -87,22 +87,40 @@ export class TaxListingComponent implements OnInit {
 
     this.setSelectAppModule();
 
-    this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
-      this.coreService.removeLoadingScreen();
-      if (!res["msg"]) {
-        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
-          (app) => {
-            return { name: app.name, code: app.name };
+    this.taxSettingsService.getTaxSettingAppModuleList().subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
           }
-        );
-        this.searchModuleOptions = res["data"][
-          "cmPrimaryModuleMasterDetails"
-        ].map((app) => {
-          return { name: app.codeName, code: app.codeName };
-        });
-      } else {
+        } else {
+          if (!res["msg"]) {
+            this.searchApplicationOptions = res["data"][
+              "cmApplicationMaster"
+            ].map((app) => {
+              return { name: app.name, code: app.name };
+            });
+            this.searchModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
+            });
+          } else {
+          }
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Some error in fetching data");
       }
-    });
+    );
   }
 
   setSelectAppModule() {
@@ -193,11 +211,24 @@ export class TaxListingComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          if (!res["data"]) {
-            this.showNoDataFound = true;
-          }
           this.coreService.removeLoadingScreen();
           this.loading = false;
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.showNoDataFound = true;
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          } else {
+            if (!res["data"]) {
+              this.showNoDataFound = true;
+            }
+          }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
@@ -205,6 +236,9 @@ export class TaxListingComponent implements OnInit {
           this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting tax seting list data", err);
+          this.coreService.showWarningToast(
+            "Some Error in getting tax seting list data"
+          );
         }
       );
   }
@@ -297,9 +331,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   updateTaxCodeStatus(formData: any, sliderElm: any, taxData: any) {
-    this.taxSettingsService
-      .updateTaxSettingsStatus(formData)
-      .subscribe((res) => {
+    this.taxSettingsService.updateTaxSettingsStatus(formData).subscribe(
+      (res) => {
         let message = "";
         if (res["error"] == "true") {
           this.coreService.removeLoadingScreen();
@@ -321,7 +354,14 @@ export class TaxListingComponent implements OnInit {
             this.coreService.showWarningToast(message);
           }
         }
-      });
+      },
+      (err) => {
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   cloneTax(data: any) {

@@ -84,28 +84,44 @@ export class CriteriaListingComponent implements OnInit {
       .getCriteriaSettingListing()
       .subscribe(
         (res) => {
-          if (!res["msg"]) {
-            this.criteriaSettingApiData = res;
-            this.criteriaSettingData = res["data"];
-            this.showNoDataFound = false;
-            this.formatApiData();
-            this.setFilterOptions();
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
+            }
           } else {
-            this.coreService.showWarningToast(res["msg"]);
-            this.criteriaSettingData = [];
-            this.showNoDataFound = true;
+            if (!res["msg"]) {
+              this.criteriaSettingApiData = res;
+              this.criteriaSettingData = res["data"];
+              this.showNoDataFound = false;
+              this.formatApiData();
+              this.setFilterOptions();
+            } else {
+              this.coreService.showWarningToast(res["msg"]);
+              this.criteriaSettingData = [];
+              this.showNoDataFound = true;
+            }
           }
         },
         (err) => {
           console.log("Error in criterisSettingListing", err);
           this.showNoDataFound = true;
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
         }
       )
       .add(() => {
         this.loading = false;
         this.coreService.removeLoadingScreen();
       });
-
   }
 
   formatApiData() {
