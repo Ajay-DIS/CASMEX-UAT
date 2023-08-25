@@ -122,43 +122,60 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
-          if (res["data"]) {
-            this.criteriaApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.criteriaModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            this.criteriaFormsOptions = res["data"][
-              "cmCriteriaFormsMaster"
-            ].map((app) => {
-              return { name: app.criteriaForms, code: app.criteriaForms };
-            });
-            this.criteriaOperatorsOptions = res["data"][
-              "systemOperatorsMaster"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            const params = this.activatedRoute.snapshot.params;
-            if (params && params.id) {
-              this.isCloneMode = true;
-              this.setCloneCriteriaData(params.id);
-              this.criteriaId = params.id;
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
             }
-          } else if (res["msg"]) {
-            this.coreService.showWarningToast(res["msg"]);
-            this.appCtrl.disable();
-            this.formCtrl.disable();
+          } else {
+            if (res["data"]) {
+              this.criteriaApplicationOptions = res["data"][
+                "cmApplicationMaster"
+              ].map((app) => {
+                return { name: app.name, code: app.name };
+              });
+              this.criteriaModuleOptions = res["data"][
+                "cmPrimaryModuleMasterDetails"
+              ].map((app) => {
+                return { name: app.codeName, code: app.codeName };
+              });
+              this.criteriaFormsOptions = res["data"][
+                "cmCriteriaFormsMaster"
+              ].map((app) => {
+                return { name: app.criteriaForms, code: app.criteriaForms };
+              });
+              this.criteriaOperatorsOptions = res["data"][
+                "systemOperatorsMaster"
+              ].map((app) => {
+                return { name: app.codeName, code: app.codeName };
+              });
+              const params = this.activatedRoute.snapshot.params;
+              if (params && params.id) {
+                this.isCloneMode = true;
+                this.setCloneCriteriaData(params.id);
+                this.criteriaId = params.id;
+              }
+            } else if (res["msg"]) {
+              this.coreService.showWarningToast(res["msg"]);
+              this.appCtrl.disable();
+              this.formCtrl.disable();
+            }
           }
         },
         (err) => {
           this.appCtrl.disable();
           this.formCtrl.disable();
           console.log("Error in Criteria App Form List", err);
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
         }
       )
       .add(() => {
@@ -234,36 +251,53 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (res) => {
-            if (res["data"]) {
-              this.isFieldsQueriesData = true;
-              this.fieldsQueriesData =
-                res["data"]["cmCriteriaOperationsMasters"];
-              this.selectFields = [...this.fieldsQueriesData];
-              this.restoreSelectFields = [...this.fieldsQueriesData];
-              this.selectFields.forEach((item) => {
-                item["operationOption"] = this.criteriaOperatorsOptions.map(
-                  (x) => {
-                    return { label: x.name, code: x.name };
-                  }
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "Something went wrong, Please try again later"
                 );
-                item["orderID"] = "";
-                item["operations"] = "";
-                item["iSMandatory"] =
-                  item["iSMandatory"] == "yes" ? true : false;
-                item["dependencyOptions"] = item.dependency
-                  ?.split(",")
-                  .map((x) => {
-                    return { label: x, code: x };
-                  });
-                item["dependency"] = "";
-              });
-            } else if (res["msg"]) {
-              this.isFieldsQueriesData = false;
-              this.coreService.showWarningToast(res["msg"]);
+              }
+            } else {
+              if (res["data"]) {
+                this.isFieldsQueriesData = true;
+                this.fieldsQueriesData =
+                  res["data"]["cmCriteriaOperationsMasters"];
+                this.selectFields = [...this.fieldsQueriesData];
+                this.restoreSelectFields = [...this.fieldsQueriesData];
+                this.selectFields.forEach((item) => {
+                  item["operationOption"] = this.criteriaOperatorsOptions.map(
+                    (x) => {
+                      return { label: x.name, code: x.name };
+                    }
+                  );
+                  item["orderID"] = "";
+                  item["operations"] = "";
+                  item["iSMandatory"] =
+                    item["iSMandatory"] == "yes" ? true : false;
+                  item["dependencyOptions"] = item.dependency
+                    ?.split(",")
+                    .map((x) => {
+                      return { label: x, code: x };
+                    });
+                  item["dependency"] = "";
+                });
+              } else if (res["msg"]) {
+                this.isFieldsQueriesData = false;
+                this.coreService.showWarningToast(res["msg"]);
+              }
             }
           },
           (err) => {
             console.log("error in getting fields queries", err);
+            this.coreService.showWarningToast(
+              "Something went wrong, Please try again later"
+            );
           }
         )
         .add(() => {
@@ -333,43 +367,60 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .pipe(take(1))
       .subscribe(
         (res) => {
-          if (res["appForm"] && res["appForm"].length) {
-            this.duplicateCriteria = false;
-            res["appForm"].forEach((appForm) => {
-              let app = appForm.split(":")[0];
-              let form = appForm.split(":")[1];
-              let module = appForm.split(":")[2];
-              if (
-                this.appCtrl.value.name == app &&
-                this.formCtrl.value.name == form &&
-                this.moduleCtrl.value.name == module &&
-                !this.duplicateCriteria
-              ) {
-                this.duplicateCriteria = true;
-                this.confirmationService.confirm({
-                  message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
-                  accept: () => {
-                    this.saveCriteriaFields(action);
-                  },
-                  reject: () => {
-                    this.coreService.showWarningToast(
-                      "Criteria saving revoked"
-                    );
-                  },
-                });
-              }
-            });
-            if (!this.duplicateCriteria) {
-              this.saveCriteriaFields(action);
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
             }
           } else {
-            this.saveCriteriaFields(action);
+            if (res["appForm"] && res["appForm"].length) {
+              this.duplicateCriteria = false;
+              res["appForm"].forEach((appForm) => {
+                let app = appForm.split(":")[0];
+                let form = appForm.split(":")[1];
+                let module = appForm.split(":")[2];
+                if (
+                  this.appCtrl.value.name == app &&
+                  this.formCtrl.value.name == form &&
+                  this.moduleCtrl.value.name == module &&
+                  !this.duplicateCriteria
+                ) {
+                  this.duplicateCriteria = true;
+                  this.confirmationService.confirm({
+                    message: `Criteria for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
+                    accept: () => {
+                      this.saveCriteriaFields(action);
+                    },
+                    reject: () => {
+                      this.coreService.showWarningToast(
+                        "Criteria saving revoked"
+                      );
+                    },
+                  });
+                }
+              });
+              if (!this.duplicateCriteria) {
+                this.saveCriteriaFields(action);
+              }
+            } else {
+              this.saveCriteriaFields(action);
+            }
           }
         },
         (err) => {
           console.log(
             "error in getting criteria list for checking duplication",
             err
+          );
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
           );
         }
       )
@@ -416,46 +467,63 @@ export class CriteriaSettingsDetailComponent implements OnInit {
 
     this.criteriaSettingsService.postCriteriaFieldsToSave(data).subscribe(
       (res) => {
-        if (res["msg"]) {
-          if (this.mode == "clone") {
-            if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast(
-                "Criteria Details updated Sucessfully."
-              );
-            } else {
-              this.coreService.showSuccessToast(
-                "Criteria Clone created Sucessfully."
-              );
-            }
-          }
-          if (this.mode == "add") {
-            if (this.duplicateCriteria) {
-              this.coreService.showSuccessToast(
-                "Criteria Details updated Sucessfully."
-              );
-            } else {
-              this.coreService.showSuccessToast(
-                "New criteria added Sucessfully."
-              );
-            }
-          }
-
-          if (this.mode == "edit") {
-            this.coreService.showSuccessToast(
-              "Criteria Details updated Sucessfully."
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast(
+              "Something went wrong, Please try again later"
             );
           }
-          if (action == "save") {
-            this.router.navigate([`navbar/criteria-settings`]);
-          } else if (action == "saveAddNew") {
-            this.router.navigate([
-              `navbar/criteria-settings/add-criteria-settings/add`,
-            ]);
+        } else {
+          if (res["msg"]) {
+            if (this.mode == "clone") {
+              if (this.duplicateCriteria) {
+                this.coreService.showSuccessToast(
+                  "Criteria Details updated Sucessfully."
+                );
+              } else {
+                this.coreService.showSuccessToast(
+                  "Criteria Clone created Sucessfully."
+                );
+              }
+            }
+            if (this.mode == "add") {
+              if (this.duplicateCriteria) {
+                this.coreService.showSuccessToast(
+                  "Criteria Details updated Sucessfully."
+                );
+              } else {
+                this.coreService.showSuccessToast(
+                  "New criteria added Sucessfully."
+                );
+              }
+            }
+
+            if (this.mode == "edit") {
+              this.coreService.showSuccessToast(
+                "Criteria Details updated Sucessfully."
+              );
+            }
+            if (action == "save") {
+              this.router.navigate([`navbar/criteria-settings`]);
+            } else if (action == "saveAddNew") {
+              this.router.navigate([
+                `navbar/criteria-settings/add-criteria-settings/add`,
+              ]);
+            }
           }
         }
       },
       (err) => {
         console.log("Error in saving criteria", err);
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
       }
     );
   }
@@ -532,7 +600,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     } else if (emptydependency) {
       this.coreService.showWarningToast("Dependency is required.");
     } else {
-
       if (this.mode == "edit") {
         this.saveCriteriaFields(action);
       } else {
@@ -610,27 +677,49 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           return cloneCriteriaData;
         })
       )
-      .subscribe((data) => {
-        this.criteriaSettingtable = data["cmCriteriaDataDetails"];
-        this.criteriaSettingtable.forEach((item, i) => {
-          item["operations"] = this.criteriaSettingtable[i]["operations"];
-          item["dependency"] = this.criteriaSettingtable[i]["dependency"];
-          item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
-        });
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            console.log("df", res);
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
+            }
+          } else {
+            this.criteriaSettingtable = res["cmCriteriaDataDetails"];
+            this.criteriaSettingtable.forEach((item, i) => {
+              item["operations"] = this.criteriaSettingtable[i]["operations"];
+              item["dependency"] = this.criteriaSettingtable[i]["dependency"];
+              item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
+            });
 
-        const appValue = this.criteriaApplicationOptions.find(
-          (value) => value.code === data["applications"]
-        );
-        this.appCtrl.setValue(appValue);
-        const formValue = this.criteriaFormsOptions.find(
-          (value) => value.code === data["form"]
-        );
-        this.formCtrl.setValue(formValue);
-        const moduleValue = this.criteriaModuleOptions.find(
-          (value) => value.code === data["moduleName"]
-        );
-        this.moduleCtrl.setValue(moduleValue);
-      })
+            const appValue = this.criteriaApplicationOptions.find(
+              (value) => value.code === res["applications"]
+            );
+            this.appCtrl.setValue(appValue);
+            const formValue = this.criteriaFormsOptions.find(
+              (value) => value.code === res["form"]
+            );
+            this.formCtrl.setValue(formValue);
+            const moduleValue = this.criteriaModuleOptions.find(
+              (value) => value.code === res["moduleName"]
+            );
+            this.moduleCtrl.setValue(moduleValue);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
+        }
+      )
       .add(() => {
         if (this.params && this.params.id) {
           this.coreService.removeLoadingScreen();

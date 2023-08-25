@@ -114,48 +114,67 @@ export class AddNewTaxComponent implements OnInit {
       );
       this.taxID = params.id;
     }
-    this.taxSettingsService.getTaxSettingAppModuleList().subscribe((res) => {
-      if (!res["msg"]) {
-        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
-          (app) => {
-            return { name: app.name, code: app.name };
-          }
-        );
-        this.searchModuleOptions = res["data"][
-          "cmPrimaryModuleMasterDetails"
-        ].map((app) => {
-          return { name: app.codeName, code: app.codeName };
-        });
+    this.taxSettingsService.getTaxSettingAppModuleList().subscribe(
+      (res) => {
         if (
-          !(
-            this.taxSettingsService.applicationName ||
-            this.taxSettingsService.moduleName
-          )
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
         ) {
-          if (this.mode != "add") {
-            this.router.navigate([`navbar/tax-settings`]);
+          this.coreService.removeLoadingScreen();
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
           } else {
-            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast("Some error in fetching data");
           }
         } else {
-          if (this.mode != "add") {
-            this.appCtrl.setValue({
-              name: this.taxSettingsService.applicationName,
-              code: this.taxSettingsService.applicationName,
+          if (!res["msg"]) {
+            this.searchApplicationOptions = res["data"][
+              "cmApplicationMaster"
+            ].map((app) => {
+              return { name: app.name, code: app.name };
             });
-            this.moduleCtrl.setValue({
-              name: this.taxSettingsService.moduleName,
-              code: this.taxSettingsService.moduleName,
+            this.searchModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
             });
-            this.appModuleDataPresent = true;
-            this.appCtrl.disable();
-            this.moduleCtrl.disable();
-            this.searchAppModule();
+            if (
+              !(
+                this.taxSettingsService.applicationName ||
+                this.taxSettingsService.moduleName
+              )
+            ) {
+              if (this.mode != "add") {
+                this.router.navigate([`navbar/tax-settings`]);
+              } else {
+                this.coreService.removeLoadingScreen();
+              }
+            } else {
+              if (this.mode != "add") {
+                this.appCtrl.setValue({
+                  name: this.taxSettingsService.applicationName,
+                  code: this.taxSettingsService.applicationName,
+                });
+                this.moduleCtrl.setValue({
+                  name: this.taxSettingsService.moduleName,
+                  code: this.taxSettingsService.moduleName,
+                });
+                this.appModuleDataPresent = true;
+                this.appCtrl.disable();
+                this.moduleCtrl.disable();
+                this.searchAppModule();
+              }
+            }
+          } else {
           }
         }
-      } else {
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Some error in fetching data");
       }
-    });
+    );
   }
   setSelectAppModule() {
     this.selectAppModule = this.fb.group({
@@ -206,51 +225,71 @@ export class AddNewTaxComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.coreService.removeLoadingScreen();
-          this.appModuleDataPresent = true;
-          if (!res["msg"]) {
-            this.editTaxSettingApiData = res;
-
-            this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-              this.editTaxSettingApiData
-            );
-
-            this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
-              this.criteriaCodeText,
-              this.criteriaMasterData,
-              this.cmCriteriaSlabType
-            );
-
-            this.taxCode = res["data"][0]["taxCode"];
-            if (res["data"][0]["taxCodeDesc"]) {
-              this.taxDescription = res["data"][0]["taxCodeDesc"];
-            }
-            this.isTaxSettingLinked = !res["criteriaUpdate"];
-
-            this.appliedCriteriaDataOrg = [...res["data"]];
-            this.appliedCriteriaData = [...res["data"]];
-            this.setSelectedOptions();
-            this.appliedCriteriaData.forEach((element) => {
-              element["invalidTaxAmount"] = false;
-            });
-            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-            this.appliedCriteriaDataCols = [...this.getColumns(res["column"])];
-            this.showContent = true;
-          } else {
-            this.coreService.showWarningToast(res["msg"]);
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
             this.showContent = false;
-            if (res["msg"].includes("No active")) {
-              this.inactiveData = true;
-              this.setCriteriaSharedComponent.criteriaCtrl.disable();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
             }
-            this.appliedCriteriaData = [];
-            this.appliedCriteriaDataCols = [];
+          } else {
+            this.coreService.removeLoadingScreen();
+            this.appModuleDataPresent = true;
+            if (!res["msg"]) {
+              this.editTaxSettingApiData = res;
+
+              this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+                this.editTaxSettingApiData
+              );
+
+              this.criteriaText =
+                this.setCriteriaService.decodeFormattedCriteria(
+                  this.criteriaCodeText,
+                  this.criteriaMasterData,
+                  this.cmCriteriaSlabType
+                );
+
+              this.taxCode = res["data"][0]["taxCode"];
+              if (res["data"][0]["taxCodeDesc"]) {
+                this.taxDescription = res["data"][0]["taxCodeDesc"];
+              }
+              this.isTaxSettingLinked = !res["criteriaUpdate"];
+
+              this.appliedCriteriaDataOrg = [...res["data"]];
+              this.appliedCriteriaData = [...res["data"]];
+              this.setSelectedOptions();
+              this.appliedCriteriaData.forEach((element) => {
+                element["invalidTaxAmount"] = false;
+              });
+              this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+              this.appliedCriteriaDataCols = [
+                ...this.getColumns(res["column"]),
+              ];
+              this.showContent = true;
+            } else {
+              this.coreService.showWarningToast(res["msg"]);
+              this.showContent = false;
+              if (res["msg"].includes("No active")) {
+                this.inactiveData = true;
+                this.setCriteriaSharedComponent.criteriaCtrl.disable();
+              }
+              this.appliedCriteriaData = [];
+              this.appliedCriteriaDataCols = [];
+            }
           }
         },
         (err) => {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in getTaxSettingForEditApi", err);
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
         }
       );
   }
@@ -323,42 +362,57 @@ export class AddNewTaxComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.criteriaMasterData = res;
-          if (this.mode == "edit") {
-            if (
-              !(
-                this.taxSettingsService.applicationName ||
-                this.taxSettingsService.moduleName
-              )
-            ) {
-              this.appModuleDataPresent = false;
-              this.showContent = false;
-              this.router.navigate([`navbar/tax-settings`]);
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            this.showContent = false;
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
             } else {
-              this.getTaxSettingForEditApi(this.taxID, "edit");
-            }
-          } else if (this.mode == "clone") {
-            if (
-              !(
-                this.taxSettingsService.applicationName ||
-                this.taxSettingsService.moduleName
-              )
-            ) {
-              this.appModuleDataPresent = false;
-              this.showContent = false;
-              this.router.navigate([`navbar/tax-settings`]);
-            } else {
-              this.getTaxSettingForEditApi(this.taxID, "clone");
+              this.coreService.showWarningToast("Some error in fetching data");
             }
           } else {
-            this.showContent = true;
-            this.coreService.removeLoadingScreen();
+            this.criteriaMasterData = res;
+            if (this.mode == "edit") {
+              if (
+                !(
+                  this.taxSettingsService.applicationName ||
+                  this.taxSettingsService.moduleName
+                )
+              ) {
+                this.appModuleDataPresent = false;
+                this.showContent = false;
+                this.router.navigate([`navbar/tax-settings`]);
+              } else {
+                this.getTaxSettingForEditApi(this.taxID, "edit");
+              }
+            } else if (this.mode == "clone") {
+              if (
+                !(
+                  this.taxSettingsService.applicationName ||
+                  this.taxSettingsService.moduleName
+                )
+              ) {
+                this.appModuleDataPresent = false;
+                this.showContent = false;
+                this.router.navigate([`navbar/tax-settings`]);
+              } else {
+                this.getTaxSettingForEditApi(this.taxID, "clone");
+              }
+            } else {
+              this.showContent = true;
+              this.coreService.removeLoadingScreen();
+            }
           }
         },
         (err) => {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -385,28 +439,42 @@ export class AddNewTaxComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res[fieldName]) {
-            this.setCriteriaSharedComponent.valueCtrl.enable();
-            this.setCriteriaSharedComponent.hideValuesDropdown = false;
-            this.setCriteriaSharedComponent.showValueInput = false;
-
-            this.correspondentDdlOptions = res[fieldName].map((val) => {
-              return { name: val["codeName"], code: val["code"] };
-            });
-          } else {
-            if (res["message"]) {
-              this.coreService.showWarningToast(res["message"]);
-              this.resetCriteriaDropdowns();
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
             } else {
-              this.coreService.showWarningToast("Criteria Map is not proper");
-              this.resetCriteriaDropdowns();
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          } else {
+            this.coreService.removeLoadingScreen();
+            if (res[fieldName]) {
+              this.setCriteriaSharedComponent.valueCtrl.enable();
+              this.setCriteriaSharedComponent.hideValuesDropdown = false;
+              this.setCriteriaSharedComponent.showValueInput = false;
+
+              this.correspondentDdlOptions = res[fieldName].map((val) => {
+                return { name: val["codeName"], code: val["code"] };
+              });
+            } else {
+              if (res["message"]) {
+                this.coreService.showWarningToast(res["message"]);
+                this.resetCriteriaDropdowns();
+              } else {
+                this.coreService.showWarningToast("Criteria Map is not proper");
+                this.resetCriteriaDropdowns();
+              }
             }
           }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
           console.log("Error in getting values", err);
+          this.coreService.showWarningToast("Some error in fetching data");
           this.resetCriteriaDropdowns();
         }
       );
@@ -449,10 +517,21 @@ export class AddNewTaxComponent implements OnInit {
     this.appliedCriteriaData = [];
     this.appliedCriteriaDataCols = [];
     this.coreService.displayLoadingScreen();
-    this.taxSettingsService
-      .postTaxCriteriaSearch(formData)
-      .subscribe(
-        (res) => {
+    this.taxSettingsService.postTaxCriteriaSearch(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          this.coreService.removeLoadingScreen();
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          this.coreService.removeLoadingScreen();
           if (!res["msg"]) {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
@@ -483,16 +562,14 @@ export class AddNewTaxComponent implements OnInit {
 
             this.appliedCriteriaData = [];
           }
-        },
-        (err) => {
-          console.log("error in BankCriteriaSearchApi", err);
         }
-      )
-      .add(() => {
-        setTimeout(() => {
-          this.coreService.removeLoadingScreen();
-        }, 250);
-      });
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        console.log("error in BankCriteriaSearchApi", err);
+        this.coreService.showWarningToast("Some error in fetching data");
+      }
+    );
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
@@ -503,24 +580,40 @@ export class AddNewTaxComponent implements OnInit {
     this.taxSettingsService
       .currentCriteriaSaveAsTemplate(templateFormData)
       .subscribe(
-        (response) => {
-          this.coreService.removeLoadingScreen();
-          if (response.msg == "Criteria Template already exists.") {
-            this.savingCriteriaTemplateError =
-              "Criteria Template already exists.";
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Some error in saving template"
+              );
+            }
           } else {
-            this.savingCriteriaTemplateError = null;
-            this.setCriteriaSharedComponent.selectedTemplate =
-              this.setCriteriaSharedComponent.criteriaName;
-            this.coreService.showSuccessToast(response.msg);
-            this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
-            this.setCriteriaSharedComponent.criteriaName = "";
-            this.getAllTemplates();
+            this.coreService.removeLoadingScreen();
+            if (res.msg == "Criteria Template already exists.") {
+              this.savingCriteriaTemplateError =
+                "Criteria Template already exists.";
+            } else {
+              this.savingCriteriaTemplateError = null;
+              this.setCriteriaSharedComponent.selectedTemplate =
+                this.setCriteriaSharedComponent.criteriaName;
+              this.coreService.showSuccessToast(res.msg);
+              this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
+              this.setCriteriaSharedComponent.criteriaName = "";
+              this.getAllTemplates();
+            }
           }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
           console.log(":: Error in saving criteria template", err);
+          this.coreService.showWarningToast("Some error in saving template");
         }
       );
   }
@@ -533,17 +626,39 @@ export class AddNewTaxComponent implements OnInit {
         this.moduleCtrl.value.code,
         this.formName
       )
-      .subscribe((response) => {
-        if (response.data && response.data.length) {
-          this.criteriaTemplatesDdlOptions = response.data;
-          this.criteriaTemplatesDdlOptions.forEach((val) => {
-            val["name"] = val["criteriaName"];
-            val["code"] = val["criteriaName"];
-          });
-        } else {
-          console.log(response.msg);
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Some error in saving template"
+              );
+            }
+          } else {
+            if (res.data && res.data.length) {
+              this.criteriaTemplatesDdlOptions = res.data;
+              this.criteriaTemplatesDdlOptions.forEach((val) => {
+                val["name"] = val["criteriaName"];
+                val["code"] = val["criteriaName"];
+              });
+            } else {
+              console.log(res.msg);
+            }
+          }
+        },
+        (err) => {
+          console.log(":: Error in getting template list", err);
+          this.coreService.showWarningToast(
+            "Some error in getting template list"
+          );
         }
-      });
+      );
   }
 
   saveAddNewTax(action) {
@@ -619,20 +734,37 @@ export class AddNewTaxComponent implements OnInit {
         if (service) {
           service.subscribe(
             (res) => {
-              if (res["msg"]) {
-                this.coreService.showSuccessToast(res.msg);
-                if (action == "save") {
-                  this.router.navigate([`navbar/tax-settings`]);
-                } else if (action == "saveAndAddNew") {
-                  this.taxSettingsService.applicationName = null;
-                  this.taxSettingsService.moduleName = null;
-                  this.router.navigate([`navbar/tax-settings/add-tax`]);
+              if (
+                res["status"] &&
+                typeof res["status"] == "string" &&
+                (res["status"] == "400" || res["status"] == "500")
+              ) {
+                if (res["error"]) {
+                  this.coreService.showWarningToast(res["error"]);
+                } else {
+                  this.coreService.showWarningToast(
+                    "Something went wrong, Please try again later"
+                  );
+                }
+              } else {
+                if (res["msg"]) {
+                  this.coreService.showSuccessToast(res.msg);
+                  if (action == "save") {
+                    this.router.navigate([`navbar/tax-settings`]);
+                  } else if (action == "saveAndAddNew") {
+                    this.taxSettingsService.applicationName = null;
+                    this.taxSettingsService.moduleName = null;
+                    this.router.navigate([`navbar/tax-settings/add-tax`]);
+                  }
                 }
               }
             },
             (err) => {
               this.coreService.removeLoadingScreen();
               console.log("error in saveAddNewTax", err);
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
             }
           );
         }

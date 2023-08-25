@@ -87,29 +87,47 @@ export class FormRuleListingComponent implements OnInit {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setSelectAppModule();
 
-    this.formRuleService.getFormRulesAppModuleList().subscribe((res) => {
-      this.coreService.removeLoadingScreen();
-      if (!res["msg"]) {
-        this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
-          (app) => {
-            return { name: app.name, code: app.name };
+    this.formRuleService.getFormRulesAppModuleList().subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
           }
-        );
-        this.searchModuleOptions = res["data"][
-          "cmPrimaryModuleMasterDetails"
-        ].map((app) => {
-          return { name: app.codeName, code: app.codeName };
-        });
-        this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
-          .filter((form) => {
-            return form.criteriaForms.includes("_Form Rules");
-          })
-          .map((form) => {
-            return { name: form.criteriaForms, code: form.criteriaForms };
-          });
-      } else {
+        } else {
+          if (!res["msg"]) {
+            this.searchApplicationOptions = res["data"][
+              "cmApplicationMaster"
+            ].map((app) => {
+              return { name: app.name, code: app.name };
+            });
+            this.searchModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
+            });
+            this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
+              .filter((form) => {
+                return form.criteriaForms.includes("_Form Rules");
+              })
+              .map((form) => {
+                return { name: form.criteriaForms, code: form.criteriaForms };
+              });
+          } else {
+          }
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Some error in fetching data");
       }
-    });
+    );
   }
 
   setSelectAppModule() {
@@ -234,11 +252,24 @@ export class FormRuleListingComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          if (!res["data"]) {
-            this.showNoDataFound = true;
-          }
           this.coreService.removeLoadingScreen();
           this.loading = false;
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.showNoDataFound = true;
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          } else {
+            if (!res["data"]) {
+              this.showNoDataFound = true;
+            }
+          }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
@@ -246,6 +277,9 @@ export class FormRuleListingComponent implements OnInit {
           this.loading = false;
           this.showNoDataFound = true;
           console.log("Error in getting form rule list data", err);
+          this.coreService.showWarningToast(
+            "Some Error in getting form rule list data"
+          );
         }
       );
   }
@@ -339,30 +373,38 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   updateFormRuleStatus(formData: any, sliderElm: any, ruleData: any) {
-    this.formRuleService.updateFormRuleStatus(formData).subscribe((res) => {
-      let message = "";
-      if (res["error"] == "true") {
-        this.coreService.removeLoadingScreen();
-        message = `Kindly deactivate the Rule code: ${res["msg"]} ( ${ruleData["criteriaMap"]} ) to activate the current record.`;
-        this.coreService.showWarningToast(message);
-      } else {
-        if (res["msg"]) {
-          message = res["msg"];
-          sliderElm.checked = sliderElm!.checked;
-          this.getDecodedDataForListing(
-            this.userData.userId,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
-            this.formCtrl.value.code
-          );
-          this.coreService.showSuccessToast(message);
-        } else {
+    this.formRuleService.updateFormRuleStatus(formData).subscribe(
+      (res) => {
+        let message = "";
+        if (res["error"] == "true") {
           this.coreService.removeLoadingScreen();
-          message = "Something went wrong, Please try again later";
+          message = `Kindly deactivate the Rule code: ${res["msg"]} ( ${ruleData["criteriaMap"]} ) to activate the current record.`;
           this.coreService.showWarningToast(message);
+        } else {
+          if (res["msg"]) {
+            message = res["msg"];
+            sliderElm.checked = sliderElm!.checked;
+            this.getDecodedDataForListing(
+              this.userData.userId,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formCtrl.value.code
+            );
+            this.coreService.showSuccessToast(message);
+          } else {
+            this.coreService.removeLoadingScreen();
+            message = "Something went wrong, Please try again later";
+            this.coreService.showWarningToast(message);
+          }
         }
+      },
+      (err) => {
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
+        this.coreService.removeLoadingScreen();
       }
-    });
+    );
   }
 
   cloneFormRule(data: any) {
