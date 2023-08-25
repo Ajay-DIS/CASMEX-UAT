@@ -112,6 +112,14 @@ export class AddnewrouteComponent2 implements OnInit {
     }
 
     this.bankRoutingService.getBanksRoutingAppModuleList().subscribe((res) => {
+      if(res["status"] && typeof res["status"] == "string" && (res["status"] == "400" || res["status"] == "500")){
+        if (res["error"]) {
+          this.coreService.showWarningToast(res["error"]);
+        } else {
+          this.coreService.showWarningToast("Some error in fetching data");
+        }
+      }
+      else {
       if (!res["msg"]) {
         this.searchApplicationOptions = res["data"]["cmApplicationMaster"].map(
           (app) => {
@@ -152,7 +160,13 @@ export class AddnewrouteComponent2 implements OnInit {
         }
       } else {
       }
-    });
+    }
+    },
+    (err) => {
+      this.coreService.removeLoadingScreen();
+      this.coreService.showWarningToast("Some error in fetching data");
+    }
+  );
   }
 
   setSelectAppModule() {
@@ -205,6 +219,18 @@ export class AddnewrouteComponent2 implements OnInit {
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           this.appModuleDataPresent = true;
           if (!res["msg"]) {
             this.editBankRouteApiData = res;
@@ -241,11 +267,13 @@ export class AddnewrouteComponent2 implements OnInit {
             this.appliedCriteriaData = [];
             this.appliedCriteriaDataCols = [];
           }
+        }
         },
         (err) => {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in getBanksRoutingForEditApi", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -318,6 +346,18 @@ export class AddnewrouteComponent2 implements OnInit {
       )
       .subscribe(
         (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           this.criteriaMasterData = res;
           if (this.mode == "edit") {
             if (
@@ -349,11 +389,13 @@ export class AddnewrouteComponent2 implements OnInit {
             this.showContent = true;
             this.coreService.removeLoadingScreen();
           }
+        }
         },
         (err) => {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in Initiating dropdown values", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -383,6 +425,18 @@ export class AddnewrouteComponent2 implements OnInit {
       .subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (res[fieldName]) {
             this.setCriteriaSharedComponent.valueCtrl.enable();
             this.setCriteriaSharedComponent.hideValuesDropdown = false;
@@ -400,11 +454,13 @@ export class AddnewrouteComponent2 implements OnInit {
               this.resetCriteriaDropdowns();
             }
           }
+        }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
           console.log("Error in getting values", err);
           this.resetCriteriaDropdowns();
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -450,6 +506,18 @@ export class AddnewrouteComponent2 implements OnInit {
       .postRouteBankCriteriaSearch(formData)
       .subscribe(
         (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (!res["msg"]) {
             if (!res["duplicate"]) {
               this.appliedCriteriaDataOrg = [...res["data"]];
@@ -476,9 +544,11 @@ export class AddnewrouteComponent2 implements OnInit {
             this.coreService.showWarningToast(res["msg"]);
             this.appliedCriteriaData = [];
           }
+        }
         },
         (err) => {
           console.log("error in BankCriteriaSearchApi", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {
@@ -498,6 +568,18 @@ export class AddnewrouteComponent2 implements OnInit {
       .subscribe(
         (response) => {
           this.coreService.removeLoadingScreen();
+          if (
+            response["status"] &&
+            typeof response["status"] == "string" &&
+            response["status"] != "200"
+          ){
+            if (response["error"]) {
+              this.coreService.showWarningToast(response["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
           if (response.msg == "Criteria Template already exists.") {
             this.savingCriteriaTemplateError =
               "Criteria Template already exists.";
@@ -510,10 +592,12 @@ export class AddnewrouteComponent2 implements OnInit {
             this.setCriteriaSharedComponent.criteriaName = "";
             this.getAllTemplates();
           }
+        }
         },
         (err) => {
           this.coreService.removeLoadingScreen();
           console.log(":: Error in saving criteria template", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -527,6 +611,18 @@ export class AddnewrouteComponent2 implements OnInit {
         this.formName
       )
       .subscribe((response) => {
+        if (
+          response["status"] &&
+          typeof response["status"] == "string" &&
+          response["status"] != "200"
+        ){
+          if (response["error"]) {
+            this.coreService.showWarningToast(response["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        }
+        else {
         if (response.data && response.data.length) {
           this.criteriaTemplatesDdlOptions = response.data;
           this.criteriaTemplatesDdlOptions.forEach((val) => {
@@ -536,7 +632,9 @@ export class AddnewrouteComponent2 implements OnInit {
         } else {
           console.log(response.msg);
         }
-      });
+      }
+      }
+      );
   }
 
   getColumns(colData: any) {
@@ -732,6 +830,18 @@ export class AddnewrouteComponent2 implements OnInit {
         if (service) {
           service.subscribe(
             (res) => {
+              if (
+                res["status"] &&
+                typeof res["status"] == "string" &&
+                (res["status"] == "400" || res["status"] == "500")
+              ){
+                if (res["error"]) {
+                  this.coreService.showWarningToast(res["error"]);
+                } else {
+                  this.coreService.showWarningToast("Some error in fetching data");
+                }
+              }
+              else {
               if (res["msg"]) {
                 this.coreService.showSuccessToast(res.msg);
                 if (action == "save") {
@@ -742,10 +852,12 @@ export class AddnewrouteComponent2 implements OnInit {
                   this.router.navigate([`navbar/bank-routing/addnewroute`]);
                 }
               }
+            }
             },
             (err) => {
               this.coreService.removeLoadingScreen();
               console.log("error in saveAddNewRoute", err);
+              this.coreService.showWarningToast("Some error in fetching save");
             }
           );
         }

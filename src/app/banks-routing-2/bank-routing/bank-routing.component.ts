@@ -109,22 +109,36 @@ export class BankRoutingComponent2 implements OnInit {
     this.bankRoutingService.getBanksRoutingAppModuleList().subscribe(
       (res) => {
         this.coreService.removeLoadingScreen();
-        if (!res["msg"]) {
-          this.searchApplicationOptions = res["data"][
-            "cmApplicationMaster"
-          ].map((app) => {
-            return { name: app.name, code: app.name };
-          });
-          this.searchModuleOptions = res["data"][
-            "cmPrimaryModuleMasterDetails"
-          ].map((app) => {
-            return { name: app.codeName, code: app.codeName };
-          });
-        } else {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ){
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        }
+        else {
+          if (!res["msg"]) {
+            this.searchApplicationOptions = res["data"][
+              "cmApplicationMaster"
+            ].map((app) => {
+              return { name: app.name, code: app.name };
+            });
+            this.searchModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
+            });
+          } else {
+          }
         }
       },
       (err) => {
         this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Some error in fetching data");
       }
     );
   }
@@ -218,8 +232,17 @@ export class BankRoutingComponent2 implements OnInit {
       )
       .subscribe(
         (res) => {
-          if (!res["data"]) {
-            this.showNoDataFound = true;
+          if(res["status"] && typeof res["status"] == "string" && (res["status"] == "400" || res["status"] == "500")){
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          }
+          else {
+            if (!res["data"]) {
+              this.showNoDataFound = true;
+            }
           }
           this.coreService.removeLoadingScreen();
           this.loading = false;
@@ -230,6 +253,7 @@ export class BankRoutingComponent2 implements OnInit {
           this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting bank routing list data", err);
+          this.coreService.showWarningToast("Some error in fetching data");
         }
       );
   }
@@ -331,6 +355,14 @@ export class BankRoutingComponent2 implements OnInit {
 
   updateBankRouteStatus(formData: any, sliderElm: any, routeData: any) {
     this.bankRoutingService.updateBankRouteStatus(formData).subscribe((res) => {
+      if(res["status"] && typeof res["status"] == "string" && (res["status"] == "400" || res["status"] == "500")){
+        if (res["error"]) {
+          this.coreService.showWarningToast(res["error"]);
+        } else {
+          this.coreService.showWarningToast("Some error in fetching data");
+        }
+      }
+      else {
       let message = "";
       if (res["error"] == "true") {
         this.coreService.removeLoadingScreen();
@@ -352,6 +384,11 @@ export class BankRoutingComponent2 implements OnInit {
           this.coreService.showWarningToast(message);
         }
       }
+    }
+    },
+    (err) => {
+      this.coreService.showWarningToast("Something went wrong, Please try again later");
+      this.coreService.removeLoadingScreen();
     });
   }
 
