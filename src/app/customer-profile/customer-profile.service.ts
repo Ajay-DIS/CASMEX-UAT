@@ -9,30 +9,30 @@ export class CustomerProfileService {
   moduleName: any = null;
 
   constructor(private http: HttpClient) {}
-  // .set("criteriaMap",criteriaMap) ,criteriaMap:any
-  getCustomerIndividualData(
-    id: string,
-    criteriaMap: any,
-    pageNumber: any,
-    pageSize: any
-  ) {
-    return this.http.get(
-      `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
-      {
-        headers: new HttpHeaders()
-          .set("userId", id)
-          .set("criteriaMap", criteriaMap)
-          .set("pageNumber", pageNumber)
-          .set("pageSize", pageSize),
-      }
-    );
-  }
+  // getCustomerIndividualData(
+  //   id: string,
+  //   criteriaMap: any,
+  //   pageNumber: any,
+  //   pageSize: any
+  // ) {
+  //   return this.http.get(
+  //     `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
+  //     {
+  //       headers: new HttpHeaders()
+  //         .set("userId", id)
+  //         .set("criteriaMap", criteriaMap)
+  //         .set("pageNumber", pageNumber)
+  //         .set("pageSize", pageSize),
+  //     }
+  //   );
+  // }
 
   getCustomerCorporateData(
     id: string,
     criteriaMap: any,
     pageNumber: any,
-    pageSize: any
+    pageSize: any,
+    custType: any
   ) {
     return this.http.get(
       `/remittance/corporateCustomerController/getCorporateCustomerDetailsList`,
@@ -41,7 +41,8 @@ export class CustomerProfileService {
           .set("userId", id)
           .set("criteriaMap", criteriaMap)
           .set("pageNumber", pageNumber)
-          .set("pageSize", pageSize),
+          .set("pageSize", pageSize)
+          .set("customerType", custType),
       }
     );
   }
@@ -62,25 +63,26 @@ export class CustomerProfileService {
       }
     );
   }
-  updateCustomerIndividualStatus(userId: any, status: any, id: any) {
-    return this.http.get(
-      `/remittance/individualCustomerController/updateIndividualStatus`,
-      {
-        headers: new HttpHeaders()
-          .set("userId", userId)
-          .set("status", status)
-          .set("id", id),
-      }
-    );
-  }
-  updateCustomerCorporateStatus(userId: any, status: any, id: any) {
+  // updateCustomerIndividualStatus(userId: any, status: any, id: any) {
+  //   return this.http.get(
+  //     `/remittance/individualCustomerController/updateIndividualStatus`,
+  //     {
+  //       headers: new HttpHeaders()
+  //         .set("userId", userId)
+  //         .set("status", status)
+  //         .set("id", id),
+  //     }
+  //   );
+  // }
+  updateCustomerCorporateStatus(userId: any, status: any, id: any, custType: any) {
     return this.http.get(
       `/remittance/corporateCustomerController/updateCorporateStatus`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("status", status)
-          .set("id", id),
+          .set("id", id)
+          .set("customerType", custType),
       }
     );
   }
