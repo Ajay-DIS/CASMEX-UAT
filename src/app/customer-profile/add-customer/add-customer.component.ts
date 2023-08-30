@@ -254,7 +254,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "America",
       },
     ],
-    representativeIdIssueCountry: [
+    representativeIssueCountry: [
       {
         code: "Japan",
         codeName: "Japan",
@@ -409,14 +409,18 @@ export class AddCustomerComponent implements OnInit {
 
   uploadedKycData = [];
   uploadedRepresentativeData = [];
+  uploadedBeneficialData = [];
 
   uploadedKycDoc: any = {};
   uploadedRepresentativeDoc: any = {};
+  uploadedBeneficialDoc: any = {};
 
   editIndexKyc = -1;
   editApiIdKyc = "";
   editIndexRepresentative = -1;
   editApiIdRepresentative = "";
+  editIndexBeneficial = -1;
+  editApiIdBeneficial = "";
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
@@ -449,9 +453,9 @@ export class AddCustomerComponent implements OnInit {
           headers: new HttpHeaders()
             .set(
               "criteriaMap",
-              "Country = IND;Form = Customer Profile;Customer Type = IND"
+              "Country = IND;Form = Customer Profile;Customer Type = COR"
             )
-            .set("form", "Customer Profile Individual_Form Rules")
+            .set("form", "Customer Profile Corporate_Form Rules")
             .set("moduleName", "Remittance")
             .set("applications", "Casmex Core"),
         })
@@ -615,19 +619,19 @@ export class AddCustomerComponent implements OnInit {
             ?.get("contactCountry")?.value,
           permanentHouseBuildingNumber: this.individualForm
             .get("Contact Details")
-            ?.get("contactHouseBuildingNumber")?.value,
+            ?.get("contactHouseBulidingNumber")?.value,
           permanentBlockNumber: this.individualForm
             .get("Contact Details")
             ?.get("contactBlockNumber")?.value,
-          permanentStreetName: this.individualForm
+          permanentStreetNumber: this.individualForm
             .get("Contact Details")
-            ?.get("contactStreetName")?.value,
+            ?.get("contactStreetNumber")?.value,
           permanentCity: this.individualForm
             .get("Contact Details")
             ?.get("contactCity")?.value,
-          permanentPinZipCode: this.individualForm
+          permanentPinZipcode: this.individualForm
             .get("Contact Details")
-            ?.get("contactPinZipCode")?.value,
+            ?.get("contactPinZipcode")?.value,
         };
       } else {
         address = {
@@ -656,12 +660,16 @@ export class AddCustomerComponent implements OnInit {
       ?.get("uploadBackSideFile")
       ?.disable();
     this.individualForm
-      ?.get("Representative Details")
-      ?.get("representativeIdCopyUploadFile")
+      ?.get("Beneficial Owner Details")
+      ?.get("idCopyUploadFile")
       ?.disable();
     this.individualForm
       ?.get("Representative Details")
-      ?.get("representativeAuthorizationLetterFile")
+      ?.get("idCopyUploadFile")
+      ?.disable();
+    this.individualForm
+      ?.get("Representative Details")
+      ?.get("authorizationLetterUploadFile")
       ?.disable();
     this.individualForm
       ?.get("Representative Details")
@@ -677,45 +685,23 @@ export class AddCustomerComponent implements OnInit {
         this.individualForm
           ?.get(section)
           ?.get(field)
-          .patchValue(e.target.files[0]?.name);
+          .patchValue(e.target.files[0].name);
 
         if (section == "KYC Doc Upload") {
           this.uploadedKycDoc[field] = e.target.files[0];
+        }
+        if (section == "Beneficial Owner Details") {
+          this.uploadedBeneficialDoc[field] = e.target.files[0];
         }
         if (section == "Representative Details") {
           this.uploadedRepresentativeDoc[field] = e.target.files[0];
         }
 
         console.log(this.uploadedKycDoc);
+        console.log(this.uploadedBeneficialDoc);
         console.log(this.uploadedRepresentativeDoc);
         this.coreService.removeLoadingScreen();
       }, 1500);
-    }
-  }
-
-  onRemoveFile(docType: any, row: any, index: any, uiName: any, dbName: any) {
-    console.log(uiName, dbName);
-    if (uiName in row) {
-      row[uiName] = "";
-    }
-    if (dbName in row) {
-      row[dbName] = "";
-    }
-
-    if ("operation" in row) {
-      row["operation"] = "edit";
-    }
-
-    if (docType == "kyc") {
-      this.uploadedKycData[index][uiName] = "";
-      this.uploadedKycData[index][dbName] = "";
-      this.uploadedKycData[index]["operation"] = "edit";
-      console.log(this.uploadedKycData);
-    } else if (docType == "repres") {
-      this.uploadedRepresentativeData[index][uiName] = "";
-      this.uploadedRepresentativeData[index][dbName] = "";
-      this.uploadedRepresentativeData[index]["operation"] = "edit";
-      console.log(this.uploadedRepresentativeData);
     }
   }
 
@@ -808,12 +794,158 @@ export class AddCustomerComponent implements OnInit {
       .get("KYC Doc Upload")
       .get("hereByConfirm")
       ?.patchValue(row.hereByConfirm);
-  }
 
+    // this.individualForm.get("KYC Doc Upload").get("idNumber").disable();
+  }
+  selectRowForEditBeneficial(row: any, index: any) {
+    this.uploadedBeneficialDoc = {
+      idCopyUploadFile: row["idCopyUploadFile"],
+      ...(row["idCopyUploadOriginalName"]?.length && {
+        idCopyUploadOriginalName: row["idCopyUploadOriginalName"],
+      }),
+      ...(row["idCopyUploadName"]?.length && {
+        idCopyUploadName: row["idCopyUploadName"],
+      }),
+      ...(row["customerId"] && { customerId: row["customerId"] }),
+      ...(row["status"]?.length && { status: row["status"] }),
+      ...(row["createdBy"]?.length && {
+        createdBy: row["createdBy"],
+      }),
+      ...(row["updatedBy"]?.length && {
+        updatedBy: row["updatedBy"],
+      }),
+      ...(row["createdDateTime"]?.length && {
+        createdDateTime: row["createdDateTime"],
+      }),
+      ...(row["updatedDateTime"]?.length && {
+        updatedDateTime: row["updatedDateTime"],
+      }),
+    };
+    console.log("row", row);
+    this.editIndexBeneficial = index;
+    if (row.id && row.id != "") {
+      this.editApiIdBeneficial = row.id;
+    }
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("ownershipType")
+      ?.patchValue(
+        this.masterData["ownershipType"].filter(
+          (opt) => opt.codeName == row.ownershipType
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("category")
+      ?.patchValue(
+        this.masterData["category"].filter(
+          (opt) => opt.codeName == row.category
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("noOfPartner")
+      ?.patchValue(row.noOfPartner);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("percentage")
+      ?.patchValue(row.percentage);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("firstName")
+      ?.patchValue(row.firstName);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("middleName")
+      ?.patchValue(row.middleName);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("lastName")
+      ?.patchValue(row.lastName);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("gender")
+      ?.patchValue(
+        this.masterData["gender"].filter((opt) => opt.codeName == row.gender)[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("dateOfBirth")
+      ?.patchValue(row.dateOfBirth);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("countryOfBirth")
+      ?.patchValue(
+        this.masterData["countryOfBirth"].filter(
+          (opt) => opt.codeName == row.countryOfBirth
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("nationality")
+      ?.patchValue(
+        this.masterData["nationality"].filter(
+          (opt) => opt.codeName == row.nationality
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("relationship")
+      ?.patchValue(
+        this.masterData["relationship"].filter(
+          (opt) => opt.codeName == row.relationship
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("documentType")
+      ?.patchValue(
+        this.masterData["documentType"].filter(
+          (opt) => opt.codeName == row.documentType
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idNumber")
+      ?.patchValue(row.idNumber);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idIssueDate")
+      ?.patchValue(row.idIssueDate);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idExpiryDate")
+      ?.patchValue(row.idExpiryDate);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idIssueAuthority")
+      ?.patchValue(row.idIssueAuthority);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idIssueCountry")
+      ?.patchValue(
+        this.masterData["idIssueCountry"].filter(
+          (opt) => opt.codeName == row.idIssueCountry
+        )[0]
+      );
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("visaExpiryDate")
+      ?.patchValue(row.visaExpiryDate);
+    this.individualForm
+      .get("Beneficial Owner Details")
+      .get("idCopyUploadFile")
+      ?.patchValue(row.idCopyUploadFileName);
+
+    // this.individualForm
+    //   .get("Beneficial Owner Details")
+    //   .get("idNumber")
+    //   .disable();
+  }
   selectRowForEditRepresentative(row: any, index: any) {
     this.uploadedRepresentativeDoc = {
-      representativeIdCopyUploadFile: row["representativeIdCopyUploadFile"],
-      representativeAuthorizationLetterFile:
+      idCopyUploadFile: row["representativeIdCopyUploadFile"],
+      authorizationLetterUploadFile:
         row["representativeAuthorizationLetterFile"],
       otherDocumentUploadFile: row["otherDocumentUploadFile"],
 
@@ -939,7 +1071,7 @@ export class AddCustomerComponent implements OnInit {
       .get("Representative Details")
       .get("representativeIdIssueCountry")
       ?.patchValue(
-        this.masterData["representativeIdIssueCountry"].filter(
+        this.masterData["representativeIssueCountry"].filter(
           (opt) => opt.codeName == row.representativeIdIssueCountry
         )[0]
       );
@@ -957,16 +1089,21 @@ export class AddCustomerComponent implements OnInit {
       ?.patchValue(row.representativeMaximumAllowedAmount);
     this.individualForm
       .get("Representative Details")
-      .get("representativeIdCopyUploadFile")
+      .get("idCopyUploadFile")
       ?.patchValue(row.representativeIdCopyUploadFileName);
     this.individualForm
       .get("Representative Details")
-      .get("representativeAuthorizationLetterFile")
+      .get("authorizationLetterUploadFile")
       ?.patchValue(row.representativeAuthorizationLetterFileName);
     this.individualForm
       .get("Representative Details")
       .get("otherDocumentUploadFile")
       ?.patchValue(row.otherDocumentUploadFileName);
+
+    // this.individualForm
+    //   .get("Representative Details")
+    //   .get("representativeIdNumber")
+    //   .disable();
   }
 
   addKyc() {
@@ -1057,11 +1194,131 @@ export class AddCustomerComponent implements OnInit {
       this.uploadedKycData[index] = kycDataObj;
     }
     this.individualForm.get("KYC Doc Upload").reset();
+    // this.individualForm.get("KYC Doc Upload").get("idNumber").enable();
     console.log(this.uploadedKycData);
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
+    this.uploadedBeneficialDoc = {};
     this.uploadedRepresentativeDoc = {};
+  }
+  addBeneficial() {
+    let beneficialData = this.individualForm
+      .get("Beneficial Owner Details")
+      .getRawValue();
+    console.log("fields", beneficialData);
+    let beneficialDataObj = {
+      ownershipType: beneficialData.ownershipType?.codeName
+        ? beneficialData.ownershipType?.codeName
+        : "",
+      category: beneficialData.category?.codeName
+        ? beneficialData.category?.codeName
+        : "",
+      noOfPartner: beneficialData.noOfPartner,
+      percentage: beneficialData.percentage,
+      firstName: beneficialData.firstName,
+      middleName: beneficialData.middleName,
+      lastName: beneficialData.lastName,
+      gender: beneficialData.gender?.codeName
+        ? beneficialData.gender?.codeName
+        : "",
+      dateOfBirth: beneficialData.dateOfBirth
+        ? !isNaN(Date.parse(beneficialData.dateOfBirth))
+          ? new Date(beneficialData.dateOfBirth).toLocaleDateString("en-GB")
+          : new Date(
+              beneficialData.dateOfBirth.split("/").reverse().join("-")
+            ).toLocaleDateString("en-GB")
+        : "",
+      countryOfBirth: beneficialData.countryOfBirth?.codeName
+        ? beneficialData.countryOfBirth?.codeName
+        : "",
+      nationality: beneficialData.nationality?.codeName
+        ? beneficialData.nationality?.codeName
+        : "",
+      relationship: beneficialData.relationship?.codeName
+        ? beneficialData.relationship?.codeName
+        : "",
+      documentType: beneficialData.documentType?.codeName
+        ? beneficialData.documentType?.codeName
+        : "",
+      idNumber: beneficialData.idNumber,
+      idIssueDate: beneficialData.idIssueDate
+        ? !isNaN(Date.parse(beneficialData.idIssueDate))
+          ? new Date(beneficialData.idIssueDate).toLocaleDateString("en-GB")
+          : new Date(
+              beneficialData.idIssueDate.split("/").reverse().join("-")
+            ).toLocaleDateString("en-GB")
+        : "",
+      idExpiryDate: beneficialData.idExpiryDate
+        ? !isNaN(Date.parse(beneficialData.idExpiryDate))
+          ? new Date(beneficialData.idExpiryDate).toLocaleDateString("en-GB")
+          : new Date(
+              beneficialData.idExpiryDate.split("/").reverse().join("-")
+            ).toLocaleDateString("en-GB")
+        : "",
+      idIssueAuthority: beneficialData.idIssueAuthority,
+      idIssueCountry: beneficialData.idIssueCountry?.codeName
+        ? beneficialData.idIssueCountry?.codeName
+        : "",
+      visaExpiryDate: beneficialData.visaExpiryDate
+        ? !isNaN(Date.parse(beneficialData.visaExpiryDate))
+          ? new Date(beneficialData.visaExpiryDate).toLocaleDateString("en-GB")
+          : new Date(
+              beneficialData.visaExpiryDate.split("/").reverse().join("-")
+            ).toLocaleDateString("en-GB")
+        : "",
+      idCopyUploadFileName: beneficialData.idCopyUploadFile,
+      idCopyUploadFile: this.uploadedBeneficialDoc.idCopyUploadFile
+        ? this.uploadedBeneficialDoc.idCopyUploadFile
+        : "",
+
+      ...(this.uploadedBeneficialDoc["idCopyUploadOriginalName"]?.length && {
+        idCopyUploadOriginalName:
+          this.uploadedBeneficialDoc["idCopyUploadOriginalName"],
+      }),
+      ...(this.uploadedBeneficialDoc["idCopyUploadName"]?.length && {
+        idCopyUploadName: this.uploadedBeneficialDoc["idCopyUploadName"],
+      }),
+      ...(this.uploadedBeneficialDoc["customerId"] && {
+        customerId: this.uploadedBeneficialDoc["customerId"],
+      }),
+      ...(this.uploadedBeneficialDoc["status"]?.length && {
+        status: this.uploadedBeneficialDoc["status"],
+      }),
+      ...(this.uploadedBeneficialDoc["createdBy"]?.length && {
+        createdBy: this.uploadedBeneficialDoc["createdBy"],
+      }),
+      ...(this.uploadedBeneficialDoc["updatedBy"]?.length && {
+        updatedBy: this.uploadedBeneficialDoc["updatedBy"],
+      }),
+      ...(this.uploadedBeneficialDoc["createdDateTime"]?.length && {
+        createdDateTime: this.uploadedBeneficialDoc["createdDateTime"],
+      }),
+      ...(this.uploadedBeneficialDoc["updatedDateTime"]?.length && {
+        updatedDateTime: this.uploadedBeneficialDoc["updatedDateTime"],
+      }),
+    };
+    let index = this.editIndexBeneficial;
+    console.log("index", index);
+    if (index == -1) {
+      beneficialDataObj["id"] = "";
+      beneficialDataObj["operation"] = "add";
+      this.uploadedBeneficialData.push(beneficialDataObj);
+    } else {
+      if (this.editApiIdBeneficial != "") {
+        beneficialDataObj["id"] = this.editApiIdBeneficial;
+        beneficialDataObj["operation"] = "edit";
+      } else {
+        beneficialDataObj["id"] = "";
+        beneficialDataObj["operation"] = "add";
+      }
+      this.uploadedBeneficialData[index] = beneficialDataObj;
+    }
+    this.individualForm.get("Beneficial Owner Details").reset();
+    // this.individualForm.get("Beneficial Owner Details").get("idNumber").enable();
+    console.log(this.uploadedBeneficialData);
+    this.editIndexBeneficial = -1;
+    this.editApiIdBeneficial = "";
   }
   addRepresentative() {
     let representativeData = this.individualForm
@@ -1166,19 +1423,18 @@ export class AddCustomerComponent implements OnInit {
           : "",
       representativeMaximumAllowedAmount:
         representativeData.representativeMaximumAllowedAmount,
-      representativeIdCopyUploadFileName:
-        representativeData.representativeIdCopyUploadFile,
+      representativeIdCopyUploadFileName: representativeData.idCopyUploadFile,
       representativeAuthorizationLetterFileName:
-        representativeData.representativeAuthorizationLetterFile,
+        representativeData.authorizationLetterUploadFile,
       otherDocumentUploadFileName: representativeData.otherDocumentUploadFile,
 
       representativeIdCopyUploadFile: this.uploadedRepresentativeDoc
-        .representativeIdCopyUploadFile
-        ? this.uploadedRepresentativeDoc.representativeIdCopyUploadFile
+        .idCopyUploadFile
+        ? this.uploadedRepresentativeDoc.idCopyUploadFile
         : "",
       representativeAuthorizationLetterFile: this.uploadedRepresentativeDoc
-        .representativeAuthorizationLetterFile
-        ? this.uploadedRepresentativeDoc.representativeAuthorizationLetterFile
+        .authorizationLetterUploadFile
+        ? this.uploadedRepresentativeDoc.authorizationLetterUploadFile
         : "",
       otherDocumentUploadFile: this.uploadedRepresentativeDoc
         .otherDocumentUploadFile
@@ -1265,6 +1521,10 @@ export class AddCustomerComponent implements OnInit {
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
     this.individualForm.get("Representative Details").reset();
+    // this.individualForm
+    //   .get("Representative Details")
+    //   .get("representativeIdNumber")
+    //   .enable();
     console.log(this.uploadedRepresentativeData);
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";
@@ -1288,6 +1548,7 @@ export class AddCustomerComponent implements OnInit {
     let data = this.individualForm.getRawValue();
 
     delete data["KYC Doc Upload"];
+    delete data["Beneficial Owner Details"];
     delete data["Representative Details"];
 
     let payloadData = Object.assign({}, ...Object.values(data));
@@ -1296,6 +1557,7 @@ export class AddCustomerComponent implements OnInit {
       if (
         !(
           section.formName == "KYC Doc Upload" ||
+          section.formName == "Beneficial Owner Details" ||
           section.formName == "Representative Details"
         )
       ) {
@@ -1357,6 +1619,26 @@ export class AddCustomerComponent implements OnInit {
         formData.append(key, payloadData[key]);
       }
 
+      // formData.append("uploadDocuments[0].idNumber", "21");
+      // formData.append("uploadDocuments[0].operation", "null");
+      // formData.append("uploadDocuments[0].uploadFrontSideFileName", "");
+      // formData.append("uploadDocuments[0].uploadBackSideFileName", "");
+      // formData.append("uploadDocuments[0].uploadFrontSideFile", "");
+      // formData.append("uploadDocuments[0].uploadBackSideFile", "");
+      // formData.append("uploadDocuments[0].uploadFrontSide", "");
+      // formData.append("uploadDocuments[0].uploadBackSide", "");
+      // formData.append("uploadDocuments[0].uploadFrontSideOriginal", "1.txt");
+      // formData.append("uploadDocuments[0].uploadBackSideOriginal", "2.txt");
+      // formData.append("uploadDocuments[0].customerId", "102");
+      // formData.append("uploadDocuments[0].status", "Active");
+      // formData.append("uploadDocuments[0].customerType", "COR");
+      // formData.append("uploadDocuments[0].idIssueDate", "23/01/2023");
+      // formData.append("uploadDocuments[0].idExpiryDate", "23/01/2023");
+      // formData.append("uploadDocuments[0].createdBy", "");
+      // formData.append("uploadDocuments[0].updatedBy", "yogeshm");
+      // formData.append("uploadDocuments[0].createdDateTime", "");
+      // formData.append("uploadDocuments[0].updatedDateTime", "");
+
       if (this.uploadedKycData.length) {
         for (let i = 0; i < this.uploadedKycData.length; i++) {
           for (let key in this.uploadedKycData[i]) {
@@ -1384,6 +1666,45 @@ export class AddCustomerComponent implements OnInit {
                 formData.append(
                   `uploadDocuments[${i}].${key}`,
                   this.uploadedKycData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      if (this.uploadedBeneficialData.length) {
+        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+          for (let key in this.uploadedBeneficialData[i]) {
+            if (
+              key == "dateOfBirth" ||
+              key == "idIssueDate" ||
+              key == "idExpiryDate" ||
+              key == "visaExpiryDate"
+            ) {
+              let date = this.uploadedBeneficialData[i][key]
+                ? this.uploadedBeneficialData[i][key]
+                : "";
+              formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
+            } else if (key == "idCopyUploadFile") {
+              let file =
+                this.uploadedBeneficialData[i][key] &&
+                this.uploadedBeneficialData[i][key] != ""
+                  ? this.uploadedBeneficialData[i][key]
+                  : "";
+              if (file != "") {
+                formData.append(`beneficialOwerDetailsDto[${i}].${key}`, file);
+              }
+            } else {
+              if (
+                !(
+                  this.uploadedBeneficialData[i]["operation"] == "add" &&
+                  key == "id"
+                )
+              ) {
+                formData.append(
+                  `beneficialOwerDetailsDto[${i}].${key}`,
+                  this.uploadedBeneficialData[i][key]
                 );
               }
             }
@@ -1476,6 +1797,43 @@ export class AddCustomerComponent implements OnInit {
         }
       } else {
       }
+      if (this.uploadedBeneficialData.length) {
+        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+          for (let key in this.uploadedBeneficialData[i]) {
+            if (key != "id") {
+              if (
+                key == "dateOfBirth" ||
+                key == "idIssueDate" ||
+                key == "idExpiryDate" ||
+                key == "visaExpiryDate"
+              ) {
+                let date = this.uploadedBeneficialData[i][key]
+                  ? this.uploadedBeneficialData[i][key]
+                  : "";
+                formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
+              } else if (key == "idCopyUploadFile") {
+                let file =
+                  this.uploadedBeneficialData[i][key] &&
+                  this.uploadedBeneficialData[i][key] != ""
+                    ? this.uploadedBeneficialData[i][key]
+                    : "";
+                if (file != "") {
+                  formData.append(
+                    `beneficialOwerDetailsDto[${i}].${key}`,
+                    file
+                  );
+                }
+              } else {
+                formData.append(
+                  `beneficialOwerDetailsDto[${i}].${key}`,
+                  this.uploadedBeneficialData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
       if (this.uploadedRepresentativeData.length) {
         for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
           for (let key in this.uploadedRepresentativeData[i]) {
@@ -1524,64 +1882,6 @@ export class AddCustomerComponent implements OnInit {
     console.log(JSON.stringify(payloadData, null, 2));
   }
 
-  saveIndividualCustomer(payload: any) {
-    this.http
-      .post(
-        `/remittance/individualCustomerController/saveIndividualCustomer`,
-        payload,
-        {
-          headers: new HttpHeaders().set("userId", this.userId),
-        }
-      )
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
-            } else {
-              this.coreService.showSuccessToast(
-                "Profile data successfully saved"
-              );
-            }
-            this.router.navigate(["navbar", "customer-profile"]);
-            // this.onReset()
-          }
-        },
-        (err) => {
-          this.coreService.showWarningToast(
-            "Some error while saving data, Try again in sometime"
-          );
-          this.coreService.removeLoadingScreen();
-        }
-      );
-  }
-
-  getIndividualCustomer(custId: any) {
-    this.http
-      .get(
-        `/remittance/individualCustomerController/getIndividualCustomerDetails/${custId}`,
-        {
-          headers: new HttpHeaders().set("userId", this.userId),
-        }
-      )
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            console.log(res["data"]);
-            this.setCustomerFormData(res["data"]);
-          }
-        },
-        (err) => {
-          this.coreService.showWarningToast(
-            "Some error while fetching data, Try again in sometime"
-          );
-          this.coreService.removeLoadingScreen();
-        }
-      );
-  }
-
   setCustomerFormData(data: any) {
     this.CustomerData = data;
     this.formSections.forEach((section) => {
@@ -1597,7 +1897,6 @@ export class AddCustomerComponent implements OnInit {
                   codeName: data[field["fieldName"]],
                 }
               : "";
-            console.log("::", value, field["fieldName"]);
             this.individualForm
               .get(section.formName)
               .get(field.fieldName)
@@ -1616,6 +1915,7 @@ export class AddCustomerComponent implements OnInit {
                     data[field["fieldName"]].split("/").reverse().join("-")
                   ).toLocaleDateString("en-GB")
               : "";
+
             this.individualForm
               .get(section.formName)
               .get(field.fieldName)
@@ -1697,6 +1997,94 @@ export class AddCustomerComponent implements OnInit {
         return docData;
       });
       console.log(":::", this.uploadedKycData);
+    }
+    if (data["beneficialOwerDetailsDto"]) {
+      this.uploadedBeneficialData = data["beneficialOwerDetailsDto"].map(
+        (key) => {
+          let docData = {};
+          docData["id"] = key["id"] ? key["id"] : "";
+          docData["operation"] = "null";
+          docData["idNumber"] = key["idNumber"] ? key["idNumber"] : "";
+          docData["category"] = key["category"] ? key["category"] : "";
+          docData["ownershipType"] = key["ownershipType"]
+            ? key["ownershipType"]
+            : "";
+          docData["noOfPartner"] = key["noOfPartner"] ? key["noOfPartner"] : "";
+          docData["percentage"] = key["percentage"] ? key["percentage"] : "";
+          docData["firstName"] = key["firstName"] ? key["firstName"] : "";
+          docData["middleName"] = key["middleName"] ? key["middleName"] : "";
+          docData["lastName"] = key["lastName"] ? key["lastName"] : "";
+          docData["gender"] = key["gender"] ? key["gender"] : "";
+          docData["dateOfBirth"] = key["dateOfBirth"]
+            ? !isNaN(Date.parse(key["dateOfBirth"]))
+              ? new Date(key["dateOfBirth"]).toLocaleDateString("en-GB")
+              : new Date(
+                  key["dateOfBirth"].split("/").reverse().join("-")
+                ).toLocaleDateString("en-GB")
+            : "";
+          docData["countryOfBirth"] = key["countryOfBirth"]
+            ? key["countryOfBirth"]
+            : "";
+          docData["nationality"] = key["nationality"] ? key["nationality"] : "";
+          docData["relationship"] = key["relationship"]
+            ? key["relationship"]
+            : "";
+          docData["documentType"] = key["documentType"]
+            ? key["documentType"]
+            : "";
+          docData["idIssueDate"] = key["idIssueDate"]
+            ? !isNaN(Date.parse(key["idIssueDate"]))
+              ? new Date(key["idIssueDate"]).toLocaleDateString("en-GB")
+              : new Date(
+                  key["idIssueDate"].split("/").reverse().join("-")
+                ).toLocaleDateString("en-GB")
+            : "";
+          docData["idExpiryDate"] = key["idExpiryDate"]
+            ? !isNaN(Date.parse(key["idExpiryDate"]))
+              ? new Date(key["idExpiryDate"]).toLocaleDateString("en-GB")
+              : new Date(
+                  key["idExpiryDate"].split("/").reverse().join("-")
+                ).toLocaleDateString("en-GB")
+            : "";
+          (docData["idIssueAuthority"] = key["idIssueAuthority"]
+            ? key["idIssueAuthority"]
+            : ""),
+            (docData["idIssueCountry"] = key["idIssueCountry"]
+              ? key["idIssueCountry"]
+              : "");
+          docData["visaExpiryDate"] = key["visaExpiryDate"]
+            ? !isNaN(Date.parse(key["visaExpiryDate"]))
+              ? new Date(key["visaExpiryDate"]).toLocaleDateString("en-GB")
+              : new Date(
+                  key["visaExpiryDate"].split("/").reverse().join("-")
+                ).toLocaleDateString("en-GB")
+            : "";
+          docData["idCopyUploadFileName"] = key["idCopyUploadOriginalName"]
+            ? key["idCopyUploadOriginalName"]
+            : "";
+          docData["idCopyUploadOriginalName"] = key["idCopyUploadOriginalName"]
+            ? key["idCopyUploadOriginalName"]
+            : "";
+          docData["idCopyUploadName"] = key["idCopyUploadName"]
+            ? key["idCopyUploadName"]
+            : "";
+          docData["customerId"] = key["customerId"] ? key["customerId"] : "";
+          docData["status"] = key["status"] ? key["status"] : "Active";
+          docData["idCopyUploadFile"] = "";
+          (docData["createdBy"] = key["createdBy"] ? key["createdBy"] : ""),
+            (docData["updatedBy"] = key["updatedBy"] ? key["updatedBy"] : ""),
+            (docData["createdDateTime"] = key["createdDateTime"]
+              ? key["createdDateTime"]
+              : ""),
+            (docData["updatedDateTime"] = key["updatedDateTime"]
+              ? key["updatedDateTime"]
+              : "");
+
+          return docData;
+        }
+      );
+
+      console.log(this.uploadedBeneficialData);
     }
     if (data["representativeDetailsDto"]) {
       this.uploadedRepresentativeData = data["representativeDetailsDto"].map(
@@ -1895,13 +2283,77 @@ export class AddCustomerComponent implements OnInit {
     }
   }
 
+  saveIndividualCustomer(payload: any) {
+    this.http
+      .post(
+        `/remittance/corporateCustomerController/saveCorporateCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Individual"),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            if (res["data"]) {
+              this.coreService.showSuccessToast(res["data"]);
+            } else {
+              this.coreService.showSuccessToast(
+                "Profile data successfully saved"
+              );
+            }
+            this.router.navigate(["navbar", "customer-profile"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+  getIndividualCustomer(custId: any) {
+    this.http
+      .get(
+        `/remittance/corporateCustomerController/getCorporateCustomerDetails/${custId}`,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Individual"),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            console.log(res["data"]);
+            this.setCustomerFormData(res["data"]);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
   updateIndividualCustomer(payload: any) {
     this.http
       .put(
-        `/remittance/individualCustomerController/updateIndividualCustomer`,
+        `/remittance/corporateCustomerController/updateCorporateCustomer`,
         payload,
         {
-          headers: new HttpHeaders().set("userId", this.userId),
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Individual"),
         }
       )
       .subscribe(

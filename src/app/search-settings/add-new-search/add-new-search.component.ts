@@ -110,55 +110,54 @@ export class AddNewSearchComponent implements OnInit {
             res["status"] &&
             typeof res["status"] == "string" &&
             (res["status"] == "400" || res["status"] == "500")
-          ){
+          ) {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
-          }
-          else {
-          if (res["data"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            this.searchFormsOptions = res["data"][
-              "cmSearchSettingFormMasters"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            this.searchOperatorsOptions = res["data"][
-              "systemOperatorsMaster"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            const params = this.activatedRoute.snapshot.params;
-            if (params && params.id) {
-              this.isCloneMode = true;
-              let data;
-              this.searchId = params.id;
-              this.state$.subscribe((res) => {
-                if (res["appName"]) {
-                  this.appFormModuleDataForEdit = res;
-                  this.setCloneCriteriaData(params.id);
-                } else {
-                  this.router.navigateByUrl(`navbar/search-settings`);
-                }
+          } else {
+            if (res["data"]) {
+              this.searchApplicationOptions = res["data"][
+                "cmApplicationMaster"
+              ].map((app) => {
+                return { name: app.name, code: app.name };
               });
+              this.searchModuleOptions = res["data"][
+                "cmPrimaryModuleMasterDetails"
+              ].map((app) => {
+                return { name: app.codeName, code: app.codeName };
+              });
+              this.searchFormsOptions = res["data"][
+                "cmSearchSettingFormMasters"
+              ].map((app) => {
+                return { name: app.codeName, code: app.codeName };
+              });
+              this.searchOperatorsOptions = res["data"][
+                "systemOperatorsMaster"
+              ].map((app) => {
+                return { name: app.codeName, code: app.codeName };
+              });
+              const params = this.activatedRoute.snapshot.params;
+              if (params && params.id) {
+                this.isCloneMode = true;
+                let data;
+                this.searchId = params.id;
+                this.state$.subscribe((res) => {
+                  if (res["appName"]) {
+                    this.appFormModuleDataForEdit = res;
+                    this.setCloneCriteriaData(params.id);
+                  } else {
+                    this.router.navigateByUrl(`navbar/search-settings`);
+                  }
+                });
+              }
+            } else if (res["msg"]) {
+              this.coreService.showWarningToast(res["msg"]);
+              this.appCtrl.disable();
+              this.formCtrl.disable();
             }
-          } else if (res["msg"]) {
-            this.coreService.showWarningToast(res["msg"]);
-            this.appCtrl.disable();
-            this.formCtrl.disable();
           }
-        }
         },
         (err) => {
           this.appCtrl.disable();
@@ -246,42 +245,45 @@ export class AddNewSearchComponent implements OnInit {
               res["status"] &&
               typeof res["status"] == "string" &&
               (res["status"] == "400" || res["status"] == "500")
-            ){
+            ) {
               if (res["error"]) {
                 this.coreService.showWarningToast(res["error"]);
               } else {
-                this.coreService.showWarningToast("Some error in fetching data");
+                this.coreService.showWarningToast(
+                  "Some error in fetching data"
+                );
+              }
+            } else {
+              if (res["data"]["cmCriteriaOperationsMasters"].length) {
+                this.isFieldsQueriesData = true;
+                this.fieldsQueriesData =
+                  res["data"]["cmCriteriaOperationsMasters"];
+                this.selectFields = [...this.fieldsQueriesData];
+                this.restoreSelectFields = [...this.fieldsQueriesData];
+                this.selectFields.forEach((item) => {
+                  item["operationOption"] = this.searchOperatorsOptions.map(
+                    (x) => {
+                      return { label: x.name, code: x.name };
+                    }
+                  );
+                  item["orderID"] = "";
+                  item["operations"] = "";
+                });
+              } else if (
+                res["data"]["cmCriteriaOperationsMasters"].length == 0
+              ) {
+                this.isFieldsQueriesData = false;
+                this.coreService.showWarningToast(
+                  "No data found for selected parameters"
+                );
+              } else if (res["msg"]) {
+                this.isFieldsQueriesData = false;
+                this.coreService.showWarningToast(res["msg"]);
+                this.selectFields = [];
+                this.selectedFields = [];
+                this.searchSettingtable = [];
               }
             }
-            else {
-            if (res["data"]["cmCriteriaOperationsMasters"].length) {
-              this.isFieldsQueriesData = true;
-              this.fieldsQueriesData =
-                res["data"]["cmCriteriaOperationsMasters"];
-              this.selectFields = [...this.fieldsQueriesData];
-              this.restoreSelectFields = [...this.fieldsQueriesData];
-              this.selectFields.forEach((item) => {
-                item["operationOption"] = this.searchOperatorsOptions.map(
-                  (x) => {
-                    return { label: x.name, code: x.name };
-                  }
-                );
-                item["orderID"] = "";
-                item["operations"] = "";
-              });
-            } else if (res["data"]["cmCriteriaOperationsMasters"].length == 0) {
-              this.isFieldsQueriesData = false;
-              this.coreService.showWarningToast(
-                "No data found for selected parameters"
-              );
-            } else if (res["msg"]) {
-              this.isFieldsQueriesData = false;
-              this.coreService.showWarningToast(res["msg"]);
-              this.selectFields = [];
-              this.selectedFields = [];
-              this.searchSettingtable = [];
-            }
-          }
           },
           (err) => {
             console.log("error in getting fields queries", err);
@@ -339,51 +341,50 @@ export class AddNewSearchComponent implements OnInit {
             res["status"] &&
             typeof res["status"] == "string" &&
             (res["status"] == "400" || res["status"] == "500")
-          ){
+          ) {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
-          }
-          else {
-          if (res["appForm"] && res["appForm"].length) {
-            this.duplicateCriteria = false;
-            res["appForm"].forEach((appForm) => {
-              let app = appForm.split(":")[0];
-              let form = appForm.split(":")[1];
-              let module = appForm.split(":")[2];
-              if (
-                this.appCtrl.value.name == app &&
-                this.formCtrl.value.name == form &&
-                this.moduleCtrl.value.name == module &&
-                !this.duplicateCriteria
-              ) {
-                this.coreService.setSidebarBtnFixedStyle(false);
-                this.coreService.setHeaderStickyStyle(false);
-                this.duplicateCriteria = true;
-                this.confirmationService.confirm({
-                  message: `<img src="../../../assets/warning.svg"><br/><br/> Search setting for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
-                  accept: () => {
-                    this.saveCriteriaFields(action);
-                    this.setHeaderSidebarBtn(true);
-                  },
-                  reject: () => {
-                    this.coreService.showWarningToast(
-                      "Search setting saving revoked"
-                    );
-                    this.setHeaderSidebarBtn(false);
-                  },
-                });
+          } else {
+            if (res["appForm"] && res["appForm"].length) {
+              this.duplicateCriteria = false;
+              res["appForm"].forEach((appForm) => {
+                let app = appForm.split(":")[0];
+                let form = appForm.split(":")[1];
+                let module = appForm.split(":")[2];
+                if (
+                  this.appCtrl.value.name == app &&
+                  this.formCtrl.value.name == form &&
+                  this.moduleCtrl.value.name == module &&
+                  !this.duplicateCriteria
+                ) {
+                  this.coreService.setSidebarBtnFixedStyle(false);
+                  this.coreService.setHeaderStickyStyle(false);
+                  this.duplicateCriteria = true;
+                  this.confirmationService.confirm({
+                    message: `<img src="../../../assets/warning.svg"><br/><br/> Search setting for this Application <b>(${this.appCtrl.value.name})</b>, Module <b>(${this.moduleCtrl.value.name})</b> & Form <b>(${this.formCtrl.value.name})</b> already exists, Do you want to update it?`,
+                    accept: () => {
+                      this.saveCriteriaFields(action);
+                      this.setHeaderSidebarBtn(true);
+                    },
+                    reject: () => {
+                      this.coreService.showWarningToast(
+                        "Search setting saving revoked"
+                      );
+                      this.setHeaderSidebarBtn(false);
+                    },
+                  });
+                }
+              });
+              if (!this.duplicateCriteria) {
+                this.saveCriteriaFields(action);
               }
-            });
-            if (!this.duplicateCriteria) {
+            } else {
               this.saveCriteriaFields(action);
             }
-          } else {
-            this.saveCriteriaFields(action);
           }
-        }
         },
         (err) => {
           console.log(
@@ -427,7 +428,7 @@ export class AddNewSearchComponent implements OnInit {
       searchSetting["operations"].forEach((op) => {
         operations.push(op["label"]);
       });
-      delete  searchSetting["id"];
+      delete searchSetting["id"];
       searchSetting["operators"] = operations.join(",");
       data["settingSearchQueryCriteria"].push(searchSetting);
     });
@@ -446,52 +447,51 @@ export class AddNewSearchComponent implements OnInit {
             res["status"] &&
             typeof res["status"] == "string" &&
             (res["status"] == "400" || res["status"] == "500")
-          ){
+          ) {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
-          }
-          else {
-          if (res["msg"]) {
-            if (this.mode == "clone") {
-              if (this.duplicateCriteria) {
-                this.coreService.showSuccessToast(
-                  "Search setting updated Sucessfully."
-                );
-              } else {
-                this.coreService.showSuccessToast(
-                  "Search setting Clone created Sucessfully."
-                );
+          } else {
+            if (res["msg"]) {
+              if (this.mode == "clone") {
+                if (this.duplicateCriteria) {
+                  this.coreService.showSuccessToast(
+                    "Search setting updated Sucessfully."
+                  );
+                } else {
+                  this.coreService.showSuccessToast(
+                    "Search setting Clone created Sucessfully."
+                  );
+                }
               }
-            }
-            if (this.mode == "add") {
-              if (this.duplicateCriteria) {
-                this.coreService.showSuccessToast(
-                  "Search setting updated Sucessfully."
-                );
-              } else {
-                this.coreService.showSuccessToast(
-                  "New Search setting added Sucessfully."
-                );
+              if (this.mode == "add") {
+                if (this.duplicateCriteria) {
+                  this.coreService.showSuccessToast(
+                    "Search setting updated Sucessfully."
+                  );
+                } else {
+                  this.coreService.showSuccessToast(
+                    "New Search setting added Sucessfully."
+                  );
+                }
               }
-            }
 
-            if (this.mode == "edit") {
-              this.coreService.showSuccessToast(
-                "Search setting updated Sucessfully."
-              );
-            }
-            if (action == "save") {
-              this.router.navigate([`navbar/search-settings`]);
-            } else if (action == "saveAddNew") {
-              this.router.navigate([
-                `navbar/search-settings/add-search-settings/add`,
-              ]);
+              if (this.mode == "edit") {
+                this.coreService.showSuccessToast(
+                  "Search setting updated Sucessfully."
+                );
+              }
+              if (action == "save") {
+                this.router.navigate([`navbar/search-settings`]);
+              } else if (action == "saveAddNew") {
+                this.router.navigate([
+                  `navbar/search-settings/add-search-settings/add`,
+                ]);
+              }
             }
           }
-        }
         },
         (err) => {
           console.log("Error in saving Search setting", err);
@@ -649,35 +649,34 @@ export class AddNewSearchComponent implements OnInit {
         if (
           data["status"] &&
           typeof data["status"] == "string" &&
-          data["status"] != "200"
-        ){
+          (data["status"] == "400" || data["status"] == "500")
+        ) {
           if (data["error"]) {
             this.coreService.showWarningToast(data["error"]);
           } else {
             this.coreService.showWarningToast("Some error in fetching data");
           }
-        }
-        else {
-        if (data) {
-          this.searchSettingtable = data["settingSearchQueryCriteria"];
-          this.searchSettingtable.forEach((item, i) => {
-            item["operations"] = this.searchSettingtable[i]["operators"];
-          });
+        } else {
+          if (data) {
+            this.searchSettingtable = data["settingSearchQueryCriteria"];
+            this.searchSettingtable.forEach((item, i) => {
+              item["operations"] = this.searchSettingtable[i]["operators"];
+            });
 
-          const appValue = this.searchApplicationOptions.find(
-            (value) => value.code === data["applicationName"]
-          );
-          this.appCtrl.setValue(appValue);
-          const formValue = this.searchFormsOptions.find(
-            (value) => value.code === data["formName"]
-          );
-          this.formCtrl.setValue(formValue);
-          const moduleValue = this.searchModuleOptions.find(
-            (value) => value.code === data["moduleName"]
-          );
-          this.moduleCtrl.setValue(moduleValue);
+            const appValue = this.searchApplicationOptions.find(
+              (value) => value.code === data["applicationName"]
+            );
+            this.appCtrl.setValue(appValue);
+            const formValue = this.searchFormsOptions.find(
+              (value) => value.code === data["formName"]
+            );
+            this.formCtrl.setValue(formValue);
+            const moduleValue = this.searchModuleOptions.find(
+              (value) => value.code === data["moduleName"]
+            );
+            this.moduleCtrl.setValue(moduleValue);
+          }
         }
-      }
       })
       .add(() => {
         if (this.params && this.params.id) {
@@ -687,7 +686,6 @@ export class AddNewSearchComponent implements OnInit {
   }
 
   reset() {
-
     this.isFieldsQueriesData = false;
     this.searchSettingtable = [];
     this.selectFields = [];

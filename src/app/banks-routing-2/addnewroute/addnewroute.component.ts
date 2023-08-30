@@ -566,28 +566,28 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(templateFormData)
       .subscribe(
-        (response) => {
+        (res) => {
           this.coreService.removeLoadingScreen();
           if (
-            response["status"] &&
-            typeof response["status"] == "string" &&
-            response["status"] != "200"
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
           ){
-            if (response["error"]) {
-              this.coreService.showWarningToast(response["error"]);
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
           }
           else {
-          if (response.msg == "Criteria Template already exists.") {
+          if (res.msg == "Criteria Template already exists.") {
             this.savingCriteriaTemplateError =
               "Criteria Template already exists.";
           } else {
             this.savingCriteriaTemplateError = null;
             this.setCriteriaSharedComponent.selectedTemplate =
               this.setCriteriaSharedComponent.criteriaName;
-            this.coreService.showSuccessToast(response.msg);
+            this.coreService.showSuccessToast(res.msg);
             this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
             this.setCriteriaSharedComponent.criteriaName = "";
             this.getAllTemplates();
@@ -610,27 +610,27 @@ export class AddnewrouteComponent2 implements OnInit {
         this.moduleCtrl.value.code,
         this.formName
       )
-      .subscribe((response) => {
+      .subscribe((res) => {
         if (
-          response["status"] &&
-          typeof response["status"] == "string" &&
-          response["status"] != "200"
+          res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
         ){
-          if (response["error"]) {
-            this.coreService.showWarningToast(response["error"]);
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
           } else {
             this.coreService.showWarningToast("Some error in fetching data");
           }
         }
         else {
-        if (response.data && response.data.length) {
-          this.criteriaTemplatesDdlOptions = response.data;
+        if (res.data && res.data.length) {
+          this.criteriaTemplatesDdlOptions = res.data;
           this.criteriaTemplatesDdlOptions.forEach((val) => {
             val["name"] = val["criteriaName"];
             val["code"] = val["criteriaName"];
           });
         } else {
-          console.log(response.msg);
+          console.log(res.msg);
         }
       }
       }

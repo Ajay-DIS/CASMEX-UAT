@@ -1816,64 +1816,6 @@ export class CorporateComponent implements OnInit, OnChanges {
     console.log(JSON.stringify(payloadData, null, 2));
   }
 
-  saveCorporateCustomer(payload: any) {
-    this.http
-      .post(
-        `/remittance/corporateCustomerController/saveCorporateCustomer`,
-        payload,
-        {
-          headers: new HttpHeaders().set("userId", this.userId),
-        }
-      )
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
-            } else {
-              this.coreService.showSuccessToast(
-                "Profile data successfully saved"
-              );
-            }
-            this.router.navigate(["navbar", "customer-profile"]);
-            // this.onReset()
-          }
-        },
-        (err) => {
-          this.coreService.showWarningToast(
-            "Some error while saving data, Try again in sometime"
-          );
-          this.coreService.removeLoadingScreen();
-        }
-      );
-  }
-
-  getCorporateCustomer(custId: any) {
-    this.http
-      .get(
-        `/remittance/corporateCustomerController/getCorporateCustomerDetails/${custId}`,
-        {
-          headers: new HttpHeaders().set("userId", this.userId),
-        }
-      )
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            console.log(res["data"]);
-            this.setCustomerFormData(res["data"]);
-          }
-        },
-        (err) => {
-          this.coreService.showWarningToast(
-            "Some error while fetching data, Try again in sometime"
-          );
-          this.coreService.removeLoadingScreen();
-        }
-      );
-  }
-
   setCustomerFormData(data: any) {
     this.CustomerData = data;
     this.formSections.forEach((section) => {
@@ -2275,13 +2217,77 @@ export class CorporateComponent implements OnInit, OnChanges {
     }
   }
 
+  saveCorporateCustomer(payload: any) {
+    this.http
+      .post(
+        `/remittance/corporateCustomerController/saveCorporateCustomer`,
+        payload,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Corporate"),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            if (res["data"]) {
+              this.coreService.showSuccessToast(res["data"]);
+            } else {
+              this.coreService.showSuccessToast(
+                "Profile data successfully saved"
+              );
+            }
+            this.router.navigate(["navbar", "customer-profile"]);
+            // this.onReset()
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while saving data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
+  getCorporateCustomer(custId: any) {
+    this.http
+      .get(
+        `/remittance/corporateCustomerController/getCorporateCustomerDetails/${custId}`,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Corporate"),
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            console.log(res["data"]);
+            this.setCustomerFormData(res["data"]);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
+  }
+
   updateCorporateCustomer(payload: any) {
     this.http
       .put(
         `/remittance/corporateCustomerController/updateCorporateCustomer`,
         payload,
         {
-          headers: new HttpHeaders().set("userId", this.userId),
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("customerType", "Corporate"),
         }
       )
       .subscribe(

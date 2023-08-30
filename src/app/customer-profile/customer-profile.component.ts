@@ -71,7 +71,7 @@ export class CustomerProfileComponent implements OnInit {
   customerType = "";
   customerFieldType = "";
   criteriaTypechange = "";
-  type = "";
+  type = "Individual";
 
   criteriaType: any = "text";
 
@@ -283,21 +283,22 @@ export class CustomerProfileComponent implements OnInit {
     console.log(this.type);
     this.showTable = false;
     let service: Observable<any>;
-    if (this.type == "Corporate") {
-      service = this.customerService.getCustomerCorporateData(
-        this.userData["userId"],
-        this.criteriaMap,
-        this.pageNumber,
-        this.pageSize
-      );
-    } else {
-      service = this.customerService.getCustomerIndividualData(
-        this.userData["userId"],
-        this.criteriaMap,
-        this.pageNumber,
-        this.pageSize
-      );
-    }
+    // if (this.type == "Corporate") {
+    service = this.customerService.getCustomerCorporateData(
+      this.userData["userId"],
+      this.criteriaMap,
+      this.pageNumber,
+      this.pageSize,
+      this.type
+    );
+    // } else {
+    //   service = this.customerService.getCustomerIndividualData(
+    //     this.userData["userId"],
+    //     this.criteriaMap,
+    //     this.pageNumber,
+    //     this.pageSize
+    //   );
+    // }
     service.subscribe(
       (res) => {
         console.log(res);
@@ -309,7 +310,7 @@ export class CustomerProfileComponent implements OnInit {
             this.customerData = res.data.CmCorporateCustomerDetails;
           } else {
             this.cols = this.colsIND;
-            this.customerData = res.data.CmIndividualCustomerDetails;
+            this.customerData = res.data.CmCorporateCustomerDetails;
           }
           // this.totalRecords = res.data.PaginationDetails.totalCount;
           this.customerCode = res.customerCode?.map((code) => {
@@ -411,19 +412,20 @@ export class CustomerProfileComponent implements OnInit {
   ) {
     let service: Observable<any>;
     console.log(this.userData);
-    if (cusType == "Corporate") {
-      service = this.customerService.updateCustomerCorporateStatus(
-        this.userData["userId"],
-        status,
-        cusId.toString()
-      );
-    } else {
-      service = this.customerService.updateCustomerIndividualStatus(
-        this.userData["userId"],
-        status,
-        cusId.toString()
-      );
-    }
+    // if (cusType == "Corporate") {
+    service = this.customerService.updateCustomerCorporateStatus(
+      this.userData["userId"],
+      status,
+      cusId.toString(),
+      cusType
+    );
+    // } else {
+    //   service = this.customerService.updateCustomerIndividualStatus(
+    //     this.userData["userId"],
+    //     status,
+    //     cusId.toString()
+    //   );
+    // }
     service.subscribe(
       (res) => {
         console.log(res);

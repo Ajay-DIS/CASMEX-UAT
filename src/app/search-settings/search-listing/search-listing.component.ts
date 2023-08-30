@@ -104,26 +104,25 @@ export class SearchListingComponent implements OnInit {
             res["status"] &&
             typeof res["status"] == "string" &&
             (res["status"] == "400" || res["status"] == "500")
-          ){
+          ) {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
-          }
-          else {
-          this.searchSettingApiData = res;
-          if (res["data"]) {
-            this.searchSettingData = res["data"];
-            this.showNoDataFound = false;
-            this.formatApiData();
-            this.setFilterOptions();
           } else {
-            this.coreService.showWarningToast(res["msg"]);
-            this.searchSettingData = [];
-            this.showNoDataFound = true;
+            this.searchSettingApiData = res;
+            if (res["data"]) {
+              this.searchSettingData = res["data"];
+              this.showNoDataFound = false;
+              this.formatApiData();
+              this.setFilterOptions();
+            } else {
+              this.coreService.showWarningToast(res["msg"]);
+              this.searchSettingData = [];
+              this.showNoDataFound = true;
+            }
           }
-        }
         },
         (err) => {
           console.log("Error in criterisSettingListing", err);
@@ -250,9 +249,8 @@ export class SearchListingComponent implements OnInit {
   }
 
   updateSearchSettingStatus(formData: any, sliderElm: any, searchData: any) {
-    this.searchSettingsService
-      .updateSearchSettingStatus(formData)
-      .subscribe((res) => {
+    this.searchSettingsService.updateSearchSettingStatus(formData).subscribe(
+      (res) => {
         let message = "";
         if (res["error"] == "true") {
           this.coreService.removeLoadingScreen();
@@ -272,9 +270,12 @@ export class SearchListingComponent implements OnInit {
         }
       },
       (err) => {
-        this.coreService.showWarningToast("Something went wrong, Please try again later");
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
         this.coreService.removeLoadingScreen();
-      });
+      }
+    );
   }
 
   openClickForView(data) {
