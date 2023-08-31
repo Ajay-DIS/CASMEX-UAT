@@ -129,7 +129,7 @@ export class CustomerProfileComponent implements OnInit {
     });
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.formName = "Customer Profile Individual";
+    this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
     this.currentCriteriaMapKey = "id = ";
@@ -175,7 +175,7 @@ export class CustomerProfileComponent implements OnInit {
   onUserTypeChange(value: any) {
     console.log(value);
 
-    this.formName = "Customer Profile " + value;
+    this.formName = "Customer Profile";
     this.type = value;
     console.log(this.formName);
     this.criteriaMap = "NA";

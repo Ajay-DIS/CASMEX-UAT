@@ -455,7 +455,7 @@ export class AddCustomerComponent implements OnInit {
               "criteriaMap",
               "Country = IND;Form = Customer Profile;Customer Type = COR"
             )
-            .set("form", "Customer Profile Corporate_Form Rules")
+            .set("form", "Customer Profile_Form Rules")
             .set("moduleName", "Remittance")
             .set("applications", "Casmex Core"),
         })
@@ -2296,7 +2296,6 @@ export class AddCustomerComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
             if (res["data"]) {
               this.coreService.showSuccessToast(res["data"]);
@@ -2307,6 +2306,8 @@ export class AddCustomerComponent implements OnInit {
             }
             this.router.navigate(["navbar", "customer-profile"]);
             // this.onReset()
+          } else {
+            this.coreService.removeLoadingScreen();
           }
         },
         (err) => {
