@@ -53,7 +53,7 @@ export class CustomerProfileService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/individualCustomerController/getCustomerSearchSetting`,
+      `/remittance/corporateCustomerController/getCustomerSearchSetting`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
@@ -74,7 +74,12 @@ export class CustomerProfileService {
   //     }
   //   );
   // }
-  updateCustomerCorporateStatus(userId: any, status: any, id: any, custType: any) {
+  updateCustomerCorporateStatus(
+    userId: any,
+    status: any,
+    id: any,
+    custType: any
+  ) {
     return this.http.get(
       `/remittance/corporateCustomerController/updateCorporateStatus`,
       {
