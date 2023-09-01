@@ -21,6 +21,8 @@ import { SearchListingComponent } from "./search-settings/search-listing/search-
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./custom-form/custom-form.component";
+import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
+import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -329,6 +331,44 @@ const routes: Routes = [
             routerLink: "../navbar/customer-profile",
           },
           { label: "Edit Customer", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "beneficiary-profile",
+        component: BeneficiaryProfileComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
+          {
+            label: "Beneficiary Profile",
+            routerLink: "../navbar/beneficiary-profile",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "beneficiary-profile/addnewbeneficiary",
+        component: AddBeneficiaryComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
+          {
+            label: "Beneficiary Profile",
+            routerLink: "../navbar/beneficiary-profile",
+          },
+          { label: "Add Beneficiary", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "beneficiary-profile/addnewbeneficiary/:type/:id/edit",
+        component: AddCustomerComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/customer-profile" },
+          {
+            label: "Beneficiary Profile",
+            routerLink: "../navbar/beneficiary-profile",
+          },
+          { label: "Edit Beneficiary", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

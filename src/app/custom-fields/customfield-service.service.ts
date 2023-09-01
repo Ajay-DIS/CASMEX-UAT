@@ -7,10 +7,12 @@ import { Injectable } from '@angular/core';
 export class CustomfieldServiceService {
 
   constructor(private http: HttpClient) { }
-  getTaxSettingData(criteriaMap: any) {
+  getTaxSettingData(criteriaMap: any,appName: any, moduleName: any,formName: any) {
     return this.http.get(
       `/remittance/taxSettingCriteriaController/getTaxSetting`,
-      { headers: new HttpHeaders().set("criteriaMap", criteriaMap) }
-    );
-  }
+      { headers: new HttpHeaders().set("criteriaMap", criteriaMap)
+      .set("applications", appName)
+      .set("moduleName", moduleName)
+      .set("form", formName) }
+    ); }
 }

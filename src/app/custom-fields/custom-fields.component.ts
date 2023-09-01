@@ -17,6 +17,10 @@ export class CustomFieldsComponent implements OnInit {
 
   criteriaMapDes = "";
 
+  appName ="Casmex Core";
+  moduleName ="Remittance";
+  formName = "Tax Settings";
+
   constructor(private customService: CustomfieldServiceService,private route: ActivatedRoute,private coreService: CoreService,) { }
 
   ngOnInit(): void {
@@ -24,13 +28,13 @@ export class CustomFieldsComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.getTaxSettingapiData();
+    // this.getTaxSettingapiData();
     
   }
 
   Apply(){
 console.log("criteriaMapDes",this.criteriaMapDes)
-this.customService.getTaxSettingData(this.criteriaMapDes).subscribe((res:any)=> {
+this.customService.getTaxSettingData(this.criteriaMapDes,this.appName, this.moduleName,this.formName).subscribe((res:any)=> {
   console.log("response ", res);
   if(res.TaxSettingData && res.TaxSettingData.length) {
     this.taxSettingData = res.TaxSettingData;
@@ -39,10 +43,14 @@ this.customService.getTaxSettingData(this.criteriaMapDes).subscribe((res:any)=> 
   }
 })
   }
-  getTaxSettingapiData(){ 
+  getTaxSettingapiData(appValue: any, moduleValue: any){ 
     // let params = "Country = IND;State = KL;City = CHN&&&&from:1::to:10#from:11::to:20";
-    let params = "Country = IND ";
-  this.customService.getTaxSettingData(params).subscribe((res:any)=> {
+    let params = [
+    "Country = USA",
+    "Country = IND&&&&from:1::to:2",
+    "Country = IND&&&&from:2::to:3",
+    "Country = IND;Amount Type = Equivalent local Amount;Customer Type = COR;State = MP&&&&LCY Amount = 21;LCY Amount > 212"];
+  this.customService.getTaxSettingData(params,appValue, moduleValue,this.formName).subscribe((res:any)=> {
     console.log("response ", res);
     if(res.TaxSettingData && res.TaxSettingData.length) {
       this.taxSettingData = res.TaxSettingData;
