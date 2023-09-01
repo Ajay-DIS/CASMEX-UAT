@@ -158,11 +158,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           label: menu,
           icon: this.getIcons(menu).icon,
           routerLink: this.getIcons(menu).routerLink,
-          expanded:
-            this.getIcons(menu).matchUrls &&
-            this.getIcons(menu).matchUrls.some((v) =>
-              this.currRoute.includes(v)
-            ),
+          routerLinkActiveOptions: { subset: true },
+          expanded: true,
         });
       }
     });
@@ -206,10 +203,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           break;
         case "Custom Fields":
           item["routerLink"] = "/navbar/custom-fields";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Customer Profile":
-          item["routerLink"] = "/navbar/customer-profile";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
       }

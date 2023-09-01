@@ -368,6 +368,18 @@ main {
   font-weight: 500;
 }
 ::ng-deep.p-panelmenu
+  .p-panelmenu-panel
+  .p-panelmenu-header-link.p-menuitem-link-active {
+  background: linear-gradient(
+    to right,
+    var(--primary-700),
+    var(--primary-400)
+  ) !important;
+  border-color: transparent !important;
+  color: var(--primary-color-text) !important;
+  border-radius: 5px !important;
+}
+::ng-deep.p-panelmenu
   .p-panelmenu-content
   .p-menuitem
   .p-menuitem-link.p-menuitem-link-active {
