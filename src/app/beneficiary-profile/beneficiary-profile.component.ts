@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmDialog } from 'primeng/confirmdialog';
-import { CoreService } from '../core.service';
-import { ConfirmationService } from 'primeng/api';
-import { CustomerProfileService } from '../customer-profile/customer-profile.service';
-import { Observable } from 'rxjs';
-import { MultiSelect } from 'primeng/multiselect';
+import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmDialog } from "primeng/confirmdialog";
+import { CoreService } from "../core.service";
+import { ConfirmationService } from "primeng/api";
+import { CustomerProfileService } from "../customer-profile/customer-profile.service";
+import { Observable } from "rxjs";
+import { MultiSelect } from "primeng/multiselect";
 
 @Component({
-  selector: 'app-beneficiary-profile',
-  templateUrl: './beneficiary-profile.component.html',
-  styleUrls: ['./beneficiary-profile.component.scss']
+  selector: "app-beneficiary-profile",
+  templateUrl: "./beneficiary-profile.component.html",
+  styleUrls: ["./beneficiary-profile.component.scss"],
 })
 export class BeneficiaryProfileComponent implements OnInit {
   showcustomerCodeOptions: boolean = false;
@@ -128,7 +128,7 @@ export class BeneficiaryProfileComponent implements OnInit {
     });
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    this.formName = "Customer Profile Individual";
+    this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
     this.currentCriteriaMapKey = "id = ";
@@ -174,7 +174,7 @@ export class BeneficiaryProfileComponent implements OnInit {
   onUserTypeChange(value: any) {
     console.log(value);
 
-    this.formName = "Customer Profile " + value;
+    this.formName = "Customer Profile";
     this.type = value;
     console.log(this.formName);
     this.criteriaMap = "NA";
@@ -340,7 +340,11 @@ export class BeneficiaryProfileComponent implements OnInit {
     );
   }
   addNewCustomer() {
-    this.router.navigate(["navbar", "beneficiary-profile", "addnewbeneficiary"]);
+    this.router.navigate([
+      "navbar",
+      "beneficiary-profile",
+      "addnewbeneficiary",
+    ]);
   }
 
   confirmStatus(e: any, data: any, cusType: any) {
