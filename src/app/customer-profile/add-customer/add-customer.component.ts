@@ -57,7 +57,7 @@ export class AddCustomerComponent implements OnInit {
   ];
 
   masterData = {
-    profession: [
+    professionEmpDetails: [
       {
         code: "plumber",
         codeName: "plumber",
@@ -67,7 +67,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "driver",
       },
     ],
-    politicallyExposedPerson: [
+    politicallyExposedPersonPersonalDetails: [
       {
         code: "yes",
         codeName: "yes",
@@ -77,7 +77,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "no",
       },
     ],
-    visaStatus: [
+    visaStatusEmpDetails: [
       {
         code: "Work Permit",
         codeName: "Work Permit",
@@ -103,8 +103,8 @@ export class AddCustomerComponent implements OnInit {
         codeName: "Other",
       },
     ],
-    salaryDate: [],
-    customerGroup: [
+    salaryDateEmpDetails: [],
+    customerGroupPersonalDetails: [
       {
         code: "1",
         codeName: "1",
@@ -114,7 +114,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "2",
       },
     ],
-    nationality: [
+    nationalityPersonalDetails: [
       {
         code: "Indian",
         codeName: "Indian",
@@ -212,7 +212,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "America",
       },
     ],
-    countryOfBirth: [
+    countryOfBirthPersonalDetails: [
       {
         code: "Japan",
         codeName: "Japan",
@@ -308,7 +308,7 @@ export class AddCustomerComponent implements OnInit {
         codeName: "Voter",
       },
     ],
-    gender: [
+    genderPersonalDetails: [
       {
         code: "Male",
         codeName: "Male",
@@ -453,7 +453,7 @@ export class AddCustomerComponent implements OnInit {
           headers: new HttpHeaders()
             .set(
               "criteriaMap",
-              "Country = IND;Form = Customer Profile;Customer Type = COR"
+              "Country = IND;Form = Customer Profile;Customer Type = IND"
             )
             .set("form", "Customer Profile_Form Rules")
             .set("moduleName", "Remittance")
@@ -483,7 +483,10 @@ export class AddCustomerComponent implements OnInit {
         );
     }
     for (let i = 1; i <= 30; i++) {
-      this.masterData.salaryDate.push({ code: `${i}`, codeName: `${i}` });
+      this.masterData.salaryDateEmpDetails.push({
+        code: `${i}`,
+        codeName: `${i}`,
+      });
     }
   }
 
@@ -638,9 +641,9 @@ export class AddCustomerComponent implements OnInit {
           permanentCountry: "",
           permanentHouseBuildingNumber: "",
           permanentBlockNumber: "",
-          permanentStreetName: "",
+          permanentStreetNumber: "",
           permanentCity: "",
-          permanentPinZipCode: "",
+          permanentPinZipcode: "",
         };
       }
 

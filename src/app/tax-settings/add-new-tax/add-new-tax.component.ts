@@ -701,72 +701,126 @@ export class AddNewTaxComponent implements OnInit {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
       } else {
-        let service;
-        this.decodeSelectedOptions();
-        if (this.mode == "edit") {
-          let data = {
-            data: this.appliedCriteriaData,
-            duplicate: this.appliedCriteriaIsDuplicate,
-            criteriaMap: this.appliedCriteriaCriteriaMap,
-            taxCode: this.taxID,
-          };
-          service = this.taxSettingsService.updateTaxSetting(
-            this.userId,
-            data,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
-            this.formName
-          );
-        } else {
-          let data = {
-            data: this.appliedCriteriaData,
-            duplicate: this.appliedCriteriaIsDuplicate,
-            criteriaMap: this.appliedCriteriaCriteriaMap,
-          };
-          service = this.taxSettingsService.addNewTax(
-            data,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
-            this.formName
-          );
-        }
-
-        if (service) {
-          service.subscribe(
-            (res) => {
+        let duplicateTaxType = false;
+        if (
+          this.appliedCriteriaData[0]["lcyAmountFrom"] ||
+          this.appliedCriteriaData[0]["lcyAmount"]
+        ) {
+          let taxTypeObj = {};
+          if (this.appliedCriteriaData[0]["lcyAmountFrom"]) {
+            this.appliedCriteriaData.forEach((data) => {
               if (
-                res["status"] &&
-                typeof res["status"] == "string" &&
-                (res["status"] == "400" || res["status"] == "500")
+                taxTypeObj[data["lcyAmountFrom"]] &&
+                taxTypeObj[data["lcyAmountFrom"]].length
               ) {
-                if (res["error"]) {
-                  this.coreService.showWarningToast(res["error"]);
-                } else {
-                  this.coreService.showWarningToast(
-                    "Something went wrong, Please try again later"
-                  );
-                }
+                taxTypeObj[data["lcyAmountFrom"]].push(data["taxType"]);
               } else {
-                if (res["msg"]) {
-                  this.coreService.showSuccessToast(res.msg);
-                  if (action == "save") {
-                    this.router.navigate([`navbar/tax-settings`]);
-                  } else if (action == "saveAndAddNew") {
-                    this.taxSettingsService.applicationName = null;
-                    this.taxSettingsService.moduleName = null;
-                    this.router.navigate([`navbar/tax-settings/add-tax`]);
+                taxTypeObj[data["lcyAmountFrom"]] = [data["taxType"]];
+              }
+            });
+          } else {
+            this.appliedCriteriaData.forEach((data) => {
+              if (
+                taxTypeObj[data["lcyAmount"]] &&
+                taxTypeObj[data["lcyAmount"]].length
+              ) {
+                taxTypeObj[data["lcyAmount"]].push(data["taxType"]);
+              } else {
+                taxTypeObj[data["lcyAmount"]] = [data["taxType"]];
+              }
+            });
+          }
+          Object.values(taxTypeObj).forEach((taxTypeArr: any) => {
+            if (new Set(taxTypeArr).size !== taxTypeArr.length) {
+              this.coreService.removeLoadingScreen();
+              this.coreService.showWarningToast(
+                "Duplicate Tax type value found for a particular LCY Amount !"
+              );
+              duplicateTaxType = true;
+              return;
+            }
+          });
+        } else {
+          let taxTypeArr = this.appliedCriteriaData.map((data) => {
+            return data["taxType"];
+          });
+          if (new Set(taxTypeArr).size !== taxTypeArr.length) {
+            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast(
+              "Duplicate Tax type value found !"
+            );
+            duplicateTaxType = true;
+            return;
+          }
+        }
+        if (!duplicateTaxType) {
+          let service;
+          this.decodeSelectedOptions();
+          if (this.mode == "edit") {
+            let data = {
+              data: this.appliedCriteriaData,
+              duplicate: this.appliedCriteriaIsDuplicate,
+              criteriaMap: this.appliedCriteriaCriteriaMap,
+              taxCode: this.taxID,
+            };
+            service = this.taxSettingsService.updateTaxSetting(
+              this.userId,
+              data,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formName
+            );
+          } else {
+            let data = {
+              data: this.appliedCriteriaData,
+              duplicate: this.appliedCriteriaIsDuplicate,
+              criteriaMap: this.appliedCriteriaCriteriaMap,
+            };
+            service = this.taxSettingsService.addNewTax(
+              data,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formName
+            );
+          }
+
+          if (service) {
+            service.subscribe(
+              (res) => {
+                if (
+                  res["status"] &&
+                  typeof res["status"] == "string" &&
+                  (res["status"] == "400" || res["status"] == "500")
+                ) {
+                  if (res["error"]) {
+                    this.coreService.showWarningToast(res["error"]);
+                  } else {
+                    this.coreService.showWarningToast(
+                      "Something went wrong, Please try again later"
+                    );
+                  }
+                } else {
+                  if (res["msg"]) {
+                    this.coreService.showSuccessToast(res.msg);
+                    if (action == "save") {
+                      this.router.navigate([`navbar/tax-settings`]);
+                    } else if (action == "saveAndAddNew") {
+                      this.taxSettingsService.applicationName = null;
+                      this.taxSettingsService.moduleName = null;
+                      this.router.navigate([`navbar/tax-settings/add-tax`]);
+                    }
                   }
                 }
+              },
+              (err) => {
+                this.coreService.removeLoadingScreen();
+                console.log("error in saveAddNewTax", err);
+                this.coreService.showWarningToast(
+                  "Something went wrong, Please try again later"
+                );
               }
-            },
-            (err) => {
-              this.coreService.removeLoadingScreen();
-              console.log("error in saveAddNewTax", err);
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
-            }
-          );
+            );
+          }
         }
       }
     } else {

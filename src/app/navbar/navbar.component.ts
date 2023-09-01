@@ -158,11 +158,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           label: menu,
           icon: this.getIcons(menu).icon,
           routerLink: this.getIcons(menu).routerLink,
-          expanded:
-            this.getIcons(menu).matchUrls &&
-            this.getIcons(menu).matchUrls.some((v) =>
-              this.currRoute.includes(v)
-            ),
+          routerLinkActiveOptions: { subset: true },
+          expanded: true,
         });
       }
     });
