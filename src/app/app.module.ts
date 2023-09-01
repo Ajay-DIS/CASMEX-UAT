@@ -70,6 +70,8 @@ import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./custom-form/custom-form.component";
 import { CorporateComponent } from "./customer-profile/corporate/corporate.component";
 import { UserIdleModule } from "angular-user-idle";
+import { BeneficiaryProfileComponent } from './beneficiary-profile/beneficiary-profile.component';
+import { AddBeneficiaryComponent } from './beneficiary-profile/add-beneficiary/add-beneficiary.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -102,6 +104,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CustomFieldsComponent,
     CustomFormComponent,
     CorporateComponent,
+    BeneficiaryProfileComponent,
+    AddBeneficiaryComponent,
   ],
   imports: [
     BrowserModule,
