@@ -208,8 +208,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/custom-fields";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Customer Profile":
-          item["routerLink"] = "/navbar/customer-profile";
+        case "Beneficiary Profile":
+          item["routerLink"] = "/navbar/beneficiary-profile";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
       }
@@ -288,6 +288,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Beneficiary Profile":
         iconName = "beneficiary-icon";
+        matchUrls = ["/navbar/beneficiary-profile"];
+        routeName = "/navbar/beneficiary-profile";
         break;
       case "Remmitance":
         iconName = "remmitance-icon";
