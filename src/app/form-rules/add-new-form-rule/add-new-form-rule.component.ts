@@ -370,12 +370,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   ["LCY Amount"]
                 );
 
-              let crtfields = this.setCriteriaService.decodeFormattedCriteria(
-                reqData.critMap,
-                this.criteriaMasterData,
-                ["LCY Amount"]
-              );
-
               this.applyCriteriaDataTableColumns = [];
 
               let lcyOprFields = [];
@@ -386,7 +380,7 @@ export class AddNewFormRuleComponent implements OnInit {
               let countryCol = {};
 
               this.applyCriteriaDataTableColumns = [...this.cols];
-              crtfields
+              this.criteriaText
                 .slice()
                 .reverse()
                 .forEach((crt) => {
@@ -619,10 +613,19 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   onNodeSelect(event) {
-    event["node"]["partialSelected"] = false;
+    if (event.node) {
+      event["node"]["partialSelected"] = false;
+    }
   }
   onNodeUnSelect(event) {
     delete event["node"]["partialSelected"];
+    if (event["node"]["children"] && event["node"]["children"].length > 0) {
+      event["node"]["children"].forEach((child) => {
+        if (child.hasOwnProperty("partialSelected")) {
+          delete child["partialSelected"];
+        }
+      });
+    }
   }
 
   getCriteriaMasterData() {
@@ -1244,15 +1247,18 @@ export class AddNewFormRuleComponent implements OnInit {
       let fieldObjArr = copyApplyCriteriaFormattedData.filter((tableData) => {
         return tableData["data"]["fieldName"] == k;
       });
-
+      console.log(fieldObjArr);
       fieldObjArr.forEach((data) => {
         fieldArr.push(...data["children"]);
       });
 
       fieldArr.forEach((child) => {
         delete child["parent"];
-
-        if (child["partialSelected"] == false) {
+        // console.log(child, child["partialSelected"]);
+        if (
+          child["partialSelected"] == false ||
+          child["partialSelected"] == "N"
+        ) {
           child["data"]["ruleSelected"] = true;
         } else {
           child["data"]["ruleSelected"] = false;
