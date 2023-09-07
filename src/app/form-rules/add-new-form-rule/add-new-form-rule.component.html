@@ -163,10 +163,7 @@
       "
     ></app-set-criteria>
   </div>
-  <div
-    class="details-page-card mt-2"
-    *ngIf="showContent && applyCriteriaFormattedData.length"
-  >
+  <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -192,26 +189,19 @@
               (onNodeUnselect)="onNodeUnSelect($event)"
               [scrollable]="true"
               scrollHeight="250px"
+              [loading]="ttLoading"
             >
-              <ng-template pTemplate="colgroup" let-columns>
-                <colgroup>
-                  <col *ngFor="let col of columns" />
-                </colgroup>
-              </ng-template>
               <ng-template pTemplate="header" let-columns>
-                <tr>
+                <tr [ttRow]="rowNode">
                   <th
-                    *ngFor="let col of columns; let k = index"
-                    [style.width]="col.width"
+                    *ngFor="let col of columns"
+                    [style.width]="col.field == 'fieldName' ? '200px' : ''"
                   >
                     {{ col.header }}
                   </th>
                 </tr>
                 <tr class="search-row">
-                  <th
-                    *ngFor="let col of columns; let i = index"
-                    [style.width]="col.width"
-                  >
+                  <th *ngFor="let col of columns; let i = index">
                     <span
                       *ngIf="
                         !defCols.includes(col.field) || col.field == 'fieldName'
@@ -246,168 +236,127 @@
                 <tr
                   [ngClass]="{
                     groupHeading:
-                      rowData && !rowData.hasOwnProperty('fieldType')
+                      rowData && !rowData.hasOwnProperty('fieldType'),
+                    dataColumn: rowData && rowData.hasOwnProperty('fieldType')
                   }"
                 >
-                  <ng-container *ngFor="let col of columns; let i = index">
-                    <td
-                      [style]="setStyle(col, i)"
-                      [style.width]="col.width"
-                      [pTooltip]="
-                        col.type == 'input' &&
-                        col.field == 'defaultValue' &&
-                        (rowData['isValidLength'] == false ||
-                          rowData['isValidDefValue'] == false)
-                          ? defValueInpTooltip
-                          : ''
-                      "
+                  <td
+                    *ngFor="let col of columns; let i = index"
+                    [pTooltip]="
+                      col.type == 'input' &&
+                      col.field == 'defaultValue' &&
+                      (rowData['isValidLength'] == false ||
+                        rowData['isValidDefValue'] == false)
+                        ? defValueInpTooltip
+                        : ''
+                    "
+                    tooltipPosition="bottom"
+                    [style.width]="col.field == 'fieldName' ? '200px' : ''"
+                  >
+                    <p-treeTableCheckbox
+                      [value]="rowNode"
+                      *ngIf="i == 0"
                       [ngClass]="{
-                        dataCol: rowData && rowData.hasOwnProperty(col.field)
+                        dataCheckbox:
+                          rowData && rowData.hasOwnProperty('fieldType')
                       }"
-                      tooltipPosition="bottom"
+                    ></p-treeTableCheckbox>
+                    <ng-container
+                      *ngIf="rowData && rowData.hasOwnProperty(col.field)"
                     >
-                      <p-treeTableToggler
-                        [rowNode]="rowNode"
-                        *ngIf="i == 0"
-                      ></p-treeTableToggler>
-                      <p-treeTableCheckbox
-                        [value]="rowNode"
-                        *ngIf="i == 0"
-                      ></p-treeTableCheckbox>
-
-                      <ng-container
-                        *ngIf="rowData && rowData.hasOwnProperty(col.field)"
+                      <div
+                        *ngIf="col.type == 'string'"
+                        style="display: inline-block"
+                        [title]="rowData[col.field]"
                       >
-                        <div
-                          *ngIf="col.type == 'string'"
-                          style="display: inline-block"
-                          [pTooltip]="rowData[col.field]"
-                          tooltipPosition="top"
-                        >
-                          {{
-                            rowData[col.field].slice(0, 30) +
-                              (rowData[col.field].length > 30 ? "..." : "")
-                          }}
-                        </div>
-                        <input
-                          #validLengthInp
-                          *ngIf="
-                            col.type == 'input' && col.field == 'validLength'
-                          "
-                          class="w-100"
-                          type="text"
-                          pInputText
-                          [placeholder]="
-                            rowData[col.field] ? rowData[col.field] : ''
-                          "
-                          [(ngModel)]="rowData[col.field]"
-                          [pTooltip]="
-                            col.type == 'input' &&
-                            col.field == 'validLength' &&
-                            rowData['isValidLength'] == false
-                              ? minMaxInpTooltip
-                              : ''
-                          "
-                          [style.maxWidth]="'75%'"
-                          tooltipPosition="bottom"
-                          (ngModelChange)="
-                            minMaxValidation(
-                              $event,
-                              rowData,
-                              validLengthInp,
-                              columns[i + 1].field,
-                              defValueInp
-                            )
-                          "
-                        />
-                        <input
-                          #defValueInp
-                          *ngIf="
-                            col.type == 'input' && col.field == 'defaultValue'
-                          "
-                          class="w-100"
-                          type="text"
-                          [style.maxWidth]="'85%'"
-                          pInputText
-                          [placeholder]="
-                            rowData[col.field]
-                              ? rowData[col.field]
-                              : rowData['fieldType'] == 'Date'
-                              ? 'MM/DD/YYYY'
-                              : ''
-                          "
-                          [(ngModel)]="rowData[col.field]"
-                          (ngModelChange)="
-                            defaultValueValidation(
-                              $event,
-                              rowData,
-                              defValueInp,
-                              columns[i - 1].field
-                            )
-                          "
-                          [disabled]="rowData['isValidLength'] == false"
-                        />
-                        <input
-                          *ngIf="col.type == 'input' && col.field == 'regex'"
-                          class="w-100"
-                          type="text"
-                          [style.maxWidth]="'85%'"
-                          pInputText
-                          [placeholder]="
-                            rowData[col.field] ? rowData[col.field] : ''
-                          "
-                          [(ngModel)]="rowData[col.field]"
-                        />
-                        <input
-                          *ngIf="
-                            col.type == 'input' && col.field == 'fieldLabel'
-                          "
-                          class="w-100"
-                          type="text"
-                          [style.maxWidth]="'85%'"
-                          pInputText
-                          [placeholder]="
-                            rowData[col.field] ? rowData[col.field] : ''
-                          "
-                          [(ngModel)]="rowData[col.field]"
-                        />
-
-                        <input
-                          *ngIf="
-                            col.type == 'lcySlabFrom' ||
-                            col.type == 'lcySlabTo' ||
-                            col.type == 'lcyOpr'
-                          "
-                          type="text"
-                          pInputText
-                          [placeholder]="
-                            rowData[col.field] ? rowData[col.field] : ''
-                          "
-                          [(ngModel)]="rowData[col.field]"
-                          [disabled]="true"
-                          [ngClass]="{
-                            lcyOpr: col.type == 'lcyOpr',
-                            lcySlab:
-                              col.type == 'lcySlabFrom' ||
-                              col.type == 'lcySlabTo'
-                          }"
-                        />
-                        <p-checkbox
-                          *ngIf="col.type == 'checkbox'"
-                          [(ngModel)]="rowData[col.field]"
-                          [binary]="true"
-                          [disabled]="
-                            (col.field == 'isVisibile' ||
-                              col.field == 'isEnable') &&
-                            rowData['isMandatory']
-                          "
-                          (onChange)="
-                            toggleCheckbox($event, rowData, col.field)
-                          "
-                        ></p-checkbox>
-                      </ng-container>
-                    </td>
-                  </ng-container>
+                        {{
+                          rowData[col.field].slice(0, 20) +
+                            (rowData[col.field].length > 20 ? "..." : "")
+                        }}
+                      </div>
+                      <input
+                        *ngIf="
+                          col.type == 'lcySlabFrom' ||
+                          col.type == 'lcySlabTo' ||
+                          col.type == 'lcyOpr'
+                        "
+                        type="text"
+                        [(ngModel)]="rowData[col.field]"
+                        disabled="true"
+                      />
+                      <input
+                        *ngIf="
+                          col.type == 'input' &&
+                          !(
+                            col.field == 'validLength' ||
+                            col.field == 'defaultValue'
+                          )
+                        "
+                        type="text"
+                        [(ngModel)]="rowData[col.field]"
+                      />
+                      <input
+                        *ngIf="col.type == 'checkbox'"
+                        type="checkbox"
+                        [(ngModel)]="rowData[col.field]"
+                        (change)="toggleCheckbox($event, rowData, col.field)"
+                        [disabled]="
+                          (col.field == 'isVisibile' ||
+                            col.field == 'isEnable') &&
+                          rowData['isMandatory']
+                        "
+                      />
+                      <input
+                        #validLengthInp
+                        *ngIf="
+                          col.type == 'input' && col.field == 'validLength'
+                        "
+                        type="text"
+                        [(ngModel)]="rowData[col.field]"
+                        (ngModelChange)="
+                          minMaxValidation(
+                            $event,
+                            rowData,
+                            validLengthInp,
+                            columns[i + 1].field,
+                            defValueInp
+                          )
+                        "
+                        [pTooltip]="
+                          col.type == 'input' &&
+                          col.field == 'validLength' &&
+                          rowData['isValidLength'] == false
+                            ? minMaxInpTooltip
+                            : ''
+                        "
+                        tooltipPosition="bottom"
+                      />
+                      <input
+                        #defValueInp
+                        *ngIf="
+                          col.type == 'input' && col.field == 'defaultValue'
+                        "
+                        type="text"
+                        [(ngModel)]="rowData[col.field]"
+                        [placeholder]="
+                          rowData[col.field]
+                            ? rowData[col.field]
+                            : rowData['fieldType'] == 'Date'
+                            ? 'MM/DD/YYYY'
+                            : ''
+                        "
+                        (ngModelChange)="
+                          defaultValueValidation(
+                            $event,
+                            rowData,
+                            defValueInp,
+                            columns[i - 1].field
+                          )
+                        "
+                        [disabled]="rowData['isValidLength'] == false"
+                      />
+                    </ng-container>
+                  </td>
                 </tr>
               </ng-template>
             </p-treeTable>

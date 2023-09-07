@@ -35,15 +35,15 @@
   margin-left: 2px;
 }
 
-.appliedCriteriaDataTable ::ng-deep .p-treetable-wrapper {
-  max-height: 323px !important;
-}
-.appliedCriteriaDataTable ::ng-deep p-treetabletoggler button {
-  width: 0px !important;
-}
-.appliedCriteriaDataTable ::ng-deep p-treetabletoggler button i {
-  display: none !important;
-}
+// .appliedCriteriaDataTable ::ng-deep .p-treetable-wrapper {
+//   max-height: 323px !important;
+// }
+// .appliedCriteriaDataTable ::ng-deep p-treetabletoggler button {
+//   width: 0px !important;
+// }
+// .appliedCriteriaDataTable ::ng-deep p-treetabletoggler button i {
+//   display: none !important;
+// }
 .appliedCriteriaDataTable ::ng-deep .p-checkbox .p-checkbox-box {
   width: 16px;
   height: 16px;
@@ -53,17 +53,17 @@
   position: relative;
   background: #f3f4f8;
 }
-.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcyOpr {
-  width: 100% !important;
-  max-width: 125px;
-  font-size: 11px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-.appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcySlab {
-  width: 86px !important;
-  max-width: 86px;
-}
+// .appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcyOpr {
+//   width: 100% !important;
+//   max-width: 125px;
+//   font-size: 11px;
+//   padding-left: 5px;
+//   padding-right: 5px;
+// }
+// .appliedCriteriaDataTable ::ng-deep .p-treetable-tbody input.lcySlab {
+//   width: 86px !important;
+//   max-width: 86px;
+// }
 .appliedCriteriaDataTable ::ng-deep .p-treetable-tbody > tr.groupHeading td {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -73,24 +73,57 @@
 .appliedCriteriaDataTable
   ::ng-deep
   .p-treetable-tbody
-  > tr.groupHeading
-  td.dataCol {
-  position: absolute;
+  > tr.dataColumn
+  td:nth-child(1) {
+  padding-left: 22px !important;
+  padding-right: 0 !important;
 }
-
 .appliedCriteriaDataTable
   ::ng-deep
   .p-treetable-tbody
-  > tr
-  > td
+  > tr.dataColumn
+  td
   p-treetablecheckbox
   .p-checkbox {
-  margin-right: 0.3rem;
+  margin-right: 0.2rem !important;
 }
 
-.appliedCriteriaDataTable ::ng-deep .p-treetable table {
-  table-layout: auto;
+.appliedCriteriaDataTable input,
+.appliedCriteriaDataTable input:hover,
+.appliedCriteriaDataTable input:active {
+  border: none;
+  background-color: #f4f6fa;
+  height: 100%;
+  width: 100%;
 }
+
+.appliedCriteriaDataTable input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+}
+
+// .appliedCriteriaDataTable
+//   ::ng-deep
+//   .p-treetable-tbody
+//   > tr.groupHeading
+//   td.dataCol {
+//   position: absolute;
+// }
+
+// .appliedCriteriaDataTable
+//   ::ng-deep
+//   .p-treetable-tbody
+//   > tr
+//   > td
+//   p-treetablecheckbox
+//   .p-checkbox {
+//   margin-right: 0.3rem;
+// }
+
+// .appliedCriteriaDataTable ::ng-deep .p-treetable table {
+//   table-layout: auto;
+// }
 // suresh Work start -->
 .details-page-card-content {
   border: 0.5px solid var(--surface-ground);
@@ -109,6 +142,7 @@
 
 input.inputError {
   border: 1px solid red !important;
+  box-shadow: none !important;
 }
 
 .select-module-application {
