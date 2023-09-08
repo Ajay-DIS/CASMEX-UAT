@@ -74,6 +74,7 @@ import { BeneficiaryProfileComponent } from './beneficiary-profile/beneficiary-p
 import { AddBeneficiaryComponent } from './beneficiary-profile/add-beneficiary/add-beneficiary.component';
 import { DocumentListingComponent } from './document-settings/document-listing/document-listing.component';
 import { DocumentDetailsComponent } from './document-settings/document-details/document-details.component';
+import { AddCustomerBenefComponent } from './beneficiary-profile/add-customer-benef/add-customer-benef.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -110,6 +111,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddBeneficiaryComponent,
     DocumentListingComponent,
     DocumentDetailsComponent,
+    AddCustomerBenefComponent,
   ],
   imports: [
     BrowserModule,
