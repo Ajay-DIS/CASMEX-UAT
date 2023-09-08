@@ -874,59 +874,57 @@ export class DocumentDetailsComponent implements OnInit {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Grace Days.");
       } else {
-        let duplicateTaxType = false;
-        // if (
-        //   this.applyCriteriaFormattedData[0]["lcyAmountFrom"] ||
-        //   this.applyCriteriaFormattedData[0]["lcyAmount"]
-        // ) {
-        //   let taxTypeObj = {};
-        //   if (this.applyCriteriaFormattedData[0]["lcyAmountFrom"]) {
-        //     this.applyCriteriaFormattedData.forEach((data) => {
-        //       if (
-        //         taxTypeObj[data["lcyAmountFrom"]] &&
-        //         taxTypeObj[data["lcyAmountFrom"]].length
-        //       ) {
-        //         taxTypeObj[data["lcyAmountFrom"]].push(data["taxType"]);
-        //       } else {
-        //         taxTypeObj[data["lcyAmountFrom"]] = [data["taxType"]];
-        //       }
-        //     });
-        //   } else {
-        //     this.applyCriteriaFormattedData.forEach((data) => {
-        //       if (
-        //         taxTypeObj[data["lcyAmount"]] &&
-        //         taxTypeObj[data["lcyAmount"]].length
-        //       ) {
-        //         taxTypeObj[data["lcyAmount"]].push(data["taxType"]);
-        //       } else {
-        //         taxTypeObj[data["lcyAmount"]] = [data["taxType"]];
-        //       }
-        //     });
-        //   }
-        //   Object.values(taxTypeObj).forEach((taxTypeArr: any) => {
-        //     if (new Set(taxTypeArr).size !== taxTypeArr.length) {
-        //       this.coreService.removeLoadingScreen();
-        //       this.coreService.showWarningToast(
-        //         "Duplicate Tax type value found for a particular LCY Amount !"
-        //       );
-        //       duplicateTaxType = true;
-        //       return;
-        //     }
-        //   });
-        // } else {
-        //   let taxTypeArr = this.applyCriteriaFormattedData.map((data) => {
-        //     return data["taxType"];
-        //   });
-        //   if (new Set(taxTypeArr).size !== taxTypeArr.length) {
-        //     this.coreService.removeLoadingScreen();
-        //     this.coreService.showWarningToast(
-        //       "Duplicate Tax type value found !"
-        //     );
-        //     duplicateTaxType = true;
-        //     return;
-        //   }
-        // }
-        if (!duplicateTaxType) {
+        let duplicateDocType = false;
+        if (
+          this.applyCriteriaFormattedData[0]["lcyAmountFrom"] ||
+          this.applyCriteriaFormattedData[0]["lcyAmount"]
+        ) {
+          let docTypeObj = {};
+          if (this.applyCriteriaFormattedData[0]["lcyAmountFrom"]) {
+            this.applyCriteriaFormattedData.forEach((data) => {
+              if (
+                docTypeObj[data["lcyAmountFrom"]] &&
+                docTypeObj[data["lcyAmountFrom"]].length
+              ) {
+                docTypeObj[data["lcyAmountFrom"]].push(data["document"]);
+              } else {
+                docTypeObj[data["lcyAmountFrom"]] = [data["document"]];
+              }
+            });
+          } else {
+            this.applyCriteriaFormattedData.forEach((data) => {
+              if (
+                docTypeObj[data["lcyAmount"]] &&
+                docTypeObj[data["lcyAmount"]].length
+              ) {
+                docTypeObj[data["lcyAmount"]].push(data["document"]);
+              } else {
+                docTypeObj[data["lcyAmount"]] = [data["document"]];
+              }
+            });
+          }
+          Object.values(docTypeObj).forEach((docTypeArr: any) => {
+            if (new Set(docTypeArr).size !== docTypeArr.length) {
+              this.coreService.removeLoadingScreen();
+              this.coreService.showWarningToast(
+                "Duplicate document found for a particular LCY Amount !"
+              );
+              duplicateDocType = true;
+              return;
+            }
+          });
+        } else {
+          let docTypeArr = this.applyCriteriaFormattedData.map((data) => {
+            return data["document"];
+          });
+          if (new Set(docTypeArr).size !== docTypeArr.length) {
+            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast("Duplicate document found !");
+            duplicateDocType = true;
+            return;
+          }
+        }
+        if (!duplicateDocType) {
           let service;
           this.decodeSelectedOptions();
           if (this.mode == "edit") {
@@ -934,7 +932,7 @@ export class DocumentDetailsComponent implements OnInit {
             //   data: this.applyCriteriaFormattedData,
             //   duplicate: this.appliedCriteriaIsDuplicate,
             //   criteriaMap: this.appliedCriteriaCriteriaMap,
-            //   taxCode: this.taxID,
+            //   docCode: this.taxID,
             // };
             service = this.documentService.updateDocument(
               this.userId,
