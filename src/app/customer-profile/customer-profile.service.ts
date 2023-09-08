@@ -91,4 +91,21 @@ export class CustomerProfileService {
       }
     );
   }
+  updateBeneficiaryStatusApi(
+    userId: any,
+    status: any,
+    id: any,
+    custType: any
+  ) {
+    return this.http.get(
+      `/remittance/beneficiaryProfileController/updateBeneficiaryProfileStatus`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", userId)
+          .set("status", status)
+          .set("id", id)
+          .set("customerType", custType),
+      }
+    );
+  }
 }
