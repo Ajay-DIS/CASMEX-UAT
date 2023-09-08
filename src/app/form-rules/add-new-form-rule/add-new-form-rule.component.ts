@@ -74,45 +74,52 @@ export class AddNewFormRuleComponent implements OnInit {
 
   applyCriteriaDataTableColumns: any[] = [];
 
+  ttLoading = false
+
   cols: any[] = [
-    { field: "fieldName", header: "Field Name", type: "string", width: "20%" },
+    {
+      field: "fieldName",
+      header: "Field Name",
+      type: "string",
+      width: "300px",
+    },
     {
       field: "fieldLabel",
       header: "Field Label",
       type: "input",
-      width: "12%",
+      width: "200px",
     },
     {
       field: "isMandatory",
       header: "Is Mandatory",
       type: "checkbox",
-      width: "8%",
+      width: "100px",
     },
     {
       field: "isEnable",
       header: "Is Enable",
       type: "checkbox",
-      width: "8%",
+      width: "100px",
     },
     {
       field: "isVisibile",
       header: "Is Visible",
       type: "checkbox",
-      width: "8%",
+      width: "100px",
     },
     {
       field: "validLength",
       header: "Min/Max Length",
       type: "input",
-      width: "10%",
+      width: "120px",
     },
     {
       field: "defaultValue",
       header: "Default Values",
       type: "input",
-      width: "10%",
+      width: "120px",
     },
-    { field: "regex", header: "Regex", type: "input", width: "10%" },
+    { field: "regex", header: "Regex", type: "input", width: "120px" },
   ];
 
   defCols = this.cols.map((col) => col.field);
@@ -584,7 +591,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 }
               }
 
-              console.log("::", [...completeData]);
+              console.log("::", completeData);
               console.log("::", this.applyCriteriaDataTableColumns);
 
               this.applyCriteriaFormattedData = [...completeData];
@@ -1552,7 +1559,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
   toggleCheckbox(e: any, rowData: any, field: any) {
     if (field == "isMandatory") {
-      if (e.checked) {
+      if (e.returnValue) {
         rowData["isVisibile"] = true;
         rowData["isEnable"] = true;
       } else {

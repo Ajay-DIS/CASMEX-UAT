@@ -26,13 +26,13 @@
 }
 .NorecordFound button {
   margin-bottom: 40px;
+  margin-top: 70px;
 }
 
 .NorecordFound img {
   width: 27%;
   margin-top: 70px;
 }
-
 .app-form-search {
   background: white;
   border-radius: 6px;
@@ -40,6 +40,7 @@
 
 .select-module-application {
   display: flex;
+  gap: 10px;
 }
 .select-module-application .field {
   align-items: center;
