@@ -1,0 +1,1109 @@
+import { Component, OnInit, ViewChild } from "@angular/core";
+import {
+  UntypedFormBuilder,
+  UntypedFormControl,
+  Validators,
+} from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService, MessageService } from "primeng/api";
+import { DialogService } from "primeng/dynamicdialog";
+import { CoreService } from "src/app/core.service";
+import { DocumentSettingsService } from "../document-settings.service";
+import { forkJoin } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
+import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
+import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
+
+@Component({
+  selector: "app-document-details",
+  templateUrl: "./document-details.component.html",
+  styleUrls: ["./document-details.component.scss"],
+  providers: [DialogService, MessageService],
+})
+export class DocumentDetailsComponent implements OnInit {
+  @ViewChild(SetCriteriaComponent)
+  setCriteriaSharedComponent!: SetCriteriaComponent;
+
+  primaryColor = "var(--primary-color)";
+
+  userId = "";
+  documentID = "";
+  mode = "add";
+  formName = "Document Settings";
+
+  documentCode = "No Data";
+  documentDesc = "";
+
+  criteriaMasterData: any = {};
+  criteriaDataDetailsJson: any = {};
+  cmCriteriaMandatory = [];
+  cmCriteriaDependency: any = {};
+  cmCriteriaDataDetails: any = [];
+  independantCriteriaArr: any = [];
+  cmCriteriaSlabType: any = [];
+  criteriaTemplatesDdlOptions: any = [];
+  criteriaMapDdlOptions = [];
+  criteriaEqualsDdlOptions = [];
+  correspondentDdlOptions = [];
+
+  criteriaText: any[] = [];
+  criteriaCodeText: any[] = [];
+
+  savingCriteriaTemplateError = null;
+
+  inactiveData: boolean = false;
+  isApplyCriteriaClicked: boolean = false;
+
+  selectAppModule: any;
+  searchApplicationOptions: any[] = [];
+  searchModuleOptions: any[] = [];
+
+  formattedMasterData: any = [];
+
+  appModuleDataPresent: boolean = false;
+  showContent: boolean = false;
+
+  documentOption: any[] = [];
+  documentNoTypeOption: any[] = [];
+
+  applyCriteriaDataTableColumns: any[] = [];
+  columnsCopy: any[] = [
+    {
+      field: "document",
+      header: "Document",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "documentNoType",
+      header: "Document No. Type",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+
+    {
+      field: "lengthMinMax",
+      header: "Length (Min / Max)",
+
+      fieldType: "input",
+      frozen: false,
+      info: "Format should be Min digit/Max digit",
+    },
+    {
+      field: "gracePeriodDays",
+      header: "Grace Period (Day)",
+
+      fieldType: "input",
+      frozen: false,
+      info: "Numeric field",
+    },
+    {
+      field: "isMandatory",
+      header: "Is Mandatory",
+
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "isDefault",
+      header: "Is Primary Document",
+
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "issueCountry",
+      header: "Issue Country",
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "frontSide",
+      header: "Front Side",
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "backSide",
+      header: "Back Side",
+
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "action",
+      header: "Action",
+
+      fieldType: "button",
+      frozen: true,
+      info: null,
+    },
+  ];
+
+  applyCriteriaFormattedData: any[] = [];
+  appliedCriteriaCriteriaMap: any = null;
+  appliedCriteriaIsDuplicate: any = null;
+
+  applyCriteriaResponse: any[] = [];
+
+  isLcyFieldPresent = false;
+
+  isDocSettingLinked: boolean = false;
+
+  constructor(
+    private fb: UntypedFormBuilder,
+    private activatedRoute: ActivatedRoute,
+    public dialogService: DialogService,
+    public messageService: MessageService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private coreService: CoreService,
+    private confirmationService: ConfirmationService,
+    private documentService: DocumentSettingsService,
+    private criteriaDataService: CriteriaDataService,
+    private setCriteriaService: SetCriteriaService
+  ) {}
+
+  ngOnInit(): void {
+    this.coreService.displayLoadingScreen();
+    this.mode = "add";
+    this.route.data.subscribe((data) => {
+      this.coreService.setBreadCrumbMenu(Object.values(data));
+    });
+    this.setSelectAppModule();
+    this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+    const params = this.activatedRoute.snapshot.params;
+    if (params && params.id) {
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      this.documentID = params.id;
+    }
+    this.documentService.getAppModuleList().subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          this.coreService.removeLoadingScreen();
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          if (!res["msg"]) {
+            this.searchApplicationOptions = res["data"][
+              "cmApplicationMaster"
+            ].map((app) => {
+              return { name: app.name, code: app.name };
+            });
+            this.searchModuleOptions = res["data"][
+              "cmPrimaryModuleMasterDetails"
+            ].map((app) => {
+              return { name: app.codeName, code: app.codeName };
+            });
+            if (
+              !(
+                this.documentService.applicationName ||
+                this.documentService.moduleName
+              )
+            ) {
+              if (this.mode != "add") {
+                this.router.navigate([`navbar/form-rules`]);
+              } else {
+                this.coreService.removeLoadingScreen();
+              }
+            } else {
+              if (this.mode != "add") {
+                this.appCtrl.setValue({
+                  name: this.documentService.applicationName,
+                  code: this.documentService.applicationName,
+                });
+                this.moduleCtrl.setValue({
+                  name: this.documentService.moduleName,
+                  code: this.documentService.moduleName,
+                });
+                this.appModuleDataPresent = true;
+                this.appCtrl.disable();
+                this.moduleCtrl.disable();
+                this.searchAppModule();
+              }
+            }
+          } else {
+            this.coreService.removeLoadingScreen();
+          }
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Some error in fetching data");
+      }
+    );
+
+    // this.documentService
+    //   .getDocumentForEdit(
+    //     this.userId,
+    //     "D0003",
+    //     "Country = IND;Form = Customer Profile;Customer Type = IND",
+    //     "edit",
+    //     "Casmex Core",
+    //     "Remittance",
+    //     "Document Settings"
+    //   )
+    //   .subscribe((res) => {
+    //     console.log(res);
+    //   });
+  }
+
+  applyCriteria(postDataCriteria: FormData) {
+    // this.applyCriteriaApi({});
+    postDataCriteria.append("docSettingsCode", this.documentCode);
+    postDataCriteria.append("operation", this.mode);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
+    postDataCriteria.append("form", this.formName);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
+    this.isApplyCriteriaClicked = true;
+    if (this.isDocSettingLinked && this.mode != "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: `You can not edit the current criteria, as it is already used in transaction.<br/> Kindly disable the current record and add new.`,
+        key: "documentSettingLinkedWarning",
+        accept: () => {
+          this.coreService.displayLoadingScreen();
+          setTimeout(() => {
+            this.coreService.setHeaderStickyStyle(true);
+            this.coreService.setSidebarBtnFixedStyle(true);
+          }, 500);
+          setTimeout(() => {
+            this.coreService.removeLoadingScreen();
+          }, 1000);
+        },
+      });
+    } else {
+      this.applyCriteriaApi(postDataCriteria);
+    }
+  }
+
+  applyCriteriaApi(formData: any) {
+    this.applyCriteriaFormattedData = [];
+    this.applyCriteriaDataTableColumns = [];
+    this.coreService.displayLoadingScreen();
+
+    this.applyCriteriaDataTableColumns = JSON.parse(
+      JSON.stringify(this.columnsCopy)
+    );
+
+    // APICALL
+    this.documentService.applyCriteriaSearch(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          this.coreService.removeLoadingScreen();
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          this.coreService.removeLoadingScreen();
+
+          if (!res["duplicate"]) {
+            this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
+            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+            this.appliedCriteriaIsDuplicate = res["duplicate"];
+            let reqData =
+              this.criteriaDataService.decodeCriteriaMapIntoTableFields(res);
+
+            let crtfields = this.setCriteriaService.decodeFormattedCriteria(
+              reqData.critMap,
+              this.criteriaMasterData,
+              ["LCY Amount"]
+            );
+            this.documentOption = res["data"].documentOption.map(
+              (docOption) => {
+                return { code: docOption.dtmCode, name: docOption.dtmName };
+              }
+            );
+            this.documentNoTypeOption = res["data"].documentNoTypeOption.map(
+              (docOption) => {
+                return { code: docOption, name: docOption };
+              }
+            );
+
+            if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+              this.isLcyFieldPresent = true;
+            }
+
+            if (!this.isLcyFieldPresent) {
+              this.applyCriteriaFormattedData = [res["data"].DocumentSettings];
+              this.applyCriteriaFormattedData.forEach((data) => {
+                data["criteriaMapSplit"] = null;
+              });
+            } else {
+              if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+                let lcyOprFields = crtfields.filter((crt) => {
+                  return crt.includes("LCY Amount");
+                });
+                this.applyCriteriaDataTableColumns.splice(-10, 0, {
+                  field: "lcyAmount",
+                  header: "LCY Amount",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcyOprFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].DocumentSettings)
+                  );
+                  apiData["lcyAmount"] = field;
+                  apiData["criteriaMapSplit"] = field;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (res["criteriaMap"].indexOf("from") >= 0) {
+                let lcySlabFields = reqData.lcySlabArr;
+                this.applyCriteriaDataTableColumns.splice(-10, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-10, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcySlabFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].DocumentSettings)
+                  );
+                  apiData["lcyAmountFrom"] = field.from;
+                  apiData["lcyAmountTo"] = field.to;
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `from:${field["from"]}::to:${field["to"]}`;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              }
+            }
+
+            this.applyCriteriaFormattedData.forEach((data) => {
+              delete data.id;
+              data["documentOption"] = this.documentOption;
+              data["documentNoTypeOption"] = this.documentNoTypeOption;
+              data["action"] = res["data"].action;
+              data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
+              data["invalidLength"] = false;
+              data["invalidGraceDays"] = false;
+              data["status"] = "Active";
+            });
+            this.setSelectedOptions();
+
+            console.log("::", this.applyCriteriaFormattedData);
+            // console.log("::", this.applyCriteriaDataTableColumns);
+
+            this.coreService.showSuccessToast(`Criteria Applied Successfully`);
+            this.coreService.removeLoadingScreen();
+          } else {
+            this.applyCriteriaFormattedData = [];
+            this.appliedCriteriaCriteriaMap = null;
+            this.appliedCriteriaIsDuplicate = null;
+            this.applyCriteriaDataTableColumns = [];
+            this.coreService.showWarningToast(
+              "Applied criteria already exists."
+            );
+          }
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        console.log("error in Doc Setting Apply API", err);
+        this.coreService.showWarningToast("Some error in fetching data");
+      }
+    );
+  }
+
+  setSelectAppModule() {
+    this.selectAppModule = this.fb.group({
+      applications: new UntypedFormControl({ value: "", disabled: false }, [
+        Validators.required,
+      ]),
+      modules: new UntypedFormControl({ value: "", disabled: true }, [
+        Validators.required,
+      ]),
+    });
+  }
+
+  get appCtrl() {
+    return this.selectAppModule.get("applications");
+  }
+  get moduleCtrl() {
+    return this.selectAppModule.get("modules");
+  }
+
+  onAppValueChange() {
+    this.showContent = false;
+    this.appModuleDataPresent = false;
+    this.moduleCtrl.reset();
+    this.moduleCtrl.enable();
+  }
+
+  searchAppModule() {
+    this.applyCriteriaFormattedData = [];
+    this.criteriaText = [];
+    this.criteriaCodeText = [];
+    this.appModuleDataPresent = true;
+    this.showContent = false;
+    this.getCriteriaMasterData();
+    this.getAllTemplates();
+  }
+
+  selectedColumn(selectCol: any, value: any, index: any) {
+    this.applyCriteriaFormattedData[index][selectCol] = value.name;
+
+    console.log(this.applyCriteriaFormattedData[index]);
+  }
+
+  checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {
+    if (operation == "delete") {
+      this.delete(index);
+    } else if (operation == "clone") {
+      this.clone(index, selectRow, fieldName);
+    }
+  }
+  clone(index: any, selectRow: any, fieldName: any) {
+    let clonedRow = {
+      ...selectRow,
+    };
+    clonedRow[fieldName] = "clone,delete";
+    this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
+  }
+  delete(index: any) {
+    this.applyCriteriaFormattedData.splice(index, 1);
+  }
+
+  formatValidation(e: any, field: any, inp: any, rowIndex: any) {
+    if (field == "lengthMinMax") {
+      const pattern = /^(\d+)\/(\d+)$/;
+      if (e.length) {
+        const match = e.match(pattern);
+        if (match) {
+          const min = parseInt(match[1]);
+          const max = parseInt(match[2]);
+          if (min <= max) {
+            inp.classList.remove("inputError");
+            this.applyCriteriaFormattedData[rowIndex]["invalidLength"] = false;
+          } else {
+            inp.classList.add("inputError");
+            this.applyCriteriaFormattedData[rowIndex]["invalidLength"] = true;
+          }
+        } else {
+          inp.classList.add("inputError");
+          this.applyCriteriaFormattedData[rowIndex]["invalidLength"] = true;
+        }
+      } else {
+        inp.classList.remove("inputError");
+        this.applyCriteriaFormattedData[rowIndex]["invalidLength"] = false;
+      }
+    } else if (field == "gracePeriodDays") {
+      const pattern = /^\d+$/;
+      if (e.length) {
+        const match = e.match(pattern);
+        if (match) {
+          inp.classList.remove("inputError");
+          this.applyCriteriaFormattedData[rowIndex]["invalidGraceDays"] = false;
+        } else {
+          inp.classList.add("inputError");
+          this.applyCriteriaFormattedData[rowIndex]["invalidGraceDays"] = true;
+        }
+      } else {
+        inp.classList.remove("inputError");
+        this.applyCriteriaFormattedData[rowIndex]["invalidGraceDays"] = false;
+      }
+    }
+  }
+
+  getCriteriaMasterData() {
+    if (this.mode == "add") {
+      this.coreService.displayLoadingScreen();
+    }
+    forkJoin({
+      criteriaMasterData: this.documentService.getCriteriaMasterData(
+        this.userId,
+        this.formName,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
+      ),
+      addBankRouteCriteriaData: this.documentService.getAddDocumentCriteriaData(
+        this.userId,
+        this.formName,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
+      ),
+    })
+      .pipe(
+        take(1),
+        map((response) => {
+          this.formatMasterData(response.criteriaMasterData);
+          const criteriaMasterData = response.criteriaMasterData;
+          this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
+          this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
+            (data) => {
+              if (data["criteriaType"] == "Slab") {
+                this.cmCriteriaSlabType.push(data["fieldName"]);
+              }
+            }
+          );
+
+          if (this.mode == "add") {
+            this.documentCode = this.criteriaDataDetailsJson.data.documentCode;
+            this.documentID = this.documentCode;
+            this.documentDesc = this.criteriaDataDetailsJson.data.documentDesc;
+          }
+
+          this.cmCriteriaDataDetails = [
+            ...this.criteriaDataDetailsJson.data.listCriteria
+              .cmCriteriaDataDetails,
+          ];
+
+          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
+            .replace(/["|\[|\]]/g, "")
+            .split(", ");
+
+          this.cmCriteriaDependency =
+            this.criteriaDataDetailsJson.data.dependance;
+
+          let criteriaDependencyTreeData =
+            this.criteriaDataService.setDependencyTree(
+              this.criteriaDataDetailsJson,
+              this.cmCriteriaDataDetails,
+              criteriaMasterData,
+              this.cmCriteriaMandatory,
+              this.cmCriteriaDependency,
+              this.cmCriteriaSlabType
+            );
+
+          this.criteriaMapDdlOptions =
+            criteriaDependencyTreeData["criteriaMapDdlOptions"];
+          this.independantCriteriaArr =
+            criteriaDependencyTreeData["independantCriteriaArr"];
+          return criteriaMasterData;
+        })
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            this.showContent = false;
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          } else {
+            this.criteriaMasterData = res;
+            if (this.mode == "edit") {
+              if (
+                !(
+                  this.documentService.applicationName ||
+                  this.documentService.moduleName
+                )
+              ) {
+                this.appModuleDataPresent = false;
+                this.showContent = false;
+                this.router.navigate([`navbar/document-settings`]);
+              } else {
+                this.getDocSettingForEditApi(this.documentID, "edit");
+              }
+            } else if (this.mode == "clone") {
+              if (
+                !(
+                  this.documentService.applicationName ||
+                  this.documentService.moduleName
+                )
+              ) {
+                this.appModuleDataPresent = false;
+                this.showContent = false;
+                this.router.navigate([`navbar/document-settings`]);
+              } else {
+                this.getDocSettingForEditApi(this.documentID, "clone");
+              }
+            } else {
+              this.showContent = true;
+              this.coreService.removeLoadingScreen();
+            }
+          }
+        },
+        (err) => {
+          this.showContent = false;
+          this.coreService.removeLoadingScreen();
+          console.log("Error in Initiating dropdown values", err);
+          this.coreService.showWarningToast("Some error in fetching data");
+        }
+      );
+  }
+
+  formatMasterData(masterData: any) {
+    const formattedMasterData = [].concat.apply([], Object.values(masterData));
+    this.formattedMasterData = formattedMasterData;
+  }
+
+  resetCriteriaDropdowns() {
+    this.setCriteriaSharedComponent.resetCriteriaDropdowns();
+  }
+
+  getCorrespondentValues(
+    fieldName: any,
+    displayName: any,
+    criteriaCodeText: any
+  ) {
+    let criteriaMapValue = criteriaCodeText.join(";");
+
+    this.coreService.displayLoadingScreen();
+    this.documentService
+      .getCorrespondentValuesData(
+        this.formName,
+        this.appCtrl.value.code,
+        criteriaMapValue,
+        fieldName,
+        displayName,
+        this.moduleCtrl.value.code
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+          } else {
+            this.coreService.removeLoadingScreen();
+            if (res[fieldName]) {
+              this.setCriteriaSharedComponent.valueCtrl.enable();
+              this.setCriteriaSharedComponent.hideValuesDropdown = false;
+              this.setCriteriaSharedComponent.showValueInput = false;
+
+              this.correspondentDdlOptions = res[fieldName].map((val) => {
+                return { name: val["codeName"], code: val["code"] };
+              });
+            } else {
+              if (res["message"]) {
+                this.coreService.showWarningToast(res["message"]);
+                this.resetCriteriaDropdowns();
+              } else {
+                this.coreService.showWarningToast("Criteria Map is not proper");
+                this.resetCriteriaDropdowns();
+              }
+            }
+          }
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          console.log("Error in getting values", err);
+          this.resetCriteriaDropdowns();
+          this.coreService.showWarningToast("Some error in fetching data");
+        }
+      );
+  }
+
+  getAllTemplates() {
+    this.documentService
+      .getAllCriteriaTemplates(
+        this.userId,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
+        this.formName
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Some error in saving template"
+              );
+            }
+          } else {
+            if (res["data"] && res.data.length) {
+              this.criteriaTemplatesDdlOptions = res.data;
+              this.criteriaTemplatesDdlOptions.forEach((val) => {
+                val["name"] = val["criteriaName"];
+                val["code"] = val["criteriaName"];
+              });
+            } else {
+              console.log(res.msg);
+            }
+          }
+        },
+        (err) => {
+          console.log(":: Error in getting template list", err);
+          this.coreService.showWarningToast(
+            "Some error in getting template list"
+          );
+        }
+      );
+  }
+
+  saveCriteriaAsTemplate(templateFormData: any) {
+    templateFormData.append("applications", this.appCtrl.value.code);
+    templateFormData.append("form", this.formName);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
+    this.coreService.displayLoadingScreen();
+    this.documentService
+      .currentCriteriaSaveAsTemplate(templateFormData)
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Some error in saving template"
+              );
+            }
+          } else {
+            this.coreService.removeLoadingScreen();
+            if (res.msg == "Criteria Template already exists.") {
+              this.savingCriteriaTemplateError =
+                "Criteria Template already exists.";
+            } else {
+              this.savingCriteriaTemplateError = null;
+              this.setCriteriaSharedComponent.selectedTemplate =
+                this.setCriteriaSharedComponent.criteriaName;
+              this.coreService.showSuccessToast(res.msg);
+              this.setCriteriaSharedComponent.saveTemplateDialogOpen = false;
+              this.setCriteriaSharedComponent.criteriaName = "";
+              this.getAllTemplates();
+            }
+          }
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          console.log(":: Error in saving criteria template", err);
+          this.coreService.showWarningToast("Some error in saving template");
+        }
+      );
+  }
+
+  getDocSettingForEditApi(docId: any, mode: any) {}
+
+  saveAddNewDocument(action) {
+    console.log(
+      "::payloaddata",
+      JSON.stringify(this.applyCriteriaFormattedData, null, 2)
+    );
+    if (
+      this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
+      this.appliedCriteriaCriteriaMap
+    ) {
+      this.coreService.showWarningToast(
+        "Recent changes in Criteria map has not been applied, Saving last applied data"
+      );
+    }
+
+    if (
+      this.mode != "clone" ||
+      (this.mode == "clone" && this.isApplyCriteriaClicked)
+    ) {
+      this.coreService.displayLoadingScreen();
+      let isRequiredFields = false;
+      let invalidGraceDays = false;
+      let invalidLength = false;
+      let docMissing = false;
+      this.applyCriteriaFormattedData.forEach((element) => {
+        if (element["invalidLength"]) {
+          invalidLength = true;
+        }
+        if (element["invalidGraceDays"]) {
+          invalidGraceDays = true;
+        }
+        element["documentDesc"] = this.documentDesc
+          ? this.documentDesc.replace(/\s/g, "").length
+            ? this.documentDesc
+            : null
+          : null;
+        if (!element["documentDesc"]) {
+          isRequiredFields = true;
+        }
+        if (!element["document"]) {
+          docMissing = true;
+        }
+      });
+      if (isRequiredFields) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Fill required fields.");
+      } else if (docMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Document.");
+      } else if (invalidLength) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Enter Valid Min/Max Length.");
+      } else if (invalidGraceDays) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Enter Valid Grace Days.");
+      } else {
+        let duplicateTaxType = false;
+        // if (
+        //   this.applyCriteriaFormattedData[0]["lcyAmountFrom"] ||
+        //   this.applyCriteriaFormattedData[0]["lcyAmount"]
+        // ) {
+        //   let taxTypeObj = {};
+        //   if (this.applyCriteriaFormattedData[0]["lcyAmountFrom"]) {
+        //     this.applyCriteriaFormattedData.forEach((data) => {
+        //       if (
+        //         taxTypeObj[data["lcyAmountFrom"]] &&
+        //         taxTypeObj[data["lcyAmountFrom"]].length
+        //       ) {
+        //         taxTypeObj[data["lcyAmountFrom"]].push(data["taxType"]);
+        //       } else {
+        //         taxTypeObj[data["lcyAmountFrom"]] = [data["taxType"]];
+        //       }
+        //     });
+        //   } else {
+        //     this.applyCriteriaFormattedData.forEach((data) => {
+        //       if (
+        //         taxTypeObj[data["lcyAmount"]] &&
+        //         taxTypeObj[data["lcyAmount"]].length
+        //       ) {
+        //         taxTypeObj[data["lcyAmount"]].push(data["taxType"]);
+        //       } else {
+        //         taxTypeObj[data["lcyAmount"]] = [data["taxType"]];
+        //       }
+        //     });
+        //   }
+        //   Object.values(taxTypeObj).forEach((taxTypeArr: any) => {
+        //     if (new Set(taxTypeArr).size !== taxTypeArr.length) {
+        //       this.coreService.removeLoadingScreen();
+        //       this.coreService.showWarningToast(
+        //         "Duplicate Tax type value found for a particular LCY Amount !"
+        //       );
+        //       duplicateTaxType = true;
+        //       return;
+        //     }
+        //   });
+        // } else {
+        //   let taxTypeArr = this.applyCriteriaFormattedData.map((data) => {
+        //     return data["taxType"];
+        //   });
+        //   if (new Set(taxTypeArr).size !== taxTypeArr.length) {
+        //     this.coreService.removeLoadingScreen();
+        //     this.coreService.showWarningToast(
+        //       "Duplicate Tax type value found !"
+        //     );
+        //     duplicateTaxType = true;
+        //     return;
+        //   }
+        // }
+        if (!duplicateTaxType) {
+          let service;
+          this.decodeSelectedOptions();
+          if (this.mode == "edit") {
+            // let data = {
+            //   data: this.applyCriteriaFormattedData,
+            //   duplicate: this.appliedCriteriaIsDuplicate,
+            //   criteriaMap: this.appliedCriteriaCriteriaMap,
+            //   taxCode: this.taxID,
+            // };
+            service = this.documentService.updateDocument(
+              this.userId,
+              this.applyCriteriaFormattedData,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formName,
+              this.mode
+            );
+          } else {
+            // let data = {
+            //   data: this.applyCriteriaFormattedData,
+            //   duplicate: this.appliedCriteriaIsDuplicate,
+            //   criteriaMap: this.appliedCriteriaCriteriaMap,
+            // };
+            service = this.documentService.saveNewDocument(
+              this.userId,
+              this.applyCriteriaFormattedData,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formName,
+              this.mode
+            );
+          }
+
+          if (service) {
+            service.subscribe(
+              (res) => {
+                console.log(res);
+                if (
+                  res["status"] &&
+                  typeof res["status"] == "string" &&
+                  (res["status"] == "400" || res["status"] == "500")
+                ) {
+                  if (res["error"]) {
+                    this.coreService.showWarningToast(res["error"]);
+                  } else {
+                    this.coreService.showWarningToast(
+                      "Something went wrong, Please try again later"
+                    );
+                  }
+                } else {
+                  if (res["msg"]) {
+                    this.coreService.showSuccessToast(res.msg);
+                    if (action == "save") {
+                      this.router.navigate([`navbar/document-settings`]);
+                    } else if (action == "saveAndAddNew") {
+                      this.documentService.applicationName = null;
+                      this.documentService.moduleName = null;
+                      this.router.navigate([
+                        `navbar/document-settings/add-document`,
+                      ]);
+                    }
+                  }
+                }
+              },
+              (err) => {
+                this.coreService.removeLoadingScreen();
+                console.log("error in savingDocument", err);
+                this.coreService.showWarningToast(
+                  "Something went wrong, Please try again later"
+                );
+              }
+            );
+          }
+        }
+      }
+    } else {
+      this.coreService.showWarningToast("Applied criteria already exists.");
+    }
+  }
+
+  setSelectedOptions() {
+    this.applyCriteriaFormattedData.forEach((data) => {
+      if (data["document"]) {
+        data["document"] = data["documentOption"].filter(
+          (option) => option["code"] == data["document"]
+        )[0]["name"];
+      }
+
+      if (data["documentNoType"]) {
+        data["documentNoType"] = data["documentNoTypeOption"].filter(
+          (option) => option["code"] == data["documentNoType"]
+        )[0]["name"];
+      }
+    });
+  }
+  decodeSelectedOptions() {
+    this.applyCriteriaFormattedData.forEach((data) => {
+      data["document"] = data["documentOption"].filter(
+        (option) => option["name"] == data["document"]
+      )[0]["code"];
+      data["documentNoType"] = data["documentNoTypeOption"].filter(
+        (option) => option["name"] == data["documentNoType"]
+      )[0]["code"];
+    });
+  }
+
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
+  }
+
+  reset() {
+    if (this.mode == "edit") {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetDocumentDataConfirmation",
+        accept: () => {
+          this.coreService.displayLoadingScreen();
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else if (this.mode == "clone") {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear applied changes ?",
+        key: "resetDocumentDataConfirmation",
+        accept: () => {
+          this.coreService.displayLoadingScreen();
+          this.getCriteriaMasterData();
+          this.getAllTemplates();
+          this.coreService.setHeaderStickyStyle(true);
+          this.coreService.setSidebarBtnFixedStyle(true);
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.coreService.setHeaderStickyStyle(false);
+      this.confirmationService.confirm({
+        message: "Are you sure, you want to clear all the fields ?",
+        key: "resetDocumentDataConfirmation",
+        accept: () => {
+          this.applyCriteriaFormattedData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.documentDesc = "";
+
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+          this.appCtrl.reset();
+          this.moduleCtrl.reset();
+          this.moduleCtrl.disable();
+          this.showContent = false;
+          this.appModuleDataPresent = false;
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    }
+  }
+}

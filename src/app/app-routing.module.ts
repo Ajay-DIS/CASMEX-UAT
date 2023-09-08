@@ -23,6 +23,8 @@ import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./custom-form/custom-form.component";
 import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
 import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
+import { DocumentListingComponent } from "./document-settings/document-listing/document-listing.component";
+import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -369,6 +371,49 @@ const routes: Routes = [
             routerLink: "../navbar/beneficiary-profile",
           },
           { label: "Edit Beneficiary", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "document-settings",
+        component: DocumentListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/document-settings" },
+          { label: "Document Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "document-settings/add-document",
+        component: DocumentDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/document-settings" },
+          { label: "Document Settings", routerLink: "document-settings" },
+          { label: "Add Document Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "document-settings/add-document/:id/edit",
+        component: DocumentDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/document-settings" },
+          { label: "Document Settings", routerLink: "document-settings" },
+          { label: "Edit Document Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "document-settings/add-document/:id/clone",
+        component: DocumentDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/document-settings" },
+          { label: "Document Settings", routerLink: "document-settings" },
+          { label: "Clone Document Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

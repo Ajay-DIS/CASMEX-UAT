@@ -1,0 +1,339 @@
+<div class="visible-main-section">
+  <div class="details-page-card">
+    <div class="d-flex mx-3" style="justify-content: space-between">
+      <p class="description-text">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="41"
+          height="35"
+          viewBox="0 0 41 41"
+        >
+          <g
+            id="Group_2248"
+            data-name="Group 2248"
+            transform="translate(-341 -138)"
+          >
+            <circle
+              id="Ellipse_130"
+              data-name="Ellipse 130"
+              cx="20.5"
+              cy="20.5"
+              r="20.5"
+              transform="translate(341 138)"
+              [attr.fill]="primaryColor"
+            />
+            <path
+              id="_52_Note_Basic_Description"
+              data-name="52  Note, Basic, Description"
+              d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+              transform="translate(348.213 145.945)"
+              fill="#fff"
+            />
+          </g>
+        </svg>
+        Enables users to configure document related settings.
+      </p>
+      <div class="buttons-section">
+        <button
+          pButton
+          pRipple
+          [disabled]="
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+          "
+          type="button"
+          label="Save"
+          class="p-button-raised"
+          (click)="saveAddNewDocument('save')"
+        ></button>
+        <!-- <button
+          pButton
+          pRipple
+          type="button"
+          [disabled]="
+            !applyCriteriaFormattedData.length ||
+            !applyCriteriaFormattedData.length
+          "
+          label="Save & Add New"
+          class="p-button-raised"
+          (click)="saveAddNewDocument('saveAndAddNew')"
+        ></button> -->
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Reset"
+          class="p-button-warning"
+          (click)="reset()"
+        ></button>
+      </div>
+    </div>
+    <div [formGroup]="selectAppModule" class="select-module-application m-2">
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="application"
+          >Application</label
+        >
+        <p-dropdown
+          name="application"
+          inputId="application"
+          [options]="searchApplicationOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="applications"
+          (onChange)="onAppValueChange()"
+        ></p-dropdown>
+      </div>
+      <div class="d-flex field col-4 md-4">
+        <label class="detail-page-section-heading" for="module">Module</label>
+        <p-dropdown
+          name="module"
+          inputId="module"
+          [options]="searchModuleOptions"
+          placeholder="Select"
+          optionLabel="name"
+          formControlName="modules"
+          (onChange)="searchAppModule()"
+        ></p-dropdown>
+      </div>
+    </div>
+    <div
+      *ngIf="appModuleDataPresent && showContent"
+      class="d-flex m-3 document-code-desc-section"
+    >
+      <div
+        class="documentCode"
+        [pTooltip]="
+          this.mode == 'add'
+            ? 'Document Code is automatically generated, It may get changed in saving process.'
+            : ''
+        "
+      >
+        <p>Document Code</p>
+        <input type="text" pInputText [(ngModel)]="documentCode" disabled />
+      </div>
+      <div class="documentDesc">
+        <p style="position: relative">
+          Document Description <span class="description red-star">*</span>
+        </p>
+        <input
+          type="text"
+          pInputText
+          [(ngModel)]="documentDesc"
+          maxlength="100"
+          placeholder="Max 100 characters"
+        />
+      </div>
+    </div>
+    <app-set-criteria
+      *ngIf="appModuleDataPresent && showContent"
+      #setCriteriaSharedComponent
+      [criteriaMasterData]="criteriaMasterData"
+      [cmCriteriaDataDetails]="cmCriteriaDataDetails"
+      [criteriaDataDetailsJson]="criteriaDataDetailsJson"
+      [cmCriteriaSlabType]="cmCriteriaSlabType"
+      [independantCriteriaArr]="independantCriteriaArr"
+      [cmCriteriaMandatory]="cmCriteriaMandatory"
+      [cmCriteriaDependency]="cmCriteriaDependency"
+      [criteriaMapDdlOptions]="criteriaMapDdlOptions"
+      [correspondentDdlOptions]="correspondentDdlOptions"
+      [criteriaEqualsDdlOptions]="criteriaEqualsDdlOptions"
+      [criteriaTemplatesDdlOptions]="criteriaTemplatesDdlOptions"
+      [savingCriteriaTemplateError]="savingCriteriaTemplateError"
+      [criteriaText]="criteriaText"
+      [criteriaCodeText]="criteriaCodeText"
+      [inactiveData]="inactiveData"
+      (postDataCriteria)="applyCriteria($event)"
+      (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
+      (getCorrespondentValues)="
+        getCorrespondentValues(
+          $event.fieldName,
+          $event.displayName,
+          $event.criteriaCodeText
+        )
+      "
+    ></app-set-criteria>
+  </div>
+  <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
+    <div class="details-page-card-content mt-1">
+      <div class="criteria-bar">
+        <p class="setCriteria detail-page-section-heading">
+          Applicable Documents
+          <img
+            height="15px"
+            src="../assets/Icon-info.svg"
+            alt=""
+            pTooltip="On selected criteria documents below documents will be applied."
+          />
+        </p>
+      </div>
+      <div class="mt-1 addnewroute-table">
+        <div class="ptable">
+          <p-card class="p-col-12" *ngIf="!applyCriteriaResponse">
+            {{ "noDataMsg" }}
+          </p-card>
+          <div class="appliedCriteriaDataTable">
+            <p-table
+              [value]="applyCriteriaFormattedData"
+              [scrollable]="true"
+              scrollHeight="400px"
+            >
+              <ng-template pTemplate="header">
+                <tr>
+                  <th
+                    *ngFor="let col of applyCriteriaDataTableColumns"
+                    style="min-width: 120px"
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    {{ col.header }}
+                  </th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                <tr>
+                  <td
+                    *ngFor="let col of applyCriteriaDataTableColumns"
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    <div
+                      *ngIf="col['fieldType'] == 'dropdown'"
+                      class="appliedCriteriaSelect"
+                    >
+                      <p-dropdown
+                        [options]="rowData[col.field + 'Option']"
+                        optionLabel="name"
+                        appendTo="body"
+                        [placeholder]="
+                          rowData[col['field']]
+                            ? rowData[col['field']]
+                            : 'Select'
+                        "
+                        (onChange)="
+                          selectedColumn(col['field'], $event.value, rowIndex)
+                        "
+                      ></p-dropdown>
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'checkbox'"
+                      style="text-align: center"
+                    >
+                      <p-checkbox
+                        [(ngModel)]="rowData[col.field]"
+                        [binary]="true"
+                      ></p-checkbox>
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'input'"
+                      [pTooltip]="col['info'] ? col['info'] : ''"
+                    >
+                      <input
+                        #inp
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                        (ngModelChange)="
+                          formatValidation($event, col.field, inp, rowIndex)
+                        "
+                      />
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'text'"
+                      [pTooltip]="col['info'] ? col['info'] : ''"
+                    >
+                      <input
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                        [disabled]="true"
+                      />
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'button'"
+                      class="appliedCriteriaButton"
+                    >
+                      <ng-container
+                        *ngFor="let btn of rowData[col['field']].split(',')"
+                      >
+                        <button
+                          pButton
+                          type="button"
+                          [icon]="'pi pi-' + (btn == 'delete' ? 'trash' : btn)"
+                          (click)="
+                            checkOperation(btn, rowIndex, rowData, col['field'])
+                          "
+                          class="operation-btns mr-2"
+                        ></button>
+                      </ng-container>
+                    </div>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="NorecordFound"
+    *ngIf="
+      !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
+    "
+  >
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>No Record Found.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-confirmDialog
+  key="documentSettingLinkedWarning"
+  class="linked-confirm confirm-popup"
+  #cd
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Ok"
+      (click)="cd.accept()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+
+<p-confirmDialog
+  key="resetDocumentDataConfirmation"
+  class="confirm-popup"
+  #cd2
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
