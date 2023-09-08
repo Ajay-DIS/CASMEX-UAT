@@ -340,10 +340,10 @@ const routes: Routes = [
         path: "beneficiary-profile",
         component: BeneficiaryProfileComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
+          { label: "Home", routerLink: "../navbar/customer-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/beneficiary-profile",
+            routerLink: "../navbar/customer-profile",
           },
         ],
         canActivate: [AuthGuard],
@@ -352,10 +352,10 @@ const routes: Routes = [
         path: "beneficiary-profile/addnewbeneficiary/:type/:id/add",
         component: AddBeneficiaryComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
+          { label: "Home", routerLink: "../navbar/customer-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/beneficiary-profile",
+            routerLink: "../navbar/customer-profile",
           },
           { label: "Add Beneficiary", routerLink: "" },
         ],
@@ -368,7 +368,7 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/customer-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/beneficiary-profile",
+            routerLink: "../navbar/customer-profile",
           },
           { label: "Edit Beneficiary", routerLink: "" },
         ],
