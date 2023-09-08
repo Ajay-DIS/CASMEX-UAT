@@ -88,7 +88,7 @@
         </div>
       </div>
     </div>
-    <div class="col-2" style="margin-left: 30px">
+    <div class="col-2">
       <div class="addnew">
         <button
           pButton
@@ -140,8 +140,8 @@
   <div class="ptable" *ngIf="showTable">
     <p-table
     #dt
-    [columns]="cols"
-    [value]="customerData"
+    [columns]="cols" 
+    [value]="customerData" dataKey="customerCode"
     [paginator]="true"
     [rows]="10"
     [resizableColumns]="true"
@@ -150,11 +150,12 @@
   >
       <ng-template pTemplate="header" let-columns>
         <tr>
+          <th></th>
           <th
           *ngFor="let col of columns; let c = index"
           [pSortableColumn]="col.field"
-            pResizableColumn
-            [style.width]="col.width"
+          pResizableColumn
+          [style.width]="col.width"
           >
             {{ col.header }}
             <div
@@ -192,11 +193,12 @@
           </th>
         </tr>
         <tr class="search-row">
-          <th *ngFor="let col of cols; let c = index" [style.width]="col.width">
+          <th></th>
+          <th *ngFor="let col of cols; let c = index">
             <span
-              style="width: 100%"
               class="p-input-icon-left"
               *ngIf="c < columns.length - 3"
+              [style.width]="'120px'"
             >
               <i class="pi pi-search"></i>
               <input
@@ -213,9 +215,12 @@
         pTemplate="body"
         let-rowData
         let-columns="columns"
-        let-index="rowIndex"
+        let-index="rowIndex" let-expanded="expanded"
       >
         <tr [pReorderableRow]="index">
+          <td>
+            <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)" style="width: 2rem;padding: 0px;height: 2.5rem;" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+        </td>
           <ng-container *ngFor="let col of columns; let i = index">
             <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3)">
               <div *ngIf="!(i == 0)" style="display: inline-block">
@@ -248,6 +253,7 @@
                   type="button"
                   icon="pi pi-plus"
                   class="operation-btns mr-2"
+                  (click)="addNewBeneficiary(rowData,customerType)"
                 ></button>
               </span>
             </td>
@@ -287,6 +293,82 @@
           </ng-container>
         </tr>
       </ng-template>
+      <ng-template pTemplate="rowexpansion" let-rowData>
+        <tr>
+            <td colspan="10">
+                <div class="p-p-3">
+                    <p-table [value]="rowData.orders" dataKey="id"
+                    [rows]="5"
+                    [resizableColumns]="true"
+                    columnResizeMode="fit"
+                    [rowHover]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th pSortableColumn="id">Benef Code </th>
+                                <th pSortableColumn="fullName">Benef Name </th>
+                                <th pSortableColumn="contactMobileNumber">Mobile No </th>
+                                <th pSortableColumn="idNo">ID No </th>
+                                <th pSortableColumn="contactCountry">Country </th>
+                                <th pSortableColumn="serviceCurrency">Currency</th>
+                                <th pSortableColumn="serviceCategory">Service Category </th>
+                                <th pSortableColumn="bankAccountType">Service Type </th>
+                                <th pSortableColumn="bankBranch">Service Details </th>
+                                <th >PastTxns</th>
+                                <th >Status </th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-order>
+                            <tr>
+                                <td>{{order.id}}</td>
+                                <td ><a  style="text-decoration: none !important"
+                                  [ngStyle]="{
+                                    color: 'var(--primary-color)',
+                                    fontSize: '11px',
+                                    cursor: 'pointer'
+                                  }" (click)="editbeneficiary(order, type)">{{order.fullName}}</a></td>
+                                <td>{{order.contactMobileNumber}}</td>
+                                <td>{{order.idNo}}</td>
+                                <td>{{order.contactCountry}}</td>
+                                <td>{{order.serviceCurrency}}</td>
+                                <td>{{order.serviceCategory}}</td>
+                                <td>{{order.bankAccountType}}</td>
+                                <td>{{order.bankBranch}}</td>
+                                <td><span class="image-text">
+                                  <button
+                                    pButton
+                                    type="button"
+                                    icon="pi pi-eye"
+                                    class="operation-btns mr-2"
+                                  ></button>
+                                </span></td>
+                                <td>
+                                <label class="switch" style="border: none">
+                                <input
+                                   #statusInp
+                                   (click)="confirmBeneficiaryStatus($event, order, customerType)"
+                                   [checked]="
+                                   order['status'] == 'Active' ||
+                                   order['status'] == 'A'
+                                     ? true
+                                     : false
+                                 "
+                                    type="checkbox"
+                                    />
+                                      <span class="slider round"></span>
+                                      </label>
+                                  </td>
+                             </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6">There are no order for this product yet.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
           <td [attr.colspan]="cols.length">No Data found.</td>

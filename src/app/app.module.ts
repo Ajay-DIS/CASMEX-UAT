@@ -72,6 +72,7 @@ import { CorporateComponent } from "./customer-profile/corporate/corporate.compo
 import { UserIdleModule } from "angular-user-idle";
 import { BeneficiaryProfileComponent } from './beneficiary-profile/beneficiary-profile.component';
 import { AddBeneficiaryComponent } from './beneficiary-profile/add-beneficiary/add-beneficiary.component';
+import { AddCustomerBenefComponent } from './beneficiary-profile/add-customer-benef/add-customer-benef.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -106,6 +107,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CorporateComponent,
     BeneficiaryProfileComponent,
     AddBeneficiaryComponent,
+    AddCustomerBenefComponent,
   ],
   imports: [
     BrowserModule,

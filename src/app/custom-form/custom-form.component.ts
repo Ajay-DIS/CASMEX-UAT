@@ -35,7 +35,7 @@ export class CustomFormComponent implements OnInit {
   criteriaMapCode = "";
 
   apiData1 =
-    "Form = Customer Profile;Module = Remittance;Country = IND;Organization = HDFC";
+    "Country = IND;Form = Customer Profile;Customer Type = IND";
 
   apiData2 =
     "Form = Customer Profile;Module = Remittance;Country = IND;Organization = HDFC&&&&LCY Amount = 20;LCY Amount > 55";
@@ -188,7 +188,7 @@ export class CustomFormComponent implements OnInit {
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
           .set("criteriaMap", this.criteriaMapCode.trim())
-          .set("form", "Form Rules")
+          .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
       })

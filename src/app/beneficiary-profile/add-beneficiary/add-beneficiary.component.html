@@ -1,1 +1,48 @@
-<p>add-beneficiary works!</p>
+<div class="row visible-main-section">
+    <div *ngIf="showForm" class="col-12">
+      <p-tabView
+        (onChange)="handleChange($event)"
+        [(activeIndex)]="activeTabIndex"
+      >
+        <p-tabPanel
+          header="Individual"
+          [disabled]="mode == 'edit' && custType == 'COR'"
+        >
+          <app-add-customer-benef [activeIndex]="activeTabIndex" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
+        </p-tabPanel>
+        <p-tabPanel
+          header="Corporate"
+          [disabled]="mode == 'edit' && custType == 'IND'"
+        >
+          <ng-template pTemplate="content">
+            <app-add-customer-benef [activeIndex]="activeTabIndex" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+  
+  <p-confirmDialog
+    key="resetINDWarning"
+    class="confirm-popup"
+    #cd
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
