@@ -417,6 +417,7 @@ export class AddBeneficiaryComponent implements OnInit {
       if (this.custType == "COR") {
         console.log("Here");
         this.activeTabIndex = 1;
+        this.previousTabIndex = 1
       } else {
         this.activeTabIndex = 0;
       }
@@ -436,25 +437,26 @@ export class AddBeneficiaryComponent implements OnInit {
       if (this.individualForm) {
         this.individualForm.reset();
       }
-      this.formData = []
       if(this.activeTabIndex == '0'){
         console.log("IND cal")
         this.getFormRulesFields('IND')
-
+        this.custType = 'IND'
       }else{
         this.getFormRulesFields('COR')
+        this.custType = 'COR'
         console.log("COR cal")
       }
     }
   }
 
   getFormRulesFields(custType: any){
+    this.coreService.displayLoadingScreen();
     this.http
         .get(`/remittance/formRulesController/getFormRules`, {
           headers: new HttpHeaders()
             .set(
               "criteriaMap",
-              `Country = IND;Form = Customer Profile;Customer Type = ${custType == 'Corporate' ? 'COR' : 'IND'}`
+              `Country = IND;Form = Customer Profile;Customer Type = ${custType == 'IND' ? 'IND' : 'COR'}`
             )
             .set("form", "Customer Profile Beneficiary_Form Rules")
             .set("moduleName", "Remittance")

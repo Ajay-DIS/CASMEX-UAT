@@ -150,7 +150,9 @@
   >
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th></th>
+          <th style="padding-left: 0px !important;
+          padding-right: 0px !important;
+          width: 20px;"></th>
           <th
           *ngFor="let col of columns; let c = index"
           [pSortableColumn]="col.field"
@@ -193,7 +195,9 @@
           </th>
         </tr>
         <tr class="search-row">
-          <th></th>
+          <th style="padding-left: 0px !important;
+          padding-right: 0px !important;
+          width: 20px;"></th>
           <th *ngFor="let col of cols; let c = index">
             <span
               class="p-input-icon-left"
@@ -218,7 +222,9 @@
         let-index="rowIndex" let-expanded="expanded"
       >
         <tr [pReorderableRow]="index">
-          <td>
+          <td style="padding-left: 5px !important;
+          padding-right: 0px !important;
+          width: 20px;">
             <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)" style="width: 2rem;padding: 0px;height: 2.5rem;" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
         </td>
           <ng-container *ngFor="let col of columns; let i = index">
@@ -253,7 +259,7 @@
                   type="button"
                   icon="pi pi-plus"
                   class="operation-btns mr-2"
-                  (click)="addNewBeneficiary(rowData,customerType)"
+                  (click)="addNewBeneficiary(rowData, customerType == 'Individual' ? 'IND' : 'COR')"
                 ></button>
               </span>
             </td>
@@ -296,12 +302,15 @@
       <ng-template pTemplate="rowexpansion" let-rowData>
         <tr>
             <td colspan="10">
-                <div class="p-p-3">
+                <div class="p-p-3" style="padding: 20px;background: #e2e3ed;">
                     <p-table [value]="rowData.orders" dataKey="id"
-                    [rows]="5"
+                    [rows]="3"
+                    columnResizeMode="expand"
                     [resizableColumns]="true"
                     columnResizeMode="fit"
-                    [rowHover]="true">
+                    [rowHover]="true"
+                    [scrollable]="true"
+                    scrollHeight="220px">
                         <ng-template pTemplate="header">
                             <tr>
                                 <th pSortableColumn="id">Benef Code </th>
@@ -361,7 +370,7 @@
                         </ng-template>
                         <ng-template pTemplate="emptymessage">
                             <tr>
-                                <td colspan="6">There are no order for this product yet.</td>
+                                <td colspan="11">There are no Beneficiaries for current customer.</td>
                             </tr>
                         </ng-template>
                     </p-table>
