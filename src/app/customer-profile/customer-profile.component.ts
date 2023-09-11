@@ -167,6 +167,7 @@ export class CustomerProfileComponent implements OnInit {
               return { name: data.displayName, code: data.fieldName };
             }
           );
+          this.searchCriteriaOptions.unshift(...[{ name: "Customer ID", code: "id" }])
         },
         (err) => {
           // this.coreService.removeLoadingScreen();
@@ -188,9 +189,8 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
-      return { name: data.displayName, code: data.fieldName };
-    });
+    
+    console.log("this.searchCriteriaOptions",this.searchCriteriaOptions)
     this.customerFieldType = null;
   }
 
@@ -593,7 +593,9 @@ export class CustomerProfileComponent implements OnInit {
             } else {
               console.log("respose",res)
               this.customerData.forEach(element => {
-                element["orders"] = res["data"];
+                if(element["customerCode"] == rowData.customerCode){
+                  element["orders"] = res["data"];
+                }
                 console.log("orders",element["orders"])
               });
             }
