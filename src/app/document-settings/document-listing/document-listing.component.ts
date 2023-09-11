@@ -29,26 +29,26 @@ export class DocumentListingComponent implements OnInit {
   showNoDataFound: boolean = false;
 
   cols: any[] = [
-    { field: "docCode", header: "doc Code", width: "10%" },
-    { field: "docCodeDesc", header: "doc Description", width: "20%" },
+    { field: "documentCode", header: "Document Code", width: "10%" },
+    { field: "documentDesc", header: "Document Description", width: "20%" },
     { field: "criteriaMap", header: "Criteria", width: "55%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Operations", width: "8%" },
   ];
 
-  showdocCodeOptions: boolean = false;
-  showdocCodeDescOptions: boolean = false;
+  showdocumentCodeOptions: boolean = false;
+  showdocumentDescOptions: boolean = false;
   showcriteriaMapOptions: boolean = false;
   showstatusOptions: boolean = false;
 
-  docCode = [];
-  docCodeDesc = [];
+  documentCode = [];
+  documentDesc = [];
   criteriaMap = [];
   status = [];
 
   userData: any = {};
-  selectedFilterdocCode: any[] = [];
-  selectedFilterdocCodeDesc: any[] = [];
+  selectedFilterdocumentCode: any[] = [];
+  selectedFilterdocumentDesc: any[] = [];
   selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
   docListingApiData: any = {};
@@ -60,7 +60,285 @@ export class DocumentListingComponent implements OnInit {
 
   noDataMsg: string = "doc Setting Data Not Available";
 
-  linkeddocCode: any = [];
+  linkeddocumentCode: any = [];
+
+  apiData = {
+    data: [
+      {
+        id: 35,
+        documentId: null,
+        documentCode: "D00011",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND&&&&;LCY Amount > 55",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "TestLCY2",
+      },
+      {
+        id: 34,
+        documentId: null,
+        documentCode: "D00010",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND&&&&LCY Amount = 32",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "Test1",
+      },
+      {
+        id: 33,
+        documentId: null,
+        documentCode: "D0009",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND&&&&LCY Amount = 10;LCY Amount > 55",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "TestLCY",
+      },
+      {
+        id: 29,
+        documentId: null,
+        documentCode: "D0007",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND&&&&LCY Amount = 32",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "DOC5UI",
+      },
+      {
+        id: 27,
+        documentId: null,
+        documentCode: "D0006",
+        criteriaMap: "Country = IND;Customer Type = IND;Form = SignUp",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "DOC4UI",
+      },
+      {
+        id: 25,
+        documentId: null,
+        documentCode: "D0005",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "DOC3UI",
+      },
+      {
+        id: 23,
+        documentId: null,
+        documentCode: "D0004",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Inactive",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "DOC2UI",
+      },
+      {
+        id: 22,
+        documentId: null,
+        documentCode: "D0003",
+        criteriaMap:
+          "Country = IND;Form = Customer Profile;Customer Type = IND",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Inactive",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "DOC1UI",
+      },
+      {
+        id: 11,
+        documentId: null,
+        documentCode: "D0002",
+        criteriaMap: "firstName = balu",
+        criteriaMapSplit: null,
+        customerType: null,
+        document: null,
+        documentNoType: null,
+        lengthMinMax: null,
+        gracePeriodDays: null,
+        isMandatory: null,
+        isDefault: null,
+        issueCountry: null,
+        frontSide: null,
+        backSide: null,
+        status: "Active",
+        createdBy: null,
+        createdDateTime: null,
+        updatedBy: null,
+        updatedDateTime: null,
+        criteriaID: 0,
+        linked: null,
+        linkedWith: null,
+        documentDesc: "test",
+      },
+    ],
+    documentCode: [
+      "D0002",
+      "D0003",
+      "D00011",
+      "D0009",
+      "D0004",
+      "D0005",
+      "D0006",
+      "D00010",
+      "D0007",
+    ],
+    documentDesc: [
+      "Test1",
+      "DOC4UI",
+      "DOC5UI",
+      "test",
+      "TestLCY2",
+      "DOC2UI",
+      "DOC3UI",
+      "TestLCY",
+      "DOC1UI",
+    ],
+    criteriaMap: [
+      "Country = IND;Form = Customer Profile;Customer Type = IND&&&&LCY Amount = 10;LCY Amount > 55",
+      "Country = IND;Form = Customer Profile;Customer Type = IND&&&&;LCY Amount > 55",
+      "firstName = balu",
+      "Country = IND;Form = Customer Profile;Customer Type = IND&&&&LCY Amount = 32",
+      "Country = IND;Customer Type = IND;Form = SignUp",
+      "Country = IND;Form = Customer Profile;Customer Type = IND",
+    ],
+    linkedDocumentCode: [],
+    status: ["Active", "Inactive"],
+  };
 
   constructor(
     private router: Router,
@@ -149,6 +427,7 @@ export class DocumentListingComponent implements OnInit {
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
     this.coreService.displayLoadingScreen();
+
     forkJoin({
       criteriaMasterData: this.documentService.getCriteriaMasterData(
         userId,
@@ -156,7 +435,7 @@ export class DocumentListingComponent implements OnInit {
         appValue,
         moduleValue
       ),
-      docSettingListingData: this.documentService.getCriteriaMasterData(
+      docSettingListingData: this.documentService.getDocumentListData(
         userId,
         this.formName,
         appValue,
@@ -185,11 +464,15 @@ export class DocumentListingComponent implements OnInit {
             });
             this.docListingData = [...this.docListingApiData.data];
             this.showNoDataFound = false;
-            this.linkeddocCode = [...this.docListingApiData.linkeddocCode];
-            this.docCode = this.docListingApiData.docCode.map((code) => {
-              return { label: code, value: code };
-            });
-            this.docCodeDesc = this.docListingApiData.docCodeDesc.map(
+            this.linkeddocumentCode = [
+              ...this.docListingApiData.linkedDocumentCode,
+            ];
+            this.documentCode = this.docListingApiData.documentCode.map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            this.documentDesc = this.docListingApiData.documentDesc.map(
               (code) => {
                 return { label: code, value: code };
               }
@@ -243,20 +526,20 @@ export class DocumentListingComponent implements OnInit {
       );
   }
 
-  viewdocSetting(data: any) {
+  viewDocDetails(data: any) {
     this.documentService.applicationName = this.appCtrl.value.code;
     this.documentService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
-      "doc-settings",
-      "add-doc",
-      data.docCode,
+      "document-settings",
+      "add-document",
+      data.documentCode,
       "edit",
     ]);
   }
 
   isLinked(id: any) {
-    return this.linkeddocCode.includes(id);
+    return this.linkeddocumentCode.includes(id);
   }
 
   confirmStatus(e: any, data: any) {
@@ -276,19 +559,19 @@ export class DocumentListingComponent implements OnInit {
     let isLinkedMsg = `Active Transactions Exist. </br>`;
     if (
       reqStatus == "Inactive" &&
-      this.linkeddocCode.includes(data["docCode"])
+      this.linkeddocumentCode.includes(data["documentCode"])
     ) {
       completeMsg =
         isLinkedMsg +
         `Do you wish to ` +
         type +
-        ` the doc Record: ${data["docCode"]}?`;
+        ` the doc Record: ${data["documentCode"]}?`;
     } else {
       completeMsg =
         `<img src="../../../assets/warning.svg"><br/><br/>` +
         `Do you wish to ` +
         type +
-        ` the doc Record: ${data["docCode"]}?`;
+        ` the doc Record: ${data["documentCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -309,46 +592,46 @@ export class DocumentListingComponent implements OnInit {
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("taxCode", data["taxCode"]);
+    formData.append("documentSettingsCode", data["documentCode"]);
     formData.append("status", reqStatus);
     formData.append("applications", this.appCtrl.value.code);
     formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
-    this.updateTaxCodeStatus(formData, e.target, data);
+    this.updateDocSettingStatus(formData, e.target, data);
   }
 
-  updateTaxCodeStatus(formData: any, sliderElm: any, taxData: any) {
-    // this.documentService.updateTaxSettingsStatus(formData).subscribe(
-    //   (res) => {
-    //     let message = "";
-    //     if (res["error"] == "true") {
-    //       this.coreService.removeLoadingScreen();
-    //       message = `Kindly deactivate the Tax code: ${res["msg"]} ( ${taxData["criteriaMap"]} ) to activate the current record.`;
-    //       this.coreService.showWarningToast(message);
-    //     } else {
-    //       if (res["msg"]) {
-    //         message = res["msg"];
-    //         sliderElm.checked = sliderElm!.checked;
-    //         this.getDecodedDataForListing(
-    //           this.userData.userId,
-    //           this.appCtrl.value.code,
-    //           this.moduleCtrl.value.code
-    //         );
-    //         this.coreService.showSuccessToast(message);
-    //       } else {
-    //         this.coreService.removeLoadingScreen();
-    //         message = "Something went wrong, Please try again later";
-    //         this.coreService.showWarningToast(message);
-    //       }
-    //     }
-    //   },
-    //   (err) => {
-    //     this.coreService.showWarningToast(
-    //       "Something went wrong, Please try again later"
-    //     );
-    //     this.coreService.removeLoadingScreen();
-    //   }
-    // );
+  updateDocSettingStatus(formData: any, sliderElm: any, docData: any) {
+    this.documentService.updateDocumentStatus(formData).subscribe(
+      (res) => {
+        let message = "";
+        if (res["error"] == "true") {
+          this.coreService.removeLoadingScreen();
+          message = `Kindly deactivate the Document setting code: ${res["msg"]} ( ${docData["criteriaMap"]} ) to activate the current record.`;
+          this.coreService.showWarningToast(message);
+        } else {
+          if (res["msg"]) {
+            message = res["msg"];
+            sliderElm.checked = sliderElm!.checked;
+            this.getDecodedDataForListing(
+              this.userData.userId,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
+            );
+            this.coreService.showSuccessToast(message);
+          } else {
+            this.coreService.removeLoadingScreen();
+            message = "Something went wrong, Please try again later";
+            this.coreService.showWarningToast(message);
+          }
+        }
+      },
+      (err) => {
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   cloneDoc(data: any) {
@@ -356,9 +639,9 @@ export class DocumentListingComponent implements OnInit {
     this.documentService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
-      "doc-settings",
-      "add-doc",
-      data.docCode,
+      "document-settings",
+      "add-document",
+      data.documentCode,
       "clone",
     ]);
   }

@@ -10,7 +10,23 @@ export class DocumentSettingsService {
   applicationName: any = null;
   moduleName: any = null;
 
-  // remittance/documentSettingsController/saveDocumentSetting
+  getDocumentListData(
+    id: string,
+    formName: any,
+    appName: any,
+    moduleName: any
+  ) {
+    return this.http.get(
+      `/remittance/documentSettingsController/getDocumentSettingsList`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
+    );
+  }
 
   getAppModuleList() {
     return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
@@ -105,24 +121,30 @@ export class DocumentSettingsService {
   }
 
   getDocumentForEdit(
-    userId: any,
     docCode: any,
-    critMap: any,
     operation: any,
     appName: any,
     moduleName: any,
     formName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getFormRuleForEdit`, {
-      headers: new HttpHeaders()
-        .set("userId", userId)
-        .set("criteriaMap", critMap)
-        .set("documentSettingsCode", docCode)
-        .set("operation", operation)
-        .set("applications", appName)
-        .set("moduleName", moduleName)
-        .set("form", formName),
-    });
+    return this.http.get(
+      `remittance/documentSettingsController/getDocumentSettingsForEdit`,
+      {
+        headers: new HttpHeaders()
+          .set("documentSettingsCode", docCode)
+          .set("operation", operation)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
+    );
+  }
+
+  updateDocumentStatus(data: any) {
+    return this.http.post(
+      `remittance/documentSettingsController/updateDocumentSettingsStatus`,
+      data
+    );
   }
 
   saveNewDocument(
@@ -155,8 +177,8 @@ export class DocumentSettingsService {
     formName: any,
     operation: any
   ): Observable<any> {
-    return this.http.put(
-      `/remittance/formRulesController/updateFormRule`,
+    return this.http.post(
+      `remittance/documentSettingsController/updateDocumentSetting`,
       data,
       {
         headers: new HttpHeaders()

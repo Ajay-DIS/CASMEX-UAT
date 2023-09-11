@@ -214,6 +214,7 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
+                        [disabled]="rowData['linked'] == 'Y'"
                       ></p-dropdown>
                     </div>
                     <div
@@ -223,6 +224,7 @@
                       <p-checkbox
                         [(ngModel)]="rowData[col.field]"
                         [binary]="true"
+                        [disabled]="rowData['linked'] == 'Y'"
                       ></p-checkbox>
                     </div>
                     <div
@@ -237,6 +239,7 @@
                         (ngModelChange)="
                           formatValidation($event, col.field, inp, rowIndex)
                         "
+                        [disabled]="rowData['linked'] == 'Y'"
                       />
                     </div>
                     <div
@@ -248,6 +251,7 @@
                         type="text"
                         pInputText
                         [disabled]="true"
+                        [disabled]="rowData['linked'] == 'Y'"
                       />
                     </div>
                     <div
