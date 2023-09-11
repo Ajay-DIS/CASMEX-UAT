@@ -420,6 +420,7 @@ export class DocumentDetailsComponent implements OnInit {
             this.coreService.showWarningToast(
               "No active data found for this Document."
             );
+            this.coreService.removeLoadingScreen();
           }
         }
       });
