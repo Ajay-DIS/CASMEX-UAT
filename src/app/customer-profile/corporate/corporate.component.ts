@@ -503,7 +503,7 @@ export class CorporateComponent implements OnInit, OnChanges {
     this.formSections = allFormSections;
 
     this.formSections.forEach((section) => {
-      let haveVisibleFields = true;
+      let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
         if (field.visible) {

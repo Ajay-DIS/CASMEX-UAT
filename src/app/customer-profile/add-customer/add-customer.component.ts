@@ -571,7 +571,7 @@ export class AddCustomerComponent implements OnInit {
     this.formSections = allFormSections;
     console.log(this.formSections);
     this.formSections.forEach((section) => {
-      let haveVisibleFields = true;
+      let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
         if (field.visible) {
