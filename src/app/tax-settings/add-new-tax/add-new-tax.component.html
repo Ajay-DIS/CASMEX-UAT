@@ -44,14 +44,16 @@
           (click)="saveAddNewTax('save')"
         ></button>
         <button
-        pButton
-        pRipple
-        type="button"
-        [disabled]="!appliedCriteriaData.length || !appliedCriteriaData.length"
-        label="Save & Add New"
-        class="p-button-raised"
-        (click)="saveAddNewTax('saveAndAddNew')"
-      ></button>
+          pButton
+          pRipple
+          type="button"
+          [disabled]="
+            !appliedCriteriaData.length || !appliedCriteriaData.length
+          "
+          label="Save & Add New"
+          class="p-button-raised"
+          (click)="saveAddNewTax('saveAndAddNew')"
+        ></button>
         <button
           pButton
           pRipple
@@ -90,8 +92,10 @@
         ></p-dropdown>
       </div>
     </div>
-    <div *ngIf="appModuleDataPresent && showContent"
-    class="d-flex m-3 tax-code-desc-section">
+    <div
+      *ngIf="appModuleDataPresent && showContent"
+      class="d-flex m-3 tax-code-desc-section"
+    >
       <div
         class="taxCode"
         [pTooltip]="
@@ -117,10 +121,10 @@
       </div>
     </div>
     <app-set-criteria
-    *ngIf="appModuleDataPresent && showContent"
-    #setCriteriaSharedComponent
-    [criteriaMasterData]="criteriaMasterData"
-    [cmCriteriaDataDetails]="cmCriteriaDataDetails"
+      *ngIf="appModuleDataPresent && showContent"
+      #setCriteriaSharedComponent
+      [criteriaMasterData]="criteriaMasterData"
+      [cmCriteriaDataDetails]="cmCriteriaDataDetails"
       [criteriaDataDetailsJson]="criteriaDataDetailsJson"
       [cmCriteriaSlabType]="cmCriteriaSlabType"
       [independantCriteriaArr]="independantCriteriaArr"
@@ -181,7 +185,7 @@
                 <tr>
                   <ng-container *ngFor="let col of columns; let c = index">
                     <th
-                    style="padding-left: 20px;"
+                      style="padding-left: 20px"
                       alignFrozen="right"
                       pFrozenColumn
                       [frozen]="!col['isString']"
@@ -306,7 +310,8 @@
       </div>
     </div>
   </div>
-  <div
+</div>
+<div
   class="NorecordFound"
   *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"
 >
@@ -319,8 +324,6 @@
     </div>
   </div>
 </div>
-</div>
-
 <p-confirmDialog
   key="taxSettingLinkedWarning"
   class="linked-confirm confirm-popup"

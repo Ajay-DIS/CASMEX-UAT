@@ -515,7 +515,7 @@ export class DocumentListingComponent implements OnInit {
         },
         (err) => {
           this.coreService.removeLoadingScreen();
-          this.docListingData = null;
+          this.docListingData = [];
           this.showNoDataFound = true;
           this.loading = false;
           console.log("Error in getting doc seting list data", err);

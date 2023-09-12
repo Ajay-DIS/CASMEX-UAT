@@ -7,32 +7,6 @@
   text-align: center;
 }
 
-// .confirm-popup ::ng-deep .p-dialog-content p span { background-image: url("../../../assets/warning.svg") no-repeat}
-.NorecordFound {
-  background-color: #fff;
-  border-radius: 10px;
-  text-align: center;
-  margin-top: 10px;
-  margin-left: 20px;
-  padding-bottom: 60px;
-}
-.NorecordFound p {
-  padding-bottom: 10px;
-  font-weight: 500;
-  color: rgb(0 0 0);
-  font-size: 16px;
-  line-height: 1px;
-  font-family: "IBM Plex Sans", sans-serif;
-}
-.NorecordFound button {
-  margin-bottom: 40px;
-}
-
-.NorecordFound img {
-  width: 27%;
-  margin-top: 70px;
-}
-
 .app-form-search {
   background: white;
   border-radius: 6px;
