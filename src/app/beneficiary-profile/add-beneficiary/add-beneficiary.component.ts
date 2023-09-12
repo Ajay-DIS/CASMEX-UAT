@@ -501,11 +501,12 @@ export class AddBeneficiaryComponent implements OnInit {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
-            console.log(res["respnseData"]);
-             this.beneData = res['respnseData']
+            console.log(res["responseData"]);
+             this.beneData = res['responseData']
             // this.setCustomerFormData(res["data"]);
-            this.customerId = res['respnseData']['customerId'];
-            this.status = res['respnseData']['status']
+            console.log()
+            this.customerId = res['responseData']['customerId'];
+            this.status = res['responseData']['status']
           }
         },
         (err) => {
@@ -522,9 +523,6 @@ export class AddBeneficiaryComponent implements OnInit {
       let payloadFormData = new FormData();
       for (let key in payload) {
         payloadFormData.append(key, payload[key]);
-      }
-      for (var pair of payloadFormData.entries()) {
-        console.log(pair[0]+ ', ' + pair[1]); 
       }
       console.log("formdata",payloadFormData)
       if(this.mode == "edit"){

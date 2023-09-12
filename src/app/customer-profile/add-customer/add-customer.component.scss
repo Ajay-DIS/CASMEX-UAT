@@ -24,11 +24,12 @@ label {
   margin-bottom: 15px;
 }
 .custom-form ::ng-deep .p-panel .p-panel-header {
-  padding: 0.75rem 1.5rem 0 1rem;
   border-bottom: none;
 }
 .custom-form ::ng-deep .p-panel.p-component .p-panel-header {
   background: #fff;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .custom-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
@@ -44,7 +45,7 @@ label {
   p-panel.no-visible
   .p-panel.p-component
   .p-panel-content {
-  padding: 0.75rem 1.5rem 1rem 1rem;
+  padding: 0.75rem 1.5rem 1rem 1.3rem;
 }
 
 small.p-error {

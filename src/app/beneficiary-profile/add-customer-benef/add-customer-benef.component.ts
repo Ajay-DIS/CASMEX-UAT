@@ -60,7 +60,6 @@ export class AddCustomerBenefComponent implements OnInit {
         codeName: "AXIS",
       },
     ],
-    salaryDateEmpDetails: [],
     banksBranch: [
       {
         code: "Hyderabad",
@@ -159,7 +158,7 @@ export class AddCustomerBenefComponent implements OnInit {
         codeName: "America",
       },
     ],
-    "permanentCountry ": [
+    permanentCountry: [
       {
         code: "Japan",
         codeName: "Japan",
@@ -215,34 +214,7 @@ export class AddCustomerBenefComponent implements OnInit {
         codeName: "Imps",
       },
     ],
-    representativeCountryOfBirth: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    representativeIssueCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
+   
     relationship: [
       {
         code: "Brother",
@@ -253,27 +225,7 @@ export class AddCustomerBenefComponent implements OnInit {
         codeName: "Uncle",
       },
     ],
-    representativeRelationship: [
-      {
-        code: "Brother",
-        codeName: "Brother",
-      },
-      {
-        code: "Uncle",
-        codeName: "Uncle",
-      },
-    ],
     documentType: [
-      {
-        code: "Aadhar",
-        codeName: "Aadhar",
-      },
-      {
-        code: "Voter",
-        codeName: "Voter",
-      },
-    ],
-    representativeDocumentType: [
       {
         code: "Aadhar",
         codeName: "Aadhar",
@@ -297,78 +249,14 @@ export class AddCustomerBenefComponent implements OnInit {
         codeName: "Others",
       },
     ],
-    representativeGender: [
+    serviceCurrency: [
       {
-        code: "Male",
-        codeName: "Male",
+        code: "Rupee",
+        codeName: "Rupee",
       },
       {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-    businessActivites: [
-      {
-        code: "Manufacturing",
-        codeName: "Manufacturing",
-      },
-      {
-        code: "Trading",
-        codeName: "Trading",
-      },
-      {
-        code: "Services",
-        codeName: "Services",
-      },
-    ],
-    legalStatus: [
-      {
-        code: "Private Limited",
-        codeName: "Private Limited",
-      },
-      {
-        code: "Public Limited",
-        codeName: "Public Limited",
-      },
-      {
-        code: "Sole Proprietorship",
-        codeName: "Sole Proprietorship",
-      },
-      {
-        code: "Partnership",
-        codeName: "Partnership",
-      },
-      {
-        code: "Limited Liability Partnership",
-        codeName: "Limited Liability Partnership",
-      },
-    ],
-    ownershipType: [
-      {
-        code: "Sponsor",
-        codeName: "Sponsor",
-      },
-      {
-        code: "Partner",
-        codeName: "Partner",
-      },
-      {
-        code: "Both",
-        codeName: "Both",
-      },
-    ],
-    category: [
-      {
-        code: "First",
-        codeName: "First",
-      },
-      {
-        code: "Second",
-        codeName: "Second",
+        code: "Dollar",
+        codeName: "Dollar",
       },
     ],
   };
@@ -490,7 +378,7 @@ export class AddCustomerBenefComponent implements OnInit {
     this.formSections = allFormSections;
     console.log(this.formSections);
     this.formSections.forEach((section) => {
-      let haveVisibleFields = true;
+      let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
         if (field.visible) {

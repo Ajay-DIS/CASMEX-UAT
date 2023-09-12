@@ -22,7 +22,7 @@
             >
               <div class="row">
                 <div
-                  *ngIf="section.formName == 'KYC Doc Upload'"
+                  *ngIf="section.formName == 'KYC Doc Upload' && uploadedKycData.length"
                   style="padding: 0; margin: 10px 0"
                 >
                   <p-table
@@ -218,7 +218,7 @@
                   </p-table>
                 </div>
                 <div
-                  *ngIf="section.formName == 'Beneficial Owner Details'"
+                  *ngIf="section.formName == 'Beneficial Owner Details' && uploadedBeneficialData.length"
                   style="padding: 0; margin: 10px 0"
                 >
                   <p-table
@@ -341,7 +341,7 @@
                   </p-table>
                 </div>
                 <div
-                  *ngIf="section.formName == 'Representative Details'"
+                  *ngIf="section.formName == 'Representative Details' && uploadedRepresentativeData.length"
                   style="padding: 0; margin: 10px 0"
                 >
                   <p-table

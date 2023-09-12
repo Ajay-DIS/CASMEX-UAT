@@ -104,7 +104,7 @@ export class CustomerProfileComponent implements OnInit {
     { field: "mobileNumber", header: "Mobile Number",  },
     { field: "idType", header: "ID Type",  },
     { field: "idNumber", header: "ID Number",  },
-    // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
+    { field: "beneficialCount", header: "Total Benf", width: "8%" },
     { field: "addBenificiary", header: "Add Benf",  },
     // { field: "pastTxns", header: "Past Txns",  },
     { field: "status", header: "Profile Status",  },
@@ -116,7 +116,7 @@ export class CustomerProfileComponent implements OnInit {
     { field: "mobileNumber", header: "Mobile Number", width: "15%" },
     { field: "idType", header: "ID Type", width: "8%" },
     { field: "idNumber", header: "ID Number", width: "15%" },
-    // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
+    { field: "beneficialCount", header: "Total Benf", width: "8%" },
     { field: "addBenificiary", header: "Add Benf", width: "8%" },
     // { field: "pastTxns", header: "Past Txns", width: "8%" },
     { field: "status", header: "Profile Status", width: "8%" },
@@ -313,7 +313,7 @@ export class CustomerProfileComponent implements OnInit {
           } else {
             this.cols = this.colsIND;
             this.customerData = res.data.CmCorporateCustomerDetails;
-            this.customerData.forEach(element => {
+            this.customerData?.forEach(element => {
               element["orders"] = []
             });
             console.log("customer dataa indi", this.customerData)
@@ -563,8 +563,8 @@ export class CustomerProfileComponent implements OnInit {
       "edit",
     ]);
   }
-  editbeneficiary(beneData: any, type: any) {
-    let custype = type =='Individual' ? 'IND': 'COR';
+  editbeneficiary(beneData: any) {
+    let custype = beneData.customerType =='Individual' ? 'IND': 'COR';
     this.router.navigate([
       "navbar",
       "beneficiary-profile",

@@ -24,12 +24,7 @@
           ></p-dropdown>
           <span
             class="p-input-icon-right"
-            style="
-              width: 450px;
-              border: solid 1px#a2a2a2;
-              border-top-right-radius: 5px;
-              border-bottom-right-radius: 5px;
-            "
+           
             (keyup.enter)="searchByEnter($event)"
           >
             <i class="pi pi-search"></i>
@@ -37,9 +32,10 @@
             <ng-container [ngSwitch]="criteriaType">
               <input
                 style="
-                  width: 448px;
+                  width: 440px;
                   border-top-left-radius: initial;
                   border-bottom-left-radius: initial;
+                  border: solid 1px#a2a2a2;
                 "
                 *ngSwitchCase="'text'"
                 type="text"
@@ -150,9 +146,6 @@
   >
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <th style="padding-left: 0px !important;
-          padding-right: 0px !important;
-          width: 20px;"></th>
           <th
           *ngFor="let col of columns; let c = index"
           [pSortableColumn]="col.field"
@@ -195,9 +188,6 @@
           </th>
         </tr>
         <tr class="search-row">
-          <th style="padding-left: 0px !important;
-          padding-right: 0px !important;
-          width: 20px;"></th>
           <th *ngFor="let col of cols; let c = index">
             <span
               class="p-input-icon-left"
@@ -222,20 +212,19 @@
         let-index="rowIndex" let-expanded="expanded"
       >
         <tr [pReorderableRow]="index">
-          <td style="padding-left: 5px !important;
-          padding-right: 0px !important;
-          width: 20px;">
-            <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)" style="width: 2rem;padding: 0px;height: 2.5rem;" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
-        </td>
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i < columns.length - (columns.length == 8 ? 2 : 3)">
+            <td *ngIf="i < columns.length - (columns.length == 9 ? 2 : 3)">
               <div *ngIf="!(i == 0)" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>
-              <a
-                *ngIf="i == 0"
+              <div *ngIf="i == 0">
+                <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)"  pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <a
+                
                 style="text-decoration: underline !important"
                 [ngStyle]="{
+                  position: 'relative',
+                  top: '-13px',
                   color: 'var(--primary-color)',
                   fontSize: '11px',
                   cursor: 'pointer'
@@ -248,6 +237,8 @@
                 "
                 >{{ rowData[col["field"]] }}</a
               >
+              </div>
+              
             </td>
             <td
               *ngIf="col.field == 'addBenificiary'"
@@ -334,7 +325,7 @@
                                     color: 'var(--primary-color)',
                                     fontSize: '11px',
                                     cursor: 'pointer'
-                                  }" (click)="editbeneficiary(order, type)">{{order.fullName}}</a></td>
+                                  }" (click)="editbeneficiary(order)">{{order.fullName}}</a></td>
                                 <td>{{order.contactMobileNumber}}</td>
                                 <td>{{order.idNo}}</td>
                                 <td>{{order.contactCountry}}</td>
