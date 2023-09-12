@@ -202,6 +202,20 @@ export class CorporateComponent implements OnInit, OnChanges {
         codeName: "America",
       },
     ],
+    countryOfBirthPersonalDetails: [
+      {
+        code: "Japan",
+        codeName: "Japan",
+      },
+      {
+        code: "India",
+        codeName: "India",
+      },
+      {
+        code: "America",
+        codeName: "America",
+      },
+    ],
     representativeIssueCountry: [
       {
         code: "Japan",
@@ -342,6 +356,91 @@ export class CorporateComponent implements OnInit, OnChanges {
       {
         code: "Second",
         codeName: "Second",
+      },
+    ],
+    professionEmpDetails: [
+      {
+        code: "plumber",
+        codeName: "plumber",
+      },
+      {
+        code: "driver",
+        codeName: "driver",
+      },
+    ],
+    politicallyExposedPersonPersonalDetails: [
+      {
+        code: "yes",
+        codeName: "yes",
+      },
+      {
+        code: "no",
+        codeName: "no",
+      },
+    ],
+    visaStatusEmpDetails: [
+      {
+        code: "Work Permit",
+        codeName: "Work Permit",
+      },
+      {
+        code: "Resident",
+        codeName: "Resident",
+      },
+      {
+        code: "Non Resident",
+        codeName: "Non Resident",
+      },
+      {
+        code: "Citizen",
+        codeName: "Citizen",
+      },
+      {
+        code: "Tourist",
+        codeName: "Tourist",
+      },
+      {
+        code: "Other",
+        codeName: "Other",
+      },
+    ],
+    salaryDateEmpDetails: [],
+    customerGroupPersonalDetails: [
+      {
+        code: "1",
+        codeName: "1",
+      },
+      {
+        code: "2",
+        codeName: "2",
+      },
+    ],
+    nationalityPersonalDetails: [
+      {
+        code: "Indian",
+        codeName: "Indian",
+      },
+      {
+        code: "Japanese",
+        codeName: "Japanese",
+      },
+      {
+        code: "American",
+        codeName: "American",
+      },
+    ],
+    genderPersonalDetails: [
+      {
+        code: "Male",
+        codeName: "Male",
+      },
+      {
+        code: "Female",
+        codeName: "Female",
+      },
+      {
+        code: "Others",
+        codeName: "Others",
       },
     ],
   };

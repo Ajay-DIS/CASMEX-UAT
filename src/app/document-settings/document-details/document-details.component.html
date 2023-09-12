@@ -281,23 +281,22 @@
       </div>
     </div>
   </div>
-  <div
-    class="NorecordFound"
-    *ngIf="
-      !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
-    "
-  >
-    <div class="row">
-      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <p>No Record Found.</p>
-      </div>
+</div>
+<div
+  class="NorecordFound"
+  *ngIf="
+    !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
+  "
+>
+  <div class="row">
+    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p>No Record Found.</p>
     </div>
   </div>
 </div>
-
 <p-confirmDialog
   key="documentSettingLinkedWarning"
   class="linked-confirm confirm-popup"
