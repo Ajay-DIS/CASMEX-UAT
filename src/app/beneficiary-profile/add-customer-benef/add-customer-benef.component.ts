@@ -14,252 +14,11 @@ export class AddCustomerBenefComponent implements OnInit {
   
   @Input('formData') formData: any
   @Input('beneData') beneData: any
+  @Input('masterData') masterData: any
 
   @Output() postData = new EventEmitter<any>();
 
-  masterData = {
-    serviceCategory: [
-      {
-        code: "Bank",
-        codeName: "Bank",
-      },
-      {
-        code: "Cash",
-        codeName: "Cash",
-      },
-      {
-        code: "Utility",
-        codeName: "Utility",
-      },
-    ],
-    bankAccountType: [
-      {
-        code: "Saving A/c",
-        codeName: "Saving A/c",
-      },
-      {
-        code: "Current A/c",
-        codeName: "Current A/c",
-      },
-    ],
-    bankName: [
-      {
-        code: "SBI",
-        codeName: "SBI",
-      },
-      {
-        code: "ICICI",
-        codeName: "ICICI",
-      },
-      {
-        code: "HDFC",
-        codeName: "HDFC",
-      },
-      {
-        code: "AXIS",
-        codeName: "AXIS",
-      },
-    ],
-    banksBranch: [
-      {
-        code: "Hyderabad",
-        codeName: "Hyderabad",
-      },
-      {
-        code: "Mumbai",
-        codeName: "Mumbai",
-      },
-      {
-        code: "Delhi",
-        codeName: "Delhi",
-      },
-    ],
-    nationality: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    utilityBiller: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    countryOfEstablishment: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfResidence: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfTrade: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    contactCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    permanentCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfBirth: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    country: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    utilityType: [
-      {
-        code: "Gst",
-        codeName: "Gst",
-      },
-      {
-        code: "Rtgs",
-        codeName: "Rtgs",
-      },
-      {
-        code: "Imps",
-        codeName: "Imps",
-      },
-    ],
-   
-    relationship: [
-      {
-        code: "Brother",
-        codeName: "Brother",
-      },
-      {
-        code: "Uncle",
-        codeName: "Uncle",
-      },
-    ],
-    documentType: [
-      {
-        code: "Aadhar",
-        codeName: "Aadhar",
-      },
-      {
-        code: "Voter",
-        codeName: "Voter",
-      },
-    ],
-    gender: [
-      {
-        code: "Male",
-        codeName: "Male",
-      },
-      {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-    serviceCurrency: [
-      {
-        code: "Rupee",
-        codeName: "Rupee",
-      },
-      {
-        code: "Dollar",
-        codeName: "Dollar",
-      },
-    ],
-  };
+  // masterData : any =[];
 
   custId = null;
   userId = null;
@@ -274,8 +33,9 @@ export class AddCustomerBenefComponent implements OnInit {
 
   objectKeys = Object.keys;
  
-  formDataOrg = {}
-  beneDataOrg = {}
+  formDataOrg = {};
+  beneDataOrg = {};
+  masterDataOrg = {};
 
   constructor(
     private coreService: CoreService,
@@ -288,6 +48,7 @@ export class AddCustomerBenefComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+    console.log("mater",this.masterData)
   }
   
   ngOnChanges(e: any){
@@ -296,6 +57,10 @@ export class AddCustomerBenefComponent implements OnInit {
     if(e.formData && e.formData.currentValue){
       this.formDataOrg = JSON.parse(JSON.stringify((e.formData.currentValue)))
       this.setFormByData(e.formData.currentValue)
+    }
+    if(e.masterData && e.masterData.currentValue){
+      this.masterDataOrg = e.masterData.currentValue;
+      console.log("masterData",e.masterData)
     }
 
     if(e.beneData && e.beneData.currentValue){

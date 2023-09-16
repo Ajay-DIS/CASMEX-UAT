@@ -845,17 +845,26 @@ export class SetCriteriaComponent implements OnInit {
 
   checkMandatoryCondition(formattedCriteriaArr: any) {
     if (
-      this.cmCriteriaMandatory.every((r) => formattedCriteriaArr.includes(r))
+      this.cmCriteriaMandatory &&
+      this.cmCriteriaMandatory.length &&
+      this.cmCriteriaMandatory[0].length
     ) {
+      if (
+        this.cmCriteriaMandatory.every((r) => formattedCriteriaArr.includes(r))
+      ) {
+        let finalFormattedCriteriaObj = this.createFormattedCriteriaMap();
+        return finalFormattedCriteriaObj;
+      } else {
+        this.coreService.showWarningToast(
+          `Please add all mandatory criteria for applying the criteria. Mandatory criteria are ${this.cmCriteriaMandatory.join(
+            ", "
+          )}`
+        );
+        return false;
+      }
+    } else {
       let finalFormattedCriteriaObj = this.createFormattedCriteriaMap();
       return finalFormattedCriteriaObj;
-    } else {
-      this.coreService.showWarningToast(
-        `Please add all mandatory criteria for applying the criteria. Mandatory criteria are ${this.cmCriteriaMandatory.join(
-          ", "
-        )}`
-      );
-      return false;
     }
   }
 

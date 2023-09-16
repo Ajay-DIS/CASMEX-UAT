@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { GroupServiceService } from './group-service.service';
 import { ActivatedRoute } from '@angular/router';
 import { CoreService } from '../core.service';
+import { SetCriteriaService } from '../shared/components/set-criteria/set-criteria.service';
 
 @Component({
   selector: 'app-group-settings',
@@ -20,7 +21,16 @@ export class GroupSettingsComponent implements OnInit {
   moduleName ="Remittance";
   formName = "Bank Routings";
 
-  constructor(private groupService: GroupServiceService,private route: ActivatedRoute,private coreService: CoreService,) { }
+  newcriteriaMapCode = "";
+  masterData : any =[];
+  criteriaMapCodeArray :any = [];
+  criteriaCodeText: any[] = [];
+
+  constructor(private groupService: GroupServiceService,
+    private route: ActivatedRoute,
+    private coreService: CoreService,
+    private setCriteriaService: SetCriteriaService
+    ) { }
 
   ngOnInit(): void {
     this.userData = JSON.parse(localStorage.getItem("userData"));
@@ -28,11 +38,59 @@ export class GroupSettingsComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.getMasterData();
   }
 
   Apply(){
+    console.log("criteriaMapDes",this.criteriaMapDes);
+this.criteriaMapCodeArray =this.criteriaMapDes.split(', ') ;
+this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+  {criteriaMap: this.criteriaMapDes}
+)
+let decodedFormattedCriteriaArr = this.criteriaMapCodeArray.map((crt) => {
+  let formatCrt;
+  let opr;
+  if (crt.includes("!=")) {
+    formatCrt = crt.replace(/[!=]/g, "");
+    opr = "!=";
+  } else if (crt.includes(">=")) {
+    formatCrt = crt.replace(/[>=]/g, "");
+    opr = ">=";
+  } else if (crt.includes("<=")) {
+    formatCrt = crt.replace(/[<=]/g, "");
+    opr = "<=";
+  } else if (crt.includes("<")) {
+    formatCrt = crt.replace(/[<]/g, "");
+    opr = "<";
+  } else if (crt.includes(">")) {
+    formatCrt = crt.replace(/[>]/g, "");
+    opr = ">";
+  } else {
+    formatCrt = crt.replace(/[=]/g, "");
+    opr = "=";
+  }
+  let key = formatCrt.split('  ')[0]
+  let val = formatCrt.split('  ')[1]
+  return {[key] : val}
+})
+
+let newCrtMap = this.criteriaMapDes
+decodedFormattedCriteriaArr.forEach(crt => {
+  let copyCrtMap = newCrtMap
+  let nameVal= (Object.values(crt)[0] as string)
+  console.log("keys",Object.keys(crt)[0])
+  let filtercrt = this.masterData[Object.keys(crt)[0]?.trim()]?.filter(d => {
+    return d.codeName == Object.values(crt)[0]      
+  })
+  if(filtercrt.length){
+    let codeVal= (filtercrt[0]['code'] as string)
+    newCrtMap = copyCrtMap.replace(nameVal, codeVal)
+  }
+})
+console.log("newCrtMap",newCrtMap.split(', ').join(';'))
+this.newcriteriaMapCode = newCrtMap.split(', ').join(';');
     
-this.groupService.getRoutingData(this.criteriaMapDes,this.appName, this.moduleName,this.formName).subscribe((res:any)=> {
+this.groupService.getRoutingData(this.newcriteriaMapCode ,this.appName, this.moduleName,this.formName).subscribe((res:any)=> {
   if(res.RouteData && res.RouteData.length) {
     this.routingData = res.RouteData;
   } else {
@@ -40,6 +98,12 @@ this.groupService.getRoutingData(this.criteriaMapDes,this.appName, this.moduleNa
   }
 })
   }
+  getMasterData(){
+    this.groupService.getCriteriaMasterData(this.formName,this.appName,this.moduleName).subscribe((res:any)=> {
+      console.log("masterdata", res);
+      this.masterData = res;
+    })
+   }
 
   getRoutingapiData(appValue: any, moduleValue: any){ 
     let params =

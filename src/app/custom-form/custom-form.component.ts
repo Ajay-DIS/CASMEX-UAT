@@ -10,6 +10,7 @@ import {
 import { CoreService } from "../core.service";
 import { ActivatedRoute } from "@angular/router";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
 
 @Component({
   selector: "app-custom-form",
@@ -21,11 +22,13 @@ export class CustomFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private coreService: CoreService,
-    private http: HttpClient
+    private http: HttpClient,
+    private setCriteriaService: SetCriteriaService
   ) {}
   submitted = false;
   form: FormGroup;
   formSections: any[] = [];
+  userData: any = {};
 
   noDataMsg = "No data found.";
 
@@ -33,6 +36,10 @@ export class CustomFormComponent implements OnInit {
 
   showForm: boolean = false;
   criteriaMapCode = "";
+  newcriteriaMapCode = "";
+  masterData : any =[];
+  criteriaMapCodeArray :any = [];
+  criteriaCodeText: any[] = [];
 
   apiData1 =
     "Country = IND;Form = Customer Profile;Customer Type = IND";
@@ -52,7 +59,10 @@ export class CustomFormComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.userData = JSON.parse(localStorage.getItem("userData"));
+   this.getCriteriaMasterData();
   }
+
 
   setFormByData(data: any) {
     this.apiData = data;
@@ -61,7 +71,7 @@ export class CustomFormComponent implements OnInit {
     let replica = false;
     let allFormSections = [];
     Object.keys(data).forEach((key) => {
-      if (data[key][0]["criteriaMapSplit"].split("&&&&").length > 1) {
+      if (data[key][0]["criteriaMapSplit"]?.split("&&&&").length > 1) {
         replica = true;
       }
       let formSection = {
@@ -123,7 +133,6 @@ export class CustomFormComponent implements OnInit {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
-        console.log(field);
         if (field.visible) {
           haveVisibleFields = true;
         }
@@ -131,7 +140,6 @@ export class CustomFormComponent implements OnInit {
         if (field.validLength?.length > 0 && field.validLength != "null") {
           let min = +field.validLength?.split("-")[0];
           let max = +field.validLength?.split("-")[1];
-          console.log(field.inputType);
           // if (field.inputType == "number") {
           // let newMin = +("1" + "0".repeat(min));
           // let newMax = +"9".repeat(max);
@@ -162,8 +170,6 @@ export class CustomFormComponent implements OnInit {
       section["isVisible"] = haveVisibleFields ? true : false;
       this.form.addControl(section.formName, sectionGroup);
     });
-    console.log(allFormSections);
-    console.log(this.form);
   }
 
   // getFieldType(field: any): string {
@@ -181,13 +187,58 @@ export class CustomFormComponent implements OnInit {
   // }
 
   Apply() {
-    console.log("criteriaMapCode", this.criteriaMapCode.trim());
-    this.onReset();
+    this.criteriaMapCodeArray =this.criteriaMapCode.split(', ') ;
+    this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+      {criteriaMap: this.criteriaMapCode.trim()}
+    )
+    let decodedFormattedCriteriaArr = this.criteriaMapCodeArray.map((crt) => {
+      let formatCrt;
+      let opr;
+      if (crt.includes("!=")) {
+        formatCrt = crt.replace(/[!=]/g, "");
+        opr = "!=";
+      } else if (crt.includes(">=")) {
+        formatCrt = crt.replace(/[>=]/g, "");
+        opr = ">=";
+      } else if (crt.includes("<=")) {
+        formatCrt = crt.replace(/[<=]/g, "");
+        opr = "<=";
+      } else if (crt.includes("<")) {
+        formatCrt = crt.replace(/[<]/g, "");
+        opr = "<";
+      } else if (crt.includes(">")) {
+        formatCrt = crt.replace(/[>]/g, "");
+        opr = ">";
+      } else {
+        formatCrt = crt.replace(/[=]/g, "");
+        opr = "=";
+      }
+      let key = formatCrt.split('  ')[0]
+      let val = formatCrt.split('  ')[1]
+      return {[key] : val}
+    })
+
+    let newCrtMap = this.criteriaMapCode.trim()
+    decodedFormattedCriteriaArr.forEach(crt => {
+      let copyCrtMap = newCrtMap
+      let nameVal= (Object.values(crt)[0] as string)
+      console.log("keys",Object.keys(crt)[0])
+      let filtercrt = this.masterData[Object.keys(crt)[0]?.trim()]?.filter(d => {
+        return d.codeName == Object.values(crt)[0]      
+      })
+      if(filtercrt.length){
+        let codeVal= (filtercrt[0]['code'] as string)
+        newCrtMap = copyCrtMap.replace(nameVal, codeVal)
+      }
+    })
+    console.log("newCrtMap",newCrtMap.split(', ').join(';'))
+    this.newcriteriaMapCode = newCrtMap.split(', ').join(';');
     this.coreService.displayLoadingScreen();
+  
     this.http
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
-          .set("criteriaMap", this.criteriaMapCode.trim())
+          .set("criteriaMap", this.newcriteriaMapCode.trim())
           .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
@@ -213,6 +264,21 @@ export class CustomFormComponent implements OnInit {
       );
   }
 
+  getCriteriaMasterData() {
+    return  this.http.get(
+      `/remittance/formRulesController/getCriteriaMasterData`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", String(this.userData))
+          .set("form", "Customer Profile_Form Rules")
+          .set("applications", "Casmex Core")
+          .set("moduleName", "Remittance"),
+      }).subscribe(
+      (res) => {
+        this.masterData = res;
+      }
+      );
+  }
   isCheckboxFieldType(field: any): boolean {
     return field.type === "checkbox";
   }

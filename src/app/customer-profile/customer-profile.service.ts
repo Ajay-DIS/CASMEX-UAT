@@ -74,6 +74,13 @@ export class CustomerProfileService {
   //     }
   //   );
   // }
+
+  getCustomerMaster(){
+    return this.http.get(
+      `/remittance/corporateCustomerController/getCustomerProfileMasterData`
+    );
+  }
+
   updateCustomerCorporateStatus(
     userId: any,
     status: any,

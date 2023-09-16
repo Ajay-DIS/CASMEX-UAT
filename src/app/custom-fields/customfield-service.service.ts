@@ -15,4 +15,17 @@ export class CustomfieldServiceService {
       .set("moduleName", moduleName)
       .set("form", formName) }
     ); }
+
+    getCriteriaMasterData(formName: any, appName: any, moduleName: any) {
+      return this.http.get(
+        `/remittance/taxSettingCriteriaController/getCriteriaMasterData`,
+        {
+          headers: new HttpHeaders()
+            .set("formName", formName)
+            .set("applicationName", appName)
+            .set("moduleName", moduleName),
+        }
+      );
+    }
 }
+

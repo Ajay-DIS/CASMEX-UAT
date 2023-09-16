@@ -26,6 +26,7 @@ export class AddBeneficiaryComponent implements OnInit {
 
   formData: any;
   beneData:any;
+  masterData :any;
 
   userId = null;
   today = new Date();
@@ -50,347 +51,7 @@ export class AddBeneficiaryComponent implements OnInit {
     { name: "third", code: "LDN" },
   ];
 
-  masterData = {
-    professionEmpDetails: [
-      {
-        code: "plumber",
-        codeName: "plumber",
-      },
-      {
-        code: "driver",
-        codeName: "driver",
-      },
-    ],
-    politicallyExposedPersonPersonalDetails: [
-      {
-        code: "yes",
-        codeName: "yes",
-      },
-      {
-        code: "no",
-        codeName: "no",
-      },
-    ],
-    visaStatusEmpDetails: [
-      {
-        code: "Work Permit",
-        codeName: "Work Permit",
-      },
-      {
-        code: "Resident",
-        codeName: "Resident",
-      },
-      {
-        code: "Non Resident",
-        codeName: "Non Resident",
-      },
-      {
-        code: "Citizen",
-        codeName: "Citizen",
-      },
-      {
-        code: "Tourist",
-        codeName: "Tourist",
-      },
-      {
-        code: "Other",
-        codeName: "Other",
-      },
-    ],
-    salaryDateEmpDetails: [],
-    customerGroupPersonalDetails: [
-      {
-        code: "1",
-        codeName: "1",
-      },
-      {
-        code: "2",
-        codeName: "2",
-      },
-    ],
-    nationalityPersonalDetails: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    representativeNationality: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    countryOfEstablishment: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfOperation: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfTrade: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    contactCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    permanentCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfBirthPersonalDetails: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    idIssueCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    representativeCountryOfBirth: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    representativeIssueCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    relationship: [
-      {
-        code: "Brother",
-        codeName: "Brother",
-      },
-      {
-        code: "Uncle",
-        codeName: "Uncle",
-      },
-    ],
-    representativeRelationship: [
-      {
-        code: "Brother",
-        codeName: "Brother",
-      },
-      {
-        code: "Uncle",
-        codeName: "Uncle",
-      },
-    ],
-    documentType: [
-      {
-        code: "Aadhar",
-        codeName: "Aadhar",
-      },
-      {
-        code: "Voter",
-        codeName: "Voter",
-      },
-    ],
-    representativeDocumentType: [
-      {
-        code: "Aadhar",
-        codeName: "Aadhar",
-      },
-      {
-        code: "Voter",
-        codeName: "Voter",
-      },
-    ],
-    genderPersonalDetails: [
-      {
-        code: "Male",
-        codeName: "Male",
-      },
-      {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-    representativeGender: [
-      {
-        code: "Male",
-        codeName: "Male",
-      },
-      {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-    businessActivites: [
-      {
-        code: "Manufacturing",
-        codeName: "Manufacturing",
-      },
-      {
-        code: "Trading",
-        codeName: "Trading",
-      },
-      {
-        code: "Services",
-        codeName: "Services",
-      },
-    ],
-    legalStatus: [
-      {
-        code: "Private Limited",
-        codeName: "Private Limited",
-      },
-      {
-        code: "Public Limited",
-        codeName: "Public Limited",
-      },
-      {
-        code: "Sole Proprietorship",
-        codeName: "Sole Proprietorship",
-      },
-      {
-        code: "Partnership",
-        codeName: "Partnership",
-      },
-      {
-        code: "Limited Liability Partnership",
-        codeName: "Limited Liability Partnership",
-      },
-    ],
-    ownershipType: [
-      {
-        code: "Sponsor",
-        codeName: "Sponsor",
-      },
-      {
-        code: "Partner",
-        codeName: "Partner",
-      },
-      {
-        code: "Both",
-        codeName: "Both",
-      },
-    ],
-    category: [
-      {
-        code: "First",
-        codeName: "First",
-      },
-      {
-        code: "Second",
-        codeName: "Second",
-      },
-    ],
-  };
+ 
 
   mode = "add";
   custId = null;
@@ -424,7 +85,7 @@ export class AddBeneficiaryComponent implements OnInit {
     }
     console.log(this.custId, this.custType);
     
-      this.getFormRulesFields(this.custType)
+      this.getFormRulesFields(this.custType);
 
   }
 
@@ -472,6 +133,7 @@ export class AddBeneficiaryComponent implements OnInit {
             } else {
               // this.setFormByData(res);
               this.formData = res
+              this.getBeneficiaryMasterData();
               console.log("API called",this.formData)
               if (this.mode == "edit") {
                 this.getBeneficiaryData(this.custId);
@@ -486,6 +148,32 @@ export class AddBeneficiaryComponent implements OnInit {
             this.coreService.removeLoadingScreen();
           }
         );
+  }
+
+  getBeneficiaryMasterData() {
+    this.http
+      .get(
+        `/remittance/beneficiaryProfileController/getBeneficiaryProfileMaster`,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+             this.masterData = res['data']
+             console.log("masterdatatype",this.masterData);
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.coreService.removeLoadingScreen();
+        }
+      );
   }
 
   getBeneficiaryData(custId: any) {

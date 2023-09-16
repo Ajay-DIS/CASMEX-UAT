@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
 import { zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
+import { CustomerProfileService } from "../customer-profile.service";
 
 @Component({
   selector: "app-add-customer",
@@ -25,7 +26,8 @@ export class AddCustomerComponent implements OnInit {
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private customerService: CustomerProfileService
   ) {}
   @Input("activeIndex") activeTabIndex: any;
 
@@ -510,6 +512,7 @@ export class AddCustomerComponent implements OnInit {
               this.coreService.removeLoadingScreen();
             } else {
               this.setFormByData(res);
+              this.getCustomerMasterData();
               if (this.mode == "edit") {
                 this.getIndividualCustomer(this.custId);
               }
@@ -524,12 +527,34 @@ export class AddCustomerComponent implements OnInit {
           }
         );
     }
+   
+
     for (let i = 1; i <= 30; i++) {
       this.masterData.salaryDateEmpDetails.push({
         code: `${i}`,
         codeName: `${i}`,
       });
     }
+  }
+  getCustomerMasterData(){
+    this.customerService.getCustomerMaster().subscribe(
+      (res) => {
+        // this.coreService.removeLoadingScreen();
+        console.log(res);
+        this.masterData = res["data"];
+        for (let i = 1; i <= 30; i++) {
+          this.masterData.salaryDateEmpDetails.push({
+            code: `${i}`,
+            codeName: `${i}`,
+          });
+        }
+        console.log(this.masterData);
+      },
+      (err) => {
+        // this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Error in fething data");
+      }
+    );
   }
 
   handleChange(event: any) {
