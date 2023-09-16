@@ -18,6 +18,7 @@ export class CriteriaDataService {
     let independantCriteriaArr = [];
 
     cmCriteriaDataDetails.forEach((element) => {
+      let criteriaType = element?.criteriaType;
       let isMandatory = false;
       let isDependent = false;
       let dependencyList = "";
@@ -73,13 +74,16 @@ export class CriteriaDataService {
           isDependent: isDependent,
           dependencyList: dependencyList,
           children: null,
+          criteriaType: criteriaType,
         };
         criteriaMapDdlOptions.push(crElm);
-
         if (Object.keys(obj).length) {
           for (const [key, value] of Object.entries(obj)) {
             let childArr = [];
             (value as []).forEach((deps) => {
+              let criteriaTypeC = cmCriteriaDataDetails.find((crt) => {
+                return crt.fieldName == deps;
+              })?.criteriaType;
               let isMandatoryC = false;
               let isDependentC = false;
               let dependencyListC = "";
@@ -135,6 +139,7 @@ export class CriteriaDataService {
                   isDependent: isDependentC,
                   dependencyList: dependencyListC,
                   children: null,
+                  criteriaType: criteriaTypeC,
                 };
                 childArr.push(crElmChild);
               }
