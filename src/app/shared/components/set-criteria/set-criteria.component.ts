@@ -61,6 +61,8 @@ export class SetCriteriaComponent implements OnInit {
   finalCriteriaCodeText: any[] = [];
   userId = "";
 
+  selectedCriteria: any = { criteriaType: "SQL" };
+
   savedSlabs = false;
   isSlabsCriteria = false;
 
@@ -79,6 +81,8 @@ export class SetCriteriaComponent implements OnInit {
   selectedTemplate = this.criteriaTemplatesDdlOptions.length
     ? "Select Template"
     : "No saved templates";
+
+  emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
   constructor(
     public dialogService: DialogService,
@@ -141,16 +145,268 @@ export class SetCriteriaComponent implements OnInit {
     return this.selectCriteriaForm.get("value");
   }
 
+  // addCriteriaMap() {
+  //   let value = "";
+  //   let valueCode = "";
+
+  //   if (
+  //     this.cmCriteriaSlabType.includes(this.criteriaCtrl.value.label) ||
+  //     this.selectedCriteria.criteriaType != "SQL"
+  //   ) {
+  //     if (this.operationCtrl.value.name == "Slab") {
+  //       value = "Slab";
+  //       valueCode = "Slab";
+  //     } else {
+  //       value = this.valueCtrl.value;
+  //       valueCode = this.valueCtrl.value;
+  //     }
+  //   } else {
+  //     value = this.valueCtrl.value.name;
+  //     valueCode = this.valueCtrl.value.code;
+  //   }
+
+  //   let criteria =
+  //     this.criteriaCtrl.value.label +
+  //     " " +
+  //     this.operationCtrl.value.code +
+  //     " " +
+  //     value;
+  //   let criteriaCode =
+  //     this.criteriaCtrl.value.label +
+  //     " " +
+  //     this.operationCtrl.value.code +
+  //     " " +
+  //     valueCode;
+  //   let index = this.criteriaText.indexOf(criteria);
+  //   //validations
+  //   if (this.criteriaText.length && index != -1) {
+  //     this.coreService.showWarningToast(
+  //       criteria + " already added, please add different case"
+  //     );
+  //   } else if (this.criteriaText.length) {
+  //     this.validCriteria = true;
+  //     this.validSlabAmount = true;
+  //     let splitdata;
+  //     if (criteria.includes("!=")) {
+  //       splitdata = criteria.replace(/[!=]/g, "");
+  //     } else if (criteria.includes("<=")) {
+  //       splitdata = criteria.replace(/[<=]/g, "");
+  //     } else if (criteria.includes(">=")) {
+  //       splitdata = criteria.replace(/[>=]/g, "");
+  //     } else if (criteria.includes("<")) {
+  //       splitdata = criteria.replace(/[<]/g, "");
+  //     } else if (criteria.includes(">")) {
+  //       splitdata = criteria.replace(/[>]/g, "");
+  //     } else {
+  //       splitdata = criteria.replace(/[=]/g, "");
+  //     }
+
+  //     if (
+  //       criteria.includes("<=") ||
+  //       criteria.includes(">=") ||
+  //       criteria.includes("<") ||
+  //       criteria.includes(">")
+  //     ) {
+  //       this.validCriteria = true;
+  //       this.validSlabAmount = true;
+  //       this.criteriaText.every((element) => {
+  //         let splitText;
+  //         if (criteria.includes("!=")) {
+  //           splitText = element.replace(/[!=]/g, "");
+  //         } else if (element.includes("<=")) {
+  //           splitText = element.replace(/[<=]/g, "");
+  //         } else if (element.includes(">=")) {
+  //           splitText = element.replace(/[>=]/g, "");
+  //         } else if (element.includes("<")) {
+  //           splitText = element.replace(/[<]/g, "");
+  //         } else if (element.includes(">")) {
+  //           splitText = element.replace(/[>]/g, "");
+  //         } else {
+  //           splitText = element.replace(/[=]/g, "");
+  //         }
+
+  //         if (
+  //           splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+  //           splitdata.split("  ")[1] == "Slab"
+  //         ) {
+  //           this.coreService.showWarningToast(
+  //             "Please delete existing criteria " +
+  //               element +
+  //               ", then add " +
+  //               criteria
+  //           );
+  //           this.validCriteria = false;
+  //           this.validSlabAmount = false;
+
+  //           return false;
+  //         } else if (
+  //           splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+  //           splitText.split("  ")[1] == "Slab"
+  //         ) {
+  //           this.coreService.showWarningToast(
+  //             "Please delete existing criteria " +
+  //               element +
+  //               ", then add " +
+  //               criteria
+  //           );
+  //           this.validCriteria = false;
+  //           this.validSlabAmount = false;
+  //           return false;
+  //         } else if (
+  //           splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+  //           this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
+  //         ) {
+  //           this.validCriteria = true;
+  //           return true;
+  //         } else {
+  //           return true;
+  //         }
+  //       });
+  //     } else {
+  //       let isCurrentCriteriaNotEqualCondition = false;
+  //       let isCurrentCriteriaEqualCondition = false;
+
+  //       if (criteria.includes("!=")) {
+  //         isCurrentCriteriaNotEqualCondition = true;
+  //       } else {
+  //         isCurrentCriteriaEqualCondition = true;
+  //       }
+
+  //       this.criteriaText.every((element) => {
+  //         let splitText;
+  //         if (element.includes("!=")) {
+  //           splitText = element.replace(/[!=]/g, "");
+  //         } else if (element.includes("<=")) {
+  //           splitText = element.replace(/[<=]/g, "");
+  //         } else if (element.includes(">=")) {
+  //           splitText = element.replace(/[>=]/g, "");
+  //         } else if (element.includes("<")) {
+  //           splitText = element.replace(/[<]/g, "");
+  //         } else if (element.includes(">")) {
+  //           splitText = element.replace(/[>]/g, "");
+  //         } else {
+  //           splitText = element.replace(/[=]/g, "");
+  //         }
+
+  //         if (splitText.split("  ")[0] == splitdata.split("  ")[0]) {
+  //           if (splitText.split("  ")[1] == splitdata.split("  ")[1]) {
+  //             this.coreService.showWarningToast(
+  //               " Please select different criteria for " +
+  //                 splitdata.split("  ")[0]
+  //             );
+  //             this.validCriteria = false;
+  //             return false;
+  //           } else {
+  //             if (
+  //               splitdata.split("  ")[1] == "Slab" &&
+  //               this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
+  //             ) {
+  //               this.coreService.showWarningToast(
+  //                 "Please delete existing criteria " +
+  //                   element +
+  //                   ", then add " +
+  //                   criteria
+  //               );
+  //               this.validCriteria = false;
+  //               return false;
+  //             }
+
+  //             let isAlreadyCriteriaNotEqualCondition = false;
+  //             let isAlreadyCriteriaEqualCondition = false;
+
+  //             if (element.includes("!=")) {
+  //               isAlreadyCriteriaNotEqualCondition = true;
+  //             } else if (element.includes(" = ")) {
+  //               isAlreadyCriteriaEqualCondition = true;
+  //             }
+
+  //             if (
+  //               isCurrentCriteriaEqualCondition &&
+  //               isAlreadyCriteriaEqualCondition
+  //             ) {
+  //               this.coreService.showWarningToast(
+  //                 "Please delete existing criteria " +
+  //                   element +
+  //                   ", then add " +
+  //                   criteria
+  //               );
+  //               this.validCriteria = false;
+  //               return false;
+  //             } else if (
+  //               isAlreadyCriteriaEqualCondition ==
+  //                 !isCurrentCriteriaEqualCondition &&
+  //               isAlreadyCriteriaNotEqualCondition ==
+  //                 !isCurrentCriteriaNotEqualCondition
+  //             ) {
+  //               if (
+  //                 this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
+  //               ) {
+  //                 this.coreService.showWarningToast(
+  //                   "Please delete existing criteria " +
+  //                     element +
+  //                     ", then add " +
+  //                     criteria
+  //                 );
+  //                 this.validCriteria = false;
+  //                 return false;
+  //               }
+  //             } else {
+  //               if (
+  //                 !(
+  //                   splitText.split("  ")[1] != "Any" &&
+  //                   splitdata.split("  ")[1] != "Any"
+  //                 )
+  //               ) {
+  //                 this.coreService.showWarningToast(
+  //                   "Please delete existing criteria " +
+  //                     element +
+  //                     ", then add " +
+  //                     criteria
+  //                 );
+  //                 this.validCriteria = false;
+  //                 return false;
+  //               } else {
+  //                 return true;
+  //               }
+  //             }
+  //           }
+  //         } else {
+  //           return true;
+  //         }
+  //       });
+  //     }
+  //     if (this.validCriteria) {
+  //       this.checkSlabCriteria(criteria, criteriaCode);
+  //     }
+  //   } else {
+  //     this.checkSlabCriteria(criteria, criteriaCode);
+  //   }
+  // }
+
   addCriteriaMap() {
     let value = "";
     let valueCode = "";
-    if (this.cmCriteriaSlabType.includes(this.criteriaCtrl.value.label)) {
+    if (
+      this.selectedCriteria.criteriaType == "Slab" ||
+      this.selectedCriteria.criteriaType != "SQL"
+    ) {
       if (this.operationCtrl.value.name == "Slab") {
         value = "Slab";
         valueCode = "Slab";
       } else {
-        value = this.valueCtrl.value;
-        valueCode = this.valueCtrl.value;
+        if (this.selectedCriteria.criteriaType == "date") {
+          value = new Date(this.valueCtrl.value)
+            .toLocaleDateString("en-UK")
+            .split("/")
+            .join("-");
+          valueCode = new Date(this.valueCtrl.value)
+            .toLocaleDateString("en-UK")
+            .split("/")
+            .join("-");
+        } else {
+          value = this.valueCtrl.value;
+          valueCode = this.valueCtrl.value;
+        }
       }
     } else {
       value = this.valueCtrl.value.name;
@@ -169,129 +425,74 @@ export class SetCriteriaComponent implements OnInit {
       this.operationCtrl.value.code +
       " " +
       valueCode;
+
     let index = this.criteriaText.indexOf(criteria);
     //validations
-    if (this.criteriaText.length && index != -1) {
-      this.coreService.showWarningToast(
-        criteria + " already added, please add different case"
-      );
-    } else if (this.criteriaText.length) {
-      this.validCriteria = true;
-      this.validSlabAmount = true;
-      let splitdata;
-      if (criteria.includes("!=")) {
-        splitdata = criteria.replace(/[!=]/g, "");
-      } else if (criteria.includes("<=")) {
-        splitdata = criteria.replace(/[<=]/g, "");
-      } else if (criteria.includes(">=")) {
-        splitdata = criteria.replace(/[>=]/g, "");
-      } else if (criteria.includes("<")) {
-        splitdata = criteria.replace(/[<]/g, "");
-      } else if (criteria.includes(">")) {
-        splitdata = criteria.replace(/[>]/g, "");
+    if (this.criteriaText.length) {
+      if (index != -1) {
+        this.coreService.showWarningToast(
+          criteria + " already added, please add different case"
+        );
       } else {
-        splitdata = criteria.replace(/[=]/g, "");
-      }
-
-      if (
-        criteria.includes("<=") ||
-        criteria.includes(">=") ||
-        criteria.includes("<") ||
-        criteria.includes(">")
-      ) {
         this.validCriteria = true;
         this.validSlabAmount = true;
-        this.criteriaText.every((element) => {
-          let splitText;
-          if (criteria.includes("!=")) {
-            splitText = element.replace(/[!=]/g, "");
-          } else if (element.includes("<=")) {
-            splitText = element.replace(/[<=]/g, "");
-          } else if (element.includes(">=")) {
-            splitText = element.replace(/[>=]/g, "");
-          } else if (element.includes("<")) {
-            splitText = element.replace(/[<]/g, "");
-          } else if (element.includes(">")) {
-            splitText = element.replace(/[>]/g, "");
-          } else {
-            splitText = element.replace(/[=]/g, "");
-          }
-
-          if (
-            splitText.split("  ")[0] == splitdata.split("  ")[0] &&
-            splitdata.split("  ")[1] == "Slab"
-          ) {
-            this.coreService.showWarningToast(
-              "Please delete existing criteria " +
-                element +
-                ", then add " +
-                criteria
-            );
-            this.validCriteria = false;
-            this.validSlabAmount = false;
-
-            return false;
-          } else if (
-            splitText.split("  ")[0] == splitdata.split("  ")[0] &&
-            splitText.split("  ")[1] == "Slab"
-          ) {
-            this.coreService.showWarningToast(
-              "Please delete existing criteria " +
-                element +
-                ", then add " +
-                criteria
-            );
-            this.validCriteria = false;
-            this.validSlabAmount = false;
-            return false;
-          } else if (
-            splitText.split("  ")[0] == splitdata.split("  ")[0] &&
-            this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
-          ) {
-            this.validCriteria = true;
-            return true;
-          } else {
-            return true;
-          }
-        });
-      } else {
-        let isCurrentCriteriaNotEqualCondition = false;
-        let isCurrentCriteriaEqualCondition = false;
-
+        let splitdata;
+        let currOpr;
         if (criteria.includes("!=")) {
-          isCurrentCriteriaNotEqualCondition = true;
+          splitdata = criteria.replace(/[!=]/g, "");
+          currOpr = "!=";
+        } else if (criteria.includes(">=")) {
+          splitdata = criteria.replace(/[>=]/g, "");
+          currOpr = ">=";
+        } else if (criteria.includes("<=")) {
+          splitdata = criteria.replace(/[<=]/g, "");
+          currOpr = "<=";
+        } else if (criteria.includes("<")) {
+          splitdata = criteria.replace(/[<]/g, "");
+          currOpr = "<";
+        } else if (criteria.includes(">")) {
+          splitdata = criteria.replace(/[>]/g, "");
+          currOpr = ">";
         } else {
-          isCurrentCriteriaEqualCondition = true;
+          splitdata = criteria.replace(/[=]/g, "");
+          currOpr = "=";
         }
 
-        this.criteriaText.every((element) => {
-          let splitText;
-          if (element.includes("!=")) {
-            splitText = element.replace(/[!=]/g, "");
-          } else if (element.includes("<=")) {
-            splitText = element.replace(/[<=]/g, "");
-          } else if (element.includes(">=")) {
-            splitText = element.replace(/[>=]/g, "");
-          } else if (element.includes("<")) {
-            splitText = element.replace(/[<]/g, "");
-          } else if (element.includes(">")) {
-            splitText = element.replace(/[>]/g, "");
-          } else {
-            splitText = element.replace(/[=]/g, "");
-          }
-
-          if (splitText.split("  ")[0] == splitdata.split("  ")[0]) {
-            if (splitText.split("  ")[1] == splitdata.split("  ")[1]) {
-              this.coreService.showWarningToast(
-                " Please select different criteria for " +
-                  splitdata.split("  ")[0]
-              );
-              this.validCriteria = false;
-              return false;
+        if (
+          criteria.includes("<=") ||
+          criteria.includes(">=") ||
+          criteria.includes("<") ||
+          criteria.includes(">")
+        ) {
+          this.validCriteria = true;
+          this.validSlabAmount = true;
+          this.criteriaText.every((element) => {
+            let splitText;
+            let ExistOpr;
+            if (element.includes("!=")) {
+              splitText = element.replace(/[!=]/g, "");
+              ExistOpr = "!=";
+            } else if (element.includes(">=")) {
+              splitText = element.replace(/[>=]/g, "");
+              ExistOpr = ">=";
+            } else if (element.includes("<=")) {
+              splitText = element.replace(/[<=]/g, "");
+              ExistOpr = "<=";
+            } else if (element.includes("<")) {
+              splitText = element.replace(/[<]/g, "");
+              ExistOpr = "<";
+            } else if (element.includes(">")) {
+              splitText = element.replace(/[>]/g, "");
+              ExistOpr = ">";
             } else {
+              splitText = element.replace(/[=]/g, "");
+              ExistOpr = "=";
+            }
+
+            if (splitText.split("  ")[0] == splitdata.split("  ")[0])
               if (
-                splitdata.split("  ")[1] == "Slab" &&
-                this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
+                splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+                splitdata.split("  ")[1] == "Slab"
               ) {
                 this.coreService.showWarningToast(
                   "Please delete existing criteria " +
@@ -300,54 +501,322 @@ export class SetCriteriaComponent implements OnInit {
                     criteria
                 );
                 this.validCriteria = false;
-                return false;
-              }
+                this.validSlabAmount = false;
 
-              let isAlreadyCriteriaNotEqualCondition = false;
-              let isAlreadyCriteriaEqualCondition = false;
-
-              if (element.includes("!=")) {
-                isAlreadyCriteriaNotEqualCondition = true;
-              } else if (element.includes(" = ")) {
-                isAlreadyCriteriaEqualCondition = true;
-              }
-
-              if (
-                isCurrentCriteriaEqualCondition &&
-                isAlreadyCriteriaEqualCondition
-              ) {
-                this.coreService.showWarningToast(
-                  "Please delete existing criteria " +
-                    element +
-                    ", then add " +
-                    criteria
-                );
-                this.validCriteria = false;
                 return false;
               } else if (
-                isAlreadyCriteriaEqualCondition ==
-                  !isCurrentCriteriaEqualCondition &&
-                isAlreadyCriteriaNotEqualCondition ==
-                  !isCurrentCriteriaNotEqualCondition
+                splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+                splitText.split("  ")[1] == "Slab"
               ) {
-                if (
-                  this.cmCriteriaSlabType.includes(splitdata.split("  ")[0])
-                ) {
-                  this.coreService.showWarningToast(
-                    "Please delete existing criteria " +
-                      element +
-                      ", then add " +
-                      criteria
-                  );
-                  this.validCriteria = false;
-                  return false;
+                this.coreService.showWarningToast(
+                  "Please delete existing criteria " +
+                    element +
+                    ", then add " +
+                    criteria
+                );
+                this.validCriteria = false;
+                this.validSlabAmount = false;
+                return false;
+              } else if (
+                splitText.split("  ")[0] == splitdata.split("  ")[0] &&
+                (this.selectedCriteria?.criteriaType == "Slab" ||
+                  this.selectedCriteria?.criteriaType == "date")
+              ) {
+                if (currOpr == ">" || currOpr == ">=") {
+                  if (ExistOpr == ">" || ExistOpr == ">=") {
+                    this.coreService.showWarningToast(
+                      "Please delete existing criteria " +
+                        element +
+                        ", then add " +
+                        criteria
+                    );
+                    this.validCriteria = false;
+                    if (this.selectedCriteria?.criteriaType == "Slab") {
+                      this.validSlabAmount = false;
+                    }
+                    return false;
+                  } else {
+                    if (this.selectedCriteria?.criteriaType == "Slab") {
+                      if (ExistOpr == "<") {
+                        if (
+                          +splitdata.split("  ")[1] >= +splitText.split("  ")[1]
+                        ) {
+                          this.coreService.showWarningToast(
+                            "Please delete existing criteria " +
+                              element +
+                              ", then add " +
+                              criteria
+                          );
+                          this.validCriteria = false;
+                          this.validSlabAmount = false;
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      } else if (ExistOpr == "<=") {
+                        if (currOpr == ">") {
+                          if (
+                            +splitdata.split("  ")[1] >
+                            +splitText.split("  ")[1]
+                          ) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        } else if (currOpr == ">=") {
+                          if (
+                            +splitdata.split("  ")[1] >
+                            +splitText.split("  ")[1]
+                          ) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    } else if (this.selectedCriteria?.criteriaType == "date") {
+                      let currY = splitdata.split("  ")[1]?.split("-")[2];
+                      let currM = splitdata.split("  ")[1]?.split("-")[1];
+                      let currD = splitdata.split("  ")[1]?.split("-")[0];
+                      let existY = splitText.split("  ")[1]?.split("-")[2];
+                      let existM = splitText.split("  ")[1]?.split("-")[1];
+                      let existD = splitText.split("  ")[1]?.split("-")[0];
+
+                      let currDate = currM + "-" + currD + "-" + currY;
+
+                      let existDate = existM + "-" + existD + "-" + existY;
+
+                      if (ExistOpr == "<") {
+                        if (Date.parse(currDate) >= Date.parse(existDate)) {
+                          this.coreService.showWarningToast(
+                            "Please delete existing criteria " +
+                              element +
+                              ", then add " +
+                              criteria
+                          );
+                          this.validCriteria = false;
+                          this.validSlabAmount = false;
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      } else if (ExistOpr == "<=") {
+                        if (currOpr == ">") {
+                          if (Date.parse(currDate) > Date.parse(existDate)) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        } else if (currOpr == ">=") {
+                          if (Date.parse(currDate) > Date.parse(existDate)) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    }
+                  }
+                } else if (currOpr == "<" || currOpr == "<=") {
+                  if (ExistOpr == "<" || ExistOpr == "<=") {
+                    this.coreService.showWarningToast(
+                      "Please delete existing criteria " +
+                        element +
+                        ", then add " +
+                        criteria
+                    );
+                    this.validCriteria = false;
+                    if (this.selectedCriteria?.criteriaType == "Slab") {
+                      this.validSlabAmount = false;
+                    }
+                    return false;
+                  } else {
+                    if (this.selectedCriteria?.criteriaType == "Slab") {
+                      if (ExistOpr == ">") {
+                        if (
+                          +splitdata.split("  ")[1] <= +splitText.split("  ")[1]
+                        ) {
+                          this.coreService.showWarningToast(
+                            "Please delete existing criteria " +
+                              element +
+                              ", then add " +
+                              criteria
+                          );
+                          this.validCriteria = false;
+                          this.validSlabAmount = false;
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      } else if (ExistOpr == ">=") {
+                        if (currOpr == "<") {
+                          if (
+                            +splitdata.split("  ")[1] <=
+                            +splitText.split("  ")[1]
+                          ) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        } else if (currOpr == "<=") {
+                          if (
+                            +splitdata.split("  ")[1] <
+                            +splitText.split("  ")[1]
+                          ) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    } else if (this.selectedCriteria?.criteriaType == "date") {
+                      let currY = splitdata.split("  ")[1]?.split("-")[2];
+                      let currM = splitdata.split("  ")[1]?.split("-")[1];
+                      let currD = splitdata.split("  ")[1]?.split("-")[0];
+                      let existY = splitText.split("  ")[1]?.split("-")[2];
+                      let existM = splitText.split("  ")[1]?.split("-")[1];
+                      let existD = splitText.split("  ")[1]?.split("-")[0];
+
+                      let currDate = currM + "-" + currD + "-" + currY;
+                      let existDate = existM + "-" + existD + "-" + existY;
+                      if (ExistOpr == ">") {
+                        if (Date.parse(currDate) <= Date.parse(existDate)) {
+                          this.coreService.showWarningToast(
+                            "Please delete existing criteria " +
+                              element +
+                              ", then add " +
+                              criteria
+                          );
+                          this.validCriteria = false;
+                          this.validSlabAmount = false;
+                          return false;
+                        } else {
+                          return true;
+                        }
+                      } else if (ExistOpr == ">=") {
+                        if (currOpr == "<") {
+                          if (Date.parse(currDate) <= Date.parse(existDate)) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        } else if (currOpr == "<=") {
+                          if (Date.parse(currDate) < Date.parse(existDate)) {
+                            this.coreService.showWarningToast(
+                              "Please delete existing criteria " +
+                                element +
+                                ", then add " +
+                                criteria
+                            );
+                            this.validCriteria = false;
+                            this.validSlabAmount = false;
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               } else {
+                return true;
+              }
+          });
+        } else {
+          let isCurrentCriteriaNotEqualCondition = false;
+          let isCurrentCriteriaEqualCondition = false;
+
+          if (criteria.includes("!=")) {
+            isCurrentCriteriaNotEqualCondition = true;
+          } else {
+            isCurrentCriteriaEqualCondition = true;
+          }
+
+          this.criteriaText.every((element) => {
+            let splitText;
+            if (element.includes("!=")) {
+              splitText = element.replace(/[!=]/g, "");
+            } else if (element.includes("<=")) {
+              splitText = element.replace(/[<=]/g, "");
+            } else if (element.includes(">=")) {
+              splitText = element.replace(/[>=]/g, "");
+            } else if (element.includes("<")) {
+              splitText = element.replace(/[<]/g, "");
+            } else if (element.includes(">")) {
+              splitText = element.replace(/[>]/g, "");
+            } else {
+              splitText = element.replace(/[=]/g, "");
+            }
+
+            if (splitText.split("  ")[0] == splitdata.split("  ")[0]) {
+              if (splitText.split("  ")[1] == splitdata.split("  ")[1]) {
+                this.coreService.showWarningToast(
+                  " Please select different value for " +
+                    splitdata.split("  ")[0]
+                );
+                this.validCriteria = false;
+                return false;
+              } else {
                 if (
-                  !(
-                    splitText.split("  ")[1] != "Any" &&
-                    splitdata.split("  ")[1] != "Any"
-                  )
+                  splitdata.split("  ")[1] == "Slab" &&
+                  this.selectedCriteria.criteriaType == "Slab"
                 ) {
                   this.coreService.showWarningToast(
                     "Please delete existing criteria " +
@@ -357,18 +826,73 @@ export class SetCriteriaComponent implements OnInit {
                   );
                   this.validCriteria = false;
                   return false;
+                }
+
+                let isAlreadyCriteriaNotEqualCondition = false;
+                let isAlreadyCriteriaEqualCondition = false;
+
+                if (element.includes("!=")) {
+                  isAlreadyCriteriaNotEqualCondition = true;
+                } else if (element.includes(" = ")) {
+                  isAlreadyCriteriaEqualCondition = true;
+                }
+
+                if (
+                  isCurrentCriteriaEqualCondition &&
+                  isAlreadyCriteriaEqualCondition
+                ) {
+                  this.coreService.showWarningToast(
+                    "Please delete existing criteria " +
+                      element +
+                      ", then add " +
+                      criteria
+                  );
+                  this.validCriteria = false;
+                  return false;
+                } else if (
+                  isAlreadyCriteriaEqualCondition ==
+                    !isCurrentCriteriaEqualCondition &&
+                  isAlreadyCriteriaNotEqualCondition ==
+                    !isCurrentCriteriaNotEqualCondition
+                ) {
+                  if (this.selectedCriteria?.criteriaType == "Slab") {
+                    this.coreService.showWarningToast(
+                      "Please delete existing criteria " +
+                        element +
+                        ", then add " +
+                        criteria
+                    );
+                    this.validCriteria = false;
+                    return false;
+                  }
                 } else {
-                  return true;
+                  if (
+                    !(
+                      splitText.split("  ")[1] != "Any" &&
+                      splitdata.split("  ")[1] != "Any"
+                    )
+                  ) {
+                    this.coreService.showWarningToast(
+                      "Please delete existing criteria " +
+                        element +
+                        ", then add " +
+                        criteria
+                    );
+                    this.validCriteria = false;
+                    return false;
+                  } else {
+                    return true;
+                  }
                 }
               }
+            } else {
+              return true;
             }
-          } else {
-            return true;
-          }
-        });
-      }
-      if (this.validCriteria) {
-        this.checkSlabCriteria(criteria, criteriaCode);
+          });
+        }
+        if (this.validCriteria) {
+          this.checkSlabCriteria(criteria, criteriaCode);
+        }
       }
     } else {
       this.checkSlabCriteria(criteria, criteriaCode);
@@ -482,8 +1006,11 @@ export class SetCriteriaComponent implements OnInit {
   }
 
   onCriteriaSelect(event: any) {
-    this.hideValuesDropdown = false;
-    this.showValueInput = false;
+    this.selectedCriteria = event;
+    // this.hideValuesDropdown = false;
+    // this.showValueInput = false;
+    this.valueCtrl.reset();
+    this.operationCtrl.reset();
     if (this.isCriteriaSelectable(event)) {
       this.onChange("criteria", event);
     } else {
@@ -493,6 +1020,7 @@ export class SetCriteriaComponent implements OnInit {
 
   resetCriteriaDropdowns() {
     this.criteriaCtrl.reset();
+    this.selectedCriteria = { criteriaType: "SQL" };
     this.operationCtrl.reset();
     this.valueCtrl.reset();
     this.valueCtrl.disable();
@@ -515,7 +1043,10 @@ export class SetCriteriaComponent implements OnInit {
         this.showValueInput = false;
         if (selectedCorrespondent.length) {
           if (
-            this.cmCriteriaSlabType.includes(selectedCorrespondent[0].fieldName)
+            this.cmCriteriaSlabType.includes(
+              selectedCorrespondent[0].fieldName
+            ) ||
+            selectedCorrespondent[0]?.criteriaType == "Slab"
           ) {
             this.isSlabControlSelected = true;
             operations = selectedCorrespondent[0].operations.split(",");
@@ -526,11 +1057,19 @@ export class SetCriteriaComponent implements OnInit {
             this.isSlabControlSelected = false;
             this.correspondentDdlOptions = [];
             this.valueCtrl.patchValue("");
-            this.getCorrespondentValues.emit({
-              fieldName: event.label,
-              displayName: event.data,
-              criteriaCodeText: this.criteriaCodeText,
-            });
+            if (selectedCorrespondent[0]?.criteriaType == "SQL") {
+              this.getCorrespondentValues.emit({
+                fieldName: event.label,
+                displayName: event.data,
+                criteriaCodeText: this.criteriaCodeText,
+              });
+            } else {
+              this.hideValuesDropdown = true;
+              this.showValueInput = true;
+              if (selectedCorrespondent[0]?.criteriaType == "number") {
+                this.showValueInput = true;
+              }
+            }
             operations = selectedCorrespondent[0].operations.split(",");
           }
           this.criteriaEqualsDdlOptions = [];
@@ -579,8 +1118,8 @@ export class SetCriteriaComponent implements OnInit {
         break;
 
       case "condition":
-        this.hideValuesDropdown = false;
-        this.showValueInput = false;
+        // this.hideValuesDropdown = false;
+        // this.showValueInput = false;
         if (
           event.name == "Slab" &&
           !this.criteriaText.filter(
@@ -647,12 +1186,17 @@ export class SetCriteriaComponent implements OnInit {
             this.AddCriteriaClickListener = false;
           }
           this.isSlabsCriteria = false;
-        } else {
+        } else if (this.selectedCriteria?.criteriaType == "SQL") {
           this.hideValuesDropdown = false;
           if (this.AddCriteriaClickListener) {
             this.removeAddCriteriaListener();
             this.AddCriteriaClickListener = false;
           }
+          this.isSlabsCriteria = false;
+        } else {
+          this.valueCtrl.enable();
+          this.hideValuesDropdown = true;
+          this.showValueInput = true;
           this.isSlabsCriteria = false;
         }
         break;

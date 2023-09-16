@@ -58,7 +58,6 @@
   </p-dialog>
   <div class="dropdowns-select-container mb-3">
     <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
-
       <p-treeSelect
         class="mr-3"
         scrollHeight="300px"
@@ -91,29 +90,84 @@
         formControlName="operation"
       ></p-dropdown>
 
-      <p-dropdown
-        *ngIf="!hideValuesDropdown"
-        class="mr-3"
-        [options]="correspondentDdlOptions"
-        optionLabel="name"
-        placeholder="Value"
-        (onChange)="onChange('val', $event.value)"
-        formControlName="value"
-      ></p-dropdown>
-
-      <p-inputNumber
-        class="value-input mr-3"
-        *ngIf="hideValuesDropdown && showValueInput"
-        placeholder="Value"
-        pInputNumber
-        formControlName="value"
-        [useGrouping]="false"
-        [min]="0"
-        maxlength="10"
-        maxValue="9999999999"
-        (onInput)="changeValueInput($event)"
+      <ng-container
+        *ngIf="
+          selectedCriteria?.criteriaType == 'Slab' ||
+          selectedCriteria?.criteriaType == 'SQL'
+        "
       >
-      </p-inputNumber>
+        <p-dropdown
+          *ngIf="!hideValuesDropdown"
+          class="mr-3"
+          [options]="correspondentDdlOptions"
+          optionLabel="name"
+          placeholder="Value"
+          (onChange)="onChange('val', $event.value)"
+          formControlName="value"
+        ></p-dropdown>
+
+        <p-inputNumber
+          class="value-input mr-3"
+          *ngIf="hideValuesDropdown && showValueInput"
+          placeholder="Value"
+          pInputNumber
+          formControlName="value"
+          [useGrouping]="false"
+          [min]="0"
+          maxlength="10"
+          maxValue="9999999999"
+          (onInput)="changeValueInput($event)"
+        >
+        </p-inputNumber>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          selectedCriteria?.criteriaType != 'Slab' &&
+          selectedCriteria?.criteriaType != 'SQL'
+        "
+        [ngSwitch]="selectedCriteria?.criteriaType"
+      >
+        <input
+          *ngSwitchCase="'text'"
+          type="text"
+          class="block mr-3"
+          placeholder="Value"
+          pInputText
+          formControlName="value"
+        />
+        <input
+          *ngSwitchCase="'email'"
+          type="text"
+          class="block mr-3"
+          placeholder="Value"
+          pInputText
+          formControlName="value"
+          email
+        />
+        <p-inputNumber
+          *ngSwitchCase="'number'"
+          class="mr-3"
+          placeholder="Value"
+          pInputNumber
+          formControlName="value"
+          [useGrouping]="false"
+          [min]="0"
+          maxlength="10"
+          maxValue="9999999999"
+          (onInput)="changeValueInput($event)"
+        >
+        </p-inputNumber>
+        <p-calendar
+          *ngSwitchCase="'date'"
+          class="block mr-3"
+          placeholder="DD/MM/YYYY"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          formControlName="value"
+          [readonlyInput]="true"
+          [appendTo]="'body'"
+        ></p-calendar>
+      </ng-container>
 
       <button
         #addCriteriaBtn
