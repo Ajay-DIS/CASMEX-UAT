@@ -8,14 +8,14 @@
           header="Individual"
           [disabled]="mode == 'edit' && custType == 'COR'"
         >
-          <app-add-customer-benef [activeIndex]="activeTabIndex" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
+          <app-add-customer-benef [activeIndex]="activeTabIndex" [masterData]="masterData" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
         </p-tabPanel>
         <p-tabPanel
           header="Corporate"
           [disabled]="mode == 'edit' && custType == 'IND'"
         >
           <ng-template pTemplate="content">
-            <app-add-customer-benef [activeIndex]="activeTabIndex" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
+            <app-add-customer-benef [activeIndex]="activeTabIndex" [masterData]="masterData" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
           </ng-template>
         </p-tabPanel>
       </p-tabView>

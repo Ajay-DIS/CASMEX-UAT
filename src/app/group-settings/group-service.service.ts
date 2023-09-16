@@ -15,4 +15,16 @@ export class GroupServiceService {
       .set("form", formName) }
     );
   }
+
+  getCriteriaMasterData(formName: any, appName: any, moduleName: any) {
+    return this.http.get(
+      `/remittance/banksRoutingController/getCriteriaMasterData`,
+      {
+        headers: new HttpHeaders()
+          .set("formName", formName)
+          .set("applicationName", appName)
+          .set("moduleName", moduleName),
+      }
+    );
+  }
 }

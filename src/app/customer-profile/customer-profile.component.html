@@ -218,13 +218,13 @@
                 {{ rowData[col["field"]] }}
               </div>
               <div *ngIf="i == 0">
-                <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)"  pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)" style="height: 2rem;width: 2rem;" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                 <a
                 
                 style="text-decoration: underline !important"
                 [ngStyle]="{
                   position: 'relative',
-                  top: '-13px',
+                  top: '-6px',
                   color: 'var(--primary-color)',
                   fontSize: '11px',
                   cursor: 'pointer'
