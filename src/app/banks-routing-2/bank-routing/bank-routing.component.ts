@@ -113,14 +113,13 @@ export class BankRoutingComponent2 implements OnInit {
           res["status"] &&
           typeof res["status"] == "string" &&
           (res["status"] == "400" || res["status"] == "500")
-        ){
+        ) {
           if (res["error"]) {
             this.coreService.showWarningToast(res["error"]);
           } else {
             this.coreService.showWarningToast("Some error in fetching data");
           }
-        }
-        else {
+        } else {
           if (!res["msg"]) {
             this.searchApplicationOptions = res["data"][
               "cmApplicationMaster"
@@ -173,6 +172,7 @@ export class BankRoutingComponent2 implements OnInit {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
+        this.userData.userId,
         this.formName,
         appValue,
         moduleValue
@@ -232,14 +232,17 @@ export class BankRoutingComponent2 implements OnInit {
       )
       .subscribe(
         (res) => {
-          if(res["status"] && typeof res["status"] == "string" && (res["status"] == "400" || res["status"] == "500")){
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
               this.coreService.showWarningToast("Some error in fetching data");
             }
-          }
-          else {
+          } else {
             if (!res["data"]) {
               this.showNoDataFound = true;
             }
@@ -354,42 +357,49 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   updateBankRouteStatus(formData: any, sliderElm: any, routeData: any) {
-    this.bankRoutingService.updateBankRouteStatus(formData).subscribe((res) => {
-      if(res["status"] && typeof res["status"] == "string" && (res["status"] == "400" || res["status"] == "500")){
-        if (res["error"]) {
-          this.coreService.showWarningToast(res["error"]);
+    this.bankRoutingService.updateBankRouteStatus(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
         } else {
-          this.coreService.showWarningToast("Some error in fetching data");
+          let message = "";
+          if (res["error"] == "true") {
+            this.coreService.removeLoadingScreen();
+            message = `Kindly deactivate the Route code: ${res["msg"]} ( ${routeData["criteriaMap"]} ) to activate the current record.`;
+            this.coreService.showWarningToast(message);
+          } else {
+            if (res["msg"]) {
+              message = res["msg"];
+              sliderElm.checked = sliderElm!.checked;
+              this.getDecodedDataForListing(
+                this.userData.userId,
+                this.appCtrl.value.code,
+                this.moduleCtrl.value.code
+              );
+              this.coreService.showSuccessToast(message);
+            } else {
+              this.coreService.removeLoadingScreen();
+              message = "Something went wrong, Please try again later";
+              this.coreService.showWarningToast(message);
+            }
+          }
         }
-      }
-      else {
-      let message = "";
-      if (res["error"] == "true") {
+      },
+      (err) => {
+        this.coreService.showWarningToast(
+          "Something went wrong, Please try again later"
+        );
         this.coreService.removeLoadingScreen();
-        message = `Kindly deactivate the Route code: ${res["msg"]} ( ${routeData["criteriaMap"]} ) to activate the current record.`;
-        this.coreService.showWarningToast(message);
-      } else {
-        if (res["msg"]) {
-          message = res["msg"];
-          sliderElm.checked = sliderElm!.checked;
-          this.getDecodedDataForListing(
-            this.userData.userId,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code
-          );
-          this.coreService.showSuccessToast(message);
-        } else {
-          this.coreService.removeLoadingScreen();
-          message = "Something went wrong, Please try again later";
-          this.coreService.showWarningToast(message);
-        }
       }
-    }
-    },
-    (err) => {
-      this.coreService.showWarningToast("Something went wrong, Please try again later");
-      this.coreService.removeLoadingScreen();
-    });
+    );
   }
 
   isLinked(id: any) {

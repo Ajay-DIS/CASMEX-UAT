@@ -489,7 +489,7 @@ export class SetCriteriaComponent implements OnInit {
               ExistOpr = "=";
             }
 
-            if (splitText.split("  ")[0] == splitdata.split("  ")[0])
+            if (splitText.split("  ")[0] == splitdata.split("  ")[0]) {
               if (
                 splitText.split("  ")[0] == splitdata.split("  ")[0] &&
                 splitdata.split("  ")[1] == "Slab"
@@ -535,7 +535,7 @@ export class SetCriteriaComponent implements OnInit {
                       this.validSlabAmount = false;
                     }
                     return false;
-                  } else {
+                  } else if (ExistOpr == "<" || ExistOpr == "<=") {
                     if (this.selectedCriteria?.criteriaType == "Slab") {
                       if (ExistOpr == "<") {
                         if (
@@ -648,6 +648,8 @@ export class SetCriteriaComponent implements OnInit {
                         }
                       }
                     }
+                  } else {
+                    return true;
                   }
                 } else if (currOpr == "<" || currOpr == "<=") {
                   if (ExistOpr == "<" || ExistOpr == "<=") {
@@ -662,7 +664,7 @@ export class SetCriteriaComponent implements OnInit {
                       this.validSlabAmount = false;
                     }
                     return false;
-                  } else {
+                  } else if (ExistOpr == ">" || ExistOpr == ">=") {
                     if (this.selectedCriteria?.criteriaType == "Slab") {
                       if (ExistOpr == ">") {
                         if (
@@ -773,11 +775,16 @@ export class SetCriteriaComponent implements OnInit {
                         }
                       }
                     }
+                  } else {
+                    return true;
                   }
                 }
               } else {
                 return true;
               }
+            } else {
+              return true;
+            }
           });
         } else {
           let isCurrentCriteriaNotEqualCondition = false;
@@ -855,16 +862,16 @@ export class SetCriteriaComponent implements OnInit {
                   isAlreadyCriteriaNotEqualCondition ==
                     !isCurrentCriteriaNotEqualCondition
                 ) {
-                  if (this.selectedCriteria?.criteriaType == "Slab") {
-                    this.coreService.showWarningToast(
-                      "Please delete existing criteria " +
-                        element +
-                        ", then add " +
-                        criteria
-                    );
-                    this.validCriteria = false;
-                    return false;
-                  }
+                  // if (this.selectedCriteria?.criteriaType == "Slab") {
+                  //   this.coreService.showWarningToast(
+                  //     "Please delete existing criteria " +
+                  //       element +
+                  //       ", then add " +
+                  //       criteria
+                  //   );
+                  //   this.validCriteria = false;
+                  //   return false;
+                  // }
                 } else {
                   if (
                     !(

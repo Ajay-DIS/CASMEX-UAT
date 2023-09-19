@@ -152,6 +152,7 @@ export class TaxListingComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
+        this.userData.userId,
         this.formName,
         appValue,
         moduleValue

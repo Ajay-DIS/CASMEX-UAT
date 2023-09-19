@@ -300,6 +300,7 @@ export class AddNewTaxComponent implements OnInit {
     }
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
+        this.userId,
         this.formName,
         this.appCtrl.value.code,
         this.moduleCtrl.value.code
