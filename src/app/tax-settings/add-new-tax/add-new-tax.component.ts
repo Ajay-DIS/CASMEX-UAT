@@ -381,14 +381,18 @@ export class AddNewTaxComponent implements OnInit {
               );
               this.coreService.removeLoadingScreen();
             } else {
-              this.coreService.showWarningToast(res["msg"]);
-              this.showContent = false;
-              if (res["msg"].includes("No active")) {
-                this.inactiveData = true;
-                this.setCriteriaSharedComponent.criteriaCtrl.disable();
-              }
               this.applyCriteriaFormattedData = [];
+              this.appliedCriteriaCriteriaMap = null;
+              this.appliedCriteriaIsDuplicate = null;
               this.applyCriteriaDataTableColumns = [];
+              if (res && res["msg"]) {
+                this.coreService.showWarningToast(res["msg"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "No active data found for this Tax Setting."
+                );
+              }
+              this.coreService.removeLoadingScreen();
             }
           }
         },
