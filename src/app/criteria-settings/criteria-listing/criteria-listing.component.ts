@@ -92,9 +92,7 @@ export class CriteriaListingComponent implements OnInit {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
+              this.coreService.showWarningToast(res["msg"]);
             }
           } else {
             if (!res["msg"]) {
@@ -113,9 +111,6 @@ export class CriteriaListingComponent implements OnInit {
         (err) => {
           console.log("Error in criterisSettingListing", err);
           this.showNoDataFound = true;
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
         }
       )
       .add(() => {

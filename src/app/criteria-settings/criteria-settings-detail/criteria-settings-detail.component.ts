@@ -130,9 +130,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
+              this.coreService.showWarningToast(res["msg"]);
             }
           } else {
             if (res["data"]) {
@@ -173,9 +171,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           this.appCtrl.disable();
           this.formCtrl.disable();
           console.log("Error in Criteria App Form List", err);
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
         }
       )
       .add(() => {
@@ -259,9 +254,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
               if (res["error"]) {
                 this.coreService.showWarningToast(res["error"]);
               } else {
-                this.coreService.showWarningToast(
-                  "Something went wrong, Please try again later"
-                );
+                this.coreService.showWarningToast(res["msg"]);
               }
             } else {
               if (res["data"]) {
@@ -295,9 +288,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           },
           (err) => {
             console.log("error in getting fields queries", err);
-            this.coreService.showWarningToast(
-              "Something went wrong, Please try again later"
-            );
           }
         )
         .add(() => {
@@ -375,9 +365,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
+              this.coreService.showWarningToast(res["msg"]);
             }
           } else {
             if (res["appForm"] && res["appForm"].length) {
@@ -418,9 +406,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           console.log(
             "error in getting criteria list for checking duplication",
             err
-          );
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
           );
         }
       )
@@ -475,9 +460,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
           if (res["error"]) {
             this.coreService.showWarningToast(res["error"]);
           } else {
-            this.coreService.showWarningToast(
-              "Something went wrong, Please try again later"
-            );
+            this.coreService.showWarningToast(res["msg"]);
           }
         } else {
           if (res["msg"]) {
@@ -521,9 +504,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       },
       (err) => {
         console.log("Error in saving criteria", err);
-        this.coreService.showWarningToast(
-          "Something went wrong, Please try again later"
-        );
       }
     );
   }
@@ -688,9 +668,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
+              this.coreService.showWarningToast(res["msg"]);
             }
           } else {
             this.criteriaSettingtable = res["cmCriteriaDataDetails"];
@@ -716,7 +694,7 @@ export class CriteriaSettingsDetailComponent implements OnInit {
         },
         (err) => {
           this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
+            "Error in fetching data, Please try again later"
           );
         }
       )

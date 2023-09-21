@@ -1094,9 +1094,7 @@ export class DocumentDetailsComponent implements OnInit {
                   if (res["error"]) {
                     this.coreService.showWarningToast(res["error"]);
                   } else {
-                    this.coreService.showWarningToast(
-                      "Something went wrong, Please try again later"
-                    );
+                    this.coreService.showWarningToast(res["msg"]);
                   }
                 } else {
                   if (res["msg"]) {
@@ -1116,9 +1114,6 @@ export class DocumentDetailsComponent implements OnInit {
               (err) => {
                 this.coreService.removeLoadingScreen();
                 console.log("error in savingDocument", err);
-                this.coreService.showWarningToast(
-                  "Something went wrong, Please try again later"
-                );
               }
             );
           }

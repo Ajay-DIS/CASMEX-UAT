@@ -438,9 +438,7 @@ export class BeneficiaryProfileComponent implements OnInit {
           this.coreService.showSuccessToast(res["data"]);
         } else {
           this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
+          this.coreService.showWarningToast(res["msg"]);
         }
       },
       (err) => {

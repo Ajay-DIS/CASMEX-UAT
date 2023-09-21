@@ -98,16 +98,16 @@ export class CustomerProfileComponent implements OnInit {
   cols = [];
 
   colsIND: any[] = [
-    { field: "customerCode", header: "Customer Code",  },
-    { field: "fullName", header: "Customer Full Name",  },
-    { field: "nationality", header: "Nationality",  },
-    { field: "mobileNumber", header: "Mobile Number",  },
-    { field: "idType", header: "ID Type",  },
-    { field: "idNumber", header: "ID Number",  },
+    { field: "customerCode", header: "Customer Code" },
+    { field: "fullName", header: "Customer Full Name" },
+    { field: "nationality", header: "Nationality" },
+    { field: "mobileNumber", header: "Mobile Number" },
+    { field: "idType", header: "ID Type" },
+    { field: "idNumber", header: "ID Number" },
     { field: "beneficialCount", header: "Total Benf", width: "8%" },
-    { field: "addBenificiary", header: "Add Benf",  },
+    { field: "addBenificiary", header: "Add Benf" },
     // { field: "pastTxns", header: "Past Txns",  },
-    { field: "status", header: "Profile Status",  },
+    { field: "status", header: "Profile Status" },
   ];
   colsCOR: any[] = [
     { field: "customerCode", header: "Customer Code", width: "8%" },
@@ -167,7 +167,9 @@ export class CustomerProfileComponent implements OnInit {
               return { name: data.displayName, code: data.fieldName };
             }
           );
-          this.searchCriteriaOptions.unshift(...[{ name: "Customer ID", code: "id" }])
+          this.searchCriteriaOptions.unshift(
+            ...[{ name: "Customer ID", code: "id" }]
+          );
         },
         (err) => {
           // this.coreService.removeLoadingScreen();
@@ -189,8 +191,8 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-    
-    console.log("this.searchCriteriaOptions",this.searchCriteriaOptions)
+
+    console.log("this.searchCriteriaOptions", this.searchCriteriaOptions);
     this.customerFieldType = null;
   }
 
@@ -313,10 +315,10 @@ export class CustomerProfileComponent implements OnInit {
           } else {
             this.cols = this.colsIND;
             this.customerData = res.data.CmCorporateCustomerDetails;
-            this.customerData?.forEach(element => {
-              element["orders"] = []
+            this.customerData?.forEach((element) => {
+              element["orders"] = [];
             });
-            console.log("customer dataa indi", this.customerData)
+            console.log("customer dataa indi", this.customerData);
           }
           // this.totalRecords = res.data.PaginationDetails.totalCount;
           this.customerCode = res.customerCode?.map((code) => {
@@ -356,7 +358,7 @@ export class CustomerProfileComponent implements OnInit {
       "addnewbeneficiary",
       type,
       rowData.customerCode,
-      "add"
+      "add",
     ]);
   }
 
@@ -394,7 +396,7 @@ export class CustomerProfileComponent implements OnInit {
     });
   }
 
-  confirmBeneficiaryStatus(e: any, data: any, cusType: any){
+  confirmBeneficiaryStatus(e: any, data: any, cusType: any) {
     e.preventDefault();
     let type = "";
     let reqStatus = "";
@@ -427,8 +429,6 @@ export class CustomerProfileComponent implements OnInit {
       },
     });
   }
-
-  
 
   updateBeneStatus(e: any, reqStatus: any, data: any, cusType: any) {
     this.coreService.displayLoadingScreen();
@@ -473,9 +473,7 @@ export class CustomerProfileComponent implements OnInit {
           this.coreService.showSuccessToast(res["data"]);
         } else {
           this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
+          this.coreService.showWarningToast(res["msg"]);
         }
       },
       (err) => {
@@ -496,7 +494,6 @@ export class CustomerProfileComponent implements OnInit {
     );
   }
 
-  
   updateCustomerStatus(
     cusId: any,
     status: any,
@@ -529,9 +526,7 @@ export class CustomerProfileComponent implements OnInit {
           this.coreService.showSuccessToast(res["data"]);
         } else {
           this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
+          this.coreService.showWarningToast(res["msg"]);
         }
       },
       (err) => {
@@ -564,7 +559,7 @@ export class CustomerProfileComponent implements OnInit {
     ]);
   }
   editbeneficiary(beneData: any) {
-    let custype = beneData.customerType =='Individual' ? 'IND': 'COR';
+    let custype = beneData.customerType == "Individual" ? "IND" : "COR";
     this.router.navigate([
       "navbar",
       "beneficiary-profile",
@@ -574,34 +569,37 @@ export class CustomerProfileComponent implements OnInit {
       "edit",
     ]);
   }
-  beneficiaryListData(expanded,rowData:any,customerType){
-    console.log("expanded",expanded)
-    console.log("customerType",customerType)
-    console.log("customerCode",rowData.customerCode)
+  beneficiaryListData(expanded, rowData: any, customerType) {
+    console.log("expanded", expanded);
+    console.log("customerType", customerType);
+    console.log("customerCode", rowData.customerCode);
     if (expanded == false) {
       this.http
-        .get(`/remittance/beneficiaryProfileController/getBeneficiaryProfileList`, {
-          headers: new HttpHeaders()
-            .set("customerType", customerType)
-            .set("customerId", String(rowData.customerCode)),
-        })
+        .get(
+          `/remittance/beneficiaryProfileController/getBeneficiaryProfileList`,
+          {
+            headers: new HttpHeaders()
+              .set("customerType", customerType)
+              .set("customerId", String(rowData.customerCode)),
+          }
+        )
         .subscribe(
           (res) => {
             if (res["msg"]) {
               this.noDataMsg = res["msg"];
               this.coreService.removeLoadingScreen();
             } else {
-              console.log("respose",res)
-              this.customerData.forEach(element => {
-                if(element["customerCode"] == rowData.customerCode){
+              console.log("respose", res);
+              this.customerData.forEach((element) => {
+                if (element["customerCode"] == rowData.customerCode) {
                   element["orders"] = res["data"];
                 }
-                console.log("orders",element["orders"])
+                console.log("orders", element["orders"]);
               });
             }
           },
           (err) => {
-            console.log("err",err)
+            console.log("err", err);
             this.coreService.showWarningToast(
               "Some error while fetching data, Try again in sometime"
             );

@@ -74,7 +74,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
   applyCriteriaDataTableColumns: any[] = [];
 
-  ttLoading = false
+  ttLoading = false;
 
   cols: any[] = [
     {
@@ -376,7 +376,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.criteriaMasterData,
                   ["LCY Amount"]
                 );
-               console.log("criteriaText",this.criteriaText)     
+              console.log("criteriaText", this.criteriaText);
               this.applyCriteriaDataTableColumns = [];
 
               let lcyOprFields = [];
@@ -391,9 +391,9 @@ export class AddNewFormRuleComponent implements OnInit {
                 .slice()
                 .reverse()
                 .forEach((crt) => {
-                  console.log("crt",crt)
-                  if(!crt){
-                    return
+                  console.log("crt", crt);
+                  if (!crt) {
+                    return;
                   }
                   let formatCrt;
                   let opr;
@@ -616,9 +616,6 @@ export class AddNewFormRuleComponent implements OnInit {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in getTaxSettingForEditApi", err);
-          this.coreService.showWarningToast(
-            "Something went wrong, Please try again later"
-          );
         }
       );
   }
@@ -1360,9 +1357,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 if (res["error"]) {
                   this.coreService.showWarningToast(res["error"]);
                 } else {
-                  this.coreService.showWarningToast(
-                    "Something went wrong, Please try again later"
-                  );
+                  this.coreService.showWarningToast(res["msg"]);
                 }
               } else {
                 if (res["msg"]) {
@@ -1381,9 +1376,6 @@ export class AddNewFormRuleComponent implements OnInit {
             (err) => {
               this.coreService.removeLoadingScreen();
               console.log("error in saveAddNewFormRule", err);
-              this.coreService.showWarningToast(
-                "Something went wrong, Please try again later"
-              );
             }
           );
         }
