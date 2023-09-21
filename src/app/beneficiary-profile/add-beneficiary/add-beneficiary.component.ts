@@ -134,10 +134,12 @@ export class AddBeneficiaryComponent implements OnInit {
               // this.setFormByData(res);
               this.formData = res
               this.getBeneficiaryMasterData();
+              setTimeout(()=>{
+                if (this.mode == "edit") {
+                  this.getBeneficiaryData(this.custId);
+                }
+              }, 500)
               console.log("API called",this.formData)
-              if (this.mode == "edit") {
-                this.getBeneficiaryData(this.custId);
-              }
             }
           },
           (err) => {
@@ -277,14 +279,21 @@ export class AddBeneficiaryComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
-            } else {
-              this.coreService.showSuccessToast(
-                "Profile data successfully saved"
-              );
+            if(res["error"]){
+              this.coreService.showWarningToast(res["error"])
+              this.coreService.removeLoadingScreen();
             }
-            this.router.navigate(["navbar", "customer-profile"]);
+            else {
+              if (res["data"]) {
+                this.coreService.showSuccessToast(res["data"]);
+              }
+               else {
+                this.coreService.showSuccessToast(
+                  "Profile data successfully saved"
+                );
+              }
+              this.router.navigate(["navbar", "customer-profile"]);
+            }
             // this.onReset()
           } else {
             this.coreService.removeLoadingScreen();
@@ -315,6 +324,11 @@ export class AddBeneficiaryComponent implements OnInit {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
+            if(res["error"]){
+              this.coreService.showWarningToast(res["error"])
+              this.coreService.removeLoadingScreen();
+            }
+            else {
             if (res["data"]) {
               this.coreService.showSuccessToast(res["data"]);
             } else {
@@ -322,6 +336,8 @@ export class AddBeneficiaryComponent implements OnInit {
                 "Profile data updated successfully"
               );
             }
+            this.router.navigate(["navbar", "customer-profile"]);
+          }
             // this.onReset()
           }
         },

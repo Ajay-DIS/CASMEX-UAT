@@ -376,7 +376,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   this.criteriaMasterData,
                   ["LCY Amount"]
                 );
-
+               console.log("criteriaText",this.criteriaText)     
               this.applyCriteriaDataTableColumns = [];
 
               let lcyOprFields = [];
@@ -391,6 +391,10 @@ export class AddNewFormRuleComponent implements OnInit {
                 .slice()
                 .reverse()
                 .forEach((crt) => {
+                  console.log("crt",crt)
+                  if(!crt){
+                    return
+                  }
                   let formatCrt;
                   let opr;
                   if (crt.includes("!=")) {

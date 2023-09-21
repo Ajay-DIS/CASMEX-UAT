@@ -193,10 +193,13 @@ export class AddCustomerBenefComponent implements OnInit {
             field.fieldType == "select" ||
             field.fieldType == "smart-search"
           ) {
-            let value = data[field["fieldName"]]
+            let filterData = this.masterDataOrg[field["fieldName"]]?.filter((msField)=>{
+              return msField.codeName == data[field["fieldName"]]
+            })
+            let value = filterData?.length
               ? {
-                  code: data[field["fieldName"]],
-                  codeName: data[field["fieldName"]],
+                  code: filterData[0].code,
+                  codeName: filterData[0].codeName,
                 }
               : "";
             this.individualForm

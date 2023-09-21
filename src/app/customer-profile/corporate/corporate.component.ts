@@ -63,389 +63,7 @@ export class CorporateComponent implements OnInit, OnChanges {
 
   // prettier-ignore
 
-  masterData = {
-    nationality: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-	representativeNationality: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    countryOfEstablishment: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	countryOfOperation: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	countryOfTrade: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	contactCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	permanentCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	countryOfBirth: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	idIssueCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-	representativeCountryOfBirth: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    countryOfBirthPersonalDetails: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    representativeIssueCountry: [
-      {
-        code: "Japan",
-        codeName: "Japan",
-      },
-      {
-        code: "India",
-        codeName: "India",
-      },
-      {
-        code: "America",
-        codeName: "America",
-      },
-    ],
-    relationship: [
-      {
-        code: "Brother",
-        codeName: "Brother",
-      },
-      {
-        code: "Uncle",
-        codeName: "Uncle",
-      },
-    ],
-	representativeRelationship: [
-    {
-      code: "Brother",
-      codeName: "Brother",
-    },
-    {
-      code: "Uncle",
-      codeName: "Uncle",
-    },
-    ],
-    documentType: [
-      {
-        code: "Aadhar",
-        codeName: "Aadhar",
-      },
-      {
-        code: "Voter",
-        codeName: "Voter",
-      },
-    ],
-	representativeDocumentType: [
-    {
-      code: "Aadhar",
-      codeName: "Aadhar",
-    },
-    {
-      code: "Voter",
-      codeName: "Voter",
-    },
-    ],
-    gender: [
-      {
-        code: "Male",
-        codeName: "Male",
-      },
-      {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-	representativeGender: [
-    {
-      code: "Male",
-      codeName: "Male",
-    },
-    {
-      code: "Female",
-      codeName: "Female",
-    },
-    {
-      code: "Others",
-      codeName: "Others",
-    },
-    ],
-    businessActivites: [
-      {
-        code: "Manufacturing",
-        codeName: "Manufacturing",
-      },
-      {
-        code: "Trading",
-        codeName: "Trading",
-      },
-      {
-        code: "Services",
-        codeName: "Services",
-      },
-    ],
-    legalStatus: [
-      {
-        code: "Private Limited",
-        codeName: "Private Limited",
-      },
-      {
-        code: "Public Limited",
-        codeName: "Public Limited",
-      },
-      {
-        code: "Sole Proprietorship",
-        codeName: "Sole Proprietorship",
-      },
-      {
-        code: "Partnership",
-        codeName: "Partnership",
-      },
-      {
-        code: "Limited Liability Partnership",
-        codeName: "Limited Liability Partnership",
-      },
-    ],
-    ownershipType: [
-      {
-        code: "Sponsor",
-        codeName: "Sponsor",
-      },
-      {
-        code: "Partner",
-        codeName: "Partner",
-      },
-      {
-        code: "Both",
-        codeName: "Both",
-      },
-    ],
-    category: [
-      {
-        code: "First",
-        codeName: "First",
-      },
-      {
-        code: "Second",
-        codeName: "Second",
-      },
-    ],
-    professionEmpDetails: [
-      {
-        code: "plumber",
-        codeName: "plumber",
-      },
-      {
-        code: "driver",
-        codeName: "driver",
-      },
-    ],
-    politicallyExposedPersonPersonalDetails: [
-      {
-        code: "yes",
-        codeName: "yes",
-      },
-      {
-        code: "no",
-        codeName: "no",
-      },
-    ],
-    visaStatusEmpDetails: [
-      {
-        code: "Work Permit",
-        codeName: "Work Permit",
-      },
-      {
-        code: "Resident",
-        codeName: "Resident",
-      },
-      {
-        code: "Non Resident",
-        codeName: "Non Resident",
-      },
-      {
-        code: "Citizen",
-        codeName: "Citizen",
-      },
-      {
-        code: "Tourist",
-        codeName: "Tourist",
-      },
-      {
-        code: "Other",
-        codeName: "Other",
-      },
-    ],
-    salaryDateEmpDetails: [],
-    customerGroupPersonalDetails: [
-      {
-        code: "1",
-        codeName: "1",
-      },
-      {
-        code: "2",
-        codeName: "2",
-      },
-    ],
-    nationalityPersonalDetails: [
-      {
-        code: "Indian",
-        codeName: "Indian",
-      },
-      {
-        code: "Japanese",
-        codeName: "Japanese",
-      },
-      {
-        code: "American",
-        codeName: "American",
-      },
-    ],
-    genderPersonalDetails: [
-      {
-        code: "Male",
-        codeName: "Male",
-      },
-      {
-        code: "Female",
-        codeName: "Female",
-      },
-      {
-        code: "Others",
-        codeName: "Others",
-      },
-    ],
-  };
+  masterData :any= {};
 
   mode = "add";
   custId = null;
@@ -467,6 +85,8 @@ export class CorporateComponent implements OnInit, OnChanges {
   editApiIdRepresentative = "";
   editIndexBeneficial = -1;
   editApiIdBeneficial = "";
+
+  formRuleAPIResponse: any = {}
 
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
@@ -516,11 +136,9 @@ export class CorporateComponent implements OnInit, OnChanges {
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
+            this.formRuleAPIResponse = JSON.parse(JSON.stringify(res))
             this.setFormByData(res);
             this.getCustomerMasterData();
-            if (this.mode == "edit") {
-              this.getCorporateCustomer(this.custId);
-            }
           }
         },
         (err) => {
@@ -544,6 +162,9 @@ export class CorporateComponent implements OnInit, OnChanges {
             code: `${i}`,
             codeName: `${i}`,
           });
+        }
+        if (this.mode == "edit") {
+          this.getCorporateCustomer(this.custId);
         }
         console.log(this.masterData);
       },
@@ -1948,10 +1569,13 @@ export class CorporateComponent implements OnInit, OnChanges {
             field.fieldType == "select" ||
             field.fieldType == "smart-search"
           ) {
-            let value = data[field["fieldName"]]
+            let filterData = this.masterData[field["fieldName"]]?.filter((msField)=>{
+              return msField.codeName == data[field["fieldName"]]
+            })
+            let value = filterData?.length
               ? {
-                  code: data[field["fieldName"]],
-                  codeName: data[field["fieldName"]],
+                  code: filterData[0].code,
+                  codeName: filterData[0].codeName,
                 }
               : "";
             this.corporateForm
@@ -2354,15 +1978,20 @@ export class CorporateComponent implements OnInit, OnChanges {
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
-            } else {
-              this.coreService.showSuccessToast(
-                "Profile data successfully saved"
-              );
+            if(res["error"]){
+              this.coreService.showWarningToast(res["error"]);
+              this.coreService.removeLoadingScreen();
+            }else {
+              if (res["data"]) {
+                this.coreService.showSuccessToast(res["data"]);
+              } else {
+                this.coreService.showSuccessToast(
+                  "Profile data successfully saved"
+                );
+              }
+              this.router.navigate(["navbar", "customer-profile"]);
+              // this.onReset()
             }
-            this.router.navigate(["navbar", "customer-profile"]);
-            // this.onReset()
           } else {
             this.coreService.removeLoadingScreen();
           }
@@ -2418,14 +2047,22 @@ export class CorporateComponent implements OnInit, OnChanges {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
-            } else {
-              this.coreService.showSuccessToast(
-                "Profile data updated successfully"
-              );
+            if(res["error"]){
+              this.coreService.showWarningToast(res["error"]);
+              this.coreService.removeLoadingScreen();
+            }else {
+              if (res["data"]) {
+                this.coreService.showSuccessToast(res["data"]);
+              } else {
+                this.coreService.showSuccessToast(
+                  "Profile data updated successfully saved"
+                );
+              }
+              this.router.navigate(["navbar", "customer-profile"]);
+              // this.onReset()
             }
-            // this.onReset()
+          } else {
+            this.coreService.removeLoadingScreen();
           }
         },
         (err) => {
