@@ -193,8 +193,11 @@ export class BankRoutingComponent2 implements OnInit {
           if (bankRoutingListingData["data"]) {
             this.bankRoutingApiData = bankRoutingListingData;
             this.bankRoutingApiData.data.forEach((tax) => {
+              let beforeSplit = tax.criteriaMap.split("&&&&")[0];
+              let afterSplit = tax.criteriaMap.split("&&&&")[1];
+
               let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: tax.criteriaMap.split("&&&&")[0],
+                criteriaMap: beforeSplit,
               });
               tax.criteriaMap = (
                 this.setCriteriaService.decodeFormattedCriteria(
@@ -203,6 +206,9 @@ export class BankRoutingComponent2 implements OnInit {
                   [""]
                 ) as []
               ).join(", ");
+              if (afterSplit?.length) {
+                tax.criteriaMap = tax.criteriaMap + "&&&&" + afterSplit;
+              }
             });
 
             this.bankRoutingData = [...this.bankRoutingApiData.data];

@@ -173,8 +173,11 @@ export class TaxListingComponent implements OnInit {
           if (taxSettingListingData["data"]) {
             this.taxListingApiData = taxSettingListingData;
             this.taxListingApiData.data.forEach((tax) => {
+              let beforeSplit = tax.criteriaMap.split("&&&&")[0];
+              let afterSplit = tax.criteriaMap.split("&&&&")[1];
+
               let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: tax.criteriaMap.split("&&&&")[0],
+                criteriaMap: beforeSplit,
               });
               tax.criteriaMap = (
                 this.setCriteriaService.decodeFormattedCriteria(
@@ -183,6 +186,9 @@ export class TaxListingComponent implements OnInit {
                   [""]
                 ) as []
               ).join(", ");
+              if (afterSplit?.length) {
+                tax.criteriaMap = tax.criteriaMap + "&&&&" + afterSplit;
+              }
             });
             this.taxListingData = [...this.taxListingApiData.data];
             this.showNoDataFound = false;
