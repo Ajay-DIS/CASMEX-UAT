@@ -44,7 +44,9 @@ export class GroupSettingsComponent implements OnInit {
 
   Apply() {
     console.log("criteriaMapDes", this.criteriaMapDes);
-    this.criteriaMapCodeArray = this.criteriaMapDes.split(", ");
+    this.criteriaMapCodeArray = this.criteriaMapDes
+      ?.split("&&&&")[0]
+      ?.split(", ");
     this.criteriaCodeText = this.setCriteriaService.setCriteriaMap({
       criteriaMap: this.criteriaMapDes,
     });
@@ -102,9 +104,12 @@ export class GroupSettingsComponent implements OnInit {
       )
       .subscribe((res: any) => {
         if (res.RouteData && res.RouteData.length) {
+          this.responseMessage = res.msg;
           this.routingData = res.RouteData;
         } else {
+          this.routingData = [];
           this.responseMessage = res.msg;
+          this.coreService.showWarningToast(res.msg);
         }
       });
   }

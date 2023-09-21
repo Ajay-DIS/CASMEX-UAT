@@ -37,12 +37,11 @@ export class CustomFormComponent implements OnInit {
   showForm: boolean = false;
   criteriaMapCode = "";
   newcriteriaMapCode = "";
-  masterData : any =[];
-  criteriaMapCodeArray :any = [];
+  masterData: any = [];
+  criteriaMapCodeArray: any = [];
   criteriaCodeText: any[] = [];
 
-  apiData1 =
-    "Country = IND;Form = Customer Profile;Customer Type = IND";
+  apiData1 = "Country = IND;Form = Customer Profile;Customer Type = IND";
 
   apiData2 =
     "Form = Customer Profile;Module = Remittance;Country = IND;Organization = HDFC&&&&LCY Amount = 20;LCY Amount > 55";
@@ -60,9 +59,8 @@ export class CustomFormComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.userData = JSON.parse(localStorage.getItem("userData"));
-   this.getCriteriaMasterData();
+    this.getCriteriaMasterData();
   }
-
 
   setFormByData(data: any) {
     this.apiData = data;
@@ -187,10 +185,12 @@ export class CustomFormComponent implements OnInit {
   // }
 
   Apply() {
-    this.criteriaMapCodeArray =this.criteriaMapCode.split(', ') ;
-    this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-      {criteriaMap: this.criteriaMapCode.trim()}
-    )
+    this.criteriaMapCodeArray = this.criteriaMapCode
+      ?.split("&&&&")[0]
+      ?.split(", ");
+    this.criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+      criteriaMap: this.criteriaMapCode.trim(),
+    });
     let decodedFormattedCriteriaArr = this.criteriaMapCodeArray.map((crt) => {
       let formatCrt;
       let opr;
@@ -213,28 +213,30 @@ export class CustomFormComponent implements OnInit {
         formatCrt = crt.replace(/[=]/g, "");
         opr = "=";
       }
-      let key = formatCrt.split('  ')[0]
-      let val = formatCrt.split('  ')[1]
-      return {[key] : val}
-    })
+      let key = formatCrt.split("  ")[0];
+      let val = formatCrt.split("  ")[1];
+      return { [key]: val };
+    });
 
-    let newCrtMap = this.criteriaMapCode.trim()
-    decodedFormattedCriteriaArr.forEach(crt => {
-      let copyCrtMap = newCrtMap
-      let nameVal= (Object.values(crt)[0] as string).split('&&&&')[0]
-      console.log("keys",Object.keys(crt)[0])
-      let filtercrt = this.masterData[Object.keys(crt)[0]?.trim()]?.filter(d => {
-        return d.codeName == nameVal     
-      })
-      if(filtercrt.length){
-        let codeVal= (filtercrt[0]['code'] as string)
-        newCrtMap = copyCrtMap.replace(nameVal, codeVal)
+    let newCrtMap = this.criteriaMapCode.trim();
+    decodedFormattedCriteriaArr.forEach((crt) => {
+      let copyCrtMap = newCrtMap;
+      let nameVal = (Object.values(crt)[0] as string).split("&&&&")[0];
+      console.log("keys", Object.keys(crt)[0]);
+      let filtercrt = this.masterData[Object.keys(crt)[0]?.trim()]?.filter(
+        (d) => {
+          return d.codeName == nameVal;
+        }
+      );
+      if (filtercrt?.length) {
+        let codeVal = filtercrt[0]["code"] as string;
+        newCrtMap = copyCrtMap.replace(nameVal, codeVal);
       }
-    })
-    console.log("newCrtMap",newCrtMap.split(', ').join(';'))
-    this.newcriteriaMapCode = newCrtMap.split(', ').join(';');
+    });
+    console.log("newCrtMap", newCrtMap.split(", ").join(";"));
+    this.newcriteriaMapCode = newCrtMap.split(", ").join(";");
     this.coreService.displayLoadingScreen();
-  
+
     this.http
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
@@ -265,19 +267,17 @@ export class CustomFormComponent implements OnInit {
   }
 
   getCriteriaMasterData() {
-    return  this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
-      {
+    return this.http
+      .get(`/remittance/formRulesController/getCriteriaMasterData`, {
         headers: new HttpHeaders()
           .set("userId", String(this.userData))
           .set("form", "Customer Profile_Form Rules")
           .set("applications", "Casmex Core")
           .set("moduleName", "Remittance"),
-      }).subscribe(
-      (res) => {
+      })
+      .subscribe((res) => {
         this.masterData = res;
-      }
-      );
+      });
   }
   isCheckboxFieldType(field: any): boolean {
     return field.type === "checkbox";
