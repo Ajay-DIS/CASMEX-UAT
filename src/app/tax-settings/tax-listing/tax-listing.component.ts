@@ -358,15 +358,13 @@ export class TaxListingComponent implements OnInit {
             this.coreService.showSuccessToast(message);
           } else {
             this.coreService.removeLoadingScreen();
-            message = "Something went wrong, Please try again later";
+            message = "Error in fetching data, Please try again later";
             this.coreService.showWarningToast(message);
           }
         }
       },
       (err) => {
-        this.coreService.showWarningToast(
-          "Something went wrong, Please try again later"
-        );
+        console.log(err);
         this.coreService.removeLoadingScreen();
       }
     );

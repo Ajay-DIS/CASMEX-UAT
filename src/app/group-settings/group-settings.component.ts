@@ -87,7 +87,7 @@ export class GroupSettingsComponent implements OnInit {
           return d.codeName == nameVal;
         }
       );
-      if (filtercrt.length) {
+      if (filtercrt?.length) {
         let codeVal = filtercrt[0]["code"] as string;
         newCrtMap = copyCrtMap.replace(nameVal, codeVal);
       }
