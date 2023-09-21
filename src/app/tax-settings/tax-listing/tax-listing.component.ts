@@ -152,6 +152,7 @@ export class TaxListingComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
+        this.userData.userId,
         this.formName,
         appValue,
         moduleValue
@@ -279,6 +280,7 @@ export class TaxListingComponent implements OnInit {
       this.linkedTaxCode.includes(data["taxCode"])
     ) {
       completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
         isLinkedMsg +
         `Do you wish to ` +
         type +

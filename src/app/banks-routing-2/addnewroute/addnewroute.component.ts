@@ -284,6 +284,7 @@ export class AddnewrouteComponent2 implements OnInit {
     }
     forkJoin({
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
+        this.userId,
         this.formName,
         this.appCtrl.value.code,
         this.moduleCtrl.value.code

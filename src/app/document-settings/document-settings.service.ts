@@ -10,42 +10,25 @@ export class DocumentSettingsService {
   applicationName: any = null;
   moduleName: any = null;
 
-  getDocumentListData(
-    id: string,
-    formName: any,
-    appName: any,
-    moduleName: any
-  ) {
-    return this.http.get(
-      `/remittance/documentSettingsController/getDocumentSettingsList`,
-      {
-        headers: new HttpHeaders()
-          .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
-          .set("form", formName),
-      }
-    );
-  }
-
+  // COMMON SERVICES
   getAppModuleList() {
     return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
   }
 
-  getAddDocumentCriteriaData(
+  getCriteriaMasterData(
     userId: any,
     formName: any,
     appName: any,
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/documentSettingsController/addDocSettings`,
+      `/remittance/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
+          .set("form", formName)
           .set("applications", appName)
-          .set("moduleName", moduleName)
-          .set("form", formName),
+          .set("moduleName", moduleName),
       }
     );
   }
@@ -69,24 +52,6 @@ export class DocumentSettingsService {
     });
   }
 
-  getCriteriaMasterData(
-    userId: any,
-    formName: any,
-    appName: any,
-    moduleName: any
-  ) {
-    return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
-      {
-        headers: new HttpHeaders()
-          .set("userId", userId)
-          .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
-      }
-    );
-  }
-
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
       `remittance/formRulesController/saveFormRuleCriteria`,
@@ -106,6 +71,44 @@ export class DocumentSettingsService {
       {
         headers: new HttpHeaders()
           .set("userId", id)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
+    );
+  }
+
+  // COMMON SERVICES END
+
+  getDocumentListData(
+    id: string,
+    formName: any,
+    appName: any,
+    moduleName: any
+  ) {
+    return this.http.get(
+      `/remittance/documentSettingsController/getDocumentSettingsList`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
+    );
+  }
+
+  getAddDocumentCriteriaData(
+    userId: any,
+    formName: any,
+    appName: any,
+    moduleName: any
+  ) {
+    return this.http.get(
+      `/remittance/documentSettingsController/addDocSettings`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", userId)
           .set("applications", appName)
           .set("moduleName", moduleName)
           .set("form", formName),
