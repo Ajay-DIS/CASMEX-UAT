@@ -37,7 +37,9 @@
         <button
           pButton
           pRipple
-          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
+          [disabled]="
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+          "
           type="button"
           label="Save"
           class="p-button-raised"
@@ -48,7 +50,8 @@
           pRipple
           type="button"
           [disabled]="
-            !appliedCriteriaData.length || !appliedCriteriaData.length
+            !applyCriteriaFormattedData.length ||
+            !applyCriteriaFormattedData.length
           "
           label="Save & Add New"
           class="p-button-raised"
@@ -149,10 +152,7 @@
       "
     ></app-set-criteria>
   </div>
-  <div
-    class="details-page-card mt-2"
-    *ngIf="showContent && appliedCriteriaData.length"
-  >
+  <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
         <p class="setCriteria detail-page-section-heading">
@@ -167,135 +167,117 @@
       </div>
       <div class="mt-1 addnewroute-table">
         <div class="ptable">
-          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
+          <p-card class="p-col-12" *ngIf="!applyCriteriaResponse">
             {{ "noDataMsg" }}
           </p-card>
           <div class="appliedCriteriaDataTable">
             <p-table
               #dt
-              [columns]="appliedCriteriaDataCols"
-              [value]="appliedCriteriaData"
-              [rows]="10"
-              scrollHeight="315px"
-              columnResizeMode="expand"
+              [value]="applyCriteriaFormattedData"
               [rowHover]="true"
               [scrollable]="true"
+              scrollHeight="315px"
             >
-              <ng-template pTemplate="header" let-columns>
+              <ng-template pTemplate="header">
                 <tr>
-                  <ng-container *ngFor="let col of columns; let c = index">
-                    <th
-                      style="padding-left: 20px"
-                      alignFrozen="right"
-                      pFrozenColumn
-                      [frozen]="!col['isString']"
-                      [pSortableColumn]="col?.field"
-                      [style.maxWidth]="col?.maxWidth"
-                      [style.minWidth]="col?.minWidth"
-                      [ngStyle]="{
-                        right: 145 * (columns.length - (c + 1)) + 'px'
-                      }"
+                  <th
+                    *ngFor="let col of applyCriteriaDataTableColumns"
+                    style="min-width: 120px"
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    {{ col.header }}
+                    <span *ngIf="isMandatoryCol(col.header)" class="red-star"
+                      >*</span
                     >
-                      {{ col.header.split("*")[0] }}
-                      <span *ngIf="isMandatoryCol(col.header)" class="red-star"
-                        >*</span
-                      >
-                    </th>
-                  </ng-container>
+                  </th>
                 </tr>
               </ng-template>
-              <ng-template
-                pTemplate="body"
-                let-rowData
-                let-columns="columns"
-                let-rowIndex="rowIndex"
-              >
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
                 <tr>
-                  <ng-container *ngFor="let col of columns; let i = index">
-                    <td
-                      alignFrozen="right"
-                      pFrozenColumn
-                      [frozen]="!col['isString']"
-                      [ngStyle]="{
-                        right: 145 * (columns.length - (i + 1)) + 'px'
-                      }"
+                  <td
+                    *ngFor="
+                      let col of applyCriteriaDataTableColumns;
+                      index as i
+                    "
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    <div
+                      *ngIf="col['fieldType'] == 'dropdown'"
+                      class="appliedCriteriaSelect"
                     >
-                      <div
-                        *ngIf="col['isString']"
-                        class="appliedCriteriaString"
+                      <p-dropdown
+                        [options]="rowData[col.field + 'Option']"
+                        optionLabel="codeName"
+                        appendTo="body"
+                        [placeholder]="
+                          rowData[col['field']]
+                            ? rowData[col['field']]
+                            : 'Select'
+                        "
+                        (onChange)="
+                          selectedColumn(col['field'], $event.value, rowIndex)
+                        "
+                        [disabled]="rowData['linked'] == 'Y'"
+                      ></p-dropdown>
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'input'"
+                      [pTooltip]="col['info'] ? col['info'] : ''"
+                      class="appliedCriteriaInput"
+                    >
+                      <p-inputNumber
+                        #valInp
+                        [min]="0"
+                        [(ngModel)]="rowData[col['field']]"
+                        [useGrouping]="false"
+                        mode="decimal"
+                        [maxFractionDigits]="1"
+                        (onInput)="
+                          changeValueInput(
+                            applyCriteriaDataTableColumns[i - 1]['field'],
+                            col['field'],
+                            $event,
+                            rowIndex,
+                            valInp
+                          )
+                        "
+                        [disabled]="rowData['linked'] == 'Y'"
+                      ></p-inputNumber>
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'text'"
+                      [pTooltip]="col['info'] ? col['info'] : ''"
+                    >
+                      <input
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                        [disabled]="true"
+                      />
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'button'"
+                      class="appliedCriteriaButton"
+                    >
+                      <ng-container
+                        *ngFor="let btn of rowData[col['field']]?.split(',')"
                       >
-                        {{ rowData[col["field"]] }}
-                      </div>
-                      <div
-                        *ngIf="col['isSelect']"
-                        class="appliedCriteriaSelect"
-                      >
-                        <p-dropdown
-                          [options]="rowData[col['field']]"
-                          optionLabel="codeName"
-                          appendTo="body"
-                          [placeholder]="
-                            rowData[col['field'].split('Option')[0]]
-                              ? rowData[col['field'].split('Option')[0]]
-                              : 'Select'
+                        <button
+                          pButton
+                          type="button"
+                          [icon]="'pi pi-' + (btn == 'delete' ? 'trash' : btn)"
+                          (click)="
+                            checkOperation(btn, rowIndex, rowData, col['field'])
                           "
-                          (onChange)="
-                            selectedColumn(
-                              columns[i]['field'],
-                              $event.value,
-                              rowIndex
-                            )
-                          "
-                          [disabled]="rowData['linked'] == 'Y'"
-                        ></p-dropdown>
-                      </div>
-                      <div *ngIf="col['isInput']" class="appliedCriteriaInput">
-                        <p-inputNumber
-                          #valInp
-                          [min]="0"
-                          [(ngModel)]="rowData[col['field']]"
-                          [useGrouping]="false"
-                          mode="decimal"
-                          [maxFractionDigits]="1"
-                          (onInput)="
-                            changeValueInput(
-                              columns[i - 1]['field'],
-                              columns[i]['field'],
-                              $event,
-                              rowIndex,
-                              valInp
-                            )
-                          "
-                          [disabled]="rowData['linked'] == 'Y'"
-                        ></p-inputNumber>
-                      </div>
-                      <div
-                        *ngIf="col['isButton']"
-                        class="appliedCriteriaButton"
-                      >
-                        <ng-container
-                          *ngFor="let btn of rowData[col['field']].split(',')"
-                        >
-                          <button
-                            pButton
-                            type="button"
-                            [icon]="
-                              'pi pi-' + (btn == 'delete' ? 'trash' : btn)
-                            "
-                            (click)="
-                              checkOperation(
-                                btn,
-                                rowIndex,
-                                rowData,
-                                columns[i]['field']
-                              )
-                            "
-                            class="operation-btns mr-2"
-                          ></button>
-                        </ng-container>
-                      </div>
-                    </td>
-                  </ng-container>
+                          class="operation-btns mr-2"
+                        ></button>
+                      </ng-container>
+                    </div>
+                  </td>
                 </tr>
               </ng-template>
 
@@ -313,7 +295,9 @@
 </div>
 <div
   class="NorecordFound"
-  *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"
+  *ngIf="
+    !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
+  "
 >
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>

@@ -624,6 +624,7 @@ export class DocumentDetailsComponent implements OnInit {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
+    clonedRow["linked"] = "N";
     this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {

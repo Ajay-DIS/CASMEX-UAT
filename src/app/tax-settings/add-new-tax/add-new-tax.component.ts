@@ -38,7 +38,6 @@ export class AddNewTaxComponent implements OnInit {
 
   isTaxSettingLinked: boolean = false;
 
-  appliedCriteriaDataOrg: any = [];
   appliedCriteriaCriteriaMap: any = null;
   appliedCriteriaIsDuplicate: any = null;
   objectKeys = Object.keys;
@@ -66,8 +65,45 @@ export class AddNewTaxComponent implements OnInit {
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
 
-  appliedCriteriaDataCols = [];
-  appliedCriteriaData: any = [];
+  applyCriteriaResponse: any[] = [];
+  isLcyFieldPresent = false;
+  applyCriteriaDataTableColumns: any[] = [];
+  columnsCopy: any[] = [
+    {
+      field: "taxType",
+      header: "Tax Type",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "setAs",
+      header: "Set As",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "tax",
+      header: "Tax",
+      fieldType: "input",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "action",
+      header: "Action",
+
+      fieldType: "button",
+      frozen: true,
+      info: null,
+    },
+  ];
+  applyCriteriaFormattedData: any[] = [];
+
+  taxTypeOption: any[] = [];
+  setAsOption: any[] = [];
+
   taxMin = 0;
   taxPerMax = 100;
   taxAmountMax = 100000;
@@ -202,7 +238,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   searchAppModule() {
-    this.appliedCriteriaData = [];
+    this.applyCriteriaFormattedData = [];
     this.criteriaText = [];
     this.criteriaCodeText = [];
     this.appModuleDataPresent = true;
@@ -212,9 +248,14 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   getTaxSettingForEditApi(taxCode: any, operation: any) {
-    this.isEditMode = true;
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaDataCols = [];
+    console.log("HERE");
+    this.applyCriteriaFormattedData = [];
+    this.applyCriteriaDataTableColumns = [];
+
+    this.applyCriteriaDataTableColumns = JSON.parse(
+      JSON.stringify(this.columnsCopy)
+    );
+
     this.taxSettingsService
       .getTaxSettingForEdit(
         taxCode,
@@ -238,14 +279,12 @@ export class AddNewTaxComponent implements OnInit {
               this.coreService.showWarningToast("Some error in fetching data");
             }
           } else {
-            this.coreService.removeLoadingScreen();
-            this.appModuleDataPresent = true;
-            if (!res["msg"]) {
-              this.editTaxSettingApiData = res;
+            if (res["data"]) {
+              this.showContent = true;
+              this.editTaxSettingApiData = JSON.parse(JSON.stringify(res));
 
-              this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-                this.editTaxSettingApiData
-              );
+              this.criteriaCodeText =
+                this.setCriteriaService.setCriteriaMap(res);
 
               this.criteriaText =
                 this.setCriteriaService.decodeFormattedCriteria(
@@ -254,23 +293,93 @@ export class AddNewTaxComponent implements OnInit {
                   this.cmCriteriaSlabType
                 );
 
-              this.taxCode = res["data"][0]["taxCode"];
-              if (res["data"][0]["taxCodeDesc"]) {
-                this.taxDescription = res["data"][0]["taxCodeDesc"];
+              this.taxCode = res["taxCode"];
+              if (res["taxCodeDesc"]) {
+                this.taxDescription = res["taxCodeDesc"];
               }
               this.isTaxSettingLinked = !res["criteriaUpdate"];
-
-              this.appliedCriteriaDataOrg = [...res["data"]];
-              this.appliedCriteriaData = [...res["data"]];
-              this.setSelectedOptions();
-              this.appliedCriteriaData.forEach((element) => {
-                element["invalidTaxAmount"] = false;
-              });
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-              this.appliedCriteriaDataCols = [
-                ...this.getColumns(res["column"]),
-              ];
-              this.showContent = true;
+
+              this.taxTypeOption = res["taxTypeOption"].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+              this.setAsOption = res["setAsOption"].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+
+              if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+                this.isLcyFieldPresent = true;
+              }
+
+              if (!this.isLcyFieldPresent) {
+                this.applyCriteriaFormattedData = res["data"];
+              } else {
+                if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                    field: "lcyAmount",
+                    header: "LCY Amount",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = res["data"];
+
+                  this.applyCriteriaFormattedData.forEach((data) => {
+                    let split = data["criteriaMapSplit"];
+                    if (split) {
+                      data["lcyAmount"] = split.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                      data["criteriaMapSplit"] = split.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                    }
+                  });
+                } else if (res["criteriaMap"].indexOf("from") >= 0) {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                    field: "lcyAmountFrom",
+                    header: "Amount From",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                    field: "lcyAmountTo",
+                    header: "Amount To",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = res["data"];
+                  console.log("::", this.applyCriteriaFormattedData);
+                  this.applyCriteriaFormattedData.forEach((data) => {
+                    let split = data["criteriaMapSplit"];
+                    if (split) {
+                      data["lcyAmountFrom"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop().split("::")[0].split(":")[1]
+                        : split?.split("::")[0]?.split(":")[1];
+                      data["lcyAmountTo"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop().split("::")[1].split(":")[1]
+                        : split?.split("::")[1]?.split(":")[1];
+                      data["criteriaMapSplit"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                    }
+                  });
+                }
+              }
+
+              this.applyCriteriaFormattedData.forEach((data) => {
+                delete data.id;
+                data["taxTypeOption"] = this.taxTypeOption;
+                data["setAsOption"] = this.setAsOption;
+                data["action"] = res["action"];
+                data["invalidTaxAmount"] = false;
+                data["status"] = "Active";
+              });
+              // this.setSelectedOptions();
+
+              console.log("::", this.applyCriteriaFormattedData);
+              // console.log("::", this.applyCriteriaDataTableColumns);
+
+              this.coreService.showSuccessToast(
+                `Tax Setting data fetched Successfully`
+              );
+              this.coreService.removeLoadingScreen();
             } else {
               this.coreService.showWarningToast(res["msg"]);
               this.showContent = false;
@@ -278,8 +387,8 @@ export class AddNewTaxComponent implements OnInit {
                 this.inactiveData = true;
                 this.setCriteriaSharedComponent.criteriaCtrl.disable();
               }
-              this.appliedCriteriaData = [];
-              this.appliedCriteriaDataCols = [];
+              this.applyCriteriaFormattedData = [];
+              this.applyCriteriaDataTableColumns = [];
             }
           }
         },
@@ -515,9 +624,14 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   taxCriteriaSearchApi(formData: any) {
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaDataCols = [];
+    this.applyCriteriaFormattedData = [];
+    this.applyCriteriaDataTableColumns = [];
     this.coreService.displayLoadingScreen();
+
+    this.applyCriteriaDataTableColumns = JSON.parse(
+      JSON.stringify(this.columnsCopy)
+    );
+
     this.taxSettingsService.postTaxCriteriaSearch(formData).subscribe(
       (res) => {
         if (
@@ -533,41 +647,115 @@ export class AddNewTaxComponent implements OnInit {
           }
         } else {
           this.coreService.removeLoadingScreen();
-          if (!res["msg"]) {
-            if (!res["duplicate"]) {
-              this.appliedCriteriaDataOrg = [...res["data"]];
-              this.appliedCriteriaData = [...res["data"]];
-              this.setSelectedOptions();
-              this.appliedCriteriaData.forEach((element) => {
-                element["invalidTaxAmount"] = false;
-              });
-              this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-              this.appliedCriteriaIsDuplicate = res["duplicate"];
-              this.appliedCriteriaDataCols = [
-                ...this.getColumns(res["column"]),
-              ];
-              this.coreService.showSuccessToast(
-                `Criteria Applied Successfully`
-              );
-            } else {
-              this.appliedCriteriaData = [];
-              this.appliedCriteriaCriteriaMap = null;
-              this.appliedCriteriaIsDuplicate = null;
-              this.appliedCriteriaDataCols = [];
-              this.coreService.showWarningToast(
-                "Applied criteria already exists."
-              );
-            }
-          } else {
-            this.coreService.showWarningToast(res["msg"]);
+          if (!res["duplicate"]) {
+            this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
+            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+            this.appliedCriteriaIsDuplicate = res["duplicate"];
+            let reqData =
+              this.criteriaDataService.decodeCriteriaMapIntoTableFields(res);
 
-            this.appliedCriteriaData = [];
+            let crtfields = this.setCriteriaService.decodeFormattedCriteria(
+              reqData.critMap,
+              this.criteriaMasterData,
+              ["LCY Amount"]
+            );
+            this.taxTypeOption = res["data"].taxTypeOption.map((option) => {
+              return { code: option.code, codeName: option.codeName };
+            });
+            this.setAsOption = res["data"].setAsOption.map((option) => {
+              return { code: option.code, codeName: option.codeName };
+            });
+
+            if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+              this.isLcyFieldPresent = true;
+            } else {
+              this.isLcyFieldPresent = false;
+            }
+
+            if (!this.isLcyFieldPresent) {
+              this.applyCriteriaFormattedData = [res["data"].taxSetting];
+              this.applyCriteriaFormattedData.forEach((data) => {
+                data["criteriaMapSplit"] = null;
+              });
+              console.log(this.applyCriteriaFormattedData);
+            } else {
+              if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+                let lcyOprFields = crtfields.filter((crt) => {
+                  return crt.includes("LCY Amount");
+                });
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                  field: "lcyAmount",
+                  header: "LCY Amount",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcyOprFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].taxSetting)
+                  );
+                  apiData["lcyAmount"] = field;
+                  apiData["criteriaMapSplit"] = field;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (res["criteriaMap"].indexOf("from") >= 0) {
+                let lcySlabFields = reqData.lcySlabArr;
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcySlabFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].taxSetting)
+                  );
+                  apiData["lcyAmountFrom"] = field.from;
+                  apiData["lcyAmountTo"] = field.to;
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `from:${field["from"]}::to:${field["to"]}`;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              }
+            }
+
+            this.applyCriteriaFormattedData.forEach((data) => {
+              delete data.id;
+              data["taxTypeOption"] = this.taxTypeOption;
+              data["setAsOption"] = this.setAsOption;
+              data["action"] = res["data"].action;
+              data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
+              data["invalidTaxAmount"] = false;
+              data["status"] = "Active";
+              data["userID"] = this.userId;
+              data["taxCode"] = this.taxCode;
+            });
+            // this.setSelectedOptions();
+
+            console.log("::", this.applyCriteriaFormattedData);
+            // console.log("::", this.applyCriteriaDataTableColumns);
+
+            this.coreService.showSuccessToast(`Criteria Applied Successfully`);
+            this.coreService.removeLoadingScreen();
+          } else {
+            this.applyCriteriaFormattedData = [];
+            this.appliedCriteriaCriteriaMap = null;
+            this.appliedCriteriaIsDuplicate = null;
+            this.applyCriteriaDataTableColumns = [];
+            this.coreService.showWarningToast(
+              "Applied criteria already exists."
+            );
           }
         }
       },
       (err) => {
         this.coreService.removeLoadingScreen();
-        console.log("error in BankCriteriaSearchApi", err);
+        console.log("error in Tax setting Apply API", err);
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
@@ -679,7 +867,12 @@ export class AddNewTaxComponent implements OnInit {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
       let invalidTaxAmount = false;
-      this.appliedCriteriaData.forEach((element) => {
+      let taxTypeMissing = false;
+      let setAsMissing = false;
+      let taxMissing = false;
+      this.applyCriteriaFormattedData.forEach((element) => {
+        console.log(element);
+
         if (element["invalidTaxAmount"]) {
           invalidTaxAmount = true;
         }
@@ -688,28 +881,43 @@ export class AddNewTaxComponent implements OnInit {
             ? this.taxDescription
             : null
           : null;
-        function isNullValue(arr) {
-          return arr.some((el) => el == null);
-        }
-        if (isNullValue(Object.values(element))) {
+        if (!element["taxCodeDesc"]) {
           isRequiredFields = true;
+        }
+        if (!element["taxType"]) {
+          taxTypeMissing = true;
+        }
+        if (!element["setAs"]) {
+          setAsMissing = true;
+        }
+        if (!element["tax"] && element["tax"] != "0") {
+          taxMissing = true;
         }
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
+      } else if (taxTypeMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Tax Type.");
+      } else if (setAsMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Set As.");
+      } else if (taxMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Fill Tax Amount.");
       } else if (invalidTaxAmount) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
       } else {
         let duplicateTaxType = false;
         if (
-          this.appliedCriteriaData[0]["lcyAmountFrom"] ||
-          this.appliedCriteriaData[0]["lcyAmount"]
+          this.applyCriteriaFormattedData[0]["lcyAmountFrom"] ||
+          this.applyCriteriaFormattedData[0]["lcyAmount"]
         ) {
           let taxTypeObj = {};
-          if (this.appliedCriteriaData[0]["lcyAmountFrom"]) {
-            this.appliedCriteriaData.forEach((data) => {
+          if (this.applyCriteriaFormattedData[0]["lcyAmountFrom"]) {
+            this.applyCriteriaFormattedData.forEach((data) => {
               if (
                 taxTypeObj[data["lcyAmountFrom"]] &&
                 taxTypeObj[data["lcyAmountFrom"]].length
@@ -720,7 +928,7 @@ export class AddNewTaxComponent implements OnInit {
               }
             });
           } else {
-            this.appliedCriteriaData.forEach((data) => {
+            this.applyCriteriaFormattedData.forEach((data) => {
               if (
                 taxTypeObj[data["lcyAmount"]] &&
                 taxTypeObj[data["lcyAmount"]].length
@@ -742,7 +950,7 @@ export class AddNewTaxComponent implements OnInit {
             }
           });
         } else {
-          let taxTypeArr = this.appliedCriteriaData.map((data) => {
+          let taxTypeArr = this.applyCriteriaFormattedData.map((data) => {
             return data["taxType"];
           });
           if (new Set(taxTypeArr).size !== taxTypeArr.length) {
@@ -759,7 +967,7 @@ export class AddNewTaxComponent implements OnInit {
           this.decodeSelectedOptions();
           if (this.mode == "edit") {
             let data = {
-              data: this.appliedCriteriaData,
+              data: this.applyCriteriaFormattedData,
               duplicate: this.appliedCriteriaIsDuplicate,
               criteriaMap: this.appliedCriteriaCriteriaMap,
               taxCode: this.taxID,
@@ -771,9 +979,10 @@ export class AddNewTaxComponent implements OnInit {
               this.moduleCtrl.value.code,
               this.formName
             );
+            console.log("::", data);
           } else {
             let data = {
-              data: this.appliedCriteriaData,
+              data: this.applyCriteriaFormattedData,
               duplicate: this.appliedCriteriaIsDuplicate,
               criteriaMap: this.appliedCriteriaCriteriaMap,
             };
@@ -871,7 +1080,7 @@ export class AddNewTaxComponent implements OnInit {
         message: "Are you sure, you want to clear all the fields ?",
         key: "resetTaxDataConfirmation",
         accept: () => {
-          this.appliedCriteriaData = [];
+          this.applyCriteriaFormattedData = [];
           this.appliedCriteriaCriteriaMap = null;
           this.appliedCriteriaIsDuplicate = null;
           this.taxDescription = "";
@@ -904,7 +1113,7 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   setSelectedOptions() {
-    this.appliedCriteriaData.forEach((data) => {
+    this.applyCriteriaFormattedData.forEach((data) => {
       if (data["taxType"]) {
         data["taxType"] = data["taxTypeOption"].filter(
           (option) => option["code"] == data["taxType"]
@@ -919,7 +1128,7 @@ export class AddNewTaxComponent implements OnInit {
     });
   }
   decodeSelectedOptions() {
-    this.appliedCriteriaData.forEach((data) => {
+    this.applyCriteriaFormattedData.forEach((data) => {
       data["taxType"] = data["taxTypeOption"].filter(
         (option) => option["codeName"] == data["taxType"]
       )[0]["code"];
@@ -937,39 +1146,43 @@ export class AddNewTaxComponent implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
-    if (selectCol == "setAsOption") {
-      if (selectCol == "setAsOption" && value["code"] == "Percentage") {
-        this.appliedCriteriaData[index]["tax"] = 0;
-        this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+    console.log(selectCol, value, index);
+    if (selectCol == "setAs") {
+      if (selectCol == "setAs" && value["code"] == "Percentage") {
+        this.applyCriteriaFormattedData[index]["tax"] = 0;
+        this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = true;
         this.coreService.showWarningToast("Please enter tax greater than zero");
       } else {
-        if (Number(this.appliedCriteriaData[index].lcyAmountFrom)) {
-          this.appliedCriteriaData[index]["tax"] = Number(
-            this.appliedCriteriaData[index].lcyAmountFrom
+        if (Number(this.applyCriteriaFormattedData[index].lcyAmountFrom)) {
+          this.applyCriteriaFormattedData[index]["tax"] = Number(
+            this.applyCriteriaFormattedData[index].lcyAmountFrom
           );
         } else {
-          if (this.appliedCriteriaData[index].lcyAmount) {
+          if (this.applyCriteriaFormattedData[index].lcyAmount) {
             let lcyAmountNum =
-              this.appliedCriteriaData[index].lcyAmount.split(" ")[3];
+              this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[3];
             let lcyAmountOpr =
-              this.appliedCriteriaData[index].lcyAmount.split(" ")[2];
+              this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[2];
             if (lcyAmountOpr == ">=") {
-              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+              console.log(lcyAmountNum);
+              this.applyCriteriaFormattedData[index]["tax"] =
+                Number(lcyAmountNum);
             } else if (lcyAmountOpr == ">") {
-              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum) + 1;
+              this.applyCriteriaFormattedData[index]["tax"] =
+                Number(lcyAmountNum) + 1;
             } else if (lcyAmountOpr == "=") {
-              this.appliedCriteriaData[index]["tax"] = Number(lcyAmountNum);
+              this.applyCriteriaFormattedData[index]["tax"] =
+                Number(lcyAmountNum);
             } else {
-              this.appliedCriteriaData[index]["tax"] = 0;
+              this.applyCriteriaFormattedData[index]["tax"] = 0;
             }
           } else {
-            this.appliedCriteriaData[index]["tax"] = 0;
+            this.applyCriteriaFormattedData[index]["tax"] = 0;
           }
         }
       }
     }
-    this.appliedCriteriaData[index][selectCol.split("Option")[0]] =
-      value.codeName;
+    this.applyCriteriaFormattedData[index][selectCol] = value.codeName;
   }
 
   changeValueInput(
@@ -979,46 +1192,64 @@ export class AddNewTaxComponent implements OnInit {
     index: any,
     valueInputElm: any
   ) {
-    this.appliedCriteriaData[index]["invalidTaxAmount"] = false;
-    let max = 0;
+    console.log(
+      selectCol,
+      inputCol,
+      event,
+      this.applyCriteriaFormattedData[index]
+    );
+    this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = false;
+    let max = 1000000;
     let min = 0;
-    let lcyAmountEqualTo =
-      this.appliedCriteriaData[index].lcyAmount &&
-      this.appliedCriteriaData[index].lcyAmount.substring(
-        this.appliedCriteriaData[index].lcyAmount.indexOf("=") + 1
-      );
-    let lcyAmountGreaterThan =
-      this.appliedCriteriaData[index].lcyAmount &&
-      this.appliedCriteriaData[index].lcyAmount.substring(
-        this.appliedCriteriaData[index].lcyAmount.indexOf(">") + 1
-      );
-    if (
-      this.appliedCriteriaData[index][selectCol.split("Option")[0]] ==
-      "Percentage"
-    ) {
+    if (this.applyCriteriaFormattedData[index][selectCol] == "Percentage") {
       max = 100;
-    } else if (
-      this.appliedCriteriaData[index][selectCol.split("Option")[0]] == "Amount"
-    ) {
-      if (
-        Number(this.appliedCriteriaData[index].lcyAmountFrom) > 0 &&
-        Number(this.appliedCriteriaData[index].lcyAmountTo) > 0
+    }
+    if (this.applyCriteriaFormattedData[index].lcyAmount?.length) {
+      let lcyAmountNum =
+        this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[3];
+      let lcyAmountOpr =
+        this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[2];
+
+      if (this.applyCriteriaFormattedData[index][selectCol] == "Percentage") {
+        max = 100;
+      } else if (
+        this.applyCriteriaFormattedData[index][selectCol] == "Amount"
       ) {
-        min = Number(this.appliedCriteriaData[index].lcyAmountFrom);
-        max = Number(this.appliedCriteriaData[index].lcyAmountTo);
-      } else if (Number(lcyAmountEqualTo) > 0) {
-        min = Number(lcyAmountEqualTo);
-        max = Number(lcyAmountEqualTo);
-      } else if (Number(lcyAmountGreaterThan) > 0) {
-        min = Number(lcyAmountGreaterThan);
-        max = 1000000;
-      } else {
-        max = 1000000;
+        if (
+          Number(this.applyCriteriaFormattedData[index].lcyAmountFrom) > 0 &&
+          Number(this.applyCriteriaFormattedData[index].lcyAmountTo) > 0
+        ) {
+          min = Number(this.applyCriteriaFormattedData[index].lcyAmountFrom);
+          max = Number(this.applyCriteriaFormattedData[index].lcyAmountTo);
+        } else if (lcyAmountOpr == "=") {
+          min = Number(lcyAmountNum);
+          max = Number(lcyAmountNum);
+        } else if (lcyAmountOpr == ">=") {
+          min = Number(lcyAmountNum);
+          max = 1000000;
+        } else if (lcyAmountOpr == ">") {
+          min = Number(lcyAmountNum) + 1;
+          max = 1000000;
+        } else if (lcyAmountOpr == "<=") {
+          min = 0;
+          max = Number(lcyAmountNum);
+        } else if (lcyAmountOpr == "<") {
+          min = 0;
+          max = Number(lcyAmountNum) - 1;
+        } else {
+          max = 1000000;
+        }
       }
+    } else if (
+      this.applyCriteriaFormattedData[index].lcyAmountFrom?.length ||
+      this.applyCriteriaFormattedData[index].lcyAmountTo?.length
+    ) {
+      min = Number(this.applyCriteriaFormattedData[index].lcyAmountFrom);
+      max = Number(this.applyCriteriaFormattedData[index].lcyAmountTo);
     }
 
     if (event.value <= max) {
-      this.appliedCriteriaData[index][inputCol] = event.value;
+      this.applyCriteriaFormattedData[index][inputCol] = event.value;
     } else {
       let lastValueEntered = valueInputElm.lastValue;
       valueInputElm.input.nativeElement.value = lastValueEntered;
@@ -1026,12 +1257,12 @@ export class AddNewTaxComponent implements OnInit {
     let isDisplayError = false;
     if (event.value == 0) {
       isDisplayError = true;
-      this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+      this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = true;
       this.coreService.showWarningToast("Please enter tax greater than zero");
       return false;
     } else if (event.value < min || event.value > max) {
       isDisplayError = true;
-      this.appliedCriteriaData[index]["invalidTaxAmount"] = true;
+      this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = true;
       this.coreService.showWarningToast(
         "Please enter tax between " + min + " to " + max
       );
@@ -1054,9 +1285,10 @@ export class AddNewTaxComponent implements OnInit {
       ...selectRow,
     };
     clonedRow[fieldName] = "clone,delete";
-    this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
+    clonedRow["linked"] = "N";
+    this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {
-    this.appliedCriteriaData.splice(index, 1);
+    this.applyCriteriaFormattedData.splice(index, 1);
   }
 }

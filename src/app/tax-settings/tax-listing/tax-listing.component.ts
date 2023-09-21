@@ -280,6 +280,7 @@ export class TaxListingComponent implements OnInit {
       this.linkedTaxCode.includes(data["taxCode"])
     ) {
       completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
         isLinkedMsg +
         `Do you wish to ` +
         type +
