@@ -221,10 +221,10 @@ export class CustomFormComponent implements OnInit {
     let newCrtMap = this.criteriaMapCode.trim()
     decodedFormattedCriteriaArr.forEach(crt => {
       let copyCrtMap = newCrtMap
-      let nameVal= (Object.values(crt)[0] as string)
+      let nameVal= (Object.values(crt)[0] as string).split('&&&&')[0]
       console.log("keys",Object.keys(crt)[0])
       let filtercrt = this.masterData[Object.keys(crt)[0]?.trim()]?.filter(d => {
-        return d.codeName == Object.values(crt)[0]      
+        return d.codeName == nameVal     
       })
       if(filtercrt.length){
         let codeVal= (filtercrt[0]['code'] as string)
