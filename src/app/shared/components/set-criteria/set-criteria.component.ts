@@ -1651,6 +1651,7 @@ export class SetCriteriaComponent implements OnInit {
   createFormattedCriteria() {
     this.finalCriteriaCodeText = [];
     let formattedCriteriaArr = this.criteriaText.map((crt) => {
+      if (!crt) return;
       let formatCrt;
       let opr;
       if (crt.includes("!=")) {
