@@ -134,7 +134,7 @@ export class CustomerProfileComponent implements OnInit {
     this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
     this.currentCriteriaKey = "Customer ID = ";
     this.cols = this.colsIND;
   }
@@ -168,7 +168,7 @@ export class CustomerProfileComponent implements OnInit {
             }
           );
           this.searchCriteriaOptions.unshift(
-            ...[{ name: "Customer ID", code: "id" }]
+            ...[{ name: "Customer ID", code: "customerId" }]
           );
         },
         (err) => {
@@ -187,7 +187,7 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
@@ -278,7 +278,7 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaValue = null;
     this.customerFieldType = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
   }
 
   getCustomerListData() {
@@ -307,14 +307,17 @@ export class CustomerProfileComponent implements OnInit {
       (res) => {
         console.log(res);
         if (res["status"] == "200") {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          }
           this.showTable = true;
           this.coreService.removeLoadingScreen();
           if (this.type == "Corporate") {
             this.cols = this.colsCOR;
-            this.customerData = res.data.CmCorporateCustomerDetails;
+            this.customerData = res.data?.CmCorporateCustomerDetails;
           } else {
             this.cols = this.colsIND;
-            this.customerData = res.data.CmCorporateCustomerDetails;
+            this.customerData = res.data?.CmCorporateCustomerDetails;
             this.customerData?.forEach((element) => {
               element["orders"] = [];
             });
@@ -638,7 +641,7 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();

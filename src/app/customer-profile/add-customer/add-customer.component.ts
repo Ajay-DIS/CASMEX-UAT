@@ -58,7 +58,7 @@ export class AddCustomerComponent implements OnInit {
     { name: "third", code: "LDN" },
   ];
 
-  masterData :any= {};
+  masterData: any = {};
 
   kycData = [];
   // prettier-ignore
@@ -84,7 +84,7 @@ export class AddCustomerComponent implements OnInit {
   editIndexBeneficial = -1;
   editApiIdBeneficial = "";
 
-  formRuleAPIResponse: any = {}
+  formRuleAPIResponse: any = {};
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
@@ -115,10 +115,7 @@ export class AddCustomerComponent implements OnInit {
       this.http
         .get(`/remittance/formRulesController/getFormRules`, {
           headers: new HttpHeaders()
-            .set(
-              "criteriaMap",
-              "Country = IND;Form = Customer Profile;Customer Type = IND"
-            )
+            .set("criteriaMap", "Country = IN;Customer Type = IND")
             .set("form", "Customer Profile_Form Rules")
             .set("moduleName", "Remittance")
             .set("applications", "Casmex Core"),
@@ -131,10 +128,9 @@ export class AddCustomerComponent implements OnInit {
               this.apiData = {};
               this.coreService.removeLoadingScreen();
             } else {
-              this.formRuleAPIResponse = JSON.parse(JSON.stringify(res))
+              this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
               this.setFormByData(res);
               this.getCustomerMasterData();
-              
             }
           },
           (err) => {
@@ -146,9 +142,8 @@ export class AddCustomerComponent implements OnInit {
           }
         );
     }
-   
   }
-  getCustomerMasterData(){
+  getCustomerMasterData() {
     this.customerService.getCustomerMaster().subscribe(
       (res) => {
         // this.coreService.removeLoadingScreen();
@@ -1568,7 +1563,7 @@ export class AddCustomerComponent implements OnInit {
   }
 
   setCustomerFormData(data: any) {
-    console.log("dropdown",data)
+    console.log("dropdown", data);
     this.CustomerData = data;
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
@@ -1577,10 +1572,11 @@ export class AddCustomerComponent implements OnInit {
             field.fieldType == "select" ||
             field.fieldType == "smart-search"
           ) {
-            let filterData = this.masterData[field["fieldName"]]?.filter((msField) =>{
-              return msField.codeName == data[field["fieldName"]]              
-            }
-           )
+            let filterData = this.masterData[field["fieldName"]]?.filter(
+              (msField) => {
+                return msField.codeName == data[field["fieldName"]];
+              }
+            );
             let value = filterData?.length
               ? {
                   code: filterData[0].code,
@@ -1987,10 +1983,10 @@ export class AddCustomerComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
-            if(res["error"]){
+            if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
               this.coreService.removeLoadingScreen();
-            }else {
+            } else {
               if (res["data"]) {
                 this.coreService.showSuccessToast(res["data"]);
               } else {
@@ -2056,10 +2052,10 @@ export class AddCustomerComponent implements OnInit {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
-            if(res["error"]){
+            if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
               this.coreService.removeLoadingScreen();
-            }else {
+            } else {
               if (res["data"]) {
                 this.coreService.showSuccessToast(res["data"]);
               } else {

@@ -6,6 +6,7 @@ import { ConfirmationService } from "primeng/api";
 import { CustomerProfileService } from "../customer-profile/customer-profile.service";
 import { Observable } from "rxjs";
 import { MultiSelect } from "primeng/multiselect";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-beneficiary-profile",
@@ -64,7 +65,8 @@ export class BeneficiaryProfileComponent implements OnInit {
     private coreService: CoreService,
     private route: ActivatedRoute,
     private confirmationService: ConfirmationService,
-    private customerService: CustomerProfileService
+    private customerService: CustomerProfileService,
+    private http: HttpClient
   ) {}
 
   customerType = "";
@@ -95,16 +97,16 @@ export class BeneficiaryProfileComponent implements OnInit {
   cols = [];
 
   colsIND: any[] = [
-    { field: "customerCode", header: "Customer Code", width: "8%" },
-    { field: "fullName", header: "Customer Full Name", width: "15%" },
-    { field: "nationality", header: "Nationality", width: "15%" },
-    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
-    { field: "idType", header: "ID Type", width: "8%" },
-    { field: "idNumber", header: "ID Number", width: "15%" },
-    // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
-    // { field: "addBenificiary", header: "Add Benf", width: "8%" },
-    { field: "pastTxns", header: "Past Txns", width: "8%" },
-    { field: "status", header: "Profile Status", width: "8%" },
+    { field: "customerCode", header: "Customer Code" },
+    { field: "fullName", header: "Customer Full Name" },
+    { field: "nationality", header: "Nationality" },
+    { field: "mobileNumber", header: "Mobile Number" },
+    { field: "idType", header: "ID Type" },
+    { field: "idNumber", header: "ID Number" },
+    { field: "beneficialCount", header: "Total Benf", width: "8%" },
+    { field: "addBenificiary", header: "Add Benf" },
+    // { field: "pastTxns", header: "Past Txns",  },
+    { field: "status", header: "Profile Status" },
   ];
   colsCOR: any[] = [
     { field: "customerCode", header: "Customer Code", width: "8%" },
@@ -113,9 +115,9 @@ export class BeneficiaryProfileComponent implements OnInit {
     { field: "mobileNumber", header: "Mobile Number", width: "15%" },
     { field: "idType", header: "ID Type", width: "8%" },
     { field: "idNumber", header: "ID Number", width: "15%" },
-    // { field: "totalBenificiary", header: "Total Benf", width: "8%" },
+    { field: "beneficialCount", header: "Total Benf", width: "8%" },
     { field: "addBenificiary", header: "Add Benf", width: "8%" },
-    { field: "pastTxns", header: "Past Txns", width: "8%" },
+    // { field: "pastTxns", header: "Past Txns", width: "8%" },
     { field: "status", header: "Profile Status", width: "8%" },
   ];
 
@@ -131,7 +133,7 @@ export class BeneficiaryProfileComponent implements OnInit {
     this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
     this.currentCriteriaKey = "Customer ID = ";
     this.cols = this.colsIND;
   }
@@ -164,6 +166,9 @@ export class BeneficiaryProfileComponent implements OnInit {
               return { name: data.displayName, code: data.fieldName };
             }
           );
+          this.searchCriteriaOptions.unshift(
+            ...[{ name: "Customer ID", code: "customerId" }]
+          );
         },
         (err) => {
           // this.coreService.removeLoadingScreen();
@@ -181,13 +186,10 @@ export class BeneficiaryProfileComponent implements OnInit {
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.getCustomerListData();
-    this.searchCriteriaOptions = this.searchCriteriaApiData.map((data) => {
-      return { name: data.displayName, code: data.fieldName };
-    });
     this.customerFieldType = null;
   }
 
@@ -273,7 +275,7 @@ export class BeneficiaryProfileComponent implements OnInit {
     this.currentCriteriaValue = null;
     this.customerFieldType = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "id = ";
+    this.currentCriteriaMapKey = "customerId = ";
   }
 
   getCustomerListData() {
@@ -310,6 +312,10 @@ export class BeneficiaryProfileComponent implements OnInit {
           } else {
             this.cols = this.colsIND;
             this.customerData = res.data.CmCorporateCustomerDetails;
+            this.customerData?.forEach((element) => {
+              element["orders"] = [];
+            });
+            console.log("customer dataa indi", this.customerData);
           }
           // this.totalRecords = res.data.PaginationDetails.totalCount;
           this.customerCode = res.customerCode?.map((code) => {
@@ -339,14 +345,16 @@ export class BeneficiaryProfileComponent implements OnInit {
       }
     );
   }
-  addNewCustomer() {
+  addNewBeneficiary(rowData: any, type: any) {
     this.router.navigate([
       "navbar",
       "beneficiary-profile",
       "addnewbeneficiary",
+      type,
+      rowData.customerCode,
+      "add",
     ]);
   }
-
   confirmStatus(e: any, data: any, cusType: any) {
     e.preventDefault();
     let type = "";
@@ -381,19 +389,92 @@ export class BeneficiaryProfileComponent implements OnInit {
     });
   }
 
-  setHeaderSidebarBtn(accept: boolean) {
-    this.coreService.displayLoadingScreen();
-    setTimeout(() => {
-      this.coreService.setHeaderStickyStyle(true);
-      this.coreService.setSidebarBtnFixedStyle(true);
-    }, 500);
-    if (!accept) {
-      setTimeout(() => {
-        this.coreService.removeLoadingScreen();
-      }, 1000);
+  confirmBeneficiaryStatus(e: any, data: any, cusType: any) {
+    e.preventDefault();
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
     }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Beneficiary Record: ${data["id"]}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        this.updateBeneStatus(e, reqStatus, data, cusType);
+        this.setHeaderSidebarBtn(true);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn(false);
+      },
+    });
   }
 
+  updateBeneStatus(e: any, reqStatus: any, data: any, cusType: any) {
+    this.coreService.displayLoadingScreen();
+    console.log(data);
+    this.updateBeneficiaryStatus(
+      data["id"],
+      reqStatus,
+      e.target,
+      data,
+      cusType
+    );
+  }
+  updateBeneficiaryStatus(
+    cusId: any,
+    status: any,
+    sliderElm: any,
+    ruleData: any,
+    cusType: any
+  ) {
+    let service: Observable<any>;
+    console.log(this.userData);
+    // if (cusType == "Corporate") {
+    service = this.customerService.updateBeneficiaryStatusApi(
+      this.userData["userId"],
+      status,
+      cusId.toString(),
+      cusType
+    );
+    // } else {
+    //   service = this.customerService.updateCustomerIndividualStatus(
+    //     this.userData["userId"],
+    //     status,
+    //     cusId.toString()
+    //   );
+    // }
+    service.subscribe(
+      (res) => {
+        console.log(res);
+        if (res["status"] == "200") {
+          sliderElm.checked = sliderElm!.checked;
+          this.searchCustomerMap(this.customerType);
+          this.coreService.showSuccessToast(res["data"]);
+        } else {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(res["msg"]);
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
+  }
   updateStatus(e: any, reqStatus: any, data: any, cusType: any) {
     this.coreService.displayLoadingScreen();
     console.log(data);
@@ -447,16 +528,78 @@ export class BeneficiaryProfileComponent implements OnInit {
       }
     );
   }
-
   editCustomer(rowData: any, type: any) {
     this.router.navigate([
       "navbar",
-      "beneficiary-profile",
-      "addnewbeneficiary",
+      "customer-profile",
+      "addnewcustomer",
       type,
       rowData.customerCode,
       "edit",
     ]);
+  }
+  editbeneficiary(beneData: any) {
+    let custype = beneData.customerType == "Individual" ? "IND" : "COR";
+    this.router.navigate([
+      "navbar",
+      "beneficiary-profile",
+      "addnewbeneficiary",
+      custype,
+      beneData.id,
+      "edit",
+    ]);
+  }
+  beneficiaryListData(expanded, rowData: any, customerType) {
+    console.log("expanded", expanded);
+    console.log("customerType", customerType);
+    console.log("customerCode", rowData.customerCode);
+    if (expanded == false) {
+      this.http
+        .get(
+          `/remittance/beneficiaryProfileController/getBeneficiaryProfileList`,
+          {
+            headers: new HttpHeaders()
+              .set("customerType", customerType)
+              .set("customerId", String(rowData.customerCode)),
+          }
+        )
+        .subscribe(
+          (res) => {
+            if (res["msg"]) {
+              this.noDataMsg = res["msg"];
+              this.coreService.removeLoadingScreen();
+            } else {
+              console.log("respose", res);
+              this.customerData.forEach((element) => {
+                if (element["customerCode"] == rowData.customerCode) {
+                  element["orders"] = res["data"];
+                }
+                console.log("orders", element["orders"]);
+              });
+            }
+          },
+          (err) => {
+            console.log("err", err);
+            this.coreService.showWarningToast(
+              "Some error while fetching data, Try again in sometime"
+            );
+            this.coreService.removeLoadingScreen();
+          }
+        );
+    }
+  }
+
+  setHeaderSidebarBtn(accept: boolean) {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    if (!accept) {
+      setTimeout(() => {
+        this.coreService.removeLoadingScreen();
+      }, 1000);
+    }
   }
 
   toggleFilterVisibility(field) {
