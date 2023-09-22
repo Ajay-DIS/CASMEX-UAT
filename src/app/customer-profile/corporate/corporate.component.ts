@@ -86,7 +86,7 @@ export class CorporateComponent implements OnInit, OnChanges {
   editIndexBeneficial = -1;
   editApiIdBeneficial = "";
 
-  formRuleAPIResponse: any = {}
+  formRuleAPIResponse: any = {};
 
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
@@ -120,10 +120,7 @@ export class CorporateComponent implements OnInit, OnChanges {
     this.http
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
-          .set(
-            "criteriaMap",
-            "Country = IND;Form = Customer Profile;Customer Type = COR"
-          )
+          .set("criteriaMap", "Country = IN;Customer Type = COR")
           .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
@@ -136,7 +133,7 @@ export class CorporateComponent implements OnInit, OnChanges {
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
-            this.formRuleAPIResponse = JSON.parse(JSON.stringify(res))
+            this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
             this.setFormByData(res);
             this.getCustomerMasterData();
           }
@@ -151,7 +148,7 @@ export class CorporateComponent implements OnInit, OnChanges {
       );
   }
 
-  getCustomerMasterData(){
+  getCustomerMasterData() {
     this.customerService.getCustomerMaster().subscribe(
       (res) => {
         // this.coreService.removeLoadingScreen();
@@ -1569,9 +1566,11 @@ export class CorporateComponent implements OnInit, OnChanges {
             field.fieldType == "select" ||
             field.fieldType == "smart-search"
           ) {
-            let filterData = this.masterData[field["fieldName"]]?.filter((msField)=>{
-              return msField.codeName == data[field["fieldName"]]
-            })
+            let filterData = this.masterData[field["fieldName"]]?.filter(
+              (msField) => {
+                return msField.codeName == data[field["fieldName"]];
+              }
+            );
             let value = filterData?.length
               ? {
                   code: filterData[0].code,
@@ -1978,10 +1977,10 @@ export class CorporateComponent implements OnInit, OnChanges {
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
-            if(res["error"]){
+            if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
               this.coreService.removeLoadingScreen();
-            }else {
+            } else {
               if (res["data"]) {
                 this.coreService.showSuccessToast(res["data"]);
               } else {
@@ -2047,10 +2046,10 @@ export class CorporateComponent implements OnInit, OnChanges {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
-            if(res["error"]){
+            if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
               this.coreService.removeLoadingScreen();
-            }else {
+            } else {
               if (res["data"]) {
                 this.coreService.showSuccessToast(res["data"]);
               } else {
