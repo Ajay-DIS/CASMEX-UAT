@@ -6,7 +6,6 @@ import { MultiSelect } from "primeng/multiselect";
 import { ConfirmDialog } from "primeng/confirmdialog";
 import { ConfirmationService } from "primeng/api";
 import { Observable, forkJoin } from "rxjs";
-import { map, take } from "rxjs/operators";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
@@ -47,7 +46,7 @@ export class CustomerProfileComponent implements OnInit {
 
   noDataMsg: string = "Form Rule Data Not Available";
 
-  showTable = false;
+  showTable = true;
 
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
@@ -57,8 +56,10 @@ export class CustomerProfileComponent implements OnInit {
   formName = null;
   applicationName = "Casmex Core";
   moduleName = "Remittance";
-  pageNumber = "0";
-  pageSize = "10";
+  pageNumber = 0;
+  pageSize = 2;
+  totalPages = 5;
+  totalRecords = 0;
 
   linkedFormRuleCode: any = [];
   constructor(
@@ -95,9 +96,8 @@ export class CustomerProfileComponent implements OnInit {
   searchCriteriaMap = [];
   currentCriteriaMap = "";
   criteriaMap = "NA";
-  cols = [];
 
-  colsIND: any[] = [
+  columns: any[] = [
     { field: "customerCode", header: "Customer Code" },
     { field: "fullName", header: "Customer Full Name" },
     { field: "nationality", header: "Nationality" },
@@ -109,20 +109,10 @@ export class CustomerProfileComponent implements OnInit {
     // { field: "pastTxns", header: "Past Txns",  },
     { field: "status", header: "Profile Status" },
   ];
-  colsCOR: any[] = [
-    { field: "customerCode", header: "Customer Code", width: "8%" },
-    { field: "fullName", header: "Customer Full Name", width: "15%" },
-    { field: "nationality", header: "Nationality", width: "15%" },
-    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
-    { field: "idType", header: "ID Type", width: "8%" },
-    { field: "idNumber", header: "ID Number", width: "15%" },
-    { field: "beneficialCount", header: "Total Benf", width: "8%" },
-    { field: "addBenificiary", header: "Add Benf", width: "8%" },
-    // { field: "pastTxns", header: "Past Txns", width: "8%" },
-    { field: "status", header: "Profile Status", width: "8%" },
-  ];
 
-  totalRecords = 55;
+  // totalRecords = 55;
+  customerTableLoading = false;
+  globalSearch = false;
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -133,18 +123,67 @@ export class CustomerProfileComponent implements OnInit {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
-    this.getCustomerListData();
+    // this.getCustomerListData(this.criteriaMap);
     this.currentCriteriaMapKey = "customerId = ";
     this.currentCriteriaKey = "Customer ID = ";
-    this.cols = this.colsIND;
   }
 
   loadCustomers(e: any) {
-    const pageSize = 10;
-    const pageNumber = e.first ? e.first / +this.pageSize + 1 : 1;
-    console.log("::lazy event", e);
-    console.log("::pageSize", pageSize);
-    console.log("::pageNumber", pageNumber);
+    if (!this.globalSearch) {
+      this.pageNumber = e.first ? e.first / this.pageSize + 1 : 1;
+      console.log(
+        "::event, pageSize, pageNumber",
+        e,
+        this.pageSize,
+        this.pageNumber
+      );
+      let updatedCriteriaMap = this.criteriaMap;
+      if (e.filters && Object.keys(e.filters).length > 0) {
+        let filterCrtMap = "";
+        for (const prop in e.filters) {
+          switch (prop) {
+            case "customerCode":
+              filterCrtMap = `customerId = ${e.filters[prop]["value"]}`;
+              break;
+            case "fullName":
+              if (this.customerType && this.customerType == "Corporate") {
+                filterCrtMap = `nameOfTheCorporate = ${e.filters[prop]["value"]}`;
+              } else {
+                filterCrtMap = `firstNamePersonalDetails = ${e.filters[prop]["value"]}`;
+              }
+              break;
+            case "nationality":
+              filterCrtMap = `nationalityPersonalDetails = ${e.filters[prop]["value"]}`;
+              break;
+            case "mobileNumber":
+              filterCrtMap = `contactMobileNumber = ${e.filters[prop]["value"]}`;
+              break;
+            case "idType":
+              filterCrtMap = `documentType = ${e.filters[prop]["value"]}`;
+              break;
+            case "idNumber":
+              filterCrtMap = `idNumber = ${e.filters[prop]["value"]}`;
+              break;
+
+            default:
+              filterCrtMap = "";
+              break;
+          }
+          if (updatedCriteriaMap?.length && updatedCriteriaMap != "NA") {
+            if (filterCrtMap?.length) {
+              updatedCriteriaMap += `;${filterCrtMap}`;
+            }
+          } else {
+            updatedCriteriaMap = filterCrtMap;
+          }
+        }
+        console.log("updatedCriteriaMap", updatedCriteriaMap);
+        this.getCustomerListData(updatedCriteriaMap);
+      } else {
+        this.getCustomerListData(this.criteriaMap);
+      }
+    }
+    this.globalSearch = false;
   }
 
   getApiDataForsearchCriteria() {
@@ -159,9 +198,7 @@ export class CustomerProfileComponent implements OnInit {
       .subscribe(
         (res) => {
           // this.coreService.removeLoadingScreen();
-          console.log(res);
           this.searchCriteriaApiData = res["data"];
-          console.log(this.searchCriteriaApiData);
           this.searchCriteriaOptions = this.searchCriteriaApiData.map(
             (data) => {
               return { name: data.displayName, code: data.fieldName };
@@ -178,11 +215,8 @@ export class CustomerProfileComponent implements OnInit {
       );
   }
   onUserTypeChange(value: any) {
-    console.log(value);
-
     this.formName = "Customer Profile";
     this.type = value;
-    console.log(this.formName);
     this.criteriaMap = "NA";
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
@@ -190,14 +224,13 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaMapKey = "customerId = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
-    this.getCustomerListData();
-
-    console.log("this.searchCriteriaOptions", this.searchCriteriaOptions);
+    this.showTable = false;
+    this.globalSearch = true;
+    this.getCustomerListData(this.criteriaMap);
     this.customerFieldType = null;
   }
 
   onCriteriaChange(value: any) {
-    console.log(value);
     this.criteriaTypechange = value;
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = `${
@@ -212,35 +245,22 @@ export class CustomerProfileComponent implements OnInit {
     } = `;
     this.criteriaType = this.searchCriteriaApiData.filter((opt) => {
       return opt.fieldName == value;
-    })[0].criteriaType;
-    console.log(this.currentCriteriaKey);
-    console.log(this.currentCriteriaMapKey);
+    })[0]
+      ? this.searchCriteriaApiData.filter((opt) => {
+          return opt.fieldName == value;
+        })[0].criteriaType
+      : "text";
   }
   ondeletecriteria(i: any, criteria: any) {
     this.searchCriteria.splice(i, 1);
-    console.log(i);
-    console.log(criteria);
     this.searchCriteriaMap.splice(i, 1);
     this.criteriaMap = this.searchCriteriaMap.join(";");
-    console.log(this.criteriaMap);
     this.criteriaMap = "NA";
-    this.getCustomerListData();
+    this.globalSearch = true;
+    this.showTable = false;
+    this.getCustomerListData(this.criteriaMap);
   }
   searchCustomerMap(type: any) {
-    console.log(typeof this.currentCriteriaValue);
-    console.log("::", this.criteriaTypechange);
-
-    console.log("::", this.currentCriteriaMapKey);
-    console.log("::", this.searchCriteriaMap);
-    console.log(
-      "::",
-      this.searchCriteriaMap.filter((crt) => {
-        return (
-          crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]
-        );
-      })
-    );
-
     if (
       this.searchCriteriaMap.filter((crt) => {
         return (
@@ -262,90 +282,75 @@ export class CustomerProfileComponent implements OnInit {
       ) {
         this.currentCriteria =
           this.currentCriteriaKey + this.currentCriteriaValue;
-        console.log(this.currentCriteria);
         this.searchCriteria.push(this.currentCriteria);
 
         this.currentCriteriaMap =
           this.currentCriteriaMapKey + this.currentCriteriaValue;
-        console.log(this.currentCriteriaMap);
         this.searchCriteriaMap.push(this.currentCriteriaMap);
         this.criteriaMap = this.searchCriteriaMap.join(";");
-        console.log(this.criteriaMap);
       }
+      this.globalSearch = true;
+      this.showTable = false;
+      this.getCustomerListData(this.criteriaMap);
+      this.currentCriteriaValue = null;
+      this.customerFieldType = null;
+      this.currentCriteriaKey = "Customer ID = ";
+      this.currentCriteriaMapKey = "customerId = ";
     }
-
-    this.getCustomerListData();
-    this.currentCriteriaValue = null;
-    this.customerFieldType = null;
-    this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "customerId = ";
   }
 
-  getCustomerListData() {
-    console.log(this.searchCriteria);
+  getCustomerListData(criteriaMap: any) {
     this.coreService.displayLoadingScreen();
-    console.log(this.type);
-    this.showTable = false;
     let service: Observable<any>;
-    // if (this.type == "Corporate") {
     service = this.customerService.getCustomerCorporateData(
       this.userData["userId"],
-      this.criteriaMap,
-      this.pageNumber,
-      this.pageSize,
+      criteriaMap,
+      `${this.pageNumber}`,
+      `${this.pageSize}`,
       this.type
     );
-    // } else {
-    //   service = this.customerService.getCustomerIndividualData(
-    //     this.userData["userId"],
-    //     this.criteriaMap,
-    //     this.pageNumber,
-    //     this.pageSize
-    //   );
-    // }
+
     service.subscribe(
       (res) => {
-        console.log(res);
+        // this.customerTableLoading = false;
+        this.coreService.removeLoadingScreen();
         if (res["status"] == "200") {
           if (res["error"]) {
+            this.showTable = false;
             this.coreService.showWarningToast(res["error"]);
-          }
-          this.showTable = true;
-          this.coreService.removeLoadingScreen();
-          if (this.type == "Corporate") {
-            this.cols = this.colsCOR;
-            this.customerData = res.data?.CmCorporateCustomerDetails;
+            this.customerData = [];
           } else {
-            this.cols = this.colsIND;
+            this.showTable = true;
             this.customerData = res.data?.CmCorporateCustomerDetails;
-            this.customerData?.forEach((element) => {
-              element["orders"] = [];
-            });
-            console.log("customer dataa indi", this.customerData);
+            this.totalPages = res.data?.TotalPages;
+            this.totalRecords = res.data?.TotalCount;
+            // this.totalRecords = res.data.PaginationDetails.totalCount;
+            // this.customerCode = res.customerCode?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.fullName = res.customerFullName?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.nationality = res.nationality?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.mobileNumber = res.mobileNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idType = res.idType?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idNumber = res.idNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
           }
-          // this.totalRecords = res.data.PaginationDetails.totalCount;
-          this.customerCode = res.customerCode?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.fullName = res.customerFullName?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.nationality = res.nationality?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.mobileNumber = res.mobileNumber?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.idType = res.idType?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.idNumber = res.idNumber?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
+        } else {
+          this.showTable = false;
         }
       },
       (err) => {
         this.coreService.removeLoadingScreen();
+        // this.customerTableLoading = false;
         // this.coreService.showWarningToast("Error in fething data");
         this.showTable = false;
       }
@@ -435,7 +440,6 @@ export class CustomerProfileComponent implements OnInit {
 
   updateBeneStatus(e: any, reqStatus: any, data: any, cusType: any) {
     this.coreService.displayLoadingScreen();
-    console.log(data);
     this.updateBeneficiaryStatus(
       data["id"],
       reqStatus,
@@ -452,7 +456,6 @@ export class CustomerProfileComponent implements OnInit {
     cusType: any
   ) {
     let service: Observable<any>;
-    console.log(this.userData);
     // if (cusType == "Corporate") {
     service = this.customerService.updateBeneficiaryStatusApi(
       this.userData["userId"],
@@ -469,7 +472,6 @@ export class CustomerProfileComponent implements OnInit {
     // }
     service.subscribe(
       (res) => {
-        console.log(res);
         if (res["status"] == "200") {
           sliderElm.checked = sliderElm!.checked;
           this.searchCustomerMap(this.customerType);
@@ -487,7 +489,6 @@ export class CustomerProfileComponent implements OnInit {
   }
   updateStatus(e: any, reqStatus: any, data: any, cusType: any) {
     this.coreService.displayLoadingScreen();
-    console.log(data);
     this.updateCustomerStatus(
       data["customerCode"],
       reqStatus,
@@ -505,24 +506,14 @@ export class CustomerProfileComponent implements OnInit {
     cusType: any
   ) {
     let service: Observable<any>;
-    console.log(this.userData);
-    // if (cusType == "Corporate") {
     service = this.customerService.updateCustomerCorporateStatus(
       this.userData["userId"],
       status,
       cusId.toString(),
       cusType
     );
-    // } else {
-    //   service = this.customerService.updateCustomerIndividualStatus(
-    //     this.userData["userId"],
-    //     status,
-    //     cusId.toString()
-    //   );
-    // }
     service.subscribe(
       (res) => {
-        console.log(res);
         if (res["status"] == "200") {
           sliderElm.checked = sliderElm!.checked;
           this.searchCustomerMap(this.customerType);
@@ -573,9 +564,6 @@ export class CustomerProfileComponent implements OnInit {
     ]);
   }
   beneficiaryListData(expanded, rowData: any, customerType) {
-    console.log("expanded", expanded);
-    console.log("customerType", customerType);
-    console.log("customerCode", rowData.customerCode);
     if (expanded == false) {
       this.http
         .get(
@@ -592,12 +580,10 @@ export class CustomerProfileComponent implements OnInit {
               this.noDataMsg = res["msg"];
               this.coreService.removeLoadingScreen();
             } else {
-              console.log("respose", res);
               this.customerData.forEach((element) => {
                 if (element["customerCode"] == rowData.customerCode) {
                   element["orders"] = res["data"];
                 }
-                console.log("orders", element["orders"]);
               });
             }
           },
@@ -644,7 +630,9 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaMapKey = "customerId = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
-    this.getCustomerListData();
+    this.globalSearch = true;
+    this.showTable = false;
+    this.getCustomerListData(this.criteriaMap);
     this.customerFieldType = null;
   }
 
