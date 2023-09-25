@@ -24,22 +24,15 @@
           ></p-dropdown>
           <span
             class="p-input-icon-right"
-           
             (keyup.enter)="searchByEnter($event)"
           >
             <i class="pi pi-search"></i>
 
             <ng-container [ngSwitch]="criteriaType">
               <input
-                style="
-                  width: 440px;
-                  border-top-left-radius: initial;
-                  border-bottom-left-radius: initial;
-                  border: solid 1px#a2a2a2;
-                "
                 *ngSwitchCase="'text'"
                 type="text"
-                class="block"
+                class="block searchBox"
                 pInputText
                 [(ngModel)]="currentCriteriaValue"
                 placeholder="Search"
@@ -51,6 +44,7 @@
                 mode="decimal"
                 [useGrouping]="false"
                 placeholder="Search"
+                class="searchBox"
               >
               </p-inputNumber>
               <p-calendar
@@ -133,27 +127,32 @@
     </div>
   </div>
 
-  <div class="ptable" *ngIf="showTable">
+  <div class="ptable" *ngIf="showTable || !globalSearch">
     <p-table
-    #dt
-    [columns]="cols" 
-    [value]="customerData" dataKey="customerCode"
-    [paginator]="true"
-    [rows]="10"
-    [resizableColumns]="true"
-    columnResizeMode="fit"
-    [rowHover]="true"
-  >
+      #dt
+      [columns]="columns"
+      [value]="customerData"
+      dataKey="customerCode"
+      [lazy]="true"
+      (onLazyLoad)="loadCustomers($event)"
+      [totalRecords]="totalRecords"
+      [paginator]="true"
+      [rows]="pageSize"
+      [resizableColumns]="true"
+      columnResizeMode="fit"
+      [rowHover]="true"
+      [loading]="customerTableLoading"
+    >
       <ng-template pTemplate="header" let-columns>
         <tr>
+          <!-- [pSortableColumn]="col.field" -->
           <th
-          *ngFor="let col of columns; let c = index"
-          [pSortableColumn]="col.field"
-          pResizableColumn
-          [style.width]="col.width"
+            *ngFor="let col of columns; let c = index"
+            pResizableColumn
+            [style.width]="col.width"
           >
             {{ col.header }}
-            <div
+            <!-- <div
               *ngIf="c < columns.length - 3 && c != 0"
               (click)="$event.stopPropagation()"
               class="filter-icon"
@@ -184,11 +183,11 @@
                 (onPanelHide)="hideFilterVisibility(col.field)"
               >
               </p-multiSelect>
-            </div>
+            </div> -->
           </th>
         </tr>
         <tr class="search-row">
-          <th *ngFor="let col of cols; let c = index">
+          <th *ngFor="let col of columns; let c = index">
             <span
               class="p-input-icon-left"
               *ngIf="c < columns.length - 3"
@@ -209,7 +208,8 @@
         pTemplate="body"
         let-rowData
         let-columns="columns"
-        let-index="rowIndex" let-expanded="expanded"
+        let-index="rowIndex"
+        let-expanded="expanded"
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
@@ -218,27 +218,36 @@
                 {{ rowData[col["field"]] }}
               </div>
               <div *ngIf="i == 0">
-                <button type="button" (click)="beneficiaryListData(expanded,rowData,customerType)" style="height: 2rem;width: 2rem;" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                <button
+                  type="button"
+                  (click)="beneficiaryListData(expanded, rowData, customerType)"
+                  style="height: 2rem; width: 2rem"
+                  pButton
+                  pRipple
+                  [pRowToggler]="rowData"
+                  class="p-button-text p-button-rounded p-button-plain"
+                  [icon]="
+                    expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'
+                  "
+                ></button>
                 <a
-                
-                style="text-decoration: underline !important"
-                [ngStyle]="{
-                  position: 'relative',
-                  top: '-6px',
-                  color: 'var(--primary-color)',
-                  fontSize: '11px',
-                  cursor: 'pointer'
-                }"
-                (click)="
-                  editCustomer(
-                    rowData,
-                    customerType == 'Corporate' ? 'COR' : 'IND'
-                  )
-                "
-                >{{ rowData[col["field"]] }}</a
-              >
+                  style="text-decoration: underline !important"
+                  [ngStyle]="{
+                    position: 'relative',
+                    top: '-6px',
+                    color: 'var(--primary-color)',
+                    fontSize: '11px',
+                    cursor: 'pointer'
+                  }"
+                  (click)="
+                    editCustomer(
+                      rowData,
+                      customerType == 'Corporate' ? 'COR' : 'IND'
+                    )
+                  "
+                  >{{ rowData[col["field"]] }}</a
+                >
               </div>
-              
             </td>
             <td
               *ngIf="col.field == 'addBenificiary'"
@@ -250,7 +259,12 @@
                   type="button"
                   icon="pi pi-plus"
                   class="operation-btns mr-2"
-                  (click)="addNewBeneficiary(rowData, customerType == 'Individual' ? 'IND' : 'COR')"
+                  (click)="
+                    addNewBeneficiary(
+                      rowData,
+                      customerType == 'Individual' ? 'IND' : 'COR'
+                    )
+                  "
                 ></button>
               </span>
             </td>
@@ -292,107 +306,126 @@
       </ng-template>
       <ng-template pTemplate="rowexpansion" let-rowData>
         <tr>
-            <td colspan="10">
-                <div class="p-p-3" style="padding: 20px;background: #e2e3ed;">
-                    <p-table [value]="rowData.orders" dataKey="id"
-                    [rows]="3"
-                    columnResizeMode="expand"
-                    [resizableColumns]="true"
-                    columnResizeMode="fit"
-                    [rowHover]="true"
-                    [scrollable]="true"
-                    scrollHeight="220px">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th pSortableColumn="id">Benef Code </th>
-                                <th pSortableColumn="fullName">Benef Name </th>
-                                <th pSortableColumn="contactMobileNumber">Mobile No </th>
-                                <th pSortableColumn="documentIdNumber">ID No </th>
-                                <th pSortableColumn="contactCountry">Country </th>
-                                <th pSortableColumn="serviceCurrency">Currency</th>
-                                <th pSortableColumn="serviceCategory">Service Category </th>
-                                <th pSortableColumn="bankAccountType">Service Type </th>
-                                <th pSortableColumn="bankBranch">Service Details </th>
-                                <th >PastTxns</th>
-                                <th >Status </th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-order>
-                            <tr>
-                                <td>{{order.id}}</td>
-                                <td ><a  style="text-decoration: none !important"
-                                  [ngStyle]="{
-                                    color: 'var(--primary-color)',
-                                    fontSize: '11px',
-                                    cursor: 'pointer'
-                                  }" (click)="editbeneficiary(order)">{{order.fullName}}</a></td>
-                                <td>{{order.contactMobileNumber}}</td>
-                                <td>{{order.documentIdNumber}}</td>
-                                <td>{{order.contactCountry}}</td>
-                                <td>{{order.serviceCurrency}}</td>
-                                <td>{{order.serviceCategory}}</td>
-                                <td>{{order.bankAccountType}}</td>
-                                <td>{{order.bankBranch}}</td>
-                                <td><span class="image-text">
-                                  <button
-                                    pButton
-                                    type="button"
-                                    icon="pi pi-eye"
-                                    class="operation-btns mr-2"
-                                  ></button>
-                                </span></td>
-                                <td>
-                                <label class="switch" style="border: none">
-                                <input
-                                   #statusInp
-                                   (click)="confirmBeneficiaryStatus($event, order, customerType)"
-                                   [checked]="
-                                   order['status'] == 'Active' ||
-                                   order['status'] == 'A'
-                                     ? true
-                                     : false
-                                 "
-                                    type="checkbox"
-                                    />
-                                      <span class="slider round"></span>
-                                      </label>
-                                  </td>
-                             </tr>
-                        </ng-template>
-                        <ng-template pTemplate="emptymessage">
-                            <tr>
-                                <td colspan="11">There are no Beneficiaries for current customer.</td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-            </td>
-        </tr>
-    </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td [attr.colspan]="cols.length">No Data found.</td>
+          <td colspan="10">
+            <div class="p-p-3" style="padding: 20px; background: #e2e3ed">
+              <p-table
+                [value]="rowData.orders"
+                dataKey="id"
+                [rows]="3"
+                columnResizeMode="expand"
+                [resizableColumns]="true"
+                columnResizeMode="fit"
+                [rowHover]="true"
+                [scrollable]="true"
+                scrollHeight="220px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="id">Benef Code</th>
+                    <th pSortableColumn="fullName">Benef Name</th>
+                    <th pSortableColumn="contactMobileNumber">Mobile No</th>
+                    <th pSortableColumn="documentIdNumber">ID No</th>
+                    <th pSortableColumn="contactCountry">Country</th>
+                    <th pSortableColumn="serviceCurrency">Currency</th>
+                    <th pSortableColumn="serviceCategory">Service Category</th>
+                    <th pSortableColumn="bankAccountType">Service Type</th>
+                    <th pSortableColumn="bankBranch">Service Details</th>
+                    <th>PastTxns</th>
+                    <th>Status</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-order>
+                  <tr>
+                    <td>{{ order.id }}</td>
+                    <td>
+                      <a
+                        style="text-decoration: none !important"
+                        [ngStyle]="{
+                          color: 'var(--primary-color)',
+                          fontSize: '11px',
+                          cursor: 'pointer'
+                        }"
+                        (click)="editbeneficiary(order)"
+                        >{{ order.fullName }}</a
+                      >
+                    </td>
+                    <td>{{ order.contactMobileNumber }}</td>
+                    <td>{{ order.documentIdNumber }}</td>
+                    <td>{{ order.contactCountry }}</td>
+                    <td>{{ order.serviceCurrency }}</td>
+                    <td>{{ order.serviceCategory }}</td>
+                    <td>{{ order.bankAccountType }}</td>
+                    <td>{{ order.bankBranch }}</td>
+                    <td>
+                      <span class="image-text">
+                        <button
+                          pButton
+                          type="button"
+                          icon="pi pi-eye"
+                          class="operation-btns mr-2"
+                        ></button>
+                      </span>
+                    </td>
+                    <td>
+                      <label class="switch" style="border: none">
+                        <input
+                          #statusInp
+                          (click)="
+                            confirmBeneficiaryStatus(
+                              $event,
+                              order,
+                              customerType
+                            )
+                          "
+                          [checked]="
+                            order['status'] == 'Active' ||
+                            order['status'] == 'A'
+                              ? true
+                              : false
+                          "
+                          type="checkbox"
+                        />
+                        <span class="slider round"></span>
+                      </label>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="11">
+                      There are no Beneficiaries for current customer.
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </td>
         </tr>
       </ng-template>
-      <ng-template pTemplate="paginatorleft" let-state>
-        {{ state.page * state.rows + 1 }} -
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="columns.length">No Data found.</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state
+        >Showing {{ customerData.length ? state.page * state.rows + 1 : 0 }} -
         {{
           state.rows * (state.page + 1) > state.totalRecords
             ? state.totalRecords
             : state.rows * (state.page + 1)
         }}
-        of {{ state.totalRecords }}
+        of {{ state.totalRecords }} Customers
       </ng-template>
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!showTable">
+<div class="NorecordFound" *ngIf="!showTable && globalSearch">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>
   <div class="row">
     <div class="col-12">
-      <p>Select search criterias to find the details</p>
+      <p>No records found. Please try again with different criteria.</p>
     </div>
   </div>
 </div>

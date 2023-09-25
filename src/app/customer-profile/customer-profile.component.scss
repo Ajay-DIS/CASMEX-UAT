@@ -9,12 +9,7 @@
 :host ::ng-deep .p-calendar {
   width: 448px;
 }
-:host ::ng-deep .p-inputtext:enabled {
-  // border-color: #2455cf;
-  width: 448px;
-  border-top-left-radius: initial;
-  border-bottom-left-radius: initial;
-}
+
 :host ::ng-deep .p-inputtext:enabled:hover {
   border-color: #2455cf;
 }
@@ -69,6 +64,7 @@
 }
 :host ::ng-deep .p-dropdown .p-dropdown-label {
   color: #fff;
+  font-size: 13px;
 }
 :host ::ng-deep .p-dropdown .p-dropdown-trigger {
   color: #fff;
@@ -78,31 +74,10 @@
   text-align: center;
 }
 
-// .app-form-search {
-//   background: white;
-//   border-radius: 6px;
-// }
-
-// .select-module-application {
-//   display: flex;
-//   gap: 10px;
-// }
-// .select-module-application .field {
-//   align-items: center;
-//   gap: 15px;
-//   margin-bottom: 0;
-// }
-
-// .select-module-application label {
-//   margin-bottom: 0;
-//   font-size: 14px;
-// }
-// .select-module-application p-dropdown {
-//   width: 100%;
-// }
-// .select-module-application::ng-deep .p-dropdown {
-//   width: 95%;
-//   height: 35px;
-//   align-items: center;
-//   border: none !important;
-// }
+.searchBox.p-inputtext,
+:host ::ng-deep .searchBox .p-inputtext {
+  width: 440px;
+  border-top-left-radius: initial;
+  border-bottom-left-radius: initial;
+  border: solid 1px#a2a2a2;
+}
