@@ -338,7 +338,7 @@ const routes: Routes = [
       },
       {
         path: "beneficiary-profile",
-        component: BeneficiaryProfileComponent,
+        component: CustomerProfileComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },
           {
@@ -349,7 +349,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "beneficiary-profile/addnewbeneficiary/:type/:id/add",
+        path: "beneficiary-profile/addnewbeneficiary/:type/:id/:name/add",
         component: AddBeneficiaryComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },
@@ -362,7 +362,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "beneficiary-profile/addnewbeneficiary/:type/:id/edit",
+        path: "beneficiary-profile/addnewbeneficiary/:type/:id/:name/:benefid/edit",
         component: AddBeneficiaryComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },

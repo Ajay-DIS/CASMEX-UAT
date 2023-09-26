@@ -366,6 +366,7 @@ export class CustomerProfileComponent implements OnInit {
       "addnewbeneficiary",
       type,
       rowData.customerCode,
+      rowData.fullName,
       "add",
     ]);
   }
@@ -552,13 +553,16 @@ export class CustomerProfileComponent implements OnInit {
       "edit",
     ]);
   }
-  editbeneficiary(beneData: any) {
+  editbeneficiary(beneData: any, rowData: any) {
+    console.log("rowdata", rowData);
     let custype = beneData.customerType == "Individual" ? "IND" : "COR";
     this.router.navigate([
       "navbar",
       "beneficiary-profile",
       "addnewbeneficiary",
       custype,
+      rowData.customerCode,
+      rowData.fullName,
       beneData.id,
       "edit",
     ]);

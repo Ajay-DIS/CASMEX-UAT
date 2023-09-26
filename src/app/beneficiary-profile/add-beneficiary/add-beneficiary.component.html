@@ -1,4 +1,7 @@
 <div class="row visible-main-section">
+  <div class="custName">
+    Customer Code: {{customerCode}} | Customer Name: {{customerFullName}}
+  </div>
     <div *ngIf="showForm" class="col-12">
       <p-tabView
         (onChange)="handleChange($event)"
