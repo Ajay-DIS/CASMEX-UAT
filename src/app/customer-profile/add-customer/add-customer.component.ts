@@ -44,6 +44,11 @@ export class AddCustomerComponent implements OnInit {
   showForm: boolean = true;
   submitted = false;
 
+  clickforview = false;
+  customerDataForView: any = [];
+  checked: boolean = false;
+  isConfirmedCustomer = "false";
+
   individualForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
@@ -1977,14 +1982,36 @@ export class AddCustomerComponent implements OnInit {
         {
           headers: new HttpHeaders()
             .set("userId", this.userId)
-            .set("customerType", "Individual"),
+            .set("customerType", "Individual")
+            .set("isConfirmedCustomer", this.isConfirmedCustomer),
         }
       )
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
             if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
+              // this.coreService.showWarningToast(res["error"]);
+              this.coreService.setHeaderStickyStyle(false);
+              this.coreService.setSidebarBtnFixedStyle(false);
+              this.confirmationService.confirm({
+                message:
+                  `<img src="../../../assets/warning.svg"><br/><br/>` +
+                  `${res["error"]};<br/>` +
+                  `click Yes to view details`,
+                key: "resetINDWarning",
+                accept: () => {
+                  this.setHeaderSidebarBtn();
+                  this.clickforview = true;
+                  this.customerDataForView.push(res["data"]);
+                  console.log("customerDataForView", this.customerDataForView);
+                  this.coreService.setHeaderStickyStyle(false);
+                  this.coreService.setSidebarBtnFixedStyle(false);
+                },
+                reject: () => {
+                  this.confirmationService.close;
+                  this.setHeaderSidebarBtn();
+                },
+              });
               this.coreService.removeLoadingScreen();
             } else {
               if (res["data"]) {
@@ -2008,6 +2035,14 @@ export class AddCustomerComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         }
       );
+  }
+
+  onCustomerSubmit() {
+    this.isConfirmedCustomer = "true";
+    this.onSubmit();
+  }
+  onCustomerReject() {
+    this.router.navigate(["navbar", "customer-profile"]);
   }
 
   getIndividualCustomer(custId: any) {
@@ -2160,6 +2195,17 @@ export class AddCustomerComponent implements OnInit {
         }
       );
     }
+  }
+
+  closeDialog() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
   }
 
   onReset(): void {
