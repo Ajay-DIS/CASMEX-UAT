@@ -967,24 +967,18 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>First Name</th>
-          <th>Middle Name</th>
-          <th>Last Name</th>
-          <th>Date of birth</th>
-          <th>Country of birth</th>
+          <th>Company Name</th>
+          <th>Date of Establishment</th>
+          <th>Country of Establishment</th>
           <th>Mobile Number</th>
-          <th>Nationality</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
         <tr>
-          <td>{{ product.firstNamePersonalDetails }}</td>
-          <td>{{ product.middleNamePersonalDetails }}</td>
-          <td>{{ product.lastNamePersonalDetails }}</td>
-          <td>{{ product.dateOfBirthPersonalDetails }}</td>
-          <td>{{ product.countryOfBirthPersonalDetails }}</td>
+          <td>{{ product.nameOfTheCorporate }}</td>
+          <td>{{ product.dateOfEstablishment }}</td>
+          <td>{{ product.countryOfEstablishment }}</td>
           <td>{{ product.contactMobileNumber }}</td>
-          <td>{{ product.nationalityPersonalDetails }}</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">

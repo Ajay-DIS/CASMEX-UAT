@@ -1976,7 +1976,8 @@ export class CorporateComponent implements OnInit, OnChanges {
         {
           headers: new HttpHeaders()
             .set("userId", this.userId)
-            .set("customerType", "Corporate"),
+            .set("customerType", "Corporate")
+            .set("isConfirmedCustomer", this.isConfirmedCustomer),
         }
       )
       .subscribe(
@@ -1994,11 +1995,11 @@ export class CorporateComponent implements OnInit, OnChanges {
                 key: "resetINDWarning",
                 accept: () => {
                   this.setHeaderSidebarBtn();
+                  this.coreService.setHeaderStickyStyle(false);
+                  this.coreService.setSidebarBtnFixedStyle(false);
                   this.clickforview = true;
                   this.customerDataForView.push(res["data"]);
                   console.log("customerDataForView", this.customerDataForView);
-                  this.coreService.setHeaderStickyStyle(false);
-                  this.coreService.setSidebarBtnFixedStyle(false);
                 },
                 reject: () => {
                   this.confirmationService.close;
