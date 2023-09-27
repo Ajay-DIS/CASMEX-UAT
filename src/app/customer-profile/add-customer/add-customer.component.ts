@@ -49,6 +49,8 @@ export class AddCustomerComponent implements OnInit {
   checked: boolean = false;
   isConfirmedCustomer = "false";
 
+  filteredEmployer: any = [];
+
   individualForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
@@ -71,7 +73,8 @@ export class AddCustomerComponent implements OnInit {
   mode = "add";
   custId = null;
   custType = "IND";
-
+  employerType = "Individual";
+  employerName = null;
   CustomerData: any = null;
 
   uploadedKycData = [];
@@ -148,6 +151,28 @@ export class AddCustomerComponent implements OnInit {
         );
     }
   }
+
+  searchEmployer(e) {
+    console.log("search employer", e);
+    this.http
+      .get(`/remittance/corporateCustomerController/getEmployeeDetails`, {
+        headers: new HttpHeaders()
+          .set("customerType", this.employerType)
+          .set("employeeName", e.query),
+      })
+      .subscribe((res) => {
+        console.log("result search employer", res);
+        this.filteredEmployer = [];
+        // this.filteredEmployer = res["data"];
+        res["data"].forEach((ele) => {
+          console.log("ele", ele);
+          this.filteredEmployer.push(ele);
+          // this.filteredEmployer.push({ code: ele, name: ele });
+          console.log("filteredEmployer", this.filteredEmployer);
+        });
+      });
+  }
+
   getCustomerMasterData() {
     this.customerService.getCustomerMaster().subscribe(
       (res) => {
@@ -2001,11 +2026,11 @@ export class AddCustomerComponent implements OnInit {
                 key: "resetINDWarning",
                 accept: () => {
                   this.setHeaderSidebarBtn();
+                  this.coreService.setHeaderStickyStyle(false);
+                  this.coreService.setSidebarBtnFixedStyle(false);
                   this.clickforview = true;
                   this.customerDataForView.push(res["data"]);
                   console.log("customerDataForView", this.customerDataForView);
-                  this.coreService.setHeaderStickyStyle(false);
-                  this.coreService.setSidebarBtnFixedStyle(false);
                 },
                 reject: () => {
                   this.confirmationService.close;

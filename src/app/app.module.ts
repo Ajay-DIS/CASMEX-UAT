@@ -70,11 +70,12 @@ import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./custom-form/custom-form.component";
 import { CorporateComponent } from "./customer-profile/corporate/corporate.component";
 import { UserIdleModule } from "angular-user-idle";
-import { BeneficiaryProfileComponent } from './beneficiary-profile/beneficiary-profile.component';
-import { AddBeneficiaryComponent } from './beneficiary-profile/add-beneficiary/add-beneficiary.component';
-import { DocumentListingComponent } from './document-settings/document-listing/document-listing.component';
-import { DocumentDetailsComponent } from './document-settings/document-details/document-details.component';
-import { AddCustomerBenefComponent } from './beneficiary-profile/add-customer-benef/add-customer-benef.component';
+import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
+import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
+import { DocumentListingComponent } from "./document-settings/document-listing/document-listing.component";
+import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
+import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-benef/add-customer-benef.component";
+import { AutoCompleteModule } from "primeng/autocomplete";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -156,6 +157,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CalendarModule,
     FileUploadModule,
     UserIdleModule.forRoot({ idle: 1680, timeout: 120, ping: 1500 }),
+    AutoCompleteModule,
   ],
   providers: [
     BnNgIdleService,
