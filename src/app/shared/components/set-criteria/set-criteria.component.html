@@ -96,7 +96,7 @@
           selectedCriteria?.criteriaType == 'SQL'
         "
       >
-        <p-dropdown
+        <!-- <p-dropdown
           *ngIf="!hideValuesDropdown"
           class="mr-3"
           [options]="correspondentDdlOptions"
@@ -104,7 +104,34 @@
           placeholder="Value"
           (onChange)="onChange('val', $event.value)"
           formControlName="value"
-        ></p-dropdown>
+        ></p-dropdown> -->
+        <p-dropdown
+          *ngIf="!hideValuesDropdown"
+          class="mr-3 smart-search"
+          [options]="correspondentDdlOptions"
+          optionLabel="name"
+          [filter]="true"
+          filterBy="name"
+          placeholder="Value"
+          formControlName="value"
+          (onChange)="onChange('val', $event.value)"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div
+              class="country-item country-item-value"
+              *ngIf="valueCtrl?.value"
+            >
+              <div>
+                {{ valueCtrl.value?.name }}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template let-item pTemplate="item">
+            <div class="country-item">
+              <div>{{ item.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
 
         <p-inputNumber
           class="value-input mr-3"
