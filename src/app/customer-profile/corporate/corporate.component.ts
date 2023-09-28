@@ -52,6 +52,8 @@ export class CorporateComponent implements OnInit, OnChanges {
   checked: boolean = false;
   isConfirmedCustomer = "false";
 
+  filteredEmployer: any = [];
+
   corporateForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
@@ -73,7 +75,8 @@ export class CorporateComponent implements OnInit, OnChanges {
   mode = "add";
   custId = null;
   custType = "COR";
-
+  employerType = "Corporate";
+  employerName = null;
   CustomerData: any = null;
 
   uploadedKycData = [];
@@ -151,6 +154,27 @@ export class CorporateComponent implements OnInit, OnChanges {
           this.coreService.removeLoadingScreen();
         }
       );
+  }
+
+  searchEmployer(e) {
+    console.log("search employer", e);
+    this.http
+      .get(`/remittance/corporateCustomerController/getEmployeeDetails`, {
+        headers: new HttpHeaders()
+          .set("customerType", this.employerType)
+          .set("employeeName", e.query),
+      })
+      .subscribe((res) => {
+        console.log("result search employer", res);
+        this.filteredEmployer = [];
+        // this.filteredEmployer = res["data"];
+        res["data"].forEach((ele) => {
+          console.log("ele", ele);
+          this.filteredEmployer.push(ele);
+          // this.filteredEmployer.push({ code: ele, name: ele });
+          console.log("filteredEmployer", this.filteredEmployer);
+        });
+      });
   }
 
   getCustomerMasterData() {

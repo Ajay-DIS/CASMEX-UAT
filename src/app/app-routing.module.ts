@@ -25,6 +25,7 @@ import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-p
 import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
 import { DocumentListingComponent } from "./document-settings/document-listing/document-listing.component";
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
+import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -118,6 +119,16 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "custom-fields" },
           { label: "Tax Setting", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "get-doc-settings",
+        component: GetDocSettingsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Application Settings", routerLink: "get-doc-settings" },
+          { label: "Get Doc Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

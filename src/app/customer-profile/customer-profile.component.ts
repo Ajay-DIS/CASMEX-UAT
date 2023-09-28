@@ -201,7 +201,10 @@ export class CustomerProfileComponent implements OnInit {
           this.searchCriteriaApiData = res["data"];
           this.searchCriteriaOptions = this.searchCriteriaApiData.map(
             (data) => {
-              return { name: data.displayName, code: data.fieldName };
+              return {
+                name: data.displayName,
+                code: data.fieldName,
+              };
             }
           );
           this.searchCriteriaOptions.unshift(
@@ -254,6 +257,7 @@ export class CustomerProfileComponent implements OnInit {
   ondeletecriteria(i: any, criteria: any) {
     this.searchCriteria.splice(i, 1);
     this.searchCriteriaMap.splice(i, 1);
+    this.currentCriteriaValue = null;
     this.criteriaMap = this.searchCriteriaMap.join(";");
     this.criteriaMap = "NA";
     this.globalSearch = true;
@@ -261,6 +265,9 @@ export class CustomerProfileComponent implements OnInit {
     this.getCustomerListData(this.criteriaMap);
   }
   searchCustomerMap(type: any) {
+    console.log("currentvalu", this.currentCriteriaValue);
+    console.log("searchoptions", this.searchCriteriaOptions);
+    console.log("criteriaType", this.criteriaType);
     if (
       this.searchCriteriaMap.filter((crt) => {
         return (
@@ -280,14 +287,27 @@ export class CustomerProfileComponent implements OnInit {
           this.currentCriteriaValue?.trim().length) ||
         this.currentCriteriaValue
       ) {
-        this.currentCriteria =
-          this.currentCriteriaKey + this.currentCriteriaValue;
-        this.searchCriteria.push(this.currentCriteria);
+        if (this.criteriaType == "date") {
+          let criteriaData = new Date(
+            this.currentCriteriaValue
+          ).toLocaleDateString("en-GB");
+          console.log("criteriaData", criteriaData);
+          this.currentCriteria = this.currentCriteriaKey + criteriaData;
+          this.searchCriteria.push(this.currentCriteria);
 
-        this.currentCriteriaMap =
-          this.currentCriteriaMapKey + this.currentCriteriaValue;
-        this.searchCriteriaMap.push(this.currentCriteriaMap);
-        this.criteriaMap = this.searchCriteriaMap.join(";");
+          this.currentCriteriaMap = this.currentCriteriaMapKey + criteriaData;
+          this.searchCriteriaMap.push(this.currentCriteriaMap);
+          this.criteriaMap = this.searchCriteriaMap.join(";");
+        } else {
+          this.currentCriteria =
+            this.currentCriteriaKey + this.currentCriteriaValue;
+          this.searchCriteria.push(this.currentCriteria);
+
+          this.currentCriteriaMap =
+            this.currentCriteriaMapKey + this.currentCriteriaValue;
+          this.searchCriteriaMap.push(this.currentCriteriaMap);
+          this.criteriaMap = this.searchCriteriaMap.join(";");
+        }
       }
       this.globalSearch = true;
       this.showTable = false;
