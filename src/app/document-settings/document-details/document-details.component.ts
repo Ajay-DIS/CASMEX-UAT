@@ -544,6 +544,8 @@ export class DocumentDetailsComponent implements OnInit {
               data["invalidLength"] = false;
               data["invalidGraceDays"] = false;
               data["status"] = "Active";
+              data["userID"] = this.userId;
+              data["documentCode"] = this.documentCode;
             });
             // this.setSelectedOptions();
 
