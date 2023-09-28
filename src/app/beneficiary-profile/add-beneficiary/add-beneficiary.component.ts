@@ -230,7 +230,7 @@ export class AddBeneficiaryComponent implements OnInit {
       payload["status"] = String(this.status);
       this.saveBeneficiaryForEdit(payload, custType);
     } else {
-      payload["customerId"] = +this.custId;
+      payload["customerId"] = +this.customerCode;
       payload["customerType"] =
         this.custType == "COR" ? "Corporate" : "Individual";
       payload["status"] = String((this.status = "Active"));

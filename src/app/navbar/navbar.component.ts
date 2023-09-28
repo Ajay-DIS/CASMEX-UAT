@@ -205,6 +205,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/custom-fields";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Get Doc Settings":
+          item["routerLink"] = "/navbar/get-doc-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
         case "Beneficiary Profile":
           item["routerLink"] = "/navbar/beneficiary-profile";
           item["routerLinkActiveOptions"] = { subset: true };
@@ -318,6 +322,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/search-settings",
           "/navbar/authorization-page-setting",
           "/navbar/custom-fields",
+          "/navbar/get-doc-settings",
         ];
         routeName = "/navbar/criteria-settings";
         break;
