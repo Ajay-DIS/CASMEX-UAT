@@ -34,15 +34,16 @@ export class AddnewrouteComponent2 implements OnInit {
   routeID = "";
   mode = "add";
   formName = "Bank Routings";
-  appliedCriteriaData: any = [];
-  appliedCriteriaDataOrg: any = [];
+
+  routeCode: any = "No Data";
+  routeDescription: any = "";
+
+  isBankRoutingLinked: boolean = false;
+
   appliedCriteriaCriteriaMap: any = null;
   appliedCriteriaIsDuplicate: any = null;
-  appliedCriteriaDataCols: any = [];
   objectKeys = Object.keys;
   isEditMode = false;
-
-  formattedMasterData: any = [];
 
   editBankRouteApiData: any = [];
 
@@ -63,17 +64,47 @@ export class AddnewrouteComponent2 implements OnInit {
 
   savingCriteriaTemplateError = null;
 
-  routeCode: any = "No Data";
-  routeDescription: any = "";
-
-  isBankRoutingLinked: boolean = false;
-
   inactiveData: boolean = false;
   isApplyCriteriaClicked: boolean = false;
 
+  applyCriteriaResponse: any[] = [];
+  isLcyFieldPresent = false;
+  applyCriteriaDataTableColumns: any[] = [];
+  columnsCopy: any[] = [
+    {
+      field: "routeToBankName",
+      header: "Route To",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "routeToServiceCategory",
+      header: "Service Category",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "routeToServiceType",
+      header: "Service Type",
+      fieldType: "dropdown",
+      frozen: false,
+      info: null,
+    },
+  ];
+  applyCriteriaFormattedData: any[] = [];
+
+  routeToBankNameOption: any[] = [];
+  routeToServiceCategoryOption: any[] = [];
+  routeToServiceTypeOption: any[] = [];
+
+  appliedCriteriaDatajson: any = {};
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
+
+  formattedMasterData: any = [];
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
@@ -199,7 +230,7 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   searchAppModule() {
-    this.appliedCriteriaData = [];
+    this.applyCriteriaFormattedData = [];
     this.criteriaText = [];
     this.criteriaCodeText = [];
     this.appModuleDataPresent = true;
@@ -209,9 +240,13 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   getBanksRoutingForEditApi(routeCode: any, operation: any) {
-    this.isEditMode = true;
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaDataCols = [];
+    this.applyCriteriaFormattedData = [];
+    this.applyCriteriaDataTableColumns = [];
+
+    this.applyCriteriaDataTableColumns = JSON.parse(
+      JSON.stringify(this.columnsCopy)
+    );
+
     this.bankRoutingService
       .getBanksRoutingForEdit(
         routeCode,
@@ -234,13 +269,12 @@ export class AddnewrouteComponent2 implements OnInit {
               this.coreService.showWarningToast("Some error in fetching data");
             }
           } else {
-            this.appModuleDataPresent = true;
-            if (!res["msg"]) {
-              this.editBankRouteApiData = res;
+            if (res["data"]) {
+              this.showContent = true;
+              this.editBankRouteApiData = JSON.parse(JSON.stringify(res));
 
-              this.criteriaCodeText = this.setCriteriaService.setCriteriaMap(
-                this.editBankRouteApiData
-              );
+              this.criteriaCodeText =
+                this.setCriteriaService.setCriteriaMap(res);
 
               this.criteriaText =
                 this.setCriteriaService.decodeFormattedCriteria(
@@ -249,33 +283,111 @@ export class AddnewrouteComponent2 implements OnInit {
                   this.cmCriteriaSlabType
                 );
 
-              this.routeCode = res["data"][0]["routeCode"];
-              if (res["data"][0]["routeDesc"]) {
-                this.routeDescription = res["data"][0]["routeDesc"];
+              this.routeCode = res["routeCode"];
+              if (res["routeDesc"]) {
+                this.routeDescription = res["routeDesc"];
               }
               this.isBankRoutingLinked = !res["criteriaUpdate"];
-
-              this.appliedCriteriaDataOrg = [...res["data"]];
-              this.appliedCriteriaData = [...res["data"]];
-              this.setSelectedOptions();
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-              this.appliedCriteriaDataCols = [
-                ...this.getColumns(res["column"]),
-              ];
-              this.showContent = true;
+
+              this.routeToBankNameOption = res["routeToBankNameOption"].map(
+                (option) => {
+                  return { code: option.code, codeName: option.codeName };
+                }
+              );
+              this.routeToServiceCategoryOption = res[
+                "routeToServiceCategoryOption"
+              ].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+              this.routeToServiceTypeOption = res[
+                "routeToServiceTypeOption"
+              ].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+
+              if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+                this.isLcyFieldPresent = true;
+              }
+
+              if (!this.isLcyFieldPresent) {
+                this.applyCriteriaFormattedData = res["data"];
+              } else {
+                if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "lcyAmount",
+                    header: "LCY Amount",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = res["data"];
+
+                  this.applyCriteriaFormattedData.forEach((data) => {
+                    let split = data["criteriaMapSplit"];
+                    if (split) {
+                      data["lcyAmount"] = split.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                      data["criteriaMapSplit"] = split.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                    }
+                  });
+                } else if (res["criteriaMap"].indexOf("from") >= 0) {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "lcyAmountFrom",
+                    header: "Amount From",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "lcyAmountTo",
+                    header: "Amount To",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = res["data"];
+                  this.applyCriteriaFormattedData.forEach((data) => {
+                    let split = data["criteriaMapSplit"];
+                    if (split) {
+                      data["lcyAmountFrom"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop().split("::")[0].split(":")[1]
+                        : split?.split("::")[0]?.split(":")[1];
+                      data["lcyAmountTo"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop().split("::")[1].split(":")[1]
+                        : split?.split("::")[1]?.split(":")[1];
+                      data["criteriaMapSplit"] = split?.includes("&&&&")
+                        ? split.split("&&&&").pop()
+                        : split;
+                    }
+                  });
+                }
+              }
+
+              this.applyCriteriaFormattedData.forEach((data) => {
+                delete data.id;
+                data["routeToBankNameOption"] = this.routeToBankNameOption;
+                data["routeToServiceCategoryOption"] =
+                  this.routeToServiceCategoryOption;
+                data["routeToServiceTypeOption"] =
+                  this.routeToServiceTypeOption;
+                data["status"] = "Active";
+              });
+
+              this.coreService.showSuccessToast(
+                `Bank Routing data fetched Successfully`
+              );
+              this.coreService.removeLoadingScreen();
             } else {
+              this.applyCriteriaFormattedData = [];
               this.appliedCriteriaCriteriaMap = null;
               this.appliedCriteriaIsDuplicate = null;
+              this.applyCriteriaDataTableColumns = [];
               if (res && res["msg"]) {
                 this.coreService.showWarningToast(res["msg"]);
               } else {
                 this.coreService.showWarningToast(
-                  "No active data found for this Tax Setting."
+                  "No active data found for this Bank Routing."
                 );
               }
               this.coreService.removeLoadingScreen();
-              this.appliedCriteriaData = [];
-              this.appliedCriteriaDataCols = [];
             }
           }
         },
@@ -283,7 +395,9 @@ export class AddnewrouteComponent2 implements OnInit {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
           console.log("Error in getBanksRoutingForEditApi", err);
-          this.coreService.showWarningToast("Some error in fetching data");
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
         }
       );
   }
@@ -508,62 +622,148 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   routeBankCriteriaSearchApi(formData: any) {
-    this.appliedCriteriaData = [];
-    this.appliedCriteriaDataCols = [];
+    this.applyCriteriaFormattedData = [];
+    this.applyCriteriaDataTableColumns = [];
     this.coreService.displayLoadingScreen();
-    this.bankRoutingService
-      .postRouteBankCriteriaSearch(formData)
-      .subscribe(
-        (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-          } else {
-            if (!res["msg"]) {
-              if (!res["duplicate"]) {
-                this.appliedCriteriaDataOrg = [...res["data"]];
-                this.appliedCriteriaData = [...res["data"]];
-                this.setSelectedOptions();
-                this.appliedCriteriaCriteriaMap = res["criteriaMap"];
-                this.appliedCriteriaIsDuplicate = res["duplicate"];
-                this.appliedCriteriaDataCols = [
-                  ...this.getColumns(res["column"]),
-                ];
-                this.coreService.showSuccessToast(
-                  `Criteria Applied Successfully`
-                );
-              } else {
-                this.appliedCriteriaData = [];
-                this.appliedCriteriaCriteriaMap = null;
-                this.appliedCriteriaIsDuplicate = null;
-                this.appliedCriteriaDataCols = [];
-                this.coreService.showWarningToast(
-                  "Applied criteria already exists."
-                );
-              }
-            } else {
-              this.coreService.showWarningToast(res["msg"]);
-              this.appliedCriteriaData = [];
-            }
-          }
-        },
-        (err) => {
-          console.log("error in BankCriteriaSearchApi", err);
-          this.coreService.showWarningToast("Some error in fetching data");
-        }
-      )
-      .add(() => {
-        setTimeout(() => {
+
+    this.applyCriteriaDataTableColumns = JSON.parse(
+      JSON.stringify(this.columnsCopy)
+    );
+
+    this.bankRoutingService.postRouteBankCriteriaSearch(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
           this.coreService.removeLoadingScreen();
-        }, 250);
-      });
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          this.coreService.removeLoadingScreen();
+          if (!res["duplicate"]) {
+            this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
+            let resData = res["data"];
+            this.appliedCriteriaCriteriaMap = res["criteriaMap"];
+            this.appliedCriteriaIsDuplicate = res["duplicate"];
+            let reqData =
+              this.criteriaDataService.decodeCriteriaMapIntoTableFields(res);
+
+            let crtfields = this.setCriteriaService.decodeFormattedCriteria(
+              reqData.critMap,
+              this.criteriaMasterData,
+              ["LCY Amount"]
+            );
+
+            this.routeToBankNameOption = resData["routeToBankNameOption"].map(
+              (option) => {
+                return { code: option.code, codeName: option.codeName };
+              }
+            );
+            this.routeToServiceCategoryOption = resData[
+              "routeToServiceCategoryOption"
+            ].map((option) => {
+              return { code: option.code, codeName: option.codeName };
+            });
+            this.routeToServiceTypeOption = resData[
+              "routeToServiceTypeOption"
+            ].map((option) => {
+              return { code: option.code, codeName: option.codeName };
+            });
+
+            if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+              this.isLcyFieldPresent = true;
+            } else {
+              this.isLcyFieldPresent = false;
+            }
+
+            if (!this.isLcyFieldPresent) {
+              this.applyCriteriaFormattedData = [
+                resData?.bankRoutingsCriteriaDetails,
+              ];
+              this.applyCriteriaFormattedData.forEach((data) => {
+                data["criteriaMapSplit"] = null;
+              });
+            } else {
+              if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+                let lcyOprFields = crtfields.filter((crt) => {
+                  return crt.includes("LCY Amount");
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmount",
+                  header: "LCY Amount",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcyOprFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+                  );
+                  apiData["lcyAmount"] = field;
+                  apiData["criteriaMapSplit"] = field;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (res["criteriaMap"].indexOf("from") >= 0) {
+                let lcySlabFields = reqData.lcySlabArr;
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                lcySlabFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+                  );
+                  apiData["lcyAmountFrom"] = field.from;
+                  apiData["lcyAmountTo"] = field.to;
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `from:${field["from"]}::to:${field["to"]}`;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              }
+            }
+
+            this.applyCriteriaFormattedData.forEach((data) => {
+              delete data.id;
+              data["routeToBankNameOption"] = this.routeToBankNameOption;
+              data["routeToServiceCategoryOption"] =
+                this.routeToServiceCategoryOption;
+              data["routeToServiceTypeOption"] = this.routeToServiceTypeOption;
+              data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
+              data["status"] = "Active";
+              data["userId"] = this.userId;
+              data["routeCode"] = this.routeCode;
+            });
+
+            this.coreService.showSuccessToast(`Criteria Applied Successfully`);
+          } else {
+            this.applyCriteriaFormattedData = [];
+            this.appliedCriteriaCriteriaMap = null;
+            this.appliedCriteriaIsDuplicate = null;
+            this.applyCriteriaDataTableColumns = [];
+            this.coreService.showWarningToast(
+              "Applied criteria already exists."
+            );
+          }
+        }
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        console.log("error in BankCriteriaSearchApi", err);
+        this.coreService.showWarningToast("Some error in fetching data");
+      }
+    );
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
@@ -604,7 +804,9 @@ export class AddnewrouteComponent2 implements OnInit {
         (err) => {
           this.coreService.removeLoadingScreen();
           console.log(":: Error in saving criteria template", err);
-          this.coreService.showWarningToast("Some error in fetching data");
+          this.coreService.showWarningToast(
+            "Something went wrong, Please try again later"
+          );
         }
       );
   }
@@ -646,13 +848,12 @@ export class AddnewrouteComponent2 implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
 
-  selectedColumn(column, value, index) {
-    let selectedColField = column.split("Option")[0];
-    this.appliedCriteriaData[index][selectedColField] = value["codeName"];
+  selectedColumn(field: any, value: any, index: any) {
+    this.applyCriteriaFormattedData[index][field] = value["codeName"];
   }
 
   setSelectedOptions() {
-    this.appliedCriteriaData.forEach((data) => {
+    this.applyCriteriaFormattedData.forEach((data) => {
       data["routeToBankNameOption"].filter((option) => {
         option["code"] == data["routeToBankName"];
       });
@@ -678,7 +879,7 @@ export class AddnewrouteComponent2 implements OnInit {
     });
   }
   decodeSelectedOptions() {
-    this.appliedCriteriaData.forEach((data) => {
+    this.applyCriteriaFormattedData.forEach((data) => {
       data["routeToBankName"] = data["routeToBankNameOption"].filter(
         (option) => option["codeName"] == data["routeToBankName"]
       )[0]["code"];
@@ -739,7 +940,7 @@ export class AddnewrouteComponent2 implements OnInit {
         message: "Are you sure, you want to clear all the fields ?",
         key: "resetDataConfirmation",
         accept: () => {
-          this.appliedCriteriaData = [];
+          this.applyCriteriaFormattedData = [];
           this.appliedCriteriaCriteriaMap = null;
           this.appliedCriteriaIsDuplicate = null;
           this.routeDescription = "";
@@ -786,28 +987,50 @@ export class AddnewrouteComponent2 implements OnInit {
     ) {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
-      this.appliedCriteriaData.forEach((element) => {
+      let routeToBankNameMissing = false;
+      let routeToServiceCategoryMissing = false;
+      let routeToServiceTypeMissing = false;
+      this.applyCriteriaFormattedData.forEach((element) => {
         element["routeDesc"] = this.routeDescription
           ? this.routeDescription.replace(/\s/g, "").length
             ? this.routeDescription
             : null
           : null;
-        function isNullValue(arr) {
-          return arr.some((el) => el == null);
-        }
-        if (isNullValue(Object.values(element))) {
+        if (!element["routeDesc"]) {
           isRequiredFields = true;
+        }
+        if (!element["routeToBankName"]) {
+          routeToBankNameMissing = true;
+        }
+        if (!element["routeToServiceCategory"]) {
+          routeToServiceCategoryMissing = true;
+        }
+        if (!element["routeToServiceType"]) {
+          routeToServiceTypeMissing = true;
         }
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please fill required fields.");
+        this.coreService.showWarningToast("Please Fill required fields.");
+      } else if (routeToBankNameMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Route to bank name.");
+      } else if (routeToServiceCategoryMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast(
+          "Please Select Route to service category."
+        );
+      } else if (routeToServiceTypeMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast(
+          "Please Select Route to service type."
+        );
       } else {
         let service;
         this.decodeSelectedOptions();
         if (this.mode == "edit") {
           let data = {
-            data: this.appliedCriteriaData,
+            data: this.applyCriteriaFormattedData,
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
             routeCode: this.routeID,
@@ -821,7 +1044,7 @@ export class AddnewrouteComponent2 implements OnInit {
           );
         } else {
           let data = {
-            data: this.appliedCriteriaData,
+            data: this.applyCriteriaFormattedData,
             duplicate: this.appliedCriteriaIsDuplicate,
             criteriaMap: this.appliedCriteriaCriteriaMap,
           };

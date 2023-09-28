@@ -311,6 +311,7 @@ export class BankRoutingComponent2 implements OnInit {
       this.linkedRouteCode.includes(data["routeCode"])
     ) {
       completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
         isLinkedMsg +
         `Do you wish to ` +
         type +

@@ -39,7 +39,9 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!appliedCriteriaData || !appliedCriteriaData.length"
+          [disabled]="
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+          "
           label="Save"
           class="p-button-raised"
           (click)="saveAddNewRoute('save')"
@@ -48,7 +50,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!appliedCriteriaData.length"
+          [disabled]="!applyCriteriaFormattedData.length"
           label="Save & Add New"
           class="p-button-raised"
           (click)="saveAddNewRoute('saveAndAddNew')"
@@ -57,7 +59,7 @@
           pButton
           pRipple
           type="button"
-          [disabled]="!appliedCriteriaData.length"
+          [disabled]="!applyCriteriaFormattedData.length"
           label="Reset"
           class="p-button-warning"
           (click)="reset()"
@@ -151,7 +153,7 @@
   </div>
   <div
     class="details-page-card mt-2"
-    *ngIf="showContent && appliedCriteriaData.length"
+    *ngIf="showContent && applyCriteriaFormattedData.length"
   >
     <div class="details-page-card-content mt-1">
       <div class="criteria-bar">
@@ -167,91 +169,83 @@
       </div>
       <div class="mt-1 addnewroute-table">
         <div class="ptable">
-          <p-card class="p-col-12" *ngIf="!appliedCriteriaData">
+          <p-card class="p-col-12" *ngIf="!applyCriteriaResponse">
             {{ "noDataMsg" }}
           </p-card>
           <div class="appliedCriteriaDataTable">
             <p-table
               #dt
-              [columns]="appliedCriteriaDataCols"
-              [value]="appliedCriteriaData"
-              [rows]="10"
-              columnResizeMode="expand"
+              [value]="applyCriteriaFormattedData"
               [rowHover]="true"
               [scrollable]="true"
               scrollHeight="315px"
             >
-              <ng-template pTemplate="header" let-columns>
+              <ng-template pTemplate="header">
                 <tr>
-                  <ng-container *ngFor="let col of columns; let c = index">
-                    <th
-                      alignFrozen="right"
-                      pFrozenColumn
-                      [frozen]="!col['isString']"
-                      [pSortableColumn]="col?.field"
-                      [style.maxWidth]="col?.maxWidth"
-                      [style.minWidth]="col?.minWidth"
-                      [ngStyle]="{
-                        right: 145 * (columns.length - (c + 1)) + 'px'
-                      }"
+                  <th
+                    *ngFor="let col of applyCriteriaDataTableColumns"
+                    style="min-width: 120px"
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    {{ col.header }}
+                    <span *ngIf="isMandatoryCol(col.header)" class="red-star"
+                      >*</span
                     >
-                      {{ col.header.split("*")[0] }}
-                      <span *ngIf="isMandatoryCol(col.header)" class="red-star"
-                        >*</span
-                      >
-                    </th>
-                  </ng-container>
+                  </th>
                 </tr>
               </ng-template>
-              <ng-template
-                pTemplate="body"
-                let-rowData
-                let-columns="columns"
-                let-rowIndex="rowIndex"
-              >
+              <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
                 <tr>
-                  <ng-container *ngFor="let col of columns; let i = index">
-                    <td
-                      alignFrozen="right"
-                      pFrozenColumn
-                      [frozen]="!col['isString']"
-                      [ngStyle]="{
-                        right: 145 * (columns.length - (i + 1)) + 'px'
-                      }"
+                  <td
+                    *ngFor="
+                      let col of applyCriteriaDataTableColumns;
+                      index as i
+                    "
+                    alignFrozen="right"
+                    pFrozenColumn
+                    [frozen]="col['frozen']"
+                  >
+                    <div
+                      *ngIf="col['fieldType'] == 'dropdown'"
+                      class="appliedCriteriaSelect"
                     >
-                      <div
-                        *ngIf="col['isString']"
-                        style="display: inline-block"
-                      >
-                        {{ rowData[col["field"]] }}
-                      </div>
-                      <div
-                        *ngIf="col['isSelect']"
-                        class="appliedCriteriaSelect"
-                      >
-                        <p-dropdown
-                          [options]="rowData[col['field']]"
-                          optionLabel="codeName"
-                          appendTo="body"
-                          [placeholder]="
-                            rowData[col['field'].split('Option')[0]]
-                              ? rowData[col['field'].split('Option')[0]]
-                              : 'Select'
-                          "
-                          (onChange)="
-                            selectedColumn(col['field'], $event.value, rowIndex)
-                          "
-                          [disabled]="rowData['linked'] == 'Y'"
-                        ></p-dropdown>
-                      </div>
-                    </td>
-                  </ng-container>
+                      <p-dropdown
+                        [options]="rowData[col.field + 'Option']"
+                        optionLabel="codeName"
+                        appendTo="body"
+                        [placeholder]="
+                          rowData[col['field']]
+                            ? rowData[col['field']]
+                            : 'Select'
+                        "
+                        (onChange)="
+                          selectedColumn(col['field'], $event.value, rowIndex)
+                        "
+                        [disabled]="rowData['linked'] == 'Y'"
+                      ></p-dropdown>
+                    </div>
+                    <div
+                      *ngIf="col['fieldType'] == 'text'"
+                      [pTooltip]="col['info'] ? col['info'] : ''"
+                    >
+                      <input
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                        [disabled]="true"
+                      />
+                    </div>
+                  </td>
                 </tr>
               </ng-template>
 
               <ng-template pTemplate="emptymessage">
                 <tr>
-                  <td [attr.colspan]="cols.length">No Data found.</td>
+                  <td [attr.colspan]="applyCriteriaDataTableColumns.length">
+                    No Data found.
+                  </td>
                 </tr>
               </ng-template>
             </p-table>
@@ -263,7 +257,9 @@
 </div>
 <div
   class="NorecordFound"
-  *ngIf="!showContent && appModuleDataPresent && !appliedCriteriaData.length"
+  *ngIf="
+    !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
+  "
 >
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
