@@ -1247,6 +1247,29 @@ export class CorporateComponent implements OnInit, OnChanges {
       return;
     }
 
+    if (this.uploadedBeneficialData.length) {
+      let benePercent = 0;
+      this.uploadedBeneficialData.forEach((beneData) => {
+        if (beneData.percentage && !Number.isNaN(Number(beneData.percentage))) {
+          benePercent += +beneData.percentage;
+        } else {
+          benePercent += 0;
+        }
+      });
+
+      if (benePercent < 100) {
+        this.coreService.showWarningToast(
+          "Add all the beneficial owner details, total beneficial owner % value should equal to 100 "
+        );
+        return;
+      } else if (benePercent > 100) {
+        this.coreService.showWarningToast(
+          "Total beneficial owner % value should equal to 100"
+        );
+        return;
+      }
+    }
+
     this.coreService.displayLoadingScreen();
 
     let data = this.corporateForm.getRawValue();
