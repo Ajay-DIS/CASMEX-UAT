@@ -77,6 +77,7 @@ import { DocumentDetailsComponent } from "./document-settings/document-details/d
 import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-benef/add-customer-benef.component";
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { GetDocSettingsComponent } from './get-doc-settings/get-doc-settings.component';
+import { DateMaskDirective } from './date-mask.directive';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -115,6 +116,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     DocumentDetailsComponent,
     AddCustomerBenefComponent,
     GetDocSettingsComponent,
+    DateMaskDirective,
   ],
   imports: [
     BrowserModule,

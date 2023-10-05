@@ -6,6 +6,50 @@
   margin-top: 5px;
   height: 240px;
 }
+.savebtn {
+  padding-left: 10px;
+}
+.saveAddbtn {
+  padding-left: 10px;
+}
+@media screen and (max-width: 1400px) and (min-width:1201px) {
+  .savebtn {
+    padding-left: 0px !important;
+    // padding-right: 20px !important;
+  }
+  .saveAddbtn {
+    padding-left: 13px !important;
+  }
+}
+@media screen and (max-width: 575px) {
+  .savebtn {
+    padding-left: 0px !important;
+    // padding-right: 20px !important;
+  }
+  .saveAddbtn {
+    padding-left: 0px !important;
+  }
+}
+@media screen and (max-width: 1199px) and (min-width:768px) {
+  .savebtn {
+    padding-left: 0px !important;
+    padding-right: 20px !important;
+    margin-left: 0px !important;
+  }
+  .saveAddbtn {
+    width: 50%;
+    padding-left: 0px !important;
+    margin-left: 27px ;
+  }
+  .resetbtn{
+    margin-left: 0px;
+  }
+}
+@media screen and (max-width: 575px){
+  .small {
+     padding-right: 25px !important;
+   }
+ }
 .details-page-card-content {
   border: 0.5px solid var(--surface-ground);
   padding: 10px 0 5px 0;
@@ -13,7 +57,6 @@
   background-color: var(--surface-card);
   border-radius: 10px;
 }
-
 .criteria-bar {
   display: flex;
   padding: 0 0.5rem;

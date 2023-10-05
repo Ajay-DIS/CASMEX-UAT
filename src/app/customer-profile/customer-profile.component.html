@@ -1,96 +1,111 @@
 <div class="visible-main-section">
   <div class="pagetitle">
-    <div class="col-10">
-      <div class="row">
-        <div class="col-2 flex-align-center">
-          <p-dropdown
-            class="colorInput"
-            [options]="userTypeOptions"
-            [(ngModel)]="customerType"
-            (onChange)="onUserTypeChange($event.value)"
-            optionValue="code"
-            optionLabel="name"
-          ></p-dropdown>
-        </div>
-        <div class="col-10 flex-align-center">
-          <p-dropdown
-            [options]="searchCriteriaOptions"
-            [(ngModel)]="customerFieldType"
-            (onChange)="onCriteriaChange($event.value)"
-            optionLabel="name"
-            optionValue="code"
-            placeholder="Customer ID"
-            class="primarydropdown"
-          ></p-dropdown>
-          <span
-            class="p-input-icon-right"
-            (keyup.enter)="searchByEnter($event)"
-          >
-            <i class="pi pi-search"></i>
+      <div class="col-12">
+        <div class="row mt-3">
+        <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12 flex-align-center">
+          <div class="row">
+            <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12 mt-2 pr-0 res768-1024">
+              <p-dropdown
+          class="colorInput"
+          [options]="userTypeOptions"
+          [(ngModel)]="customerType"
+          (onChange)="onUserTypeChange($event.value)"
+          optionValue="code"
+          optionLabel="name"
+          class="firstdropdown"
+        ></p-dropdown>
+            <!-- </div>
+            <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12 mt-3"> -->
+              <p-dropdown
+          [options]="searchCriteriaOptions"
+          [(ngModel)]="customerFieldType"
+          (onChange)="onCriteriaChange($event.value)"
+          optionLabel="name"
+          optionValue="code"
+          placeholder="Customer ID"
+          class="primarydropdown"
+        ></p-dropdown>
+        <span
+          class="p-input-icon-right"
+          (keyup.enter)="searchByEnter($event)"
+        >
+          <i class="pi pi-search"></i>
 
-            <ng-container [ngSwitch]="criteriaType">
-              <input
-                *ngSwitchCase="'text'"
-                type="text"
-                class="block searchBox"
-                pInputText
-                [(ngModel)]="currentCriteriaValue"
-                placeholder="Search"
-              />
+          <ng-container [ngSwitch]="criteriaType">
+            <input
+              *ngSwitchCase="'text'"
+              type="text"
+              class="block searchBox"
+              pInputText
+              [(ngModel)]="currentCriteriaValue"
+              placeholder="Search"
+            />
 
-              <p-inputNumber
-                *ngSwitchCase="'number'"
-                [(ngModel)]="currentCriteriaValue"
-                mode="decimal"
-                [useGrouping]="false"
-                placeholder="Search"
-                class="searchBox"
-              >
-              </p-inputNumber>
-              <p-calendar
-                *ngSwitchCase="'date'"
-                class="searchBox"
-                placeholder="DD/MM/YYYY"
-                dateFormat="dd/mm/yy"
-                [(ngModel)]="currentCriteriaValue"
-                [readonlyInput]="true"
-                [appendTo]="'body'"
-              ></p-calendar>
-            </ng-container>
-          </span>
-          <button
-            pButton
-            pRipple
-            type="button"
-            (click)="searchCustomerMap(customerType)"
-            label="Search"
-            class="ml-2"
-            [disabled]="!customerType"
-          ></button>
-          <button
-            pButton
-            pRipple
-            type="button"
-            (click)="clearCriteria()"
-            label="Clear"
-            class="p-button-warning ml-2"
-          ></button>
-        </div>
-      </div>
-    </div>
-    <div class="col-2">
-      <div class="addnew">
+            <p-inputNumber
+              *ngSwitchCase="'number'"
+              [(ngModel)]="currentCriteriaValue"
+              mode="decimal"
+              [useGrouping]="false"
+              placeholder="Search"
+              class="searchBox"
+            >
+            </p-inputNumber>
+            <p-calendar
+              *ngSwitchCase="'date'"
+              class="searchBox"
+              placeholder="DD/MM/YYYY"
+              dateFormat="dd/mm/yy"
+              [(ngModel)]="currentCriteriaValue"
+              [readonlyInput]="false"
+              [appendTo]="'body'"
+              appDateMask
+            ></p-calendar>
+          </ng-container>
+        </span>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 mt-2 pl-0 ml-0">
+              <button
+          pButton
+          pRipple
+          type="button"
+          (click)="searchCustomerMap(customerType)"
+          label="Search"
+          class="search-btn ml-2"
+          [disabled]="!customerType"
+        ></button>
         <button
           pButton
           pRipple
           type="button"
+          (click)="clearCriteria()"
+          label="Clear"
+          class="p-button-warning search-btn ml-2 mt-lg-0"
+        ></button>
+            </div>
+          </div>
+          
+          
+        
+        </div>
+        <div class="col-md-2 col-lg-2 col-sm-4 col-xs-4 mt-2">
+          <button
+          pButton
+          pRipple
+          type="button"
           label="Add Customer"
-          class="p-button-raised"
+          class="p-button-raised ml-4"
           (click)="addNewCustomer()"
         ></button>
+        </div>
       </div>
     </div>
-  </div>
+    </div>
+          
+          
+          
+            
+        
+      
   <div class="customerCriteria">
     <div class="row" *ngIf="searchCriteria.length">
       <div class="col-10">
