@@ -82,6 +82,14 @@ div.checkbox {
   // flex-basis: fit-content;
   gap: 15px;
 }
+div.newLineField {
+  display: flex;
+  justify-content: left;
+  // flex-direction: row-reverse;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
 
 div.btn-grp {
   position: absolute;
@@ -202,7 +210,7 @@ div.btn-grp {
   right: 5%;
   top: 8px;
 }
-.custName{
+.custName {
   color: var(--primary-color);
   font-weight: 500;
   font-size: 15px;
@@ -211,9 +219,9 @@ div.btn-grp {
   font-size: 14px;
 }
 .customerViewBtn2 {
-margin-left: 15px;
+  margin-left: 15px;
 }
-.customerViewBtn{
+.customerViewBtn {
   padding: 1rem 1rem 0rem 1rem;
   margin-left: 400px;
 }

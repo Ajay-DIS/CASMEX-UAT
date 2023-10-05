@@ -142,16 +142,36 @@
       columnResizeMode="fit"
       [rowHover]="true"
       [loading]="customerTableLoading"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"
     >
       <ng-template pTemplate="header" let-columns>
         <tr>
-          <!-- [pSortableColumn]="col.field" -->
           <th
             *ngFor="let col of columns; let c = index"
             pResizableColumn
             [style.width]="col.width"
+            [pSortableColumn]="col.field"
+            [pSortableColumnDisabled]="col.field == 'addBenificiary'"
           >
+            <!-- <div
+              style="cursor: pointer"
+              *ngIf="!(col.field == 'addBenificiary')"
+              (click)="customSort($event, col.field)"
+            >
+              {{ col.header }}
+              <i
+                class="sort-icon pi pi-sort-alt"
+                *ngIf="!(col.field == 'addBenificiary')"
+              ></i>
+            </div>
+            <div *ngIf="col.field == 'addBenificiary'">
+              {{ col.header }}
+            </div> -->
             {{ col.header }}
+            <p-sortIcon
+              *ngIf="!(col.field == 'addBenificiary')"
+              [field]="col.field"
+            ></p-sortIcon>
             <!-- <div
               *ngIf="c < columns.length - 3 && c != 0"
               (click)="$event.stopPropagation()"
@@ -345,7 +365,7 @@
                           fontSize: '11px',
                           cursor: 'pointer'
                         }"
-                        (click)="editbeneficiary(order,rowData)"
+                        (click)="editbeneficiary(order, rowData)"
                         >{{ order.fullName }}</a
                       >
                     </td>

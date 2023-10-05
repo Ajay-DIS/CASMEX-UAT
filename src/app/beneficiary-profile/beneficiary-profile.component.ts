@@ -279,71 +279,71 @@ export class BeneficiaryProfileComponent implements OnInit {
   }
 
   getCustomerListData() {
-    console.log(this.searchCriteria);
-    this.coreService.displayLoadingScreen();
-    console.log(this.type);
-    this.showTable = false;
-    let service: Observable<any>;
-    // if (this.type == "Corporate") {
-    service = this.customerService.getCustomerCorporateData(
-      this.userData["userId"],
-      this.criteriaMap,
-      this.pageNumber,
-      this.pageSize,
-      this.type
-    );
-    // } else {
-    //   service = this.customerService.getCustomerIndividualData(
-    //     this.userData["userId"],
-    //     this.criteriaMap,
-    //     this.pageNumber,
-    //     this.pageSize
-    //   );
-    // }
-    service.subscribe(
-      (res) => {
-        console.log(res);
-        if (res["status"] == "200") {
-          this.showTable = true;
-          this.coreService.removeLoadingScreen();
-          if (this.type == "Corporate") {
-            this.cols = this.colsCOR;
-            this.customerData = res.data.CmCorporateCustomerDetails;
-          } else {
-            this.cols = this.colsIND;
-            this.customerData = res.data.CmCorporateCustomerDetails;
-            this.customerData?.forEach((element) => {
-              element["orders"] = [];
-            });
-            console.log("customer dataa indi", this.customerData);
-          }
-          // this.totalRecords = res.data.PaginationDetails.totalCount;
-          this.customerCode = res.customerCode?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.fullName = res.customerFullName?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.nationality = res.nationality?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.mobileNumber = res.mobileNumber?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.idType = res.idType?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-          this.idNumber = res.idNumber?.map((code) => {
-            if (code) return { label: code, value: code };
-          });
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        // this.coreService.showWarningToast("Error in fething data");
-        this.showTable = false;
-      }
-    );
+    // console.log(this.searchCriteria);
+    // this.coreService.displayLoadingScreen();
+    // console.log(this.type);
+    // this.showTable = false;
+    // let service: Observable<any>;
+    // // if (this.type == "Corporate") {
+    // service = this.customerService.getCustomerCorporateData(
+    //   this.userData["userId"],
+    //   this.criteriaMap,
+    //   this.pageNumber,
+    //   this.pageSize,
+    //   this.type
+    // );
+    // // } else {
+    // //   service = this.customerService.getCustomerIndividualData(
+    // //     this.userData["userId"],
+    // //     this.criteriaMap,
+    // //     this.pageNumber,
+    // //     this.pageSize
+    // //   );
+    // // }
+    // service.subscribe(
+    //   (res) => {
+    //     console.log(res);
+    //     if (res["status"] == "200") {
+    //       this.showTable = true;
+    //       this.coreService.removeLoadingScreen();
+    //       if (this.type == "Corporate") {
+    //         this.cols = this.colsCOR;
+    //         this.customerData = res.data.CmCorporateCustomerDetails;
+    //       } else {
+    //         this.cols = this.colsIND;
+    //         this.customerData = res.data.CmCorporateCustomerDetails;
+    //         this.customerData?.forEach((element) => {
+    //           element["orders"] = [];
+    //         });
+    //         console.log("customer dataa indi", this.customerData);
+    //       }
+    //       // this.totalRecords = res.data.PaginationDetails.totalCount;
+    //       this.customerCode = res.customerCode?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //       this.fullName = res.customerFullName?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //       this.nationality = res.nationality?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //       this.mobileNumber = res.mobileNumber?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //       this.idType = res.idType?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //       this.idNumber = res.idNumber?.map((code) => {
+    //         if (code) return { label: code, value: code };
+    //       });
+    //     }
+    //   },
+    //   (err) => {
+    //     this.coreService.removeLoadingScreen();
+    //     // this.coreService.showWarningToast("Error in fething data");
+    //     this.showTable = false;
+    //   }
+    // );
   }
   addNewBeneficiary(rowData: any, type: any) {
     this.router.navigate([

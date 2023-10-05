@@ -32,7 +32,9 @@ export class CustomerProfileService {
     criteriaMap: any,
     pageNumber: any,
     pageSize: any,
-    custType: any
+    custType: any,
+    sortBy: any,
+    orderBy: any
   ) {
     return this.http.get(
       `/remittance/corporateCustomerController/getCorporateCustomerDetailsList`,
@@ -42,6 +44,8 @@ export class CustomerProfileService {
           .set("criteriaMap", criteriaMap)
           .set("pageNumber", pageNumber)
           .set("pageSize", pageSize)
+          .set("sortBy", sortBy)
+          .set("orderBy", orderBy)
           .set("customerType", custType),
       }
     );
@@ -75,7 +79,7 @@ export class CustomerProfileService {
   //   );
   // }
 
-  getCustomerMaster(){
+  getCustomerMaster() {
     return this.http.get(
       `/remittance/corporateCustomerController/getCustomerProfileMasterData`
     );
@@ -98,12 +102,7 @@ export class CustomerProfileService {
       }
     );
   }
-  updateBeneficiaryStatusApi(
-    userId: any,
-    status: any,
-    id: any,
-    custType: any
-  ) {
+  updateBeneficiaryStatusApi(userId: any, status: any, id: any, custType: any) {
     return this.http.get(
       `/remittance/beneficiaryProfileController/updateBeneficiaryProfileStatus`,
       {

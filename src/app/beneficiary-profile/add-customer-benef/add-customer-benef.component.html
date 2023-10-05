@@ -15,8 +15,9 @@
                     <div
                       *ngIf="field.visible"
                       [ngClass]="{
-                        'col-2': true,
-                        checkbox: field.fieldType == 'checkbox'
+                        'col-2': !(field?.newLineField == 'Y'),
+                      checkbox: field.fieldType == 'checkbox',
+                      newLineField: field?.newLineField == 'Y'
                       }"
                     >
                       <label>{{ field.fieldLabel }}</label

@@ -13,6 +13,12 @@
 :host ::ng-deep .p-inputtext:enabled:hover {
   border-color: #2455cf;
 }
+:host ::ng-deep .p-paginator-rpp-options.p-dropdown {
+  height: 30px;
+  width: 80px;
+  left: 20%;
+  top: 15%;
+}
 
 .flex-align-center {
   display: flex;
@@ -80,4 +86,9 @@
   border-top-left-radius: initial;
   border-bottom-left-radius: initial;
   border: solid 1px#a2a2a2;
+}
+
+.ptable ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+  font-size: 11px;
+  margin-left: 2px;
 }
