@@ -31,6 +31,25 @@
     margin-left: 0px;
     z-index: 998;
   }
+  .toggle-sidebar{
+    z-index: 1001 !important;
+  }
+  .sidebar{
+    z-index: 1000 !important;
+  }
+}
+@media (max-width: 1199px) and (min-width:816px) {
+  .header {
+    width: 100%;
+    margin-left: 0px;
+    z-index: 998;
+  }
+  .toggle-sidebar{
+    z-index: 1001 !important;
+  }
+  .sidebar{
+    z-index: 998 !important;
+  }
 }
 
 .toggle-sidebar {
@@ -323,7 +342,7 @@
 
 @media (max-width: 1199px) {
   .toggle-sidebar .sidebar {
-    left: 0;
+    left: 0;z-index: 999999;
   }
 }
 

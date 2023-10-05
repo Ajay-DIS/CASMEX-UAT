@@ -659,7 +659,7 @@
                   <div
                     *ngIf="field.visible"
                     [ngClass]="{
-                      'col-2': true,
+                      'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': true,
                       checkbox: field.fieldType == 'checkbox'
                     }"
                   >
@@ -709,8 +709,9 @@
                         [minDate]="field.minDate"
                         [maxDate]="field.maxDate"
                         [defaultDate]="field.defaultDate"
-                        [readonlyInput]="true"
+                        [readonlyInput]="false"
                         [appendTo]="'body'"
+                        appDateMask
                       ></p-calendar>
                       <p-checkbox
                         *ngSwitchCase="'checkbox'"

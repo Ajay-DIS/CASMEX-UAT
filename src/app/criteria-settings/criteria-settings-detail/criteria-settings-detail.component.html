@@ -1,6 +1,9 @@
 <div class="visible-main-section">
   <div class="details-page-card">
     <div class="d-flex mx-3" style="justify-content: space-between">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
       <p class="description-text">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -34,8 +37,12 @@
         Criteria are parameters or fields that are used to select or return a
         resultant value based on selected form...
       </p>
+    </div>
+    <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+  <div class="row">
       <div class="buttons-section">
-        <button
+        <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 savebtn">
+          <button
           pButton
           pRipple
           type="button"
@@ -44,6 +51,8 @@
           (click)="saveCriteriaSettings('save')"
           class="p-button-raised"
         ></button>
+      </div>
+      <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6 saveAddbtn">
         <button
           pButton
           pRipple
@@ -53,6 +62,8 @@
           (click)="saveCriteriaSettings('saveAddNew')"
           class="p-button-raised"
         ></button>
+      </div>
+      <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 resetbtn">
         <button
           pButton
           pRipple
@@ -64,9 +75,16 @@
         ></button>
       </div>
     </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
     <div [formGroup]="selectAppForm" class="select-form-application m-2">
-      <div class="d-flex field col-4 md-4">
-        <label class="detail-page-section-heading" for="application"
+      <div class="col-12">
+        <div class="row">
+      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
+        <label class="detail-page-section-heading col-sm-3 col-xs-12" for="application"
           >Application</label
         >
         <p-dropdown
@@ -79,8 +97,8 @@
           (onChange)="onAppChange($event)"
         ></p-dropdown>
       </div>
-      <div class="d-flex field col-4 md-4">
-        <label class="detail-page-section-heading" for="module">Module</label>
+      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
+        <label class="detail-page-section-heading col-sm-3 col-xs-12 small" for="module">Module</label>
         <p-dropdown
           name="module"
           inputId="module"
@@ -91,8 +109,8 @@
           (onChange)="onModuleChange()"
         ></p-dropdown>
       </div>
-      <div class="d-flex field col-4 md-4">
-        <label class="detail-page-section-heading" for="form">Form</label>
+      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+        <label class="detail-page-section-heading col-sm-3 col-xs-12 smallForm" for="form">Form</label>
         <p-dropdown
           name="form"
           inputId="form"
@@ -104,6 +122,8 @@
         ></p-dropdown>
       </div>
     </div>
+  </div>
+</div>
     <div class="drag-criteria-fields m-3">
       <div class="d-flex mb-2">
         <div class="detail-page-section-heading list-heading w-50">

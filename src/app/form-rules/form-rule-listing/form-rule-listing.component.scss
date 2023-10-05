@@ -22,7 +22,14 @@
   gap: 15px;
   margin-bottom: 0;
 }
-
+@media screen and (max-width: 575px){
+  .small {
+     padding-right: 25px !important;
+   }
+  .smallForm {
+     padding-right: 39px !important;
+   }
+ }
 .select-module-application label {
   margin-bottom: 0;
   font-size: 14px;

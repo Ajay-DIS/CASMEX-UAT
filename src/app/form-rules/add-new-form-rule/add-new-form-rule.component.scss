@@ -168,3 +168,50 @@ input.inputError {
   align-items: center;
   border: none !important;
 }
+.savebtn {
+  padding-left: 10px;
+}
+.saveAddbtn {
+  padding-left: 10px;
+}
+@media screen and (max-width: 1400px) and (min-width:1201px) {
+  .savebtn {
+    padding-left: 0px !important;
+    // padding-right: 20px !important;
+  }
+  .saveAddbtn {
+    padding-left: 13px !important;
+  }
+}
+@media screen and (max-width: 575px) {
+  .savebtn {
+    padding-left: 0px !important;
+    // padding-right: 20px !important;
+  }
+  .saveAddbtn {
+    padding-left: 0px !important;
+  }
+}
+@media screen and (max-width: 1199px) and (min-width:768px) {
+  .savebtn {
+    padding-left: 0px !important;
+    padding-right: 20px !important;
+    margin-left: 0px !important;
+  }
+  .saveAddbtn {
+    width: 50%;
+    padding-left: 0px !important;
+    margin-left: 27px ;
+  }
+  .resetbtn{
+    margin-left: 0px;
+  }
+}
+@media screen and (max-width: 575px){
+  .small {
+     padding-right: 25px !important;
+   }
+  .smallForm {
+     padding-right: 39px !important;
+   }
+ }
