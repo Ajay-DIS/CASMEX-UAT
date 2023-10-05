@@ -79,6 +79,15 @@ div.checkbox {
   gap: 15px;
 }
 
+div.newLineField {
+  display: flex;
+  justify-content: left;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
 div.btn-grp {
   position: absolute;
   top: 10px;

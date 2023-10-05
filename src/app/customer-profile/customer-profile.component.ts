@@ -57,9 +57,11 @@ export class CustomerProfileComponent implements OnInit {
   applicationName = "Casmex Core";
   moduleName = "Remittance";
   pageNumber = 0;
-  pageSize = 2;
+  pageSize = 10;
   totalPages = 5;
   totalRecords = 0;
+  sortBy = "id";
+  orderBy = "DESC";
 
   linkedFormRuleCode: any = [];
   constructor(
@@ -110,6 +112,27 @@ export class CustomerProfileComponent implements OnInit {
     { field: "status", header: "Profile Status" },
   ];
 
+  sortOrder: any = {
+    customerCode: 0,
+    fullName: 0,
+    nationality: 0,
+    mobileNumber: 0,
+    idType: 0,
+    idNumber: 0,
+    beneficialCount: 0,
+    status: 0,
+  };
+  copySortOrder: any = {
+    customerCode: 0,
+    fullName: 0,
+    nationality: 0,
+    mobileNumber: 0,
+    idType: 0,
+    idNumber: 0,
+    beneficialCount: 0,
+    status: 0,
+  };
+
   // totalRecords = 55;
   customerTableLoading = false;
   globalSearch = false;
@@ -128,7 +151,82 @@ export class CustomerProfileComponent implements OnInit {
     this.currentCriteriaKey = "Customer ID = ";
   }
 
+  // resetSortIcons() {
+  //   const allSortIcons = document.querySelectorAll(".sort-icon");
+  //   if (allSortIcons.length) {
+  //     allSortIcons.forEach((icon) => {
+  //       icon.classList.add("pi-sort-alt");
+  //       icon.classList.remove("pi-sort-amount-up");
+  //       icon.classList.remove("pi-sort-amount-down");
+  //     });
+  //   }
+  // }
+
+  // customSort(e: any, field: any) {
+  //   // this.resetSortIcons();
+  //   const sortIconField = e.target?.firstElementChild
+  //     ? e.target?.firstElementChild
+  //     : e.target;
+  //   if (field && field in this.sortOrder && sortIconField) {
+  //     if (this.sortOrder[field] == 0) {
+  //       this.sortOrder[field] = 1;
+  //       sortIconField.classList.remove("pi-sort-alt");
+  //       sortIconField.classList.remove("pi-sort-amount-up");
+  //       sortIconField.classList.add("pi-sort-amount-down");
+  //     } else if (this.sortOrder[field] == 1) {
+  //       this.sortOrder[field] = -1;
+  //       sortIconField.classList.remove("pi-sort-alt");
+  //       sortIconField.classList.remove("pi-sort-amount-down");
+  //       sortIconField.classList.add("pi-sort-amount-up");
+  //     } else {
+  //       this.sortOrder[field] = 1;
+  //       sortIconField.classList.remove("pi-sort-alt");
+  //       sortIconField.classList.remove("pi-sort-amount-up");
+  //       sortIconField.classList.add("pi-sort-amount-down");
+  //     }
+  //     switch (field) {
+  //       case "customerCode":
+  //       case "mobileNumber":
+  //       case "idNumber":
+  //       case "beneficialCount":
+  //         (this.customerData as Array<any>)?.sort((a, b) => {
+  //           if (this.sortOrder[field] >= 0) {
+  //             return b[field] - a[field];
+  //           } else {
+  //             return a[field] - b[field];
+  //           }
+  //         });
+  //         break;
+
+  //       default:
+  //         (this.customerData as Array<any>)?.sort((a, b) => {
+  //           const strA = a[field].toUpperCase();
+  //           const strB = b[field].toUpperCase();
+  //           if (this.sortOrder[field] >= 0) {
+  //             if (strA < strB) {
+  //               return 1;
+  //             }
+  //             if (strA > strB) {
+  //               return -1;
+  //             }
+  //             return 0;
+  //           } else {
+  //             if (strB < strA) {
+  //               return 1;
+  //             }
+  //             if (strB > strA) {
+  //               return -1;
+  //             }
+  //             return 0;
+  //           }
+  //         });
+  //         break;
+  //     }
+  //   }
+  // }
+
   loadCustomers(e: any) {
+    // this.resetSortIcons();
     if (!this.globalSearch) {
       this.pageNumber = e.first ? e.first / this.pageSize + 1 : 1;
       console.log(
@@ -138,6 +236,53 @@ export class CustomerProfileComponent implements OnInit {
         this.pageNumber
       );
       let updatedCriteriaMap = this.criteriaMap;
+      if (e.rows) {
+        this.pageSize = e.rows;
+      }
+      if (e.sortField) {
+        if (e.sortOrder == 1) {
+          this.orderBy = "DESC";
+        } else {
+          this.orderBy = "ASC";
+        }
+        switch (e.sortField) {
+          case "customerCode":
+            this.sortBy = "id";
+            break;
+          case "fullName":
+            if (this.customerType && this.customerType == "Corporate") {
+              this.sortBy = "nameOfTheCorporate";
+            } else {
+              this.sortBy = "fullName";
+            }
+            break;
+          case "nationality":
+            this.sortBy = "nationalityPersonalDetails";
+            break;
+          case "mobileNumber":
+            this.sortBy = "contactMobileNumber";
+            break;
+          case "idType":
+            this.sortBy = "documentType";
+            break;
+          case "idNumber":
+            this.sortBy = "idNumber";
+            break;
+          case "beneficialCount":
+            this.sortBy = "beneficiaryCount";
+            break;
+          case "status":
+            this.sortBy = "status";
+            break;
+
+          default:
+            this.sortBy = "id";
+            break;
+        }
+      } else {
+        this.sortBy = "id";
+        this.orderBy = "DESC";
+      }
       if (e.filters && Object.keys(e.filters).length > 0) {
         let filterCrtMap = "";
         for (const prop in e.filters) {
@@ -149,7 +294,7 @@ export class CustomerProfileComponent implements OnInit {
               if (this.customerType && this.customerType == "Corporate") {
                 filterCrtMap = `nameOfTheCorporate = ${e.filters[prop]["value"]}`;
               } else {
-                filterCrtMap = `firstNamePersonalDetails = ${e.filters[prop]["value"]}`;
+                filterCrtMap = `fullName = ${e.filters[prop]["value"]}`;
               }
               break;
             case "nationality":
@@ -183,6 +328,8 @@ export class CustomerProfileComponent implements OnInit {
         this.getCustomerListData(this.criteriaMap);
       }
     }
+    this.sortBy = "id";
+    this.orderBy = "DESC";
     this.globalSearch = false;
   }
 
@@ -322,17 +469,29 @@ export class CustomerProfileComponent implements OnInit {
   getCustomerListData(criteriaMap: any) {
     this.coreService.displayLoadingScreen();
     let service: Observable<any>;
+
+    console.log(
+      "::header",
+      this.userData["userId"],
+      criteriaMap,
+      `${this.pageNumber}`,
+      `${this.pageSize}`,
+      this.type,
+      this.sortBy,
+      this.orderBy
+    );
     service = this.customerService.getCustomerCorporateData(
       this.userData["userId"],
       criteriaMap,
       `${this.pageNumber}`,
       `${this.pageSize}`,
-      this.type
+      this.type,
+      this.sortBy,
+      this.orderBy
     );
 
     service.subscribe(
       (res) => {
-        // this.customerTableLoading = false;
         this.coreService.removeLoadingScreen();
         if (res["status"] == "200") {
           if (res["error"]) {
@@ -370,7 +529,6 @@ export class CustomerProfileComponent implements OnInit {
       },
       (err) => {
         this.coreService.removeLoadingScreen();
-        // this.customerTableLoading = false;
         // this.coreService.showWarningToast("Error in fething data");
         this.showTable = false;
       }

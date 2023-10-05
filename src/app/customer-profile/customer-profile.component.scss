@@ -12,6 +12,12 @@
 :host ::ng-deep .p-inputtext:enabled:hover {
   border-color: #2455cf;
 }
+:host ::ng-deep .p-paginator-rpp-options.p-dropdown {
+  height: 30px;
+  width: 80px;
+  left: 20%;
+  top: 15%;
+}
 
 .flex-align-center {
   padding-left: 40px;
@@ -86,6 +92,10 @@
 }
 :host ::ng-deep p-element p-inputwrapper .searchBox .p-inputtext{
   width: 48%;
+}
+.ptable ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+  font-size: 11px;
+  margin-left: 2px;
 }
 .p-input-icon-right .searchBox.p-inputtext{
   width: 100% !important

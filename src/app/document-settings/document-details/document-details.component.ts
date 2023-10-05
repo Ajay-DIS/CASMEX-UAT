@@ -67,6 +67,8 @@ export class DocumentDetailsComponent implements OnInit {
   documentOption: any[] = [];
   documentNoTypeOption: any[] = [];
 
+  primaryDocSelected: boolean = false;
+
   applyCriteriaDataTableColumns: any[] = [];
   columnsCopy: any[] = [
     {
@@ -101,6 +103,13 @@ export class DocumentDetailsComponent implements OnInit {
       info: "Numeric field",
     },
     {
+      field: "expireAlertDays",
+      header: "Expiry Date Alert (Day)",
+      fieldType: "input",
+      frozen: false,
+      info: "Numeric field (1-100)",
+    },
+    {
       field: "isMandatory",
       header: "Is Mandatory",
 
@@ -133,6 +142,14 @@ export class DocumentDetailsComponent implements OnInit {
     {
       field: "backSide",
       header: "Back Side",
+
+      fieldType: "checkbox",
+      frozen: false,
+      info: null,
+    },
+    {
+      field: "bypassImage",
+      header: "Bypass Image",
 
       fieldType: "checkbox",
       frozen: false,
@@ -401,6 +418,7 @@ export class DocumentDetailsComponent implements OnInit {
               data["action"] = res["action"];
               data["invalidLength"] = false;
               data["invalidGraceDays"] = false;
+              data["invalidExpiryAlertDays"] = false;
               data["status"] = "Active";
             });
             // this.setSelectedOptions();
@@ -543,6 +561,7 @@ export class DocumentDetailsComponent implements OnInit {
               data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
               data["invalidLength"] = false;
               data["invalidGraceDays"] = false;
+              data["invalidExpiryAlertDays"] = false;
               data["status"] = "Active";
               data["userID"] = this.userId;
               data["documentCode"] = this.documentCode;
@@ -670,6 +689,32 @@ export class DocumentDetailsComponent implements OnInit {
       } else {
         inp.classList.remove("inputError");
         this.applyCriteriaFormattedData[rowIndex]["invalidGraceDays"] = false;
+      }
+    } else if (field == "expireAlertDays") {
+      const pattern = /^\d+$/;
+      if (e.length) {
+        const match = e.match(pattern);
+        if (match) {
+          if (Number(e) > 100 || Number(e) < 1) {
+            inp.classList.add("inputError");
+            this.applyCriteriaFormattedData[rowIndex][
+              "invalidExpiryAlertDays"
+            ] = true;
+          } else {
+            inp.classList.remove("inputError");
+            this.applyCriteriaFormattedData[rowIndex][
+              "invalidExpiryAlertDays"
+            ] = false;
+          }
+        } else {
+          inp.classList.add("inputError");
+          this.applyCriteriaFormattedData[rowIndex]["invalidExpiryAlertDays"] =
+            true;
+        }
+      } else {
+        inp.classList.remove("inputError");
+        this.applyCriteriaFormattedData[rowIndex]["invalidExpiryAlertDays"] =
+          false;
       }
     }
   }
@@ -977,14 +1022,22 @@ export class DocumentDetailsComponent implements OnInit {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
       let invalidGraceDays = false;
+      let invalidExpiryAlertDays = false;
       let invalidLength = false;
       let docMissing = false;
+      let primaryDocNos = 0;
       this.applyCriteriaFormattedData.forEach((element) => {
+        if (element["isDefault"]) {
+          primaryDocNos++;
+        }
         if (element["invalidLength"]) {
           invalidLength = true;
         }
         if (element["invalidGraceDays"]) {
           invalidGraceDays = true;
+        }
+        if (element["invalidExpiryAlertDays"]) {
+          invalidExpiryAlertDays = true;
         }
         element["documentDesc"] = this.documentDesc
           ? this.documentDesc.replace(/\s/g, "").length
@@ -998,6 +1051,7 @@ export class DocumentDetailsComponent implements OnInit {
           docMissing = true;
         }
       });
+
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
@@ -1010,6 +1064,16 @@ export class DocumentDetailsComponent implements OnInit {
       } else if (invalidGraceDays) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Grace Days.");
+      } else if (invalidExpiryAlertDays) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast(
+          "Please Enter Valid Expiry Alert Days."
+        );
+      } else if (primaryDocNos > 1) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast(
+          "More than 1 Primary document selected."
+        );
       } else {
         let duplicateDocType = false;
         if (

@@ -94,6 +94,12 @@ export class AddCustomerComponent implements OnInit {
 
   formRuleAPIResponse: any = {};
 
+  documentSettingData: any[] = [];
+
+  primaryId = "NA";
+
+  duplicateCheckFields = [];
+
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
@@ -119,6 +125,8 @@ export class AddCustomerComponent implements OnInit {
       }
     }
     console.log(this.custId, this.custType);
+
+    this.getDocSettingData();
     if (this.custType == "IND") {
       this.http
         .get(`/remittance/formRulesController/getFormRules`, {
@@ -150,6 +158,38 @@ export class AddCustomerComponent implements OnInit {
           }
         );
     }
+  }
+
+  getDocSettingData() {
+    this.http
+      .get(`remittance/documentSettingsController/getDocumentSetting`, {
+        headers: new HttpHeaders()
+          .set("criteriaMap", "Country = IN;Form = Customer Profile")
+          .set("form", "Document Settings")
+          .set("moduleName", "Remittance")
+          .set("applications", "Casmex Core"),
+      })
+      .subscribe(
+        (res) => {
+          console.log("DOC DATA", res);
+          if (res["TaxSettingData"]) {
+            this.documentSettingData = res["TaxSettingData"];
+          }
+          if (this.documentSettingData.length) {
+            let primaryDocs = this.documentSettingData.filter((doc) => {
+              return doc.IsDefault == "true";
+            });
+            this.primaryId = primaryDocs?.length
+              ? primaryDocs[0]["Document"]
+              : "NA";
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching doc data, Try again in sometime"
+          );
+        }
+      );
   }
 
   searchEmployer(e) {
@@ -217,6 +257,9 @@ export class AddCustomerComponent implements OnInit {
         formName: key,
         fields: data[key]
           .map((secData) => {
+            if (secData["checkDuplicate"] == "Y") {
+              this.duplicateCheckFields.push(secData["fieldName"]);
+            }
             let fieldData = {
               name: secData["fieldName"],
               formLableFieldSequence: secData["formLableFieldSequence"],
@@ -232,6 +275,7 @@ export class AddCustomerComponent implements OnInit {
                   : false,
               validLength: secData["validLength"],
               defaultValue: secData["defaultValue"],
+              newLineField: secData["newLineField"],
               apiKey: secData["apiKey"],
               minLength:
                 secData["validLength"]?.length > 0 &&
@@ -819,6 +863,23 @@ export class AddCustomerComponent implements OnInit {
   addKyc() {
     let kycData = this.individualForm.get("KYC Doc Upload").getRawValue();
     console.log("fields", kycData);
+
+    if (
+      this.uploadedKycData.length &&
+      this.uploadedKycData.filter((data) => {
+        return data.documentType == kycData.documentType?.codeName;
+      })?.length
+    ) {
+      this.coreService.showWarningToast("This Document type is already added");
+      return;
+    }
+    // if (
+    //   !(kycData.uploadFrontSideFile && kycData.uploadFrontSideFile.length) ||
+    //   !(kycData.uploadBackSideFile && kycData.uploadBackSideFile.length)
+    // ) {
+    //   this.coreService.showWarningToast("Documents are required");
+    //   return;
+    // }
     let kycDataObj = {
       idNumber: kycData.idNumber,
       imageByPassed: kycData.imageByPassed,
@@ -917,6 +978,17 @@ export class AddCustomerComponent implements OnInit {
       .get("Beneficial Owner Details")
       .getRawValue();
     console.log("fields", beneficialData);
+
+    if (
+      this.uploadedBeneficialData.length &&
+      this.uploadedBeneficialData.filter((data) => {
+        return data.documentType == beneficialData.documentType?.codeName;
+      })?.length
+    ) {
+      this.coreService.showWarningToast("This Document type is already added");
+      return;
+    }
+
     let beneficialDataObj = {
       ownershipType: beneficialData.ownershipType?.codeName
         ? beneficialData.ownershipType?.codeName
@@ -1035,6 +1107,20 @@ export class AddCustomerComponent implements OnInit {
       .get("Representative Details")
       .getRawValue();
     console.log("fields", representativeData);
+
+    if (
+      this.uploadedRepresentativeData.length &&
+      this.uploadedRepresentativeData.filter((data) => {
+        return (
+          data.representativeDocumentType ==
+          representativeData.representativeDocumentType?.codeName
+        );
+      })?.length
+    ) {
+      this.coreService.showWarningToast("This Document type is already added");
+      return;
+    }
+
     let representativeDataObj = {
       representativeFirstName: representativeData.representativeFirstName,
       representativeMiddleName: representativeData.representativeMiddleName,
@@ -1247,6 +1333,8 @@ export class AddCustomerComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+
+    console.log("::SAVE", this.primaryId, this.duplicateCheckFields);
 
     if (this.individualForm.invalid) {
       this.coreService.showWarningToast("Some fields are invalid");
@@ -2031,7 +2119,14 @@ export class AddCustomerComponent implements OnInit {
           headers: new HttpHeaders()
             .set("userId", this.userId)
             .set("customerType", "Individual")
-            .set("isConfirmedCustomer", this.isConfirmedCustomer),
+            .set("isConfirmedCustomer", this.isConfirmedCustomer)
+            .set("primaryId", this.primaryId)
+            .set(
+              "duplicateCheck",
+              this.duplicateCheckFields.length
+                ? this.duplicateCheckFields.join(",")
+                : "NA"
+            ),
         }
       )
       .subscribe(
@@ -2128,7 +2223,14 @@ export class AddCustomerComponent implements OnInit {
         {
           headers: new HttpHeaders()
             .set("userId", this.userId)
-            .set("customerType", "Individual"),
+            .set("customerType", "Individual")
+            .set("primaryId", this.primaryId)
+            .set(
+              "duplicateCheck",
+              this.duplicateCheckFields.length
+                ? this.duplicateCheckFields.join(",")
+                : "NA"
+            ),
         }
       )
       .subscribe(

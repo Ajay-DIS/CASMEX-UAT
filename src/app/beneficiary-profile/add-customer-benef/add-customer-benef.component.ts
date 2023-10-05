@@ -1,20 +1,31 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChange } from '@angular/core';
-import { FormBuilder, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
-import { CoreService } from 'src/app/core.service';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  SimpleChange,
+} from "@angular/core";
+import {
+  FormBuilder,
+  FormGroup,
+  UntypedFormGroup,
+  Validators,
+} from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ConfirmationService } from "primeng/api";
+import { CoreService } from "src/app/core.service";
 
 @Component({
-  selector: 'app-add-customer-benef',
-  templateUrl: './add-customer-benef.component.html',
-  styleUrls: ['./add-customer-benef.component.scss']
+  selector: "app-add-customer-benef",
+  templateUrl: "./add-customer-benef.component.html",
+  styleUrls: ["./add-customer-benef.component.scss"],
 })
 export class AddCustomerBenefComponent implements OnInit {
-  
-  @Input('formData') formData: any
-  @Input('beneData') beneData: any
-  @Input('masterData') masterData: any
+  @Input("formData") formData: any;
+  @Input("beneData") beneData: any;
+  @Input("masterData") masterData: any;
 
   @Output() postData = new EventEmitter<any>();
 
@@ -22,7 +33,7 @@ export class AddCustomerBenefComponent implements OnInit {
 
   custId = null;
   userId = null;
-  submitted =false;
+  submitted = false;
   today = new Date();
   pastYear = new Date("01/01/1950");
   futureYear = new Date("01/01/2050");
@@ -32,7 +43,7 @@ export class AddCustomerBenefComponent implements OnInit {
   apiData: any = {};
 
   objectKeys = Object.keys;
- 
+
   formDataOrg = {};
   beneDataOrg = {};
   masterDataOrg = {};
@@ -43,33 +54,32 @@ export class AddCustomerBenefComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private http: HttpClient,
-  ) { }
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
-    console.log("mater",this.masterData)
+    console.log("mater", this.masterData);
   }
-  
-  ngOnChanges(e: any){
-    console.log("ngonchanges", e)
-    
-    if(e.formData && e.formData.currentValue){
-      this.formDataOrg = JSON.parse(JSON.stringify((e.formData.currentValue)))
-      this.setFormByData(e.formData.currentValue)
+
+  ngOnChanges(e: any) {
+    console.log("ngonchanges", e);
+
+    if (e.formData && e.formData.currentValue) {
+      this.formDataOrg = JSON.parse(JSON.stringify(e.formData.currentValue));
+      this.setFormByData(e.formData.currentValue);
     }
-    if(e.masterData && e.masterData.currentValue){
+    if (e.masterData && e.masterData.currentValue) {
       this.masterDataOrg = e.masterData.currentValue;
-      console.log("masterData",e.masterData)
+      console.log("masterData", e.masterData);
     }
 
-    if(e.beneData && e.beneData.currentValue){
-      this.beneDataOrg = JSON.parse(JSON.stringify((e.beneData.currentValue)))
-      if(Object.keys(this.formDataOrg).length){
-        this.setBenefEditFormData(e.beneData.currentValue)
+    if (e.beneData && e.beneData.currentValue) {
+      this.beneDataOrg = JSON.parse(JSON.stringify(e.beneData.currentValue));
+      if (Object.keys(this.formDataOrg).length) {
+        this.setBenefEditFormData(e.beneData.currentValue);
       }
     }
-
   }
 
   setFormByData(data: any) {
@@ -97,6 +107,7 @@ export class AddCustomerBenefComponent implements OnInit {
                   : false,
               validLength: secData["validLength"],
               defaultValue: secData["defaultValue"],
+              newLineField: secData["newLineField"],
               apiKey: secData["apiKey"],
               minLength:
                 secData["validLength"]?.length > 0 &&
@@ -184,7 +195,7 @@ export class AddCustomerBenefComponent implements OnInit {
   }
 
   setBenefEditFormData(data: any) {
-    console.log("dataedit",data)
+    console.log("dataedit", data);
     this.apiData = data;
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
@@ -193,9 +204,11 @@ export class AddCustomerBenefComponent implements OnInit {
             field.fieldType == "select" ||
             field.fieldType == "smart-search"
           ) {
-            let filterData = this.masterDataOrg[field["fieldName"]]?.filter((msField)=>{
-              return msField.codeName == data[field["fieldName"]]
-            })
+            let filterData = this.masterDataOrg[field["fieldName"]]?.filter(
+              (msField) => {
+                return msField.codeName == data[field["fieldName"]];
+              }
+            );
             let value = filterData?.length
               ? {
                   code: filterData[0].code,
@@ -236,7 +249,7 @@ export class AddCustomerBenefComponent implements OnInit {
     });
   }
 
-onSubmit(): void {
+  onSubmit(): void {
     this.submitted = true;
 
     if (this.individualForm.invalid) {
@@ -251,58 +264,48 @@ onSubmit(): void {
     let payloadData = Object.assign({}, ...Object.values(data));
 
     this.formSections.forEach((section) => {
-      
-        section.fields.forEach((field) => {
-          if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
-          ) {
-            let value = payloadData[field["fieldName"]]
-              ? payloadData[field["fieldName"]]["codeName"]
-              : "";
-            payloadData[field["fieldName"]] = value;
-          } else if (field.fieldType == "checkbox") {
-            let value = payloadData[field["fieldName"]] == true ? true : false;
-            payloadData[field["fieldName"]] = value;
-          } else if (field.fieldType == "date") {
-            let dateFormatted = payloadData[field["fieldName"]]
-              ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
-                ? new Date(payloadData[field["fieldName"]]).toLocaleDateString(
-                    "en-GB"
-                  )
-                : new Date(
-                    payloadData[field["fieldName"]]
-                      .split("/")
-                      .reverse()
-                      .join("-")
-                  ).toLocaleDateString("en-GB")
-              : "";
-            payloadData[field["fieldName"]] = dateFormatted;
-          } else {
-            payloadData[field["fieldName"]] =
-              payloadData[field["fieldName"]] == "null" ||
-              payloadData[field["fieldName"]] == null
-                ? ""
-                : payloadData[field["fieldName"]];
-          }
-        });
+      section.fields.forEach((field) => {
+        if (field.fieldType == "select" || field.fieldType == "smart-search") {
+          let value = payloadData[field["fieldName"]]
+            ? payloadData[field["fieldName"]]["codeName"]
+            : "";
+          payloadData[field["fieldName"]] = value;
+        } else if (field.fieldType == "checkbox") {
+          let value = payloadData[field["fieldName"]] == true ? true : false;
+          payloadData[field["fieldName"]] = value;
+        } else if (field.fieldType == "date") {
+          let dateFormatted = payloadData[field["fieldName"]]
+            ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
+              ? new Date(payloadData[field["fieldName"]]).toLocaleDateString(
+                  "en-GB"
+                )
+              : new Date(
+                  payloadData[field["fieldName"]].split("/").reverse().join("-")
+                ).toLocaleDateString("en-GB")
+            : "";
+          payloadData[field["fieldName"]] = dateFormatted;
+        } else {
+          payloadData[field["fieldName"]] =
+            payloadData[field["fieldName"]] == "null" ||
+            payloadData[field["fieldName"]] == null
+              ? ""
+              : payloadData[field["fieldName"]];
+        }
       });
-      console.log("payloadData",payloadData)
+    });
+    console.log("payloadData", payloadData);
 
-  //   let payloadFormData = new FormData();
-  //   console.log("post",payloadFormData)
-  //   for (var pair of payloadFormData.entries()) {
-  //     console.log(pair[0]+ ', ' + pair[1]); 
-  // }
-  //     for (let key in payloadData) {
-  //       payloadFormData.append(key, payloadData[key]);
-  //     }
-  //     console.log("formdata",payloadFormData)
-      this.postData.emit(payloadData);
-  // this.saveBeneficiaryCustomer()
-
-
+    //   let payloadFormData = new FormData();
+    //   console.log("post",payloadFormData)
+    //   for (var pair of payloadFormData.entries()) {
+    //     console.log(pair[0]+ ', ' + pair[1]);
+    // }
+    //     for (let key in payloadData) {
+    //       payloadFormData.append(key, payloadData[key]);
+    //     }
+    //     console.log("formdata",payloadFormData)
+    this.postData.emit(payloadData);
+    // this.saveBeneficiaryCustomer()
   }
-    // payloadData["status"] = "Active";
-   
+  // payloadData["status"] = "Active";
 }

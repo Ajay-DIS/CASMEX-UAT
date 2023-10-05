@@ -76,13 +76,21 @@
   }
   
   div.checkbox {
-    display: flex;
-    justify-content: space-evenly;
-    flex-direction: row-reverse;
-    align-items: center;
-    // flex-basis: fit-content;
-    gap: 15px;
-  }
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: row-reverse;
+  align-items: center;
+  // flex-basis: fit-content;
+  gap: 15px;
+}
+
+div.newLineField {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
   
   div.btn-grp {
     position: absolute;
@@ -219,4 +227,3 @@
       margin-right: 30px;
     }
   }
-  

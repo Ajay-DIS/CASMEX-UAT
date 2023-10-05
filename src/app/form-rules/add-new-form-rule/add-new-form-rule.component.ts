@@ -108,6 +108,18 @@ export class AddNewFormRuleComponent implements OnInit {
       width: "100px",
     },
     {
+      field: "checkDuplicate",
+      header: "Check Duplicate",
+      type: "checkbox",
+      width: "100px",
+    },
+    {
+      field: "newLineField",
+      header: "Show in newline",
+      type: "checkbox",
+      width: "100px",
+    },
+    {
       field: "validLength",
       header: "Min/Max Length",
       type: "input",
@@ -1323,6 +1335,7 @@ export class AddNewFormRuleComponent implements OnInit {
         payloadData["duplicate"] = true;
       }
 
+      console.log(payloadData);
       if (
         this.mode != "clone" ||
         (this.mode == "clone" && this.isApplyCriteriaClicked)
