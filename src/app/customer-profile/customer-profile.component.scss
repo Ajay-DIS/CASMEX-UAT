@@ -13,10 +13,11 @@
   border-color: #2455cf;
 }
 :host ::ng-deep .p-paginator-rpp-options.p-dropdown {
-  height: 30px;
-  width: 80px;
-  left: 20%;
-  top: 15%;
+  height: 34px;
+  width: 70px;
+  left: 13%;
+  top: 13%;
+  background-color: var(--primary-color);
 }
 
 .flex-align-center {

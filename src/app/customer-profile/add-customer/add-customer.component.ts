@@ -2238,7 +2238,28 @@ export class AddCustomerComponent implements OnInit {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
             if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
+              // this.coreService.showWarningToast(res["error"]);
+              this.coreService.setHeaderStickyStyle(false);
+              this.coreService.setSidebarBtnFixedStyle(false);
+              this.confirmationService.confirm({
+                message:
+                  `<img src="../../../assets/warning.svg"><br/><br/>` +
+                  `${res["error"]};<br/>` +
+                  `click Yes to view details`,
+                key: "resetINDWarning",
+                accept: () => {
+                  this.setHeaderSidebarBtn();
+                  this.coreService.setHeaderStickyStyle(false);
+                  this.coreService.setSidebarBtnFixedStyle(false);
+                  this.clickforview = true;
+                  this.customerDataForView.push(res["data"]);
+                  console.log("customerDataForView", this.customerDataForView);
+                },
+                reject: () => {
+                  this.confirmationService.close;
+                  this.setHeaderSidebarBtn();
+                },
+              });
               this.coreService.removeLoadingScreen();
             } else {
               if (res["data"]) {
