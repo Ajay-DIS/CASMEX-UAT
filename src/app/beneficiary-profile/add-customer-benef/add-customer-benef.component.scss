@@ -203,4 +203,20 @@
     right: 5%;
     top: 8px;
   }
+  @media screen and (max-width: 576px) {
+    .block{
+      width: 100% !important
+    }
+    .p-dropdown {
+      width: 100% !important
+    }
+    .file-upload {
+      width: 100% !important
+    }
+  }
+  @media screen and (max-width:1420px) and (min-width:1201px) {
+    .fieldForm{
+      margin-right: 30px;
+    }
+  }
   

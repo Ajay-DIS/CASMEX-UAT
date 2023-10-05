@@ -26,6 +26,11 @@
   margin-bottom: 0;
   font-size: 14px;
 }
+@media screen and (max-width: 575px){
+ .small {
+    padding-right: 25px !important;
+  }
+}
 .select-module-application p-dropdown {
   width: 100%;
 }
