@@ -1341,7 +1341,7 @@ export class AddCustomerComponent implements OnInit {
       return;
     }
 
-    this.isConfirmedCustomer = "false";
+    this.isConfirmedCustomer = this.checked ? "true" : "false";
 
     if (this.uploadedBeneficialData.length) {
       let benePercent = 0;
@@ -2122,7 +2122,6 @@ export class AddCustomerComponent implements OnInit {
             .set("userId", this.userId)
             .set("customerType", "Individual")
             .set("isConfirmedCustomer", this.isConfirmedCustomer)
-            .set("primaryId", this.primaryId)
             .set(
               "duplicateCheck",
               this.duplicateCheckFields.length
@@ -2145,22 +2144,21 @@ export class AddCustomerComponent implements OnInit {
                   `click Yes to view details`,
                 key: "resetINDWarning",
                 accept: () => {
-                  this.setHeaderSidebarBtn();
-                  this.coreService.setHeaderStickyStyle(false);
-                  this.coreService.setSidebarBtnFixedStyle(false);
+                  this.customerDataForView = [];
                   this.clickforview = true;
-                  this.customerDataForView.push(res["data"]);
+
+                  this.customerDataForView.push(res["Duplicate Data"]);
                   console.log("customerDataForView", this.customerDataForView);
                 },
                 reject: () => {
-                  this.confirmationService.close;
                   this.setHeaderSidebarBtn();
+                  this.confirmationService.close;
                 },
               });
               this.coreService.removeLoadingScreen();
             } else {
-              if (res["data"]) {
-                this.coreService.showSuccessToast(res["data"]);
+              if (res["msg"]) {
+                this.coreService.showSuccessToast(res["msg"]);
               } else {
                 this.coreService.showSuccessToast(
                   "Profile data successfully saved"
@@ -2183,10 +2181,13 @@ export class AddCustomerComponent implements OnInit {
   }
 
   onCustomerSubmit() {
-    this.isConfirmedCustomer = "true";
+    this.coreService.setHeaderStickyStyle(true);
+    this.coreService.setSidebarBtnFixedStyle(true);
     this.onSubmit();
   }
   onCustomerReject() {
+    this.coreService.setHeaderStickyStyle(true);
+    this.coreService.setSidebarBtnFixedStyle(true);
     this.router.navigate(["navbar", "customer-profile"]);
   }
 
@@ -2227,7 +2228,6 @@ export class AddCustomerComponent implements OnInit {
             .set("userId", this.userId)
             .set("customerType", "Individual")
             .set("isConfirmedCustomer", this.isConfirmedCustomer)
-            .set("primaryId", this.primaryId)
             .set(
               "duplicateCheck",
               this.duplicateCheckFields.length
@@ -2238,7 +2238,6 @@ export class AddCustomerComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
             if (res["error"]) {
               // this.coreService.showWarningToast(res["error"]);
@@ -2251,11 +2250,9 @@ export class AddCustomerComponent implements OnInit {
                   `click Yes to view details`,
                 key: "resetINDWarning",
                 accept: () => {
-                  this.setHeaderSidebarBtn();
-                  this.coreService.setHeaderStickyStyle(false);
-                  this.coreService.setSidebarBtnFixedStyle(false);
+                  this.customerDataForView = [];
                   this.clickforview = true;
-                  this.customerDataForView.push(res["data"]);
+                  this.customerDataForView.push(res["Duplicate Data"]);
                   console.log("customerDataForView", this.customerDataForView);
                 },
                 reject: () => {
@@ -2265,11 +2262,11 @@ export class AddCustomerComponent implements OnInit {
               });
               this.coreService.removeLoadingScreen();
             } else {
-              if (res["data"]) {
-                this.coreService.showSuccessToast(res["data"]);
+              if (res["msg"]) {
+                this.coreService.showSuccessToast(res["msg"]);
               } else {
                 this.coreService.showSuccessToast(
-                  "Profile data updated successfully saved"
+                  "Profile data updated successfully"
                 );
               }
               this.router.navigate(["navbar", "customer-profile"]);
@@ -2372,14 +2369,8 @@ export class AddCustomerComponent implements OnInit {
   }
 
   closeDialog() {
-    this.coreService.displayLoadingScreen();
-    setTimeout(() => {
-      this.coreService.setHeaderStickyStyle(true);
-      this.coreService.setSidebarBtnFixedStyle(true);
-    }, 500);
-    setTimeout(() => {
-      this.coreService.removeLoadingScreen();
-    }, 1000);
+    this.setHeaderSidebarBtn();
+    this.checked = false;
   }
 
   onReset(): void {

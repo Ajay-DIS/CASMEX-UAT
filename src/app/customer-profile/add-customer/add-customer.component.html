@@ -659,7 +659,9 @@
                   <div
                     *ngIf="field.visible"
                     [ngClass]="{
-                      'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': !(field?.newLineField == 'Y'),
+                      'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': !(
+                        field?.newLineField == 'Y'
+                      ),
                       checkbox: field.fieldType == 'checkbox',
                       newLineField: field?.newLineField == 'Y'
                     }"
@@ -1097,7 +1099,7 @@
         inputId="binary"
       ></p-checkbox>
       <label for="binary" style="position: relative; top: 4px; left: 10px"
-        >I confirm that i have verified customer is not same</label
+        >I confirm that I have verified, customer is not same.</label
       >
     </div>
     <div class="customerViewBtn">
@@ -1115,7 +1117,7 @@
         class="customerViewBtn2"
         pButton
         icon="pi pi-times"
-        label="Canceal"
+        label="Cancel"
         (click)="onCustomerReject()"
       ></button>
     </div>
