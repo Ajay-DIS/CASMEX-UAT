@@ -70,7 +70,7 @@
           type="button"
           (click)="searchCustomerMap(customerType)"
           label="Search"
-          class="search-btn ml-2"
+          class="search-btn ml-2 headerbtn"
           [disabled]="!customerType"
         ></button>
         <button
@@ -79,7 +79,7 @@
           type="button"
           (click)="clearCriteria()"
           label="Clear"
-          class="p-button-warning search-btn ml-2 mt-lg-0"
+          class="p-button-warning search-btn ml-2 mt-lg-0 headerbtn"
         ></button>
             </div>
           </div>
@@ -87,13 +87,13 @@
           
         
         </div>
-        <div class="col-md-2 col-lg-2 col-sm-4 col-xs-4 mt-2">
+        <div class="col-md-2 col-lg-2 col-sm-4 col-xs-4 mt-2 headerbtn">
           <button
           pButton
           pRipple
           type="button"
           label="Add Customer"
-          class="p-button-raised ml-4"
+          class="p-button-raised search-btn ml-4"
           (click)="addNewCustomer()"
         ></button>
         </div>
@@ -166,7 +166,7 @@
             pResizableColumn
             [style.width]="col.width"
             [pSortableColumn]="col.field"
-            [pSortableColumnDisabled]="col.field == 'addBenificiary'"
+            [pSortableColumnDisabled]="col.field == 'addBenificiary' || col.field == 'pastTxns'"
           >
             <!-- <div
               style="cursor: pointer"
@@ -184,7 +184,7 @@
             </div> -->
             {{ col.header }}
             <p-sortIcon
-              *ngIf="!(col.field == 'addBenificiary')"
+              *ngIf="!(col.field == 'addBenificiary' || col.field == 'pastTxns')"
               [field]="col.field"
             ></p-sortIcon>
             <!-- <div
@@ -226,7 +226,7 @@
             <span
               class="p-input-icon-left"
               *ngIf="c < columns.length - 3"
-              [style.width]="'120px'"
+              [style.width]= "col.searchWidth"
             >
               <i class="pi pi-search"></i>
               <input
@@ -248,7 +248,7 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="i < columns.length - (columns.length == 9 ? 2 : 3)">
+            <td *ngIf="i < columns.length - (columns.length == 9 ? 3 : 3)">
               <div *ngIf="!(i == 0)" style="display: inline-block">
                 {{ rowData[col["field"]] }}
               </div>
@@ -293,7 +293,7 @@
                   pButton
                   type="button"
                   icon="pi pi-plus"
-                  class="operation-btns mr-2"
+                  class="operation-btns mr-2 btnround"
                   (click)="
                     addNewBeneficiary(
                       rowData,
@@ -312,7 +312,7 @@
                   pButton
                   type="button"
                   icon="pi pi-eye"
-                  class="operation-btns mr-2"
+                  class="operation-btns mr-2 btnround"
                 ></button>
               </span>
             </td>

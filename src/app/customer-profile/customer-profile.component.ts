@@ -100,16 +100,53 @@ export class CustomerProfileComponent implements OnInit {
   criteriaMap = "NA";
 
   columns: any[] = [
-    { field: "customerCode", header: "Customer Code" },
-    { field: "fullName", header: "Customer Full Name" },
-    { field: "nationality", header: "Nationality" },
-    { field: "mobileNumber", header: "Mobile Number" },
-    { field: "idType", header: "ID Type" },
-    { field: "idNumber", header: "ID Number" },
-    { field: "beneficialCount", header: "Total Benf", width: "8%" },
-    { field: "addBenificiary", header: "Add Benf" },
-    // { field: "pastTxns", header: "Past Txns",  },
-    { field: "status", header: "Profile Status" },
+    {
+      field: "customerCode",
+      header: "Customer Code",
+      width: "10%",
+      searchWidth: "120px",
+    },
+    {
+      field: "fullName",
+      header: "Customer Full Name",
+      width: "36%",
+      searchWidth: "180px",
+    },
+    // { field: "nationality", header: "Nationality" },
+    {
+      field: "mobileNumber",
+      header: "Mobile Number",
+      width: "10%",
+      searchWidth: "120px",
+    },
+    { field: "idType", header: "ID Type", width: "8%", searchWidth: "120px" },
+    {
+      field: "idNumber",
+      header: "ID Number",
+      width: "8%",
+      searchWidth: "120px",
+    },
+    {
+      field: "beneficialCount",
+      header: "Total Benf",
+      width: "7%",
+      searchWidth: "85px",
+    },
+    {
+      field: "addBenificiary",
+      header: "Add Benf",
+      width: "7%",
+    },
+    {
+      field: "pastTxns",
+      header: "Past Txns",
+      width: "7%",
+    },
+    {
+      field: "status",
+      header: "Profile Status",
+      width: "7%",
+    },
   ];
 
   sortOrder: any = {
