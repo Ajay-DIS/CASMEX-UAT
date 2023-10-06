@@ -73,7 +73,7 @@
 :host ::ng-deep .p-dropdown .p-dropdown-trigger {
   color: #fff;
 }
-:host ::ng-deep button.p-button {
+:host ::ng-deep button.p-button .headerbtn{
   padding: auto !important;
   height: 33.5px !important;
 }
@@ -82,6 +82,7 @@
 }
 .search-btn {
   margin-bottom: 4px !important;
+  height: 33px !important;
 }
 .searchBox.p-inputtext,
 :host ::ng-deep .searchBox .p-inputtext {
@@ -104,7 +105,10 @@
 .p-input-icon-right {
   width: 61% !important;
 }
-
+.btnround{
+  border-radius: 50% !important;
+  height: 31px !important;
+}
 @media screen and (max-width: 660px) {
   .p-input-icon-right {
     width: 48% !important;
