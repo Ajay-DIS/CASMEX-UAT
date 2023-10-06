@@ -627,6 +627,19 @@ export class DocumentDetailsComponent implements OnInit {
     this.getAllTemplates();
   }
 
+  checkBoxUpdate(e: any, field: any, rowIndex: any) {
+    if (field == "isDefault") {
+      console.log(e);
+      if (e == true) {
+        this.applyCriteriaFormattedData.forEach((data, i) => {
+          if (i != rowIndex) {
+            data[field] = false;
+          }
+        });
+      }
+    }
+  }
+
   selectedColumn(selectCol: any, value: any, index: any) {
     this.applyCriteriaFormattedData[index][selectCol] = value.name;
 
@@ -646,6 +659,7 @@ export class DocumentDetailsComponent implements OnInit {
     };
     clonedRow[fieldName] = "clone,delete";
     clonedRow["linked"] = "N";
+    clonedRow["isDefault"] = false;
     this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {
