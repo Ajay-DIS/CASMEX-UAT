@@ -1323,371 +1323,373 @@ export class CorporateComponent implements OnInit, OnChanges {
 
     console.log("::SAVE", this.primaryId, this.duplicateCheckFields);
 
-    // if (this.corporateForm.invalid) {
-    //   this.coreService.showWarningToast("Some fields are invalid");
-    //   return;
-    // }
+    if (this.corporateForm.invalid) {
+      this.coreService.showWarningToast("Some fields are invalid");
+      return;
+    }
 
-    // if (this.uploadedBeneficialData.length) {
-    //   let benePercent = 0;
-    //   this.uploadedBeneficialData.forEach((beneData) => {
-    //     if (beneData.percentage && !Number.isNaN(Number(beneData.percentage))) {
-    //       benePercent += +beneData.percentage;
-    //     } else {
-    //       benePercent += 0;
-    //     }
-    //   });
+    this.isConfirmedCustomer = "false";
 
-    //   if (benePercent < 100) {
-    //     this.coreService.showWarningToast(
-    //       "Add all the beneficial owner details, total beneficial owner % value should equal to 100 "
-    //     );
-    //     return;
-    //   } else if (benePercent > 100) {
-    //     this.coreService.showWarningToast(
-    //       "Total beneficial owner % value should equal to 100"
-    //     );
-    //     return;
-    //   }
-    // }
+    if (this.uploadedBeneficialData.length) {
+      let benePercent = 0;
+      this.uploadedBeneficialData.forEach((beneData) => {
+        if (beneData.percentage && !Number.isNaN(Number(beneData.percentage))) {
+          benePercent += +beneData.percentage;
+        } else {
+          benePercent += 0;
+        }
+      });
 
-    // this.coreService.displayLoadingScreen();
+      if (benePercent < 100) {
+        this.coreService.showWarningToast(
+          "Add all the beneficial owner details, total beneficial owner % value should equal to 100 "
+        );
+        return;
+      } else if (benePercent > 100) {
+        this.coreService.showWarningToast(
+          "Total beneficial owner % value should equal to 100"
+        );
+        return;
+      }
+    }
 
-    // let data = this.corporateForm.getRawValue();
+    this.coreService.displayLoadingScreen();
 
-    // delete data["KYC Doc Upload"];
-    // delete data["Beneficial Owner Details"];
-    // delete data["Representative Details"];
+    let data = this.corporateForm.getRawValue();
 
-    // let payloadData = Object.assign({}, ...Object.values(data));
+    delete data["KYC Doc Upload"];
+    delete data["Beneficial Owner Details"];
+    delete data["Representative Details"];
 
-    // this.formSections.forEach((section) => {
-    //   if (
-    //     !(
-    //       section.formName == "KYC Doc Upload" ||
-    //       section.formName == "Beneficial Owner Details" ||
-    //       section.formName == "Representative Details"
-    //     )
-    //   ) {
-    //     section.fields.forEach((field) => {
-    //       if (
-    //         field.fieldType == "select" ||
-    //         field.fieldType == "smart-search"
-    //       ) {
-    //         let value = payloadData[field["fieldName"]]
-    //           ? payloadData[field["fieldName"]]["codeName"]
-    //           : "";
-    //         payloadData[field["fieldName"]] = value;
-    //       } else if (field.fieldType == "checkbox") {
-    //         let value = payloadData[field["fieldName"]] == true ? true : false;
-    //         payloadData[field["fieldName"]] = value;
-    //       } else if (field.fieldType == "date") {
-    //         let dateFormatted = payloadData[field["fieldName"]]
-    //           ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
-    //             ? new Date(payloadData[field["fieldName"]]).toLocaleDateString(
-    //                 "en-GB"
-    //               )
-    //             : new Date(
-    //                 payloadData[field["fieldName"]]
-    //                   .split("/")
-    //                   .reverse()
-    //                   .join("-")
-    //               ).toLocaleDateString("en-GB")
-    //           : "";
-    //         payloadData[field["fieldName"]] = dateFormatted;
-    //       } else {
-    //         payloadData[field["fieldName"]] =
-    //           payloadData[field["fieldName"]] == "null" ||
-    //           payloadData[field["fieldName"]] == null
-    //             ? ""
-    //             : payloadData[field["fieldName"]];
-    //       }
-    //     });
-    //   }
-    // });
+    let payloadData = Object.assign({}, ...Object.values(data));
 
-    // // payloadData["status"] = "Active";
-    // if (this.mode == "edit") {
-    //   payloadData["createdBy"] = this.CustomerData["createdBy"]
-    //     ? this.CustomerData["createdBy"]
-    //     : "";
-    //   payloadData["createdDateTime"] = this.CustomerData["createdDateTime"]
-    //     ? this.CustomerData["createdDateTime"]
-    //     : "";
-    //   payloadData["updatedBy"] = this.CustomerData["updatedBy"]
-    //     ? this.CustomerData["updatedBy"]
-    //     : "";
-    //   payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"]
-    //     ? this.CustomerData["updatedDateTime"]
-    //     : "";
-    //   payloadData["id"] = this.custId;
+    this.formSections.forEach((section) => {
+      if (
+        !(
+          section.formName == "KYC Doc Upload" ||
+          section.formName == "Beneficial Owner Details" ||
+          section.formName == "Representative Details"
+        )
+      ) {
+        section.fields.forEach((field) => {
+          if (
+            field.fieldType == "select" ||
+            field.fieldType == "smart-search"
+          ) {
+            let value = payloadData[field["fieldName"]]
+              ? payloadData[field["fieldName"]]["codeName"]
+              : "";
+            payloadData[field["fieldName"]] = value;
+          } else if (field.fieldType == "checkbox") {
+            let value = payloadData[field["fieldName"]] == true ? true : false;
+            payloadData[field["fieldName"]] = value;
+          } else if (field.fieldType == "date") {
+            let dateFormatted = payloadData[field["fieldName"]]
+              ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
+                ? new Date(payloadData[field["fieldName"]]).toLocaleDateString(
+                    "en-GB"
+                  )
+                : new Date(
+                    payloadData[field["fieldName"]]
+                      .split("/")
+                      .reverse()
+                      .join("-")
+                  ).toLocaleDateString("en-GB")
+              : "";
+            payloadData[field["fieldName"]] = dateFormatted;
+          } else {
+            payloadData[field["fieldName"]] =
+              payloadData[field["fieldName"]] == "null" ||
+              payloadData[field["fieldName"]] == null
+                ? ""
+                : payloadData[field["fieldName"]];
+          }
+        });
+      }
+    });
 
-    //   let formData = new FormData();
-    //   for (let key in payloadData) {
-    //     formData.append(key, payloadData[key]);
-    //   }
+    // payloadData["status"] = "Active";
+    if (this.mode == "edit") {
+      payloadData["createdBy"] = this.CustomerData["createdBy"]
+        ? this.CustomerData["createdBy"]
+        : "";
+      payloadData["createdDateTime"] = this.CustomerData["createdDateTime"]
+        ? this.CustomerData["createdDateTime"]
+        : "";
+      payloadData["updatedBy"] = this.CustomerData["updatedBy"]
+        ? this.CustomerData["updatedBy"]
+        : "";
+      payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"]
+        ? this.CustomerData["updatedDateTime"]
+        : "";
+      payloadData["id"] = this.custId;
 
-    //   // formData.append("uploadDocuments[0].idNumber", "21");
-    //   // formData.append("uploadDocuments[0].operation", "null");
-    //   // formData.append("uploadDocuments[0].uploadFrontSideFileName", "");
-    //   // formData.append("uploadDocuments[0].uploadBackSideFileName", "");
-    //   // formData.append("uploadDocuments[0].uploadFrontSideFile", "");
-    //   // formData.append("uploadDocuments[0].uploadBackSideFile", "");
-    //   // formData.append("uploadDocuments[0].uploadFrontSide", "");
-    //   // formData.append("uploadDocuments[0].uploadBackSide", "");
-    //   // formData.append("uploadDocuments[0].uploadFrontSideOriginal", "1.txt");
-    //   // formData.append("uploadDocuments[0].uploadBackSideOriginal", "2.txt");
-    //   // formData.append("uploadDocuments[0].customerId", "102");
-    //   // formData.append("uploadDocuments[0].status", "Active");
-    //   // formData.append("uploadDocuments[0].customerType", "COR");
-    //   // formData.append("uploadDocuments[0].idIssueDate", "23/01/2023");
-    //   // formData.append("uploadDocuments[0].idExpiryDate", "23/01/2023");
-    //   // formData.append("uploadDocuments[0].createdBy", "");
-    //   // formData.append("uploadDocuments[0].updatedBy", "yogeshm");
-    //   // formData.append("uploadDocuments[0].createdDateTime", "");
-    //   // formData.append("uploadDocuments[0].updatedDateTime", "");
+      let formData = new FormData();
+      for (let key in payloadData) {
+        formData.append(key, payloadData[key]);
+      }
 
-    //   if (this.uploadedKycData.length) {
-    //     for (let i = 0; i < this.uploadedKycData.length; i++) {
-    //       for (let key in this.uploadedKycData[i]) {
-    //         if (key == "idIssueDate" || key == "idExpiryDate") {
-    //           let date = this.uploadedKycData[i][key]
-    //             ? this.uploadedKycData[i][key]
-    //             : "";
-    //           formData.append(`uploadDocuments[${i}].${key}`, date);
-    //         } else if (
-    //           key == "uploadFrontSideFile" ||
-    //           key == "uploadBackSideFile"
-    //         ) {
-    //           let file =
-    //             this.uploadedKycData[i][key] &&
-    //             this.uploadedKycData[i][key] != ""
-    //               ? this.uploadedKycData[i][key]
-    //               : "";
-    //           if (file != "") {
-    //             formData.append(`uploadDocuments[${i}].${key}`, file);
-    //           }
-    //         } else {
-    //           if (
-    //             !(this.uploadedKycData[i]["operation"] == "add" && key == "id")
-    //           ) {
-    //             formData.append(
-    //               `uploadDocuments[${i}].${key}`,
-    //               this.uploadedKycData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
-    //   if (this.uploadedBeneficialData.length) {
-    //     for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
-    //       for (let key in this.uploadedBeneficialData[i]) {
-    //         if (
-    //           key == "dateOfBirth" ||
-    //           key == "idIssueDate" ||
-    //           key == "idExpiryDate" ||
-    //           key == "visaExpiryDate"
-    //         ) {
-    //           let date = this.uploadedBeneficialData[i][key]
-    //             ? this.uploadedBeneficialData[i][key]
-    //             : "";
-    //           formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
-    //         } else if (key == "idCopyUploadFile") {
-    //           let file =
-    //             this.uploadedBeneficialData[i][key] &&
-    //             this.uploadedBeneficialData[i][key] != ""
-    //               ? this.uploadedBeneficialData[i][key]
-    //               : "";
-    //           if (file != "") {
-    //             formData.append(`beneficialOwerDetailsDto[${i}].${key}`, file);
-    //           }
-    //         } else {
-    //           if (
-    //             !(
-    //               this.uploadedBeneficialData[i]["operation"] == "add" &&
-    //               key == "id"
-    //             )
-    //           ) {
-    //             formData.append(
-    //               `beneficialOwerDetailsDto[${i}].${key}`,
-    //               this.uploadedBeneficialData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
-    //   if (this.uploadedRepresentativeData.length) {
-    //     for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
-    //       for (let key in this.uploadedRepresentativeData[i]) {
-    //         if (
-    //           key == "representativeDateOfBirth" ||
-    //           key == "representativeIdIssueDate" ||
-    //           key == "representativeIdExpiryDate" ||
-    //           key == "representativeVisaExpiryDate" ||
-    //           key == "representativeAuthorizationLetterExpiryDate"
-    //         ) {
-    //           let date = this.uploadedRepresentativeData[i][key]
-    //             ? this.uploadedRepresentativeData[i][key]
-    //             : "";
-    //           formData.append(`representativeDetailsDto[${i}].${key}`, date);
-    //         } else if (
-    //           key == "representativeIdCopyUploadFile" ||
-    //           key == "representativeAuthorizationLetterFile" ||
-    //           key == "otherDocumentUploadFile"
-    //         ) {
-    //           let file =
-    //             this.uploadedRepresentativeData[i][key] &&
-    //             this.uploadedRepresentativeData[i][key] != ""
-    //               ? this.uploadedRepresentativeData[i][key]
-    //               : "";
-    //           if (file != "") {
-    //             formData.append(`representativeDetailsDto[${i}].${key}`, file);
-    //           }
-    //         } else {
-    //           if (
-    //             !(
-    //               this.uploadedRepresentativeData[i]["operation"] == "add" &&
-    //               key == "id"
-    //             )
-    //           ) {
-    //             formData.append(
-    //               `representativeDetailsDto[${i}].${key}`,
-    //               this.uploadedRepresentativeData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
-    //   this.updateCorporateCustomer(formData);
-    // } else {
-    //   let formData = new FormData();
+      // formData.append("uploadDocuments[0].idNumber", "21");
+      // formData.append("uploadDocuments[0].operation", "null");
+      // formData.append("uploadDocuments[0].uploadFrontSideFileName", "");
+      // formData.append("uploadDocuments[0].uploadBackSideFileName", "");
+      // formData.append("uploadDocuments[0].uploadFrontSideFile", "");
+      // formData.append("uploadDocuments[0].uploadBackSideFile", "");
+      // formData.append("uploadDocuments[0].uploadFrontSide", "");
+      // formData.append("uploadDocuments[0].uploadBackSide", "");
+      // formData.append("uploadDocuments[0].uploadFrontSideOriginal", "1.txt");
+      // formData.append("uploadDocuments[0].uploadBackSideOriginal", "2.txt");
+      // formData.append("uploadDocuments[0].customerId", "102");
+      // formData.append("uploadDocuments[0].status", "Active");
+      // formData.append("uploadDocuments[0].customerType", "COR");
+      // formData.append("uploadDocuments[0].idIssueDate", "23/01/2023");
+      // formData.append("uploadDocuments[0].idExpiryDate", "23/01/2023");
+      // formData.append("uploadDocuments[0].createdBy", "");
+      // formData.append("uploadDocuments[0].updatedBy", "yogeshm");
+      // formData.append("uploadDocuments[0].createdDateTime", "");
+      // formData.append("uploadDocuments[0].updatedDateTime", "");
 
-    //   for (let key in payloadData) {
-    //     formData.append(key, payloadData[key]);
-    //   }
+      if (this.uploadedKycData.length) {
+        for (let i = 0; i < this.uploadedKycData.length; i++) {
+          for (let key in this.uploadedKycData[i]) {
+            if (key == "idIssueDate" || key == "idExpiryDate") {
+              let date = this.uploadedKycData[i][key]
+                ? this.uploadedKycData[i][key]
+                : "";
+              formData.append(`uploadDocuments[${i}].${key}`, date);
+            } else if (
+              key == "uploadFrontSideFile" ||
+              key == "uploadBackSideFile"
+            ) {
+              let file =
+                this.uploadedKycData[i][key] &&
+                this.uploadedKycData[i][key] != ""
+                  ? this.uploadedKycData[i][key]
+                  : "";
+              if (file != "") {
+                formData.append(`uploadDocuments[${i}].${key}`, file);
+              }
+            } else {
+              if (
+                !(this.uploadedKycData[i]["operation"] == "add" && key == "id")
+              ) {
+                formData.append(
+                  `uploadDocuments[${i}].${key}`,
+                  this.uploadedKycData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      if (this.uploadedBeneficialData.length) {
+        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+          for (let key in this.uploadedBeneficialData[i]) {
+            if (
+              key == "dateOfBirth" ||
+              key == "idIssueDate" ||
+              key == "idExpiryDate" ||
+              key == "visaExpiryDate"
+            ) {
+              let date = this.uploadedBeneficialData[i][key]
+                ? this.uploadedBeneficialData[i][key]
+                : "";
+              formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
+            } else if (key == "idCopyUploadFile") {
+              let file =
+                this.uploadedBeneficialData[i][key] &&
+                this.uploadedBeneficialData[i][key] != ""
+                  ? this.uploadedBeneficialData[i][key]
+                  : "";
+              if (file != "") {
+                formData.append(`beneficialOwerDetailsDto[${i}].${key}`, file);
+              }
+            } else {
+              if (
+                !(
+                  this.uploadedBeneficialData[i]["operation"] == "add" &&
+                  key == "id"
+                )
+              ) {
+                formData.append(
+                  `beneficialOwerDetailsDto[${i}].${key}`,
+                  this.uploadedBeneficialData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      if (this.uploadedRepresentativeData.length) {
+        for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
+          for (let key in this.uploadedRepresentativeData[i]) {
+            if (
+              key == "representativeDateOfBirth" ||
+              key == "representativeIdIssueDate" ||
+              key == "representativeIdExpiryDate" ||
+              key == "representativeVisaExpiryDate" ||
+              key == "representativeAuthorizationLetterExpiryDate"
+            ) {
+              let date = this.uploadedRepresentativeData[i][key]
+                ? this.uploadedRepresentativeData[i][key]
+                : "";
+              formData.append(`representativeDetailsDto[${i}].${key}`, date);
+            } else if (
+              key == "representativeIdCopyUploadFile" ||
+              key == "representativeAuthorizationLetterFile" ||
+              key == "otherDocumentUploadFile"
+            ) {
+              let file =
+                this.uploadedRepresentativeData[i][key] &&
+                this.uploadedRepresentativeData[i][key] != ""
+                  ? this.uploadedRepresentativeData[i][key]
+                  : "";
+              if (file != "") {
+                formData.append(`representativeDetailsDto[${i}].${key}`, file);
+              }
+            } else {
+              if (
+                !(
+                  this.uploadedRepresentativeData[i]["operation"] == "add" &&
+                  key == "id"
+                )
+              ) {
+                formData.append(
+                  `representativeDetailsDto[${i}].${key}`,
+                  this.uploadedRepresentativeData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      this.updateCorporateCustomer(formData);
+    } else {
+      let formData = new FormData();
 
-    //   console.log(this.uploadedKycData);
-    //   if (this.uploadedKycData.length) {
-    //     for (let i = 0; i < this.uploadedKycData.length; i++) {
-    //       for (let key in this.uploadedKycData[i]) {
-    //         if (key != "id") {
-    //           if (key == "idIssueDate" || key == "idExpiryDate") {
-    //             let date = this.uploadedKycData[i][key]
-    //               ? this.uploadedKycData[i][key]
-    //               : "";
-    //             formData.append(`uploadDocuments[${i}].${key}`, date);
-    //           } else if (
-    //             key == "uploadFrontSideFile" ||
-    //             key == "uploadBackSideFile"
-    //           ) {
-    //             let file =
-    //               this.uploadedKycData[i][key] &&
-    //               this.uploadedKycData[i][key] != ""
-    //                 ? this.uploadedKycData[i][key]
-    //                 : "";
-    //             if (file != "") {
-    //               formData.append(`uploadDocuments[${i}].${key}`, file);
-    //             }
-    //           } else {
-    //             formData.append(
-    //               `uploadDocuments[${i}].${key}`,
-    //               this.uploadedKycData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
-    //   if (this.uploadedBeneficialData.length) {
-    //     for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
-    //       for (let key in this.uploadedBeneficialData[i]) {
-    //         if (key != "id") {
-    //           if (
-    //             key == "dateOfBirth" ||
-    //             key == "idIssueDate" ||
-    //             key == "idExpiryDate" ||
-    //             key == "visaExpiryDate"
-    //           ) {
-    //             let date = this.uploadedBeneficialData[i][key]
-    //               ? this.uploadedBeneficialData[i][key]
-    //               : "";
-    //             formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
-    //           } else if (key == "idCopyUploadFile") {
-    //             let file =
-    //               this.uploadedBeneficialData[i][key] &&
-    //               this.uploadedBeneficialData[i][key] != ""
-    //                 ? this.uploadedBeneficialData[i][key]
-    //                 : "";
-    //             if (file != "") {
-    //               formData.append(
-    //                 `beneficialOwerDetailsDto[${i}].${key}`,
-    //                 file
-    //               );
-    //             }
-    //           } else {
-    //             formData.append(
-    //               `beneficialOwerDetailsDto[${i}].${key}`,
-    //               this.uploadedBeneficialData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
-    //   if (this.uploadedRepresentativeData.length) {
-    //     for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
-    //       for (let key in this.uploadedRepresentativeData[i]) {
-    //         if (key != "id") {
-    //           if (
-    //             key == "representativeDateOfBirth" ||
-    //             key == "representativeIdIssueDate" ||
-    //             key == "representativeIdExpiryDate" ||
-    //             key == "representativeVisaExpiryDate" ||
-    //             key == "representativeAuthorizationLetterExpiryDate"
-    //           ) {
-    //             let date = this.uploadedRepresentativeData[i][key]
-    //               ? this.uploadedRepresentativeData[i][key]
-    //               : "";
-    //             formData.append(`representativeDetailsDto[${i}].${key}`, date);
-    //           } else if (
-    //             key == "representativeIdCopyUploadFile" ||
-    //             key == "representativeAuthorizationLetterFile" ||
-    //             key == "otherDocumentUploadFile"
-    //           ) {
-    //             let file =
-    //               this.uploadedRepresentativeData[i][key] &&
-    //               this.uploadedRepresentativeData[i][key] != ""
-    //                 ? this.uploadedRepresentativeData[i][key]
-    //                 : "";
-    //             if (file != "") {
-    //               formData.append(
-    //                 `representativeDetailsDto[${i}].${key}`,
-    //                 file
-    //               );
-    //             }
-    //           } else {
-    //             formData.append(
-    //               `representativeDetailsDto[${i}].${key}`,
-    //               this.uploadedRepresentativeData[i][key]
-    //             );
-    //           }
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //   }
+      for (let key in payloadData) {
+        formData.append(key, payloadData[key]);
+      }
 
-    //   this.saveCorporateCustomer(formData);
-    // }
-    // console.log(JSON.stringify(payloadData, null, 2));
+      console.log(this.uploadedKycData);
+      if (this.uploadedKycData.length) {
+        for (let i = 0; i < this.uploadedKycData.length; i++) {
+          for (let key in this.uploadedKycData[i]) {
+            if (key != "id") {
+              if (key == "idIssueDate" || key == "idExpiryDate") {
+                let date = this.uploadedKycData[i][key]
+                  ? this.uploadedKycData[i][key]
+                  : "";
+                formData.append(`uploadDocuments[${i}].${key}`, date);
+              } else if (
+                key == "uploadFrontSideFile" ||
+                key == "uploadBackSideFile"
+              ) {
+                let file =
+                  this.uploadedKycData[i][key] &&
+                  this.uploadedKycData[i][key] != ""
+                    ? this.uploadedKycData[i][key]
+                    : "";
+                if (file != "") {
+                  formData.append(`uploadDocuments[${i}].${key}`, file);
+                }
+              } else {
+                formData.append(
+                  `uploadDocuments[${i}].${key}`,
+                  this.uploadedKycData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      if (this.uploadedBeneficialData.length) {
+        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+          for (let key in this.uploadedBeneficialData[i]) {
+            if (key != "id") {
+              if (
+                key == "dateOfBirth" ||
+                key == "idIssueDate" ||
+                key == "idExpiryDate" ||
+                key == "visaExpiryDate"
+              ) {
+                let date = this.uploadedBeneficialData[i][key]
+                  ? this.uploadedBeneficialData[i][key]
+                  : "";
+                formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
+              } else if (key == "idCopyUploadFile") {
+                let file =
+                  this.uploadedBeneficialData[i][key] &&
+                  this.uploadedBeneficialData[i][key] != ""
+                    ? this.uploadedBeneficialData[i][key]
+                    : "";
+                if (file != "") {
+                  formData.append(
+                    `beneficialOwerDetailsDto[${i}].${key}`,
+                    file
+                  );
+                }
+              } else {
+                formData.append(
+                  `beneficialOwerDetailsDto[${i}].${key}`,
+                  this.uploadedBeneficialData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+      if (this.uploadedRepresentativeData.length) {
+        for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
+          for (let key in this.uploadedRepresentativeData[i]) {
+            if (key != "id") {
+              if (
+                key == "representativeDateOfBirth" ||
+                key == "representativeIdIssueDate" ||
+                key == "representativeIdExpiryDate" ||
+                key == "representativeVisaExpiryDate" ||
+                key == "representativeAuthorizationLetterExpiryDate"
+              ) {
+                let date = this.uploadedRepresentativeData[i][key]
+                  ? this.uploadedRepresentativeData[i][key]
+                  : "";
+                formData.append(`representativeDetailsDto[${i}].${key}`, date);
+              } else if (
+                key == "representativeIdCopyUploadFile" ||
+                key == "representativeAuthorizationLetterFile" ||
+                key == "otherDocumentUploadFile"
+              ) {
+                let file =
+                  this.uploadedRepresentativeData[i][key] &&
+                  this.uploadedRepresentativeData[i][key] != ""
+                    ? this.uploadedRepresentativeData[i][key]
+                    : "";
+                if (file != "") {
+                  formData.append(
+                    `representativeDetailsDto[${i}].${key}`,
+                    file
+                  );
+                }
+              } else {
+                formData.append(
+                  `representativeDetailsDto[${i}].${key}`,
+                  this.uploadedRepresentativeData[i][key]
+                );
+              }
+            }
+          }
+        }
+      } else {
+      }
+
+      this.saveCorporateCustomer(formData);
+    }
+    console.log(JSON.stringify(payloadData, null, 2));
   }
 
   setCustomerFormData(data: any) {
@@ -2105,7 +2107,14 @@ export class CorporateComponent implements OnInit, OnChanges {
           headers: new HttpHeaders()
             .set("userId", this.userId)
             .set("customerType", "Corporate")
-            .set("isConfirmedCustomer", this.isConfirmedCustomer),
+            .set("isConfirmedCustomer", this.isConfirmedCustomer)
+            .set("primaryId", this.primaryId)
+            .set(
+              "duplicateCheck",
+              this.duplicateCheckFields.length
+                ? this.duplicateCheckFields.join(",")
+                : "NA"
+            ),
         }
       )
       .subscribe(
@@ -2213,7 +2222,15 @@ export class CorporateComponent implements OnInit, OnChanges {
         {
           headers: new HttpHeaders()
             .set("userId", this.userId)
-            .set("customerType", "Corporate"),
+            .set("customerType", "Corporate")
+            .set("isConfirmedCustomer", this.isConfirmedCustomer)
+            .set("primaryId", this.primaryId)
+            .set(
+              "duplicateCheck",
+              this.duplicateCheckFields.length
+                ? this.duplicateCheckFields.join(",")
+                : "NA"
+            ),
         }
       )
       .subscribe(

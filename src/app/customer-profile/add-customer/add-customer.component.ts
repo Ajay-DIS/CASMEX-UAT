@@ -1341,6 +1341,8 @@ export class AddCustomerComponent implements OnInit {
       return;
     }
 
+    this.isConfirmedCustomer = "false";
+
     if (this.uploadedBeneficialData.length) {
       let benePercent = 0;
       this.uploadedBeneficialData.forEach((beneData) => {
@@ -2224,6 +2226,7 @@ export class AddCustomerComponent implements OnInit {
           headers: new HttpHeaders()
             .set("userId", this.userId)
             .set("customerType", "Individual")
+            .set("isConfirmedCustomer", this.isConfirmedCustomer)
             .set("primaryId", this.primaryId)
             .set(
               "duplicateCheck",
