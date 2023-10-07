@@ -254,15 +254,20 @@ export class AddBeneficiaryComponent implements OnInit {
       .subscribe(
         (res) => {
           if (res["status"] == "200") {
-            if (res["data"]) {
-              this.coreService.showSuccessToast(res["data"]);
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+              this.coreService.removeLoadingScreen();
             } else {
-              this.coreService.showSuccessToast(
-                "Profile data Updated successfully saved"
-              );
+              if (res["data"]) {
+                this.coreService.showSuccessToast(res["data"]);
+              } else {
+                this.coreService.showSuccessToast(
+                  "Profile data Updated successfully saved"
+                );
+              }
+              this.router.navigate(["navbar", "customer-profile"]);
+              // this.onReset()
             }
-            this.router.navigate(["navbar", "customer-profile"]);
-            // this.onReset()
           } else {
             this.coreService.removeLoadingScreen();
           }
