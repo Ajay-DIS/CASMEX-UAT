@@ -52,6 +52,8 @@ export class CorporateComponent implements OnInit, OnChanges {
   checked: boolean = false;
   isConfirmedCustomer = "false";
 
+  customerIdKyc = "0";
+
   filteredEmployer: any = [];
 
   corporateForm: FormGroup;
@@ -852,15 +854,86 @@ export class CorporateComponent implements OnInit, OnChanges {
     //   .get("representativeIdNumber")
     //   .disable();
   }
+  validateKYC() {
+    let kycData = this.corporateForm.get("KYC Doc Upload").getRawValue();
+    console.log("fields", kycData);
+    console.log("edit", this.editIndexKyc);
+    if (
+      this.uploadedKycData.length &&
+      this.uploadedKycData.filter((data, i) => {
+        if (!(this.editIndexKyc == i)) {
+          return data.documentType == kycData.documentType?.codeName;
+        }
+      })?.length
+    ) {
+      this.coreService.showWarningToast("This Document type is already added");
+      return;
+    } else {
+      let recordId = "0";
+      this.customerIdKyc = "0";
+      let operationCustomer = "save";
+      if (this.mode == "edit") {
+        if (this.editApiIdKyc && typeof this.editApiIdKyc == "number") {
+          this.customerIdKyc = this.custId;
+          recordId = this.editApiIdKyc;
+          operationCustomer = "update";
+        } else {
+          recordId = "0";
+          this.customerIdKyc = "0";
+          operationCustomer = "save";
+        }
+      }
+      console.log("idNumber", String(kycData.idNumber));
+      console.log("documentType", kycData.documentType.codeName);
+      console.log("operation", operationCustomer);
+      console.log("recordId", recordId);
+      console.log("customerId", this.customerIdKyc);
 
+      this.http
+        .get(`/remittance/corporateCustomerController/validateKycDetails`, {
+          headers: new HttpHeaders()
+            .set("idNumber", String(kycData.idNumber))
+            .set("documentType", kycData.documentType.codeName)
+            .set("customerType", "Individual")
+            .set("operation", operationCustomer)
+            .set("recordId", recordId)
+            .set("customerId", this.customerIdKyc),
+        })
+        .subscribe(
+          (res) => {
+            if (res["status"] == "200") {
+              if (res["error"]) {
+                if (res["error"] == "No data found.") {
+                  this.addKyc();
+                } else {
+                  this.coreService.showWarningToast(res["error"]);
+                }
+                this.coreService.removeLoadingScreen();
+              }
+            } else {
+              this.coreService.removeLoadingScreen();
+            }
+          },
+          (err) => {
+            this.coreService.showWarningToast(
+              "Some error while saving data, Try again in sometime"
+            );
+            this.coreService.removeLoadingScreen();
+          }
+        );
+    }
+    // this.addKyc();
+  }
   addKyc() {
     let kycData = this.corporateForm.get("KYC Doc Upload").getRawValue();
     console.log("fields", kycData);
 
     if (
       this.uploadedKycData.length &&
-      this.uploadedKycData.filter((data) => {
-        return data.documentType == kycData.documentType?.codeName;
+      this.uploadedKycData.filter((data, i) => {
+        if (!(this.editIndexKyc == i)) {
+          return data.documentType == kycData.documentType?.codeName;
+        }
       })?.length
     ) {
       this.coreService.showWarningToast("This Document type is already added");

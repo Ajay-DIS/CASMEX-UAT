@@ -846,7 +846,7 @@
             type="button"
             label="+"
             class="p-button-primary"
-            (click)="addKyc()"
+            (click)="validateKYC()"
             [disabled]="
               corporateForm.get('KYC Doc Upload').get('idNumber').value == '' ||
               corporateForm.get('KYC Doc Upload').get('idNumber').value ==
