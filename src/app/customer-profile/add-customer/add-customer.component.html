@@ -919,7 +919,7 @@
                     type="button"
                     label="+"
                     class="p-button-primary"
-                    (click)="addKyc()"
+                    (click)="validateKYC()"
                     [disabled]="
                       individualForm.get('KYC Doc Upload').get('idNumber')
                         .value == '' ||
