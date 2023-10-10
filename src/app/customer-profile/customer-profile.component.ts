@@ -170,6 +170,12 @@ export class CustomerProfileComponent implements OnInit {
     status: 0,
   };
 
+  documentSettingData: any[] = [];
+
+  primaryId = "NA";
+
+  searchField = "Customer ID";
+
   // totalRecords = 55;
   customerTableLoading = false;
   globalSearch = false;
@@ -186,6 +192,53 @@ export class CustomerProfileComponent implements OnInit {
     // this.getCustomerListData(this.criteriaMap);
     this.currentCriteriaMapKey = "customerId = ";
     this.currentCriteriaKey = "Customer ID = ";
+  }
+
+  getDocSettingData() {
+    this.http
+      .get(`remittance/documentSettingsController/getDocumentSetting`, {
+        headers: new HttpHeaders()
+          .set("criteriaMap", "Country = IN;Form = Customer Profile")
+          .set("form", "Document Settings")
+          .set("moduleName", "Remittance")
+          .set("applications", "Casmex Core"),
+      })
+      .subscribe(
+        (res) => {
+          console.log("DOC DATA", res);
+          if (res["TaxSettingData"]) {
+            this.documentSettingData = res["TaxSettingData"];
+          }
+          if (this.documentSettingData.length) {
+            let primaryDocs = this.documentSettingData.filter((doc) => {
+              return doc.IsDefault == "true";
+            });
+
+            if (primaryDocs.length) {
+              this.primaryId = primaryDocs[0]["Document"];
+
+              this.searchCriteriaOptions.unshift(
+                ...[
+                  {
+                    name: this.primaryId,
+                    code: `documentType = ${this.primaryId};idNumber`,
+                  },
+                ]
+              );
+
+              this.searchField = this.primaryId;
+
+              this.currentCriteriaMapKey = `documentType = ${this.primaryId};idNumber = `;
+              this.currentCriteriaKey = `${this.primaryId} = `;
+            }
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching doc data, Try again in sometime"
+          );
+        }
+      );
   }
 
   // resetSortIcons() {
@@ -394,6 +447,8 @@ export class CustomerProfileComponent implements OnInit {
           this.searchCriteriaOptions.unshift(
             ...[{ name: "Customer ID", code: "customerId" }]
           );
+
+          this.getDocSettingData();
         },
         (err) => {
           // this.coreService.removeLoadingScreen();

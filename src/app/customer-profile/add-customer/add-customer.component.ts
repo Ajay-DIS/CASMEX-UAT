@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -8,7 +8,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
-import { zip } from "rxjs";
+import { Subscription, zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "../customer-profile.service";
 
@@ -17,7 +17,7 @@ import { CustomerProfileService } from "../customer-profile.service";
   templateUrl: "./add-customer.component.html",
   styleUrls: ["./add-customer.component.scss"],
 })
-export class AddCustomerComponent implements OnInit {
+export class AddCustomerComponent implements OnInit, OnDestroy {
   Select: "Select";
 
   constructor(
@@ -102,6 +102,18 @@ export class AddCustomerComponent implements OnInit {
 
   duplicateCheckFields = [];
 
+  docFormSections: any[] = [
+    "KYC Doc Upload",
+    "Beneficial Owner Details",
+    "Representative Details",
+  ];
+
+  kycDocType$: Subscription;
+
+  mandatoryKycDocs: any[] = [];
+
+  copyKycSection: any = {};
+
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
@@ -120,7 +132,6 @@ export class AddCustomerComponent implements OnInit {
       this.custId = params.id;
       this.custType = params.type;
       if (this.custType == "COR") {
-        console.log("Here");
         this.activeTabIndex = 1;
       } else {
         this.activeTabIndex = 0;
@@ -181,6 +192,9 @@ export class AddCustomerComponent implements OnInit {
             let primaryDocs = this.documentSettingData.filter((doc) => {
               return doc.IsDefault == "true";
             });
+            this.mandatoryKycDocs = this.documentSettingData.filter((doc) => {
+              return doc.IsMandatory == "true";
+            });
             this.primaryId = primaryDocs?.length
               ? primaryDocs[0]["Document"]
               : "NA";
@@ -195,7 +209,6 @@ export class AddCustomerComponent implements OnInit {
   }
 
   searchEmployer(e) {
-    console.log("search employer", e);
     this.http
       .get(`/remittance/corporateCustomerController/getEmployeeDetails`, {
         headers: new HttpHeaders()
@@ -203,14 +216,9 @@ export class AddCustomerComponent implements OnInit {
           .set("employeeName", e.query),
       })
       .subscribe((res) => {
-        console.log("result search employer", res);
         this.filteredEmployer = [];
-        // this.filteredEmployer = res["data"];
         res["data"].forEach((ele) => {
-          console.log("ele", ele);
           this.filteredEmployer.push(ele);
-          // this.filteredEmployer.push({ code: ele, name: ele });
-          console.log("filteredEmployer", this.filteredEmployer);
         });
       });
   }
@@ -218,8 +226,6 @@ export class AddCustomerComponent implements OnInit {
   getCustomerMasterData() {
     this.customerService.getCustomerMaster().subscribe(
       (res) => {
-        // this.coreService.removeLoadingScreen();
-        console.log(res);
         this.masterData = res["data"];
         for (let i = 1; i <= 30; i++) {
           this.masterData.salaryDateEmpDetails.push({
@@ -230,10 +236,8 @@ export class AddCustomerComponent implements OnInit {
         if (this.mode == "edit") {
           this.getIndividualCustomer(this.custId);
         }
-        console.log(this.masterData);
       },
       (err) => {
-        // this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Error in fething data");
       }
     );
@@ -252,7 +256,6 @@ export class AddCustomerComponent implements OnInit {
   setFormByData(data: any) {
     this.apiData = data;
     this.individualForm = this.formBuilder.group({});
-    console.log(data);
     let allFormSections = [];
     Object.keys(data).forEach((key) => {
       let formSection = {
@@ -269,7 +272,16 @@ export class AddCustomerComponent implements OnInit {
               fieldType: secData["fieldType"],
               fieldSubtype: secData["fieldSubtype"],
               fieldLabel: secData["fieldLabel"],
-              required: secData["isMandatory"] == "Y" ? true : false,
+              required: this.docFormSections.includes(key)
+                ? false
+                : secData["isMandatory"] == "Y"
+                ? true
+                : false,
+              docFieldMandate: this.docFormSections.includes(key)
+                ? secData["isMandatory"] == "Y"
+                  ? true
+                  : false
+                : false,
               enable: secData["isEnable"] == "Y" ? true : false,
               visible:
                 !secData["isVisibile"] || secData["isVisibile"] == "Y"
@@ -322,7 +334,6 @@ export class AddCustomerComponent implements OnInit {
     });
 
     this.formSections = allFormSections;
-    console.log(this.formSections);
     this.formSections.forEach((section) => {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
@@ -362,7 +373,162 @@ export class AddCustomerComponent implements OnInit {
     });
 
     this.disableInputsFile();
+    if (this.individualForm.get("KYC Doc Upload")) {
+      this.copyKycSection = JSON.parse(
+        JSON.stringify(this.formSections)
+      ).filter((section) => section.formName == "KYC Doc Upload")[0];
+
+      this.kycDocType$ = this.individualForm
+        .get("KYC Doc Upload")
+        .get("documentType")
+        .valueChanges.subscribe((val) => this.kycDocChange(val));
+    }
     this.coreService.removeLoadingScreen();
+  }
+
+  kycDocChange(value: any) {
+    if (
+      value &&
+      this.documentSettingData.length &&
+      this.documentSettingData.filter((doc) => {
+        return doc.Document == value.codeName;
+      }).length &&
+      this.formSections.filter(
+        (section) => section.formName == "KYC Doc Upload"
+      ).length
+    ) {
+      let docSetting = this.documentSettingData.filter((doc) => {
+        return doc.Document == value.codeName;
+      })[0];
+
+      let kycSection = this.formSections.filter(
+        (section) => section.formName == "KYC Doc Upload"
+      )[0];
+
+      this.copyKycSection["fields"].forEach((field) => {
+        switch (field.fieldName) {
+          case "idNumber":
+            let docMinMaxLength = docSetting["LengthMinMax"];
+            if (!field.fieldType) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "idNumber") {
+                  f.fieldType =
+                    docSetting["DocumentNoType"] == "Numeric"
+                      ? "number"
+                      : "text";
+                }
+              });
+            }
+            if (
+              docMinMaxLength &&
+              docMinMaxLength.length &&
+              docMinMaxLength != "NA"
+            ) {
+              if (field.minLength != 0 && !field.minLength) {
+                kycSection["fields"].forEach((f) => {
+                  if (f.fieldName == "idNumber") {
+                    f.minLength = +docMinMaxLength.split("/")[0];
+                  }
+                });
+              }
+              if (field.maxLength != 0 && !field.maxLength) {
+                kycSection["fields"].forEach((f) => {
+                  if (f.fieldName == "idNumber") {
+                    f.maxLength = +docMinMaxLength.split("/")[1];
+                  }
+                });
+              }
+            }
+            break;
+
+          case "idIssueCountry":
+            if (!field.docFieldMandate) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "idIssueCountry") {
+                  f.docFieldMandate =
+                    docSetting["IssueCountry"] == "true" ? true : false;
+                }
+              });
+            }
+            break;
+          case "uploadFrontSideFile":
+            if (!field.docFieldMandate) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "uploadFrontSideFile") {
+                  f.docFieldMandate =
+                    docSetting["FrontSide"] == "true" ? true : false;
+                }
+              });
+            }
+            break;
+          case "uploadBackSideFile":
+            if (!field.docFieldMandate) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "uploadBackSideFile") {
+                  f.docFieldMandate =
+                    docSetting["BackSide"] == "true" ? true : false;
+                }
+              });
+            }
+            break;
+          case "imageByPassed":
+            this.individualForm
+              .get("KYC Doc Upload")
+              ?.get("imageByPassed")
+              .disable();
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "imageByPassed") {
+                f.enable = false;
+                if (!field.defaultValue) {
+                  f.defaultValue =
+                    docSetting["BypassImage"] == "true" ? true : false;
+                  this.individualForm
+                    .get("KYC Doc Upload")
+                    ?.get("imageByPassed")
+                    .patchValue(f.defaultValue);
+                  if (f.defaultValue) {
+                    this.byPassKycImg();
+                  }
+                } else {
+                  this.byPassKycImg();
+                }
+              }
+            });
+            break;
+          case "hereByConfirm":
+            if (!field.docFieldMandate) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "hereByConfirm") {
+                  f.docFieldMandate = true;
+                }
+              });
+            }
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }
+
+  byPassKycImg() {
+    let frontField = this.formSections
+      .filter((section) => section.formName == "KYC Doc Upload")[0]
+      ["fields"].filter((field) => {
+        return field.fieldName == "uploadFrontSideFile";
+      });
+    let backField = this.formSections
+      .filter((section) => section.formName == "KYC Doc Upload")[0]
+      ["fields"].filter((field) => {
+        return field.fieldName == "uploadBackSideFile";
+      });
+
+    if (frontField.length) {
+      frontField[0]["docFieldMandate"] = false;
+    }
+    if (backField.length) {
+      backField[0]["docFieldMandate"] = false;
+    }
   }
 
   sameAddress(event: any, fieldName: any) {
@@ -400,8 +566,6 @@ export class AddCustomerComponent implements OnInit {
         };
       }
 
-      console.log(address);
-
       this.individualForm.get("Contact Details").patchValue(address);
     }
   }
@@ -434,7 +598,6 @@ export class AddCustomerComponent implements OnInit {
   }
 
   fileUploadChange(e: any, section: any, field: any, docId: any) {
-    console.log(e.target.files[0], field);
     if (e.target.files[0]) {
       this.coreService.displayLoadingScreen();
       setTimeout(() => {
@@ -453,9 +616,6 @@ export class AddCustomerComponent implements OnInit {
           this.uploadedRepresentativeDoc[field] = e.target.files[0];
         }
 
-        console.log(this.uploadedKycDoc);
-        console.log(this.uploadedBeneficialDoc);
-        console.log(this.uploadedRepresentativeDoc);
         this.coreService.removeLoadingScreen();
       }, 1500);
     }
@@ -496,8 +656,6 @@ export class AddCustomerComponent implements OnInit {
       }),
     };
 
-    console.log("row", row);
-    console.log("index", index);
     this.editIndexKyc = index;
     if (row.id && row.id != "") {
       this.editApiIdKyc = row.id;
@@ -577,7 +735,6 @@ export class AddCustomerComponent implements OnInit {
         updatedDateTime: row["updatedDateTime"],
       }),
     };
-    console.log("row", row);
     this.editIndexBeneficial = index;
     if (row.id && row.id != "") {
       this.editApiIdBeneficial = row.id;
@@ -692,11 +849,6 @@ export class AddCustomerComponent implements OnInit {
       .get("Beneficial Owner Details")
       .get("idCopyUploadFile")
       ?.patchValue(row.idCopyUploadFileName);
-
-    // this.individualForm
-    //   .get("Beneficial Owner Details")
-    //   .get("idNumber")
-    //   .disable();
   }
   selectRowForEditRepresentative(row: any, index: any) {
     this.uploadedRepresentativeDoc = {
@@ -746,7 +898,6 @@ export class AddCustomerComponent implements OnInit {
         updatedDateTime: row["updatedDateTime"],
       }),
     };
-    console.log("row", row);
     this.editIndexRepresentative = index;
     if (row.id && row.id != "") {
       this.editApiIdRepresentative = row.id;
@@ -855,86 +1006,99 @@ export class AddCustomerComponent implements OnInit {
       .get("Representative Details")
       .get("otherDocumentUploadFile")
       ?.patchValue(row.otherDocumentUploadFileName);
-
-    // this.individualForm
-    //   .get("Representative Details")
-    //   .get("representativeIdNumber")
-    //   .disable();
   }
   validateKYC() {
     let kycData = this.individualForm.get("KYC Doc Upload").getRawValue();
-    console.log("fields", kycData);
-    console.log("edit", this.editIndexKyc);
-    if (
-      this.uploadedKycData.length &&
-      this.uploadedKycData.filter((data, i) => {
-        if (!(this.editIndexKyc == i)) {
-          return data.documentType == kycData.documentType?.codeName;
-        }
-      })?.length
-    ) {
-      this.coreService.showWarningToast("This Document type is already added");
-      return;
-    } else {
-      let recordId = "0";
-      this.customerIdKyc = "0";
-      let operationCustomer = "save";
-      if (this.mode == "edit") {
-        if (this.editApiIdKyc && typeof this.editApiIdKyc == "number") {
-          this.customerIdKyc = this.custId;
-          recordId = this.editApiIdKyc;
-          operationCustomer = "update";
-        } else {
-          recordId = "0";
-          this.customerIdKyc = "0";
-          operationCustomer = "save";
-        }
-      }
-      console.log("idNumber", String(kycData.idNumber));
-      console.log("documentType", kycData.documentType.codeName);
-      console.log("operation", operationCustomer);
-      console.log("recordId", recordId);
-      console.log("customerId", this.customerIdKyc);
 
-      this.http
-        .get(`/remittance/corporateCustomerController/validateKycDetails`, {
-          headers: new HttpHeaders()
-            .set("idNumber", String(kycData.idNumber))
-            .set("documentType", kycData.documentType.codeName)
-            .set("customerType", "Individual")
-            .set("operation", operationCustomer)
-            .set("recordId", recordId)
-            .set("customerId", this.customerIdKyc),
-        })
-        .subscribe(
-          (res) => {
-            if (res["status"] == "200") {
-              if (res["error"]) {
-                if (res["error"] == "No data found.") {
-                  this.addKyc();
-                } else {
-                  this.coreService.showWarningToast(res["error"]);
+    let kycMandatePassed = true;
+
+    if (
+      this.formSections.filter(
+        (section) => section.formName == "KYC Doc Upload"
+      ).length
+    ) {
+      this.formSections
+        .filter((section) => section.formName == "KYC Doc Upload")[0]
+        ["fields"].forEach((field) => {
+          if (
+            field.docFieldMandate &&
+            !this.individualForm.get("KYC Doc Upload")?.get(field.fieldName)
+              ?.value
+          ) {
+            this.coreService.showWarningToast(
+              "Fill required KYC document details"
+            );
+            kycMandatePassed = false;
+          }
+        });
+    }
+
+    if (kycMandatePassed) {
+      if (
+        this.uploadedKycData.length &&
+        this.uploadedKycData.filter((data, i) => {
+          if (!(this.editIndexKyc == i)) {
+            return data.documentType == kycData.documentType?.codeName;
+          }
+        })?.length
+      ) {
+        this.coreService.showWarningToast(
+          "This Document type is already added"
+        );
+        return;
+      } else {
+        let recordId = "0";
+        this.customerIdKyc = "0";
+        let operationCustomer = "save";
+        if (this.mode == "edit") {
+          if (this.editApiIdKyc && typeof this.editApiIdKyc == "number") {
+            this.customerIdKyc = this.custId;
+            recordId = this.editApiIdKyc;
+            operationCustomer = "update";
+          } else {
+            recordId = "0";
+            this.customerIdKyc = "0";
+            operationCustomer = "save";
+          }
+        }
+
+        this.http
+          .get(`/remittance/corporateCustomerController/validateKycDetails`, {
+            headers: new HttpHeaders()
+              .set("idNumber", String(kycData.idNumber))
+              .set("documentType", kycData.documentType.codeName)
+              .set("customerType", "Individual")
+              .set("operation", operationCustomer)
+              .set("recordId", String(recordId))
+              .set("customerId", this.customerIdKyc),
+          })
+          .subscribe(
+            (res) => {
+              if (res["status"] == "200") {
+                if (res["error"]) {
+                  if (res["error"] == "No data found.") {
+                    this.addKyc();
+                  } else {
+                    this.coreService.showWarningToast(res["error"]);
+                  }
+                  this.coreService.removeLoadingScreen();
                 }
+              } else {
                 this.coreService.removeLoadingScreen();
               }
-            } else {
+            },
+            (err) => {
+              this.coreService.showWarningToast(
+                "Some error while saving data, Try again in sometime"
+              );
               this.coreService.removeLoadingScreen();
             }
-          },
-          (err) => {
-            this.coreService.showWarningToast(
-              "Some error while saving data, Try again in sometime"
-            );
-            this.coreService.removeLoadingScreen();
-          }
-        );
+          );
+      }
     }
-    // this.addKyc();
   }
   addKyc() {
     let kycData = this.individualForm.get("KYC Doc Upload").getRawValue();
-    console.log("fields", kycData);
-    console.log("kyc", this.editApiIdKyc);
     if (
       this.uploadedKycData.length &&
       this.uploadedKycData.filter((data, i) => {
@@ -946,13 +1110,6 @@ export class AddCustomerComponent implements OnInit {
       this.coreService.showWarningToast("This Document type is already added");
       return;
     }
-    // if (
-    //   !(kycData.uploadFrontSideFile && kycData.uploadFrontSideFile.length) ||
-    //   !(kycData.uploadBackSideFile && kycData.uploadBackSideFile.length)
-    // ) {
-    //   this.coreService.showWarningToast("Documents are required");
-    //   return;
-    // }
     let kycDataObj = {
       idNumber: kycData.idNumber,
       imageByPassed: kycData.imageByPassed,
@@ -1022,7 +1179,6 @@ export class AddCustomerComponent implements OnInit {
       }),
     };
     let index = this.editIndexKyc;
-    console.log("index", index);
     if (index == -1) {
       kycDataObj["id"] = "";
       kycDataObj["operation"] = "add";
@@ -1038,8 +1194,6 @@ export class AddCustomerComponent implements OnInit {
       this.uploadedKycData[index] = kycDataObj;
     }
     this.individualForm.get("KYC Doc Upload").reset();
-    // this.individualForm.get("KYC Doc Upload").get("idNumber").enable();
-    console.log(this.uploadedKycData);
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
@@ -1050,7 +1204,6 @@ export class AddCustomerComponent implements OnInit {
     let beneficialData = this.individualForm
       .get("Beneficial Owner Details")
       .getRawValue();
-    console.log("fields", beneficialData);
 
     if (
       this.uploadedBeneficialData.length &&
@@ -1154,7 +1307,6 @@ export class AddCustomerComponent implements OnInit {
       }),
     };
     let index = this.editIndexBeneficial;
-    console.log("index", index);
     if (index == -1) {
       beneficialDataObj["id"] = "";
       beneficialDataObj["operation"] = "add";
@@ -1170,8 +1322,6 @@ export class AddCustomerComponent implements OnInit {
       this.uploadedBeneficialData[index] = beneficialDataObj;
     }
     this.individualForm.get("Beneficial Owner Details").reset();
-    // this.individualForm.get("Beneficial Owner Details").get("idNumber").enable();
-    console.log(this.uploadedBeneficialData);
     this.editIndexBeneficial = -1;
     this.editApiIdBeneficial = "";
   }
@@ -1179,7 +1329,6 @@ export class AddCustomerComponent implements OnInit {
     let representativeData = this.individualForm
       .get("Representative Details")
       .getRawValue();
-    console.log("fields", representativeData);
 
     if (
       this.uploadedRepresentativeData.length &&
@@ -1374,7 +1523,6 @@ export class AddCustomerComponent implements OnInit {
     };
 
     let index = this.editIndexRepresentative;
-    console.log("index", index);
     if (index == -1) {
       representativeDataObj["id"] = "";
       representativeDataObj["operation"] = "add";
@@ -1390,11 +1538,6 @@ export class AddCustomerComponent implements OnInit {
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
     this.individualForm.get("Representative Details").reset();
-    // this.individualForm
-    //   .get("Representative Details")
-    //   .get("representativeIdNumber")
-    //   .enable();
-    console.log(this.uploadedRepresentativeData);
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";
   }
@@ -1407,8 +1550,6 @@ export class AddCustomerComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    console.log("::SAVE", this.primaryId, this.duplicateCheckFields);
-
     if (this.individualForm.invalid) {
       this.coreService.showWarningToast("Some fields are invalid");
       return;
@@ -1416,255 +1557,132 @@ export class AddCustomerComponent implements OnInit {
 
     this.isConfirmedCustomer = this.checked ? "true" : "false";
 
-    if (this.uploadedBeneficialData.length) {
-      let benePercent = 0;
-      this.uploadedBeneficialData.forEach((beneData) => {
-        if (beneData.percentage && !Number.isNaN(Number(beneData.percentage))) {
-          benePercent += +beneData.percentage;
-        } else {
-          benePercent += 0;
-        }
+    let mandateKycDocPassed = true;
+
+    if (this.mandatoryKycDocs.length) {
+      let arr1 = this.uploadedKycData.map((data) => {
+        return data.documentType;
+      });
+      let arr2 = this.mandatoryKycDocs.map((doc) => {
+        return doc.Document;
       });
 
-      if (benePercent < 100) {
+      if (arr2.every((elem) => arr1.includes(elem))) {
+      } else {
+        mandateKycDocPassed = false;
         this.coreService.showWarningToast(
-          "Add all the beneficial owner details, total beneficial owner % value should equal to 100 "
+          `Mandatory KYC documents are ${arr2.join(", ")}`
         );
-        return;
-      } else if (benePercent > 100) {
-        this.coreService.showWarningToast(
-          "Total beneficial owner % value should equal to 100"
-        );
-        return;
       }
     }
 
-    this.coreService.displayLoadingScreen();
-
-    let data = this.individualForm.getRawValue();
-
-    delete data["KYC Doc Upload"];
-    delete data["Beneficial Owner Details"];
-    delete data["Representative Details"];
-
-    let payloadData = Object.assign({}, ...Object.values(data));
-
-    this.formSections.forEach((section) => {
-      if (
-        !(
-          section.formName == "KYC Doc Upload" ||
-          section.formName == "Beneficial Owner Details" ||
-          section.formName == "Representative Details"
-        )
-      ) {
-        section.fields.forEach((field) => {
+    if (mandateKycDocPassed) {
+      if (this.uploadedBeneficialData.length) {
+        let benePercent = 0;
+        this.uploadedBeneficialData.forEach((beneData) => {
           if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
+            beneData.percentage &&
+            !Number.isNaN(Number(beneData.percentage))
           ) {
-            let value = payloadData[field["fieldName"]]
-              ? payloadData[field["fieldName"]]["codeName"]
-              : "";
-            payloadData[field["fieldName"]] = value;
-          } else if (field.fieldType == "checkbox") {
-            let value = payloadData[field["fieldName"]] == true ? true : false;
-            payloadData[field["fieldName"]] = value;
-          } else if (field.fieldType == "date") {
-            let dateFormatted = payloadData[field["fieldName"]]
-              ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
-                ? new Date(payloadData[field["fieldName"]]).toLocaleDateString(
-                    "en-GB"
-                  )
-                : new Date(
-                    payloadData[field["fieldName"]]
-                      .split("/")
-                      .reverse()
-                      .join("-")
-                  ).toLocaleDateString("en-GB")
-              : "";
-            payloadData[field["fieldName"]] = dateFormatted;
+            benePercent += +beneData.percentage;
           } else {
-            payloadData[field["fieldName"]] =
-              payloadData[field["fieldName"]] == "null" ||
-              payloadData[field["fieldName"]] == null
-                ? ""
-                : payloadData[field["fieldName"]];
+            benePercent += 0;
           }
         });
-      }
-    });
 
-    // payloadData["status"] = "Active";
-    if (this.mode == "edit") {
-      payloadData["createdBy"] = this.CustomerData["createdBy"]
-        ? this.CustomerData["createdBy"]
-        : "";
-      payloadData["createdDateTime"] = this.CustomerData["createdDateTime"]
-        ? this.CustomerData["createdDateTime"]
-        : "";
-      payloadData["updatedBy"] = this.CustomerData["updatedBy"]
-        ? this.CustomerData["updatedBy"]
-        : "";
-      payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"]
-        ? this.CustomerData["updatedDateTime"]
-        : "";
-      payloadData["id"] = this.custId;
-
-      let formData = new FormData();
-      for (let key in payloadData) {
-        formData.append(key, payloadData[key]);
-      }
-
-      // formData.append("uploadDocuments[0].idNumber", "21");
-      // formData.append("uploadDocuments[0].operation", "null");
-      // formData.append("uploadDocuments[0].uploadFrontSideFileName", "");
-      // formData.append("uploadDocuments[0].uploadBackSideFileName", "");
-      // formData.append("uploadDocuments[0].uploadFrontSideFile", "");
-      // formData.append("uploadDocuments[0].uploadBackSideFile", "");
-      // formData.append("uploadDocuments[0].uploadFrontSide", "");
-      // formData.append("uploadDocuments[0].uploadBackSide", "");
-      // formData.append("uploadDocuments[0].uploadFrontSideOriginal", "1.txt");
-      // formData.append("uploadDocuments[0].uploadBackSideOriginal", "2.txt");
-      // formData.append("uploadDocuments[0].customerId", "102");
-      // formData.append("uploadDocuments[0].status", "Active");
-      // formData.append("uploadDocuments[0].customerType", "COR");
-      // formData.append("uploadDocuments[0].idIssueDate", "23/01/2023");
-      // formData.append("uploadDocuments[0].idExpiryDate", "23/01/2023");
-      // formData.append("uploadDocuments[0].createdBy", "");
-      // formData.append("uploadDocuments[0].updatedBy", "yogeshm");
-      // formData.append("uploadDocuments[0].createdDateTime", "");
-      // formData.append("uploadDocuments[0].updatedDateTime", "");
-
-      if (this.uploadedKycData.length) {
-        for (let i = 0; i < this.uploadedKycData.length; i++) {
-          for (let key in this.uploadedKycData[i]) {
-            if (key == "idIssueDate" || key == "idExpiryDate") {
-              let date = this.uploadedKycData[i][key]
-                ? this.uploadedKycData[i][key]
-                : "";
-              formData.append(`uploadDocuments[${i}].${key}`, date);
-            } else if (
-              key == "uploadFrontSideFile" ||
-              key == "uploadBackSideFile"
-            ) {
-              let file =
-                this.uploadedKycData[i][key] &&
-                this.uploadedKycData[i][key] != ""
-                  ? this.uploadedKycData[i][key]
-                  : "";
-              if (file != "") {
-                formData.append(`uploadDocuments[${i}].${key}`, file);
-              }
-            } else {
-              if (
-                !(this.uploadedKycData[i]["operation"] == "add" && key == "id")
-              ) {
-                formData.append(
-                  `uploadDocuments[${i}].${key}`,
-                  this.uploadedKycData[i][key]
-                );
-              }
-            }
-          }
+        if (benePercent < 100) {
+          this.coreService.showWarningToast(
+            "Add all the beneficial owner details, total beneficial owner % value should equal to 100 "
+          );
+          return;
+        } else if (benePercent > 100) {
+          this.coreService.showWarningToast(
+            "Total beneficial owner % value should equal to 100"
+          );
+          return;
         }
-      } else {
       }
-      if (this.uploadedBeneficialData.length) {
-        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
-          for (let key in this.uploadedBeneficialData[i]) {
+
+      this.coreService.displayLoadingScreen();
+
+      let data = this.individualForm.getRawValue();
+
+      delete data["KYC Doc Upload"];
+      delete data["Beneficial Owner Details"];
+      delete data["Representative Details"];
+
+      let payloadData = Object.assign({}, ...Object.values(data));
+
+      this.formSections.forEach((section) => {
+        if (
+          !(
+            section.formName == "KYC Doc Upload" ||
+            section.formName == "Beneficial Owner Details" ||
+            section.formName == "Representative Details"
+          )
+        ) {
+          section.fields.forEach((field) => {
             if (
-              key == "dateOfBirth" ||
-              key == "idIssueDate" ||
-              key == "idExpiryDate" ||
-              key == "visaExpiryDate"
+              field.fieldType == "select" ||
+              field.fieldType == "smart-search"
             ) {
-              let date = this.uploadedBeneficialData[i][key]
-                ? this.uploadedBeneficialData[i][key]
+              let value = payloadData[field["fieldName"]]
+                ? payloadData[field["fieldName"]]["codeName"]
                 : "";
-              formData.append(`beneficialOwerDetailsDto[${i}].${key}`, date);
-            } else if (key == "idCopyUploadFile") {
-              let file =
-                this.uploadedBeneficialData[i][key] &&
-                this.uploadedBeneficialData[i][key] != ""
-                  ? this.uploadedBeneficialData[i][key]
-                  : "";
-              if (file != "") {
-                formData.append(`beneficialOwerDetailsDto[${i}].${key}`, file);
-              }
-            } else {
-              if (
-                !(
-                  this.uploadedBeneficialData[i]["operation"] == "add" &&
-                  key == "id"
-                )
-              ) {
-                formData.append(
-                  `beneficialOwerDetailsDto[${i}].${key}`,
-                  this.uploadedBeneficialData[i][key]
-                );
-              }
-            }
-          }
-        }
-      } else {
-      }
-      if (this.uploadedRepresentativeData.length) {
-        for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
-          for (let key in this.uploadedRepresentativeData[i]) {
-            if (
-              key == "representativeDateOfBirth" ||
-              key == "representativeIdIssueDate" ||
-              key == "representativeIdExpiryDate" ||
-              key == "representativeVisaExpiryDate" ||
-              key == "representativeAuthorizationLetterExpiryDate"
-            ) {
-              let date = this.uploadedRepresentativeData[i][key]
-                ? this.uploadedRepresentativeData[i][key]
+              payloadData[field["fieldName"]] = value;
+            } else if (field.fieldType == "checkbox") {
+              let value =
+                payloadData[field["fieldName"]] == true ? true : false;
+              payloadData[field["fieldName"]] = value;
+            } else if (field.fieldType == "date") {
+              let dateFormatted = payloadData[field["fieldName"]]
+                ? !isNaN(Date.parse(payloadData[field["fieldName"]]))
+                  ? new Date(
+                      payloadData[field["fieldName"]]
+                    ).toLocaleDateString("en-GB")
+                  : new Date(
+                      payloadData[field["fieldName"]]
+                        .split("/")
+                        .reverse()
+                        .join("-")
+                    ).toLocaleDateString("en-GB")
                 : "";
-              formData.append(`representativeDetailsDto[${i}].${key}`, date);
-            } else if (
-              key == "representativeIdCopyUploadFile" ||
-              key == "representativeAuthorizationLetterFile" ||
-              key == "otherDocumentUploadFile"
-            ) {
-              let file =
-                this.uploadedRepresentativeData[i][key] &&
-                this.uploadedRepresentativeData[i][key] != ""
-                  ? this.uploadedRepresentativeData[i][key]
-                  : "";
-              if (file != "") {
-                formData.append(`representativeDetailsDto[${i}].${key}`, file);
-              }
+              payloadData[field["fieldName"]] = dateFormatted;
             } else {
-              if (
-                !(
-                  this.uploadedRepresentativeData[i]["operation"] == "add" &&
-                  key == "id"
-                )
-              ) {
-                formData.append(
-                  `representativeDetailsDto[${i}].${key}`,
-                  this.uploadedRepresentativeData[i][key]
-                );
-              }
+              payloadData[field["fieldName"]] =
+                payloadData[field["fieldName"]] == "null" ||
+                payloadData[field["fieldName"]] == null
+                  ? ""
+                  : payloadData[field["fieldName"]];
             }
-          }
+          });
         }
-      } else {
-      }
-      this.updateIndividualCustomer(formData);
-    } else {
-      let formData = new FormData();
+      });
 
-      for (let key in payloadData) {
-        formData.append(key, payloadData[key]);
-      }
+      // payloadData["status"] = "Active";
+      if (this.mode == "edit") {
+        payloadData["createdBy"] = this.CustomerData["createdBy"]
+          ? this.CustomerData["createdBy"]
+          : "";
+        payloadData["createdDateTime"] = this.CustomerData["createdDateTime"]
+          ? this.CustomerData["createdDateTime"]
+          : "";
+        payloadData["updatedBy"] = this.CustomerData["updatedBy"]
+          ? this.CustomerData["updatedBy"]
+          : "";
+        payloadData["updatedDateTime"] = this.CustomerData["updatedDateTime"]
+          ? this.CustomerData["updatedDateTime"]
+          : "";
+        payloadData["id"] = this.custId;
 
-      console.log(this.uploadedKycData);
-      if (this.uploadedKycData.length) {
-        for (let i = 0; i < this.uploadedKycData.length; i++) {
-          for (let key in this.uploadedKycData[i]) {
-            if (key != "id") {
+        let formData = new FormData();
+        for (let key in payloadData) {
+          formData.append(key, payloadData[key]);
+        }
+
+        if (this.uploadedKycData.length) {
+          for (let i = 0; i < this.uploadedKycData.length; i++) {
+            for (let key in this.uploadedKycData[i]) {
               if (key == "idIssueDate" || key == "idExpiryDate") {
                 let date = this.uploadedKycData[i][key]
                   ? this.uploadedKycData[i][key]
@@ -1683,20 +1701,24 @@ export class AddCustomerComponent implements OnInit {
                   formData.append(`uploadDocuments[${i}].${key}`, file);
                 }
               } else {
-                formData.append(
-                  `uploadDocuments[${i}].${key}`,
-                  this.uploadedKycData[i][key]
-                );
+                if (
+                  !(
+                    this.uploadedKycData[i]["operation"] == "add" && key == "id"
+                  )
+                ) {
+                  formData.append(
+                    `uploadDocuments[${i}].${key}`,
+                    this.uploadedKycData[i][key]
+                  );
+                }
               }
             }
           }
+        } else {
         }
-      } else {
-      }
-      if (this.uploadedBeneficialData.length) {
-        for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
-          for (let key in this.uploadedBeneficialData[i]) {
-            if (key != "id") {
+        if (this.uploadedBeneficialData.length) {
+          for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+            for (let key in this.uploadedBeneficialData[i]) {
               if (
                 key == "dateOfBirth" ||
                 key == "idIssueDate" ||
@@ -1720,20 +1742,25 @@ export class AddCustomerComponent implements OnInit {
                   );
                 }
               } else {
-                formData.append(
-                  `beneficialOwerDetailsDto[${i}].${key}`,
-                  this.uploadedBeneficialData[i][key]
-                );
+                if (
+                  !(
+                    this.uploadedBeneficialData[i]["operation"] == "add" &&
+                    key == "id"
+                  )
+                ) {
+                  formData.append(
+                    `beneficialOwerDetailsDto[${i}].${key}`,
+                    this.uploadedBeneficialData[i][key]
+                  );
+                }
               }
             }
           }
+        } else {
         }
-      } else {
-      }
-      if (this.uploadedRepresentativeData.length) {
-        for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
-          for (let key in this.uploadedRepresentativeData[i]) {
-            if (key != "id") {
+        if (this.uploadedRepresentativeData.length) {
+          for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
+            for (let key in this.uploadedRepresentativeData[i]) {
               if (
                 key == "representativeDateOfBirth" ||
                 key == "representativeIdIssueDate" ||
@@ -1762,24 +1789,155 @@ export class AddCustomerComponent implements OnInit {
                   );
                 }
               } else {
-                formData.append(
-                  `representativeDetailsDto[${i}].${key}`,
-                  this.uploadedRepresentativeData[i][key]
-                );
+                if (
+                  !(
+                    this.uploadedRepresentativeData[i]["operation"] == "add" &&
+                    key == "id"
+                  )
+                ) {
+                  formData.append(
+                    `representativeDetailsDto[${i}].${key}`,
+                    this.uploadedRepresentativeData[i][key]
+                  );
+                }
               }
             }
           }
+        } else {
         }
+        this.updateIndividualCustomer(formData);
       } else {
-      }
+        let formData = new FormData();
 
-      this.saveIndividualCustomer(formData);
+        for (let key in payloadData) {
+          formData.append(key, payloadData[key]);
+        }
+
+        if (this.uploadedKycData.length) {
+          for (let i = 0; i < this.uploadedKycData.length; i++) {
+            for (let key in this.uploadedKycData[i]) {
+              if (key != "id") {
+                if (key == "idIssueDate" || key == "idExpiryDate") {
+                  let date = this.uploadedKycData[i][key]
+                    ? this.uploadedKycData[i][key]
+                    : "";
+                  formData.append(`uploadDocuments[${i}].${key}`, date);
+                } else if (
+                  key == "uploadFrontSideFile" ||
+                  key == "uploadBackSideFile"
+                ) {
+                  let file =
+                    this.uploadedKycData[i][key] &&
+                    this.uploadedKycData[i][key] != ""
+                      ? this.uploadedKycData[i][key]
+                      : "";
+                  if (file != "") {
+                    formData.append(`uploadDocuments[${i}].${key}`, file);
+                  }
+                } else {
+                  formData.append(
+                    `uploadDocuments[${i}].${key}`,
+                    this.uploadedKycData[i][key]
+                  );
+                }
+              }
+            }
+          }
+        } else {
+        }
+        if (this.uploadedBeneficialData.length) {
+          for (let i = 0; i < this.uploadedBeneficialData.length; i++) {
+            for (let key in this.uploadedBeneficialData[i]) {
+              if (key != "id") {
+                if (
+                  key == "dateOfBirth" ||
+                  key == "idIssueDate" ||
+                  key == "idExpiryDate" ||
+                  key == "visaExpiryDate"
+                ) {
+                  let date = this.uploadedBeneficialData[i][key]
+                    ? this.uploadedBeneficialData[i][key]
+                    : "";
+                  formData.append(
+                    `beneficialOwerDetailsDto[${i}].${key}`,
+                    date
+                  );
+                } else if (key == "idCopyUploadFile") {
+                  let file =
+                    this.uploadedBeneficialData[i][key] &&
+                    this.uploadedBeneficialData[i][key] != ""
+                      ? this.uploadedBeneficialData[i][key]
+                      : "";
+                  if (file != "") {
+                    formData.append(
+                      `beneficialOwerDetailsDto[${i}].${key}`,
+                      file
+                    );
+                  }
+                } else {
+                  formData.append(
+                    `beneficialOwerDetailsDto[${i}].${key}`,
+                    this.uploadedBeneficialData[i][key]
+                  );
+                }
+              }
+            }
+          }
+        } else {
+        }
+        if (this.uploadedRepresentativeData.length) {
+          for (let i = 0; i < this.uploadedRepresentativeData.length; i++) {
+            for (let key in this.uploadedRepresentativeData[i]) {
+              if (key != "id") {
+                if (
+                  key == "representativeDateOfBirth" ||
+                  key == "representativeIdIssueDate" ||
+                  key == "representativeIdExpiryDate" ||
+                  key == "representativeVisaExpiryDate" ||
+                  key == "representativeAuthorizationLetterExpiryDate"
+                ) {
+                  let date = this.uploadedRepresentativeData[i][key]
+                    ? this.uploadedRepresentativeData[i][key]
+                    : "";
+                  formData.append(
+                    `representativeDetailsDto[${i}].${key}`,
+                    date
+                  );
+                } else if (
+                  key == "representativeIdCopyUploadFile" ||
+                  key == "representativeAuthorizationLetterFile" ||
+                  key == "otherDocumentUploadFile"
+                ) {
+                  let file =
+                    this.uploadedRepresentativeData[i][key] &&
+                    this.uploadedRepresentativeData[i][key] != ""
+                      ? this.uploadedRepresentativeData[i][key]
+                      : "";
+                  if (file != "") {
+                    formData.append(
+                      `representativeDetailsDto[${i}].${key}`,
+                      file
+                    );
+                  }
+                } else {
+                  formData.append(
+                    `representativeDetailsDto[${i}].${key}`,
+                    this.uploadedRepresentativeData[i][key]
+                  );
+                }
+              }
+            }
+          }
+        } else {
+        }
+
+        this.saveIndividualCustomer(formData);
+      }
+      console.log(JSON.stringify(payloadData, null, 2));
     }
-    console.log(JSON.stringify(payloadData, null, 2));
   }
 
   setCustomerFormData(data: any) {
-    console.log("dropdown", data);
     this.CustomerData = data;
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
@@ -1898,7 +2056,6 @@ export class AddCustomerComponent implements OnInit {
 
         return docData;
       });
-      console.log(":::", this.uploadedKycData);
     }
     if (data["beneficialOwerDetailsDto"]) {
       this.uploadedBeneficialData = data["beneficialOwerDetailsDto"].map(
@@ -1985,8 +2142,6 @@ export class AddCustomerComponent implements OnInit {
           return docData;
         }
       );
-
-      console.log(this.uploadedBeneficialData);
     }
     if (data["representativeDetailsDto"]) {
       this.uploadedRepresentativeData = data["representativeDetailsDto"].map(
@@ -2180,8 +2335,6 @@ export class AddCustomerComponent implements OnInit {
           return docData;
         }
       );
-
-      console.log(this.uploadedRepresentativeData);
     }
   }
 
@@ -2221,7 +2374,6 @@ export class AddCustomerComponent implements OnInit {
                   this.clickforview = true;
 
                   this.customerDataForView.push(res["Duplicate Data"]);
-                  console.log("customerDataForView", this.customerDataForView);
                 },
                 reject: () => {
                   this.setHeaderSidebarBtn();
@@ -2278,7 +2430,6 @@ export class AddCustomerComponent implements OnInit {
         (res) => {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
-            console.log(res["data"]);
             this.setCustomerFormData(res["data"]);
           }
         },
@@ -2326,7 +2477,6 @@ export class AddCustomerComponent implements OnInit {
                   this.customerDataForView = [];
                   this.clickforview = true;
                   this.customerDataForView.push(res["Duplicate Data"]);
-                  console.log("customerDataForView", this.customerDataForView);
                 },
                 reject: () => {
                   this.confirmationService.close;
@@ -2399,7 +2549,6 @@ export class AddCustomerComponent implements OnInit {
   }
 
   viewDoc(fileUI: any, dbFileName: any) {
-    console.log("::", fileUI);
     if (fileUI && fileUI != "") {
       const file = fileUI;
       file.arrayBuffer().then((arrayBuffer) => {
@@ -2410,7 +2559,6 @@ export class AddCustomerComponent implements OnInit {
 
         window.open(blobUrl, "_blank");
         window.URL.revokeObjectURL(blobUrl);
-        console.log(blob);
       });
     } else {
       this.coreService.displayLoadingScreen();
@@ -2423,7 +2571,6 @@ export class AddCustomerComponent implements OnInit {
       service.subscribe(
         (res) => {
           this.coreService.removeLoadingScreen();
-          console.log(":::", res);
           const blobData = new Blob([res], { type: "image/jpeg" });
           const blobUrl = window.URL.createObjectURL(blobData);
 
@@ -2478,6 +2625,10 @@ export class AddCustomerComponent implements OnInit {
     setTimeout(() => {
       this.coreService.removeLoadingScreen();
     }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    this.kycDocType$.unsubscribe();
   }
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS

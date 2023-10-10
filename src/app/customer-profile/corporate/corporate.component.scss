@@ -72,11 +72,11 @@ small.p-error {
 
 div.checkbox {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: left;
   flex-direction: row-reverse;
   align-items: center;
   // flex-basis: fit-content;
-  gap: 15px;
+  gap: 5px;
 }
 
 div.newLineField {
@@ -84,7 +84,7 @@ div.newLineField {
   justify-content: left;
   flex-direction: row-reverse;
   align-items: center;
-  gap: 10px;
+  gap: 3px;
   margin: 10px 0;
 }
 
@@ -201,7 +201,7 @@ div.btn-grp {
   right: 5%;
   top: 8px;
 }
-.custName{
+.custName {
   color: var(--primary-color);
   font-weight: 500;
   font-size: 15px;
@@ -210,25 +210,25 @@ div.btn-grp {
   font-size: 14px;
 }
 .customerViewBtn2 {
-margin-left: 15px;
+  margin-left: 15px;
 }
-.customerViewBtn{
+.customerViewBtn {
   padding: 1rem 1rem 0rem 1rem;
   margin-left: 400px;
 }
 @media screen and (max-width: 576px) {
-  .block{
-    width: 100% !important
+  .block {
+    width: 100% !important;
   }
   .p-dropdown {
-    width: 100% !important
+    width: 100% !important;
   }
   .file-upload {
-    width: 100% !important
+    width: 100% !important;
   }
 }
-@media screen and (max-width:1420px) and (min-width:1201px) {
-  .fieldForm{
+@media screen and (max-width: 1420px) and (min-width: 1201px) {
+  .fieldForm {
     margin-right: 30px;
   }
 }
