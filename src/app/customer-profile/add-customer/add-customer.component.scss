@@ -76,18 +76,18 @@ small.p-error {
 
 div.checkbox {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: left;
   flex-direction: row-reverse;
   align-items: center;
   // flex-basis: fit-content;
-  gap: 15px;
+  gap: 5px;
 }
 div.newLineField {
   display: flex;
   justify-content: left;
   // flex-direction: row-reverse;
   align-items: center;
-  gap: 10px;
+  gap: 3px;
   margin: 10px 0;
 }
 
@@ -226,20 +226,19 @@ div.btn-grp {
   margin-left: 400px;
 }
 
-
 @media screen and (max-width: 576px) {
-  .block{
-    width: 100% !important
+  .block {
+    width: 100% !important;
   }
   .p-dropdown {
-    width: 100% !important
+    width: 100% !important;
   }
   .file-upload {
-    width: 100% !important
+    width: 100% !important;
   }
 }
-@media screen and (max-width:1420px) and (min-width:1201px) {
-  .fieldForm{
+@media screen and (max-width: 1420px) and (min-width: 1201px) {
+  .fieldForm {
     margin-right: 30px;
   }
 }

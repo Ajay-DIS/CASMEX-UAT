@@ -667,7 +667,11 @@
                     }"
                   >
                     <label>{{ field.fieldLabel }}</label
-                    ><span *ngIf="field.required" class="required">*</span>
+                    ><span
+                      *ngIf="field.required || field.docFieldMandate"
+                      class="required"
+                      >*</span
+                    >
                     <ng-container [ngSwitch]="field.fieldType">
                       <div *ngIf="field.name != 'employerNameEmpDetails'">
                         <input
@@ -910,7 +914,10 @@
                     >
                   </div>
                 </ng-container>
-                <div *ngIf="section.formName == 'KYC Doc Upload'">
+                <div
+                  *ngIf="section.formName == 'KYC Doc Upload'"
+                  pTooltip="Document type & ID number required"
+                >
                   <button
                     #addCriteriaBtn
                     pButton
@@ -932,7 +939,10 @@
                     "
                   ></button>
                 </div>
-                <div *ngIf="section.formName == 'Beneficial Owner Details'">
+                <div
+                  *ngIf="section.formName == 'Beneficial Owner Details'"
+                  pTooltip="Document type & ID number required"
+                >
                   <button
                     #addCriteriaBtn
                     pButton
@@ -958,7 +968,10 @@
                     "
                   ></button>
                 </div>
-                <div *ngIf="section.formName == 'Representative Details'">
+                <div
+                  *ngIf="section.formName == 'Representative Details'"
+                  pTooltip="Document type & ID number required"
+                >
                   <button
                     #addCriteriaBtn
                     pButton
