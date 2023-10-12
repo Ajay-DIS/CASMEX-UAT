@@ -1062,6 +1062,8 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           }
         }
 
+        this.coreService.displayLoadingScreen();
+
         this.http
           .get(`/remittance/corporateCustomerController/validateKycDetails`, {
             headers: new HttpHeaders()
@@ -1075,13 +1077,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           .subscribe(
             (res) => {
               if (res["status"] == "200") {
+                this.coreService.removeLoadingScreen();
                 if (res["error"]) {
                   if (res["error"] == "No data found.") {
                     this.addKyc();
                   } else {
                     this.coreService.showWarningToast(res["error"]);
                   }
-                  this.coreService.removeLoadingScreen();
                 }
               } else {
                 this.coreService.removeLoadingScreen();

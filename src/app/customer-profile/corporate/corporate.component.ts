@@ -392,7 +392,6 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         (section) => section.formName == "KYC Doc Upload"
       ).length
     ) {
-
       let docSetting = this.documentSettingData.filter((doc) => {
         return doc.Document == value.codeName;
       })[0];
@@ -1067,6 +1066,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           }
         }
 
+        this.coreService.displayLoadingScreen();
+
         this.http
           .get(`/remittance/corporateCustomerController/validateKycDetails`, {
             headers: new HttpHeaders()
@@ -1080,13 +1081,13 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           .subscribe(
             (res) => {
               if (res["status"] == "200") {
+                this.coreService.removeLoadingScreen();
                 if (res["error"]) {
                   if (res["error"] == "No data found.") {
                     this.addKyc();
                   } else {
                     this.coreService.showWarningToast(res["error"]);
                   }
-                  this.coreService.removeLoadingScreen();
                 }
               } else {
                 this.coreService.removeLoadingScreen();

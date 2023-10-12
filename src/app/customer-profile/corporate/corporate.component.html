@@ -666,6 +666,7 @@
                 class="block"
                 [options]="masterData[field.apiKey]"
                 [formControlName]="field.name"
+                [appendTo]="'body'"
                 placeholder="&nbsp;"
                 optionLabel="codeName"
               ></p-dropdown>
@@ -674,6 +675,7 @@
                 class="block"
                 [formControlName]="field.name"
                 [options]="masterData[field.apiKey]"
+                [appendTo]="'body'"
                 optionLabel="codeName"
                 [filter]="true"
                 filterBy="codeName"

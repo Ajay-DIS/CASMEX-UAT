@@ -737,6 +737,7 @@
                         [formControlName]="field.name"
                         placeholder="&nbsp;"
                         optionLabel="codeName"
+                        [appendTo]="'body'"
                       ></p-dropdown>
                       <p-dropdown
                         *ngSwitchCase="'smart-search'"
@@ -744,6 +745,7 @@
                         [formControlName]="field.name"
                         [options]="masterData[field.apiKey]"
                         optionLabel="codeName"
+                        [appendTo]="'body'"
                         [filter]="true"
                         filterBy="codeName"
                         placeholder="Type to search"
