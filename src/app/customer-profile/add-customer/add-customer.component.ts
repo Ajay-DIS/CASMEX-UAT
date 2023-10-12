@@ -508,6 +508,85 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
             break;
         }
       });
+    } else {
+      let kycSection = this.formSections.filter(
+        (section) => section.formName == "KYC Doc Upload"
+      )[0];
+
+      this.copyKycSection["fields"].forEach((field) => {
+        switch (field.fieldName) {
+          case "idNumber":
+            if (!field.fieldType) {
+              kycSection["fields"].forEach((f) => {
+                if (f.fieldName == "idNumber") {
+                  f.fieldType = field.fieldType;
+                }
+              });
+            }
+
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "idNumber") {
+                f.minLength = field.minLength;
+              }
+            });
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "idNumber") {
+                f.maxLength = field.maxLength;
+              }
+            });
+            break;
+
+          case "idIssueCountry":
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "idIssueCountry") {
+                f.docFieldMandate = field.docFieldMandate;
+              }
+            });
+            break;
+          case "uploadFrontSideFile":
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "uploadFrontSideFile") {
+                f.docFieldMandate = field.docFieldMandate;
+              }
+            });
+            break;
+          case "uploadBackSideFile":
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "uploadBackSideFile") {
+                f.docFieldMandate = field.docFieldMandate;
+              }
+            });
+            break;
+          case "imageByPassed":
+            this.individualForm
+              .get("KYC Doc Upload")
+              ?.get("imageByPassed")
+              .disable();
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "imageByPassed") {
+                f.enable = false;
+                f.defaultValue = field.defaultValue;
+                this.individualForm
+                  .get("KYC Doc Upload")
+                  ?.get("imageByPassed")
+                  .patchValue(f.defaultValue);
+                if (f.defaultValue) {
+                  this.byPassKycImg();
+                }
+              }
+            });
+            break;
+          case "hereByConfirm":
+            kycSection["fields"].forEach((f) => {
+              if (f.fieldName == "hereByConfirm") {
+                f.docFieldMandate = true;
+              }
+            });
+            break;
+          default:
+            break;
+        }
+      });
     }
   }
 
