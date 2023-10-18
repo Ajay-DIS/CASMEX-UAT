@@ -78,6 +78,7 @@ import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-be
 import { AutoCompleteModule } from "primeng/autocomplete";
 import { GetDocSettingsComponent } from './get-doc-settings/get-doc-settings.component';
 import { DateMaskDirective } from './date-mask.directive';
+import { TransactionDateModal } from "./shared/modals/transaction-date-modal/transaction-date-modal";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -117,6 +118,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddCustomerBenefComponent,
     GetDocSettingsComponent,
     DateMaskDirective,
+    TransactionDateModal
   ],
   imports: [
     BrowserModule,

@@ -7,6 +7,8 @@ import { BehaviorSubject } from "rxjs";
 export class SetCriteriaService {
   constructor() {}
 
+  RangeTypeCriteria: any = { Slab: "LCY Amount", date: "Transaction Date" };
+
   $TransactionCriteriaRange = new BehaviorSubject<any>({
     txnCriteriaRange: [{ from: null, to: null }],
   });
@@ -18,41 +20,117 @@ export class SetCriteriaService {
     return this.$TransactionCriteriaRange;
   }
 
+  $DateRange = new BehaviorSubject<any>({
+    dateRange: [{ trnStartDate: null, trnEndDate: null }],
+  });
+
+  setDateRange(value: any) {
+    this.$DateRange.next(value);
+  }
+  getDateRange() {
+    return this.$DateRange;
+  }
+
+  getlcyForm(mapSplit: string) {
+    let lcySlabForm = {};
+    let lcySlabArr = [];
+    mapSplit.split("#").forEach((rngTxt) => {
+      let fromVal = rngTxt.split("::")[0].split(":")[1];
+      let toVal = rngTxt.split("::")[1].split(":")[1];
+      lcySlabArr.push({
+        from: +fromVal,
+        to: +toVal,
+      });
+    });
+    lcySlabForm = {
+      txnCriteriaRange: lcySlabArr,
+    };
+    return lcySlabForm;
+  }
+
+  getdateForm(mapSplit: string) {
+    let dateForm = {};
+    let dateArr = [];
+    mapSplit.split("#").forEach((rngTxt) => {
+      let fromVal = rngTxt.split("::")[0].split(":")[1];
+      let toVal = rngTxt.split("::")[1].split(":")[1];
+      dateArr.push({
+        trnStartDate: fromVal,
+        trnEndDate: toVal,
+      });
+    });
+    dateForm = {
+      dateRange: dateArr,
+    };
+    return dateForm;
+  }
+
   setCriteriaMap(criteriaData: any) {
     let criteriaMapFirstSplit = null;
     let criteriaMapSecSplit = null;
+    let criteriaMapThirdSplit = null;
+    let slabTypeName = null;
+    let dateTypeName = null;
 
+    if (Object.keys(this.RangeTypeCriteria).length) {
+      if ("Slab" in this.RangeTypeCriteria) {
+        slabTypeName = this.RangeTypeCriteria["Slab"];
+      }
+      if ("date" in this.RangeTypeCriteria) {
+        dateTypeName = this.RangeTypeCriteria["date"];
+      }
+    }
     if (criteriaData["criteriaMap"].includes("&&&&")) {
-      criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
-      criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+      if (criteriaData["criteriaMap"].split("&&&&").length == 3) {
+        criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+        criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+        criteriaMapThirdSplit = criteriaData["criteriaMap"].split("&&&&")[2];
 
-      if (criteriaMapSecSplit.includes("from:")) {
-        let lcySlabForm = {};
-        let lcySlabArr = [];
-        criteriaMapSecSplit.split("#").forEach((rngTxt) => {
-          let fromVal = rngTxt.split("::")[0].split(":")[1];
-          let toVal = rngTxt.split("::")[1].split(":")[1];
-          lcySlabArr.push({
-            from: +fromVal,
-            to: +toVal,
-          });
-        });
-        lcySlabForm = {
-          txnCriteriaRange: lcySlabArr,
-        };
-        this.setTransactionCriteriaRange(lcySlabForm);
+        if (criteriaMapSecSplit.includes("from:")) {
+          this.setTransactionCriteriaRange(
+            this.getlcyForm(criteriaMapSecSplit)
+          );
 
-        criteriaMapFirstSplit += `;${
-          criteriaData["lcySlab"] ? criteriaData["lcySlab"] : "LCY Amount"
-        } = Slab`;
-      } else {
-        criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
+          criteriaMapFirstSplit += `;${
+            slabTypeName ? slabTypeName : "Amount"
+          } = Slab`;
+        }
+
+        if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+          this.setDateRange(this.getdateForm(criteriaMapThirdSplit));
+
+          criteriaMapFirstSplit += `;${
+            dateTypeName ? dateTypeName : "Date"
+          } = Slab`;
+        }
+      } else if (criteriaData["criteriaMap"].split("&&&&").length == 2) {
+        criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+        criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+
+        if (criteriaMapSecSplit.includes("from:")) {
+          this.setTransactionCriteriaRange(
+            this.getlcyForm(criteriaMapSecSplit)
+          );
+
+          criteriaMapFirstSplit += `;${
+            slabTypeName ? slabTypeName : "Amount"
+          } = Slab`;
+        } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+          this.setDateRange(this.getdateForm(criteriaMapSecSplit));
+
+          criteriaMapFirstSplit += `;${
+            dateTypeName ? dateTypeName : "Date"
+          } = Slab`;
+        }
       }
     } else {
       criteriaMapFirstSplit = criteriaData["criteriaMap"];
 
       this.setTransactionCriteriaRange({
         txnCriteriaRange: [{ from: null, to: null }],
+      });
+      this.setDateRange({
+        dateRange: [{ trnStartDate: null, trnEndDate: null }],
       });
     }
 
@@ -96,8 +174,12 @@ export class SetCriteriaService {
         return data == formatCrt.split("  ")[0];
       })[0];
       if (!displayName) {
-        if (cmCriteriaSlabType.includes(formatCrt.split("  ")[0])) {
-          displayName = cmCriteriaSlabType[0];
+        let rangeType = Object.keys(this.RangeTypeCriteria).find(
+          (key) => this.RangeTypeCriteria[key] === formatCrt.split("  ")[0]
+        );
+
+        if (rangeType) {
+          displayName = formatCrt.split("  ")[0];
         }
       }
 

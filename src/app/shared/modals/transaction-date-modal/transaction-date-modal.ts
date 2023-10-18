@@ -10,22 +10,22 @@ import { SetCriteriaService } from "../../components/set-criteria/set-criteria.s
 import { CoreService } from "src/app/core.service";
 
 @Component({
-  templateUrl: "./transaction-criteria-modal.html",
-  styleUrls: ["./transaction-criteria-modal.scss"],
+  templateUrl: "./transaction-date-modal.html",
+  styleUrls: ["./transaction-date-modal.scss"],
 })
-export class TransactionCriteriaModal {
-  txnCriteriaRangeForm: UntypedFormGroup = new UntypedFormGroup({
-    txnCriteriaRange: new UntypedFormArray([]),
+export class TransactionDateModal {
+  dateRangeForm: UntypedFormGroup = new UntypedFormGroup({
+    dateRange: new UntypedFormArray([]),
   });
-  txnCriteriaRange: UntypedFormArray = new UntypedFormArray([]);
+  dateRange: UntypedFormArray = new UntypedFormArray([]);
 
   showError: boolean = false;
   rangesOverlapping = false;
-  isTxnCriteriaRangesSaved = false;
+  isDateRangesSaved = false;
   isAnyErrorInRangeMsg = "";
   isRangeEmpty = false;
   isOrderIncorrect = false;
-  TransactionCriteriaRange = [];
+  DateRange = [];
   isFormDataChanged = true;
   isRangeValueLessThanZero = false;
 
@@ -37,15 +37,13 @@ export class TransactionCriteriaModal {
     private coreService: CoreService
   ) {}
 
-  get allTxnCriteriaRange(): UntypedFormArray {
-    return this.txnCriteriaRangeForm.get(
-      "txnCriteriaRange"
-    ) as UntypedFormArray;
+  get allDateRange(): UntypedFormArray {
+    return this.dateRangeForm.get("dateRange") as UntypedFormArray;
   }
 
   ngOnInit() {
-    this.txnCriteriaRangeForm.valueChanges.subscribe((x) => {
-      let savedData = JSON.stringify(this.config.data.txnCriteriaRange);
+    this.dateRangeForm.valueChanges.subscribe((x) => {
+      let savedData = JSON.stringify(this.config.data.dateRange);
       let formData = JSON.stringify(x);
       if (savedData == formData) {
         this.isFormDataChanged = false;
@@ -54,39 +52,45 @@ export class TransactionCriteriaModal {
       }
     });
 
-    if (Object.keys(this.config.data.txnCriteriaRange).length) {
-      this.config.data.txnCriteriaRange.txnCriteriaRange.forEach((range) => {
-        this.txnCriteriaRange.push(
-          this.createTxnCriteriaRange(range.from, range.to)
+    if (Object.keys(this.config.data.dateRange).length) {
+      this.config.data.dateRange.dateRange.forEach((range) => {
+        console.log(range);
+        this.dateRange.push(
+          this.createDateRange(range.trnStartDate, range.trnEndDate)
         );
-        this.allTxnCriteriaRange.push(
-          this.createTxnCriteriaRange(range.from, range.to)
+        this.allDateRange.push(
+          this.createDateRange(range.trnStartDate, range.trnEndDate)
         );
       });
     } else {
-      this.addTxnCriteriaRange();
+      this.addDateRange();
     }
 
+    console.log(this.dateRange);
+    console.log(this.allDateRange);
+
     this.ref.onClose.pipe(take(1)).subscribe((res) => {
-      if (this.isTxnCriteriaRangesSaved) {
-        this.coreService.showSuccessToast("Amount ranges saved");
+      if (this.isDateRangesSaved) {
+        this.coreService.showSuccessToast("Date ranges saved");
       } else {
         if (this.isFormDataChanged) {
-          this.coreService.showWarningToast("Amount ranges not saved properly");
+          this.coreService.showWarningToast("Date ranges not saved properly");
         }
       }
     });
   }
 
   areOverlapping = (a: any, b: any) =>
-    b.from <= a.from
-      ? b.to >= a.from && typeof b.to == typeof a.from
-      : b.from <= a.to && typeof a.to == typeof b.from;
+    b.trnStartDate <= a.trnStartDate
+      ? b.trnEndDate >= a.trnStartDate &&
+        typeof b.trnEndDate == typeof a.trnStartDate
+      : b.trnStartDate <= a.trnEndDate &&
+        typeof a.trnEndDate == typeof b.trnStartDate;
 
-  createTxnCriteriaRange(from: number, to: number): UntypedFormGroup {
+  createDateRange(trnStartDate: any, trnEndDate: any): UntypedFormGroup {
     return this.formBuilder.group({
-      from: from,
-      to: to,
+      trnStartDate: trnStartDate,
+      trnEndDate: trnEndDate,
     });
   }
 
@@ -96,14 +100,21 @@ export class TransactionCriteriaModal {
     this.isRangeEmpty = false;
     this.isOrderIncorrect = false;
     this.isRangeValueLessThanZero = false;
-    if (this.txnCriteriaRange && this.txnCriteriaRange?.length) {
-      this.txnCriteriaRange.controls.forEach((range) => {
+    if (this.dateRange && this.dateRange?.length) {
+      this.dateRange.controls.forEach((range) => {
         if (range.value) {
-          if (range.value.from == null || range.value.to == null) {
+          if (
+            range.value.trnStartDate == null ||
+            range.value.trnEndDate == null
+          ) {
             this.isRangeEmpty = true;
-          } else if (range.value.from < 0 || range.value.to < 0) {
+          } else if (
+            range.value.trnStartDate < 0 ||
+            range.value.trnEndDate < 0
+          ) {
             this.isRangeValueLessThanZero = true;
-          } else if (range.value.from >= range.value.to) {
+          } else if (range.value.trnStartDate >= range.value.trnEndDate) {
+            console.log(range.value.trnStartDate, range.value.trnEndDate);
             this.isOrderIncorrect = true;
           }
           rangesArr.push(range.value);
@@ -121,27 +132,25 @@ export class TransactionCriteriaModal {
   }
 
   changeTo(e: any, i: any) {
-    if (!(e.value > 9999999999)) {
-      if (this.txnCriteriaRange.controls) {
-        (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
-          "to"
-        ].setValue(e.value);
-      }
+    console.log(e.toLocaleDateString("en-GB"), typeof e, new Date(e));
+    if (this.dateRange.controls) {
+      (this.dateRange.controls[i] as UntypedFormGroup)?.controls[
+        "trnEndDate"
+      ].setValue(e);
     }
   }
   changeFrom(e: any, i: any) {
-    if (!(e.value > 9999999999)) {
-      if (this.txnCriteriaRange.controls) {
-        (this.txnCriteriaRange.controls[i] as UntypedFormGroup)?.controls[
-          "from"
-        ].setValue(e.value);
-      }
+    console.log(e, typeof e);
+    if (this.dateRange.controls) {
+      (this.dateRange.controls[i] as UntypedFormGroup)?.controls[
+        "trnStartDate"
+      ].setValue(e);
     }
   }
 
-  addTxnCriteriaRange(): void {
-    if (this.txnCriteriaRange?.length >= 10) {
-      this.isAnyErrorInRangeMsg = "Maximum 10 Amount ranges can be added";
+  addDateRange(): void {
+    if (this.dateRange?.length >= 10) {
+      this.isAnyErrorInRangeMsg = "Maximum 10 Date ranges can be added";
       setTimeout(() => {
         this.isAnyErrorInRangeMsg = "";
       }, 1500);
@@ -154,7 +163,7 @@ export class TransactionCriteriaModal {
         }, 1500);
       } else if (this.rangesOverlapping) {
         this.isAnyErrorInRangeMsg =
-          "Overlapping criteria range found, please update";
+          "Overlapping date range found, please update";
         setTimeout(() => {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);
@@ -165,29 +174,27 @@ export class TransactionCriteriaModal {
         }, 1500);
       } else if (this.isOrderIncorrect) {
         this.isAnyErrorInRangeMsg =
-          "Amount From value should be less than Amount To value";
+          "Date From value should be less than Date To value";
         setTimeout(() => {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);
       } else {
         this.isRangeValueLessThanZero = false;
-        this.isTxnCriteriaRangesSaved = false;
-        this.txnCriteriaRange = this.txnCriteriaRangeForm.get(
-          "txnCriteriaRange"
+        this.isDateRangesSaved = false;
+        this.dateRange = this.dateRangeForm.get(
+          "dateRange"
         ) as UntypedFormArray;
-        this.txnCriteriaRange.push(this.createTxnCriteriaRange(null, null));
+        this.dateRange.push(this.createDateRange(null, null));
       }
     }
   }
 
   deleteRange(i) {
-    this.txnCriteriaRange = this.txnCriteriaRangeForm.get(
-      "txnCriteriaRange"
-    ) as UntypedFormArray;
-    this.txnCriteriaRange.removeAt(i);
+    this.dateRange = this.dateRangeForm.get("dateRange") as UntypedFormArray;
+    this.dateRange.removeAt(i);
   }
 
-  saveTxnCriteriaRanges() {
+  saveDateRanges() {
     this.checkConditions();
     if (this.isRangeValueLessThanZero) {
       this.isAnyErrorInRangeMsg = "Range Value should be positive";
@@ -202,7 +209,7 @@ export class TransactionCriteriaModal {
       }, 1500);
     } else if (this.isOrderIncorrect) {
       this.isAnyErrorInRangeMsg =
-        "Amount From value should be less than Amount To value";
+        "Date From value should be less than Date To value";
       setTimeout(() => {
         this.isAnyErrorInRangeMsg = "";
       }, 1500);
@@ -213,29 +220,27 @@ export class TransactionCriteriaModal {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);
       } else {
-        this.isTxnCriteriaRangesSaved = true;
+        this.isDateRangesSaved = true;
 
-        this.txnCriteriaRangeForm.value.txnCriteriaRange.forEach((range, i) => {
+        this.dateRangeForm.value.dateRange.forEach((range, i) => {
           if (
             i > 0 &&
             Object.values(range).filter((rng) => rng == null).length
           ) {
-            this.txnCriteriaRangeForm.value.txnCriteriaRange.splice(i, 1);
+            this.dateRangeForm.value.dateRange.splice(i, 1);
           }
         });
 
-        this.TransactionCriteriaRange = this.txnCriteriaRangeForm.value;
-        this.setCriteriaService.setTransactionCriteriaRange(
-          this.TransactionCriteriaRange
-        );
+        this.DateRange = this.dateRangeForm.value;
+        this.setCriteriaService.setDateRange(this.DateRange);
       }
     }
   }
 
   closeModal() {
-    this.saveTxnCriteriaRanges();
-    if (this.isTxnCriteriaRangesSaved && !this.isRangeEmpty) {
-      this.ref.close(this.TransactionCriteriaRange);
+    this.saveDateRanges();
+    if (this.isDateRangesSaved && !this.isRangeEmpty) {
+      this.ref.close(this.DateRange);
     }
   }
 }

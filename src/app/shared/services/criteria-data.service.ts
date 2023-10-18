@@ -6,6 +6,8 @@ import { Injectable } from "@angular/core";
 export class CriteriaDataService {
   constructor() {}
 
+  rangeTypeCriteria: any = { Slab: "LCY Amount", date: "Transaction Date" };
+
   setDependencyTree(
     criteriaDataDetailsJson: any,
     cmCriteriaDataDetails: any,
@@ -126,8 +128,12 @@ export class CriteriaDataService {
                   return data == deps;
                 })[0];
                 if (!displayName) {
-                  if (cmCriteriaSlabType.includes(deps)) {
-                    displayName = cmCriteriaSlabType[0];
+                  let rangeType = Object.keys(cmCriteriaSlabType).find(
+                    (key) => cmCriteriaSlabType[key] === deps
+                  );
+
+                  if (rangeType) {
+                    displayName = deps;
                   }
                 }
                 //% this needs to be updated when displayName fieldName point arises ENDS
@@ -220,23 +226,54 @@ export class CriteriaDataService {
   decodeCriteriaMapIntoTableFields(criteriaData: any) {
     let criteriaMapFirstSplit = null;
     let criteriaMapSecSplit = null;
+    let criteriaMapThirdSplit = null;
+    let slabTypeName = null;
+    let dateTypeName = null;
     let lcySlabArr = [];
+    let dateSlabArr = [];
 
+    if (Object.keys(this.rangeTypeCriteria).length) {
+      if ("Slab" in this.rangeTypeCriteria) {
+        slabTypeName = this.rangeTypeCriteria["Slab"];
+      }
+      if ("date" in this.rangeTypeCriteria) {
+        dateTypeName = this.rangeTypeCriteria["date"];
+      }
+    }
     if (criteriaData["criteriaMap"].includes("&&&&")) {
-      criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
-      criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+      if (criteriaData["criteriaMap"].split("&&&&").length == 3) {
+        criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+        criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+        criteriaMapThirdSplit = criteriaData["criteriaMap"].split("&&&&")[2];
 
-      if (criteriaMapSecSplit.includes("from:")) {
-        criteriaMapSecSplit.split("#").forEach((rngTxt) => {
-          let fromVal = rngTxt.split("::")[0].split(":")[1];
-          let toVal = rngTxt.split("::")[1].split(":")[1];
-          lcySlabArr.push({
-            from: +fromVal,
-            to: +toVal,
-          });
-        });
-      } else {
-        criteriaMapFirstSplit += `;${criteriaMapSecSplit}`;
+        if (criteriaMapSecSplit.includes("from:")) {
+          lcySlabArr = this.getAmtSlabArr(criteriaMapSecSplit);
+          criteriaMapFirstSplit += `;${
+            slabTypeName ? slabTypeName : "Amount"
+          } = Slab`;
+        }
+
+        if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+          dateSlabArr = this.getDateSlabArr(criteriaMapThirdSplit);
+          criteriaMapFirstSplit += `;${
+            dateTypeName ? dateTypeName : "Date"
+          } = Slab`;
+        }
+      } else if (criteriaData["criteriaMap"].split("&&&&").length == 2) {
+        criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
+        criteriaMapSecSplit = criteriaData["criteriaMap"].split("&&&&")[1];
+
+        if (criteriaMapSecSplit.includes("from:")) {
+          lcySlabArr = this.getAmtSlabArr(criteriaMapSecSplit);
+          criteriaMapFirstSplit += `;${
+            slabTypeName ? slabTypeName : "Amount"
+          } = Slab`;
+        } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+          dateSlabArr = this.getDateSlabArr(criteriaMapSecSplit);
+          criteriaMapFirstSplit += `;${
+            dateTypeName ? dateTypeName : "Date"
+          } = Slab`;
+        }
       }
     } else {
       criteriaMapFirstSplit = criteriaData["criteriaMap"];
@@ -245,6 +282,33 @@ export class CriteriaDataService {
     return {
       critMap: criteriaMapFirstSplit.split(";") as Array<any>,
       lcySlabArr: lcySlabArr,
+      dateSlabArr: dateSlabArr,
     };
+  }
+
+  getDateSlabArr(mapSplit: string) {
+    let dateArr = [];
+    mapSplit.split("#").forEach((rngTxt) => {
+      let fromVal = rngTxt.split("::")[0].split(":")[1];
+      let toVal = rngTxt.split("::")[1].split(":")[1];
+      dateArr.push({
+        trnStartDate: fromVal,
+        trnEndDate: toVal,
+      });
+    });
+    return dateArr;
+  }
+
+  getAmtSlabArr(mapSplit: string) {
+    let lcySlabArr = [];
+    mapSplit.split("#").forEach((rngTxt) => {
+      let fromVal = rngTxt.split("::")[0].split(":")[1];
+      let toVal = rngTxt.split("::")[1].split(":")[1];
+      lcySlabArr.push({
+        from: +fromVal,
+        to: +toVal,
+      });
+    });
+    return lcySlabArr;
   }
 }

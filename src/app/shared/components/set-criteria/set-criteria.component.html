@@ -93,7 +93,8 @@
       <ng-container
         *ngIf="
           selectedCriteria?.criteriaType == 'Slab' ||
-          selectedCriteria?.criteriaType == 'SQL'
+          selectedCriteria?.criteriaType == 'SQL' ||
+          selectedCriteria?.criteriaType == 'date'
         "
       >
         <!-- <p-dropdown
@@ -146,11 +147,23 @@
           (onInput)="changeValueInput($event)"
         >
         </p-inputNumber>
+        <p-calendar
+          *ngIf="hideValuesDropdown && showDateInput"
+          class="block mr-3"
+          placeholder="DD/MM/YYYY"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          formControlName="value"
+          [readonlyInput]="false"
+          [appendTo]="'body'"
+          appDateMask
+        ></p-calendar>
       </ng-container>
       <ng-container
         *ngIf="
           selectedCriteria?.criteriaType != 'Slab' &&
-          selectedCriteria?.criteriaType != 'SQL'
+          selectedCriteria?.criteriaType != 'SQL' &&
+          selectedCriteria?.criteriaType != 'date'
         "
         [ngSwitch]="selectedCriteria?.criteriaType"
       >
@@ -184,17 +197,6 @@
           (onInput)="changeValueInput($event)"
         >
         </p-inputNumber>
-        <p-calendar
-          *ngSwitchCase="'date'"
-          class="block mr-3"
-          placeholder="DD/MM/YYYY"
-          dateFormat="dd/mm/yy"
-          [showIcon]="true"
-          formControlName="value"
-          [readonlyInput]="false"
-          [appendTo]="'body'"
-          appDateMask
-        ></p-calendar>
       </ng-container>
 
       <button
@@ -230,11 +232,7 @@
   <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
     <span
       *ngFor="let criteria of criteriaText; let i = index"
-      (click)="
-        savedSlabs &&
-          criteria == cmCriteriaSlabType[0] + ' = Slab' &&
-          showTransCriteriaModal()
-      "
+      (click)="openRangeModal(criteria)"
       class="criteria-span"
       [ngStyle]="{
         backgroundColor: criteria?.includes('!=')
@@ -242,12 +240,10 @@
           : 'var(--surface-ground)'
       }"
     >
-      {{ criteria == cmCriteriaSlabType[0] + " = Slab" ? "" : criteria
-      }}<a
-        style="cursor: pointer"
-        *ngIf="criteria == cmCriteriaSlabType[0] + ' = Slab'"
-        >{{ criteria }}</a
-      >
+      {{ isRangeCrt(criteria) ? "" : criteria
+      }}<a style="cursor: pointer" *ngIf="isRangeCrt(criteria)">{{
+        criteria
+      }}</a>
       <span
         role="button"
         style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
