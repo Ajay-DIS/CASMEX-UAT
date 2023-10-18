@@ -1,0 +1,122 @@
+.tax-code-desc-section {
+    font-size: 0.8rem;
+    font-weight: 500;
+    gap: 17px;
+  }
+  .tax-code-desc-section p {
+    margin-bottom: 0.5rem;
+  }
+  .saveAddbtn {
+    padding-left: 10px;
+  }
+  @media screen and (max-width: 1400px) and (min-width:1201px) {
+    .saveAddbtn {
+      padding-left: 13px !important;
+    }
+  }
+  @media screen and (max-width: 575px) {
+    .saveAddbtn {
+      padding-left: 0px !important;
+    }
+  }
+  @media screen and (max-width: 1199px) and (min-width:768px) {
+    .saveAddbtn {
+      width: 50%;
+      padding-left: 0px !important;
+      margin-left: 27px ;
+    }
+    .resetbtn{
+      margin-left: 0px;
+    }
+  }
+  @media screen and (max-width: 575px){
+    .small {
+       padding-right: 25px !important;
+     }
+   }
+  .tax-code-desc-section input {
+    height: 35px;
+    font-size: 0.8rem;
+  }
+  .tax-code-desc-section .taxCode ::ng-deep .p-dropdown{
+    width: 100%;
+  }
+  .tax-code-desc-section .taxDesc input {
+    width: 93%;
+  }
+  .uploadBtn{
+    margin-top: 31px;
+  }
+  .program-checkbox{
+    margin-top: 32px;
+  }
+  .tax-code-desc-section .taxDesc input::placeholder {
+    color: #8a9099;
+    font-size: 12px;
+  }
+  
+  .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+    text-align: center;
+  }
+  
+  .description.red-star {
+    font-size: 18px;
+    color: red;
+    font-weight: 500;
+    position: absolute;
+    top: -5px;
+    margin-left: 2px;
+  }
+  .details-page-card-content {
+    border: 0.5px solid var(--surface-ground);
+    padding: 10px 0 5px 0;
+    margin: 0 15px;
+    background-color: var(--surface-card);
+    border-radius: 10px;
+  }
+  
+  .criteria-bar {
+    display: flex;
+    padding: 0 0.5rem;
+  }
+  
+  .select-module-application {
+    display: flex;
+    gap: 10px;
+  }
+  .select-module-application .field {
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0;
+  }
+  
+  .select-module-application label {
+    margin-bottom: 0;
+    font-size: 14px;
+  }
+  .select-module-application p-dropdown {
+    width: 100%;
+  }
+  .select-module-application::ng-deep .p-dropdown {
+    width: 95%;
+    height: 35px;
+    align-items: center;
+    border: none !important;
+  }
+  .btnround{
+    border-radius: 50% !important;
+    height: 31px !important;
+    margin-left: 20px;
+    margin-bottom: 4px;
+  }
+  ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+    width: 100% !important;
+  }
+  .file-upload-select input[type="file"] {
+    display: none;
+  }
+  .fileUploadLabel{
+    width: 150px;
+    padding-left: 10px;
+    padding-top: 35px;
+  }
