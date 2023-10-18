@@ -53,7 +53,7 @@ export class AddnewrouteComponent2 implements OnInit {
   cmCriteriaDependency: any = {};
   cmCriteriaDataDetails: any = [];
   independantCriteriaArr: any = [];
-  cmCriteriaSlabType: any = [];
+  cmCriteriaSlabType: any = { Slab: "LCY Amount", date: "Transaction Date" };
   criteriaTemplatesDdlOptions: any = [];
   criteriaMapDdlOptions = [];
   criteriaEqualsDdlOptions = [];
@@ -306,33 +306,42 @@ export class AddnewrouteComponent2 implements OnInit {
                 return { code: option.code, codeName: option.codeName };
               });
 
-              if (res["criteriaMap"].indexOf("&&&&") >= 0) {
-                this.isLcyFieldPresent = true;
+              let amtSlabPresent = false;
+              let dateSlabPresent = false;
+
+              if (res["criteriaMap"].indexOf("from:") >= 0) {
+                amtSlabPresent = true;
               }
 
-              if (!this.isLcyFieldPresent) {
-                this.applyCriteriaFormattedData = res["data"];
-              } else {
-                if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
-                    field: "lcyAmount",
-                    header: "LCY Amount",
-                    fieldType: "text",
-                  });
-                  this.applyCriteriaFormattedData = res["data"];
+              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                dateSlabPresent = true;
+              }
 
-                  this.applyCriteriaFormattedData.forEach((data) => {
-                    let split = data["criteriaMapSplit"];
-                    if (split) {
-                      data["lcyAmount"] = split.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                      data["criteriaMapSplit"] = split.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                    }
-                  });
-                } else if (res["criteriaMap"].indexOf("from") >= 0) {
+              if (amtSlabPresent && dateSlabPresent) {
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateFrom",
+                  header: "Date From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateTo",
+                  header: "Date To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  fieldType: "text",
+                });
+
+                this.applyCriteriaFormattedData = [];
+              } else {
+                if (amtSlabPresent) {
                   this.applyCriteriaDataTableColumns.splice(-3, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
@@ -343,23 +352,134 @@ export class AddnewrouteComponent2 implements OnInit {
                     header: "Amount To",
                     fieldType: "text",
                   });
-                  this.applyCriteriaFormattedData = res["data"];
-                  this.applyCriteriaFormattedData.forEach((data) => {
-                    let split = data["criteriaMapSplit"];
-                    if (split) {
-                      data["lcyAmountFrom"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop().split("::")[0].split(":")[1]
-                        : split?.split("::")[0]?.split(":")[1];
-                      data["lcyAmountTo"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop().split("::")[1].split(":")[1]
-                        : split?.split("::")[1]?.split(":")[1];
-                      data["criteriaMapSplit"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                    }
+                  this.applyCriteriaFormattedData = [];
+                } else if (dateSlabPresent) {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "dateFrom",
+                    header: "Date From",
+                    fieldType: "text",
                   });
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "dateTo",
+                    header: "Date To",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = [];
+                } else if (!amtSlabPresent && !dateSlabPresent) {
+                  this.applyCriteriaFormattedData = [];
                 }
               }
+              this.applyCriteriaFormattedData = res["data"];
+              this.applyCriteriaFormattedData.forEach((data) => {
+                let mapSplit = data["criteriaMapSplit"];
+
+                let criteriaMapFirstSplit = null;
+                let criteriaMapSecSplit = null;
+                let criteriaMapThirdSplit = null;
+
+                if (mapSplit && mapSplit.includes("&&&&")) {
+                  if (mapSplit.split("&&&&").length == 3) {
+                    criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
+                    criteriaMapSecSplit = mapSplit.split("&&&&")[1];
+                    criteriaMapThirdSplit = mapSplit.split("&&&&")[2];
+
+                    if (criteriaMapSecSplit.includes("from:")) {
+                      data["lcyAmountFrom"] = criteriaMapSecSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["lcyAmountTo"] = criteriaMapSecSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+
+                    if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+                      data["dateFrom"] = criteriaMapThirdSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["dateTo"] = criteriaMapThirdSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+                  } else if (mapSplit.split("&&&&").length == 2) {
+                    criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
+                    criteriaMapSecSplit = mapSplit.split("&&&&")[1];
+
+                    if (criteriaMapSecSplit.includes("from:")) {
+                      data["lcyAmountFrom"] = criteriaMapSecSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["lcyAmountTo"] = criteriaMapSecSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+                      data["dateFrom"] = criteriaMapThirdSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["dateTo"] = criteriaMapThirdSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+                  }
+                } else {
+                }
+              });
+
+              // % old-
+
+              // if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+              //   this.isLcyFieldPresent = true;
+              // }
+
+              // if (!this.isLcyFieldPresent) {
+              //   this.applyCriteriaFormattedData = res["data"];
+              // } else {
+              //   if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+              //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              //       field: "lcyAmount",
+              //       header: "LCY Amount",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaFormattedData = res["data"];
+
+              //     this.applyCriteriaFormattedData.forEach((data) => {
+              //       let split = data["criteriaMapSplit"];
+              //       if (split) {
+              //         data["lcyAmount"] = split.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //         data["criteriaMapSplit"] = split.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //       }
+              //     });
+              //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
+              //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              //       field: "lcyAmountFrom",
+              //       header: "Amount From",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              //       field: "lcyAmountTo",
+              //       header: "Amount To",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaFormattedData = res["data"];
+              //     this.applyCriteriaFormattedData.forEach((data) => {
+              //       let split = data["criteriaMapSplit"];
+              //       if (split) {
+              //         data["lcyAmountFrom"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop().split("::")[0].split(":")[1]
+              //           : split?.split("::")[0]?.split(":")[1];
+              //         data["lcyAmountTo"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop().split("::")[1].split(":")[1]
+              //           : split?.split("::")[1]?.split(":")[1];
+              //         data["criteriaMapSplit"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //       }
+              //     });
+              //   }
+              // }
 
               this.applyCriteriaFormattedData.forEach((data) => {
                 delete data.id;
@@ -429,7 +549,10 @@ export class AddnewrouteComponent2 implements OnInit {
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType.push(data["fieldName"]);
+                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+              }
+              if (data["criteriaType"] == "date") {
+                this.cmCriteriaSlabType["date"] = data["fieldName"];
               }
             }
           );
@@ -647,7 +770,6 @@ export class AddnewrouteComponent2 implements OnInit {
           this.coreService.removeLoadingScreen();
           if (!res["duplicate"]) {
             this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
-            let resData = res["data"];
             this.appliedCriteriaCriteriaMap = res["criteriaMap"];
             this.appliedCriteriaIsDuplicate = res["duplicate"];
             let reqData =
@@ -659,55 +781,82 @@ export class AddnewrouteComponent2 implements OnInit {
               ["LCY Amount"]
             );
 
-            this.routeToBankNameOption = resData["routeToBankNameOption"].map(
-              (option) => {
-                return { code: option.code, codeName: option.codeName };
-              }
-            );
-            this.routeToServiceCategoryOption = resData[
+            this.routeToBankNameOption = res["data"][
+              "routeToBankNameOption"
+            ].map((option) => {
+              return { code: option.code, codeName: option.codeName };
+            });
+            this.routeToServiceCategoryOption = res["data"][
               "routeToServiceCategoryOption"
             ].map((option) => {
               return { code: option.code, codeName: option.codeName };
             });
-            this.routeToServiceTypeOption = resData[
+            this.routeToServiceTypeOption = res["data"][
               "routeToServiceTypeOption"
             ].map((option) => {
               return { code: option.code, codeName: option.codeName };
             });
 
-            if (res["criteriaMap"].indexOf("&&&&") >= 0) {
-              this.isLcyFieldPresent = true;
-            } else {
-              this.isLcyFieldPresent = false;
+            let amtSlabPresent = false;
+            let dateSlabPresent = false;
+
+            let baseCriteriaMap = res["criteriaMap"].split("&&&&")[0];
+
+            if (res["criteriaMap"].indexOf("from:") >= 0) {
+              amtSlabPresent = true;
             }
 
-            if (!this.isLcyFieldPresent) {
-              this.applyCriteriaFormattedData = [
-                resData?.bankRoutingsCriteriaDetails,
-              ];
-              this.applyCriteriaFormattedData.forEach((data) => {
-                data["criteriaMapSplit"] = null;
+            if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+              dateSlabPresent = true;
+            }
+
+            if (amtSlabPresent && dateSlabPresent) {
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "dateFrom",
+                header: "Date From",
+                fieldType: "text",
               });
-            } else {
-              if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
-                let lcyOprFields = crtfields.filter((crt) => {
-                  return crt.includes("LCY Amount");
-                });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
-                  field: "lcyAmount",
-                  header: "LCY Amount",
-                  fieldType: "text",
-                });
-                this.applyCriteriaFormattedData = [];
-                lcyOprFields.forEach((field) => {
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "dateTo",
+                header: "Date To",
+                fieldType: "text",
+              });
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "lcyAmountFrom",
+                header: "Amount From",
+                fieldType: "text",
+              });
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "lcyAmountTo",
+                header: "Amount To",
+                fieldType: "text",
+              });
+
+              this.applyCriteriaFormattedData = [];
+
+              let dateSlabFields = reqData.dateSlabArr;
+              let lcySlabFields = reqData.lcySlabArr;
+
+              dateSlabFields.forEach((fieldDate) => {
+                console.log(lcySlabFields);
+                lcySlabFields.forEach((fieldAmt) => {
                   let apiData = JSON.parse(
-                    JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+                    JSON.stringify(res["data"].bankRoutingsCriteriaDetails)
                   );
-                  apiData["lcyAmount"] = field;
-                  apiData["criteriaMapSplit"] = field;
+                  console.log(fieldAmt);
+                  apiData["dateFrom"] = fieldDate.trnStartDate;
+                  apiData["dateTo"] = fieldDate.trnEndDate;
+                  apiData["lcyAmountFrom"] = fieldAmt.from;
+                  apiData["lcyAmountTo"] = fieldAmt.to;
+
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
                 });
-              } else if (res["criteriaMap"].indexOf("from") >= 0) {
+              });
+            } else {
+              if (amtSlabPresent) {
                 let lcySlabFields = reqData.lcySlabArr;
                 this.applyCriteriaDataTableColumns.splice(-3, 0, {
                   field: "lcyAmountFrom",
@@ -722,17 +871,109 @@ export class AddnewrouteComponent2 implements OnInit {
                 this.applyCriteriaFormattedData = [];
                 lcySlabFields.forEach((field) => {
                   let apiData = JSON.parse(
-                    JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+                    JSON.stringify(res["data"].bankRoutingsCriteriaDetails)
                   );
                   apiData["lcyAmountFrom"] = field.from;
                   apiData["lcyAmountTo"] = field.to;
                   apiData[
                     "criteriaMapSplit"
-                  ] = `from:${field["from"]}::to:${field["to"]}`;
+                  ] = `${baseCriteriaMap}&&&&from:${field["from"]}::to:${field["to"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (dateSlabPresent) {
+                let dateSlabFields = reqData.dateSlabArr;
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateFrom",
+                  header: "Date From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateTo",
+                  header: "Date To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                dateSlabFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].bankRoutingsCriteriaDetails)
+                  );
+                  apiData["dateFrom"] = field.trnStartDate;
+                  apiData["dateTo"] = field.trnEndDate;
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `${baseCriteriaMap}&&&&trnStartDate:${field["trnStartDate"]}::trnEndDate:${field["trnEndDate"]}`;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (!amtSlabPresent && !dateSlabPresent) {
+                this.applyCriteriaFormattedData = [
+                  res["data"].bankRoutingsCriteriaDetails,
+                ];
+                this.applyCriteriaFormattedData.forEach((data) => {
+                  data["criteriaMapSplit"] = baseCriteriaMap;
                 });
               }
             }
+
+            // % old-
+
+            // if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+            //   this.isLcyFieldPresent = true;
+            // } else {
+            //   this.isLcyFieldPresent = false;
+            // }
+
+            // if (!this.isLcyFieldPresent) {
+            //   this.applyCriteriaFormattedData = [
+            //     resData?.bankRoutingsCriteriaDetails,
+            //   ];
+            //   this.applyCriteriaFormattedData.forEach((data) => {
+            //     data["criteriaMapSplit"] = null;
+            //   });
+            // } else {
+            //   if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+            //     let lcyOprFields = crtfields.filter((crt) => {
+            //       return crt.includes("LCY Amount");
+            //     });
+            //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+            //       field: "lcyAmount",
+            //       header: "LCY Amount",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaFormattedData = [];
+            //     lcyOprFields.forEach((field) => {
+            //       let apiData = JSON.parse(
+            //         JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+            //       );
+            //       apiData["lcyAmount"] = field;
+            //       apiData["criteriaMapSplit"] = field;
+            //       this.applyCriteriaFormattedData.push(apiData);
+            //     });
+            //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
+            //     let lcySlabFields = reqData.lcySlabArr;
+            //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+            //       field: "lcyAmountFrom",
+            //       header: "Amount From",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaDataTableColumns.splice(-3, 0, {
+            //       field: "lcyAmountTo",
+            //       header: "Amount To",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaFormattedData = [];
+            //     lcySlabFields.forEach((field) => {
+            //       let apiData = JSON.parse(
+            //         JSON.stringify(resData?.bankRoutingsCriteriaDetails)
+            //       );
+            //       apiData["lcyAmountFrom"] = field.from;
+            //       apiData["lcyAmountTo"] = field.to;
+            //       apiData[
+            //         "criteriaMapSplit"
+            //       ] = `from:${field["from"]}::to:${field["to"]}`;
+            //       this.applyCriteriaFormattedData.push(apiData);
+            //     });
+            //   }
+            // }
 
             this.applyCriteriaFormattedData.forEach((data) => {
               delete data.id;
@@ -852,47 +1093,47 @@ export class AddnewrouteComponent2 implements OnInit {
     this.applyCriteriaFormattedData[index][field] = value["codeName"];
   }
 
-  setSelectedOptions() {
-    this.applyCriteriaFormattedData.forEach((data) => {
-      data["routeToBankNameOption"].filter((option) => {
-        option["code"] == data["routeToBankName"];
-      });
-      if (data["routeToBankName"]) {
-        data["routeToBankName"] = data["routeToBankNameOption"].filter(
-          (option) => option["code"] == data["routeToBankName"]
-        )[0]["codeName"];
-      }
+  // setSelectedOptions() {
+  //   this.applyCriteriaFormattedData.forEach((data) => {
+  //     data["routeToBankNameOption"].filter((option) => {
+  //       option["code"] == data["routeToBankName"];
+  //     });
+  //     if (data["routeToBankName"]) {
+  //       data["routeToBankName"] = data["routeToBankNameOption"].filter(
+  //         (option) => option["code"] == data["routeToBankName"]
+  //       )[0]["codeName"];
+  //     }
 
-      if (data["routeToServiceCategory"]) {
-        data["routeToServiceCategory"] = data[
-          "routeToServiceCategoryOption"
-        ].filter(
-          (option) => option["code"] == data["routeToServiceCategory"]
-        )[0]["codeName"];
-      }
+  //     if (data["routeToServiceCategory"]) {
+  //       data["routeToServiceCategory"] = data[
+  //         "routeToServiceCategoryOption"
+  //       ].filter(
+  //         (option) => option["code"] == data["routeToServiceCategory"]
+  //       )[0]["codeName"];
+  //     }
 
-      if (data["routeToServiceType"]) {
-        data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
-          (option) => option["code"] == data["routeToServiceType"]
-        )[0]["codeName"];
-      }
-    });
-  }
-  decodeSelectedOptions() {
-    this.applyCriteriaFormattedData.forEach((data) => {
-      data["routeToBankName"] = data["routeToBankNameOption"].filter(
-        (option) => option["codeName"] == data["routeToBankName"]
-      )[0]["code"];
-      data["routeToServiceCategory"] = data[
-        "routeToServiceCategoryOption"
-      ].filter(
-        (option) => option["codeName"] == data["routeToServiceCategory"]
-      )[0]["code"];
-      data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
-        (option) => option["codeName"] == data["routeToServiceType"]
-      )[0]["code"];
-    });
-  }
+  //     if (data["routeToServiceType"]) {
+  //       data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
+  //         (option) => option["code"] == data["routeToServiceType"]
+  //       )[0]["codeName"];
+  //     }
+  //   });
+  // }
+  // decodeSelectedOptions() {
+  //   this.applyCriteriaFormattedData.forEach((data) => {
+  //     data["routeToBankName"] = data["routeToBankNameOption"].filter(
+  //       (option) => option["codeName"] == data["routeToBankName"]
+  //     )[0]["code"];
+  //     data["routeToServiceCategory"] = data[
+  //       "routeToServiceCategoryOption"
+  //     ].filter(
+  //       (option) => option["codeName"] == data["routeToServiceCategory"]
+  //     )[0]["code"];
+  //     data["routeToServiceType"] = data["routeToServiceTypeOption"].filter(
+  //       (option) => option["codeName"] == data["routeToServiceType"]
+  //     )[0]["code"];
+  //   });
+  // }
 
   isMandatoryCol(heading: any) {
     return heading.includes("*") ? true : false;
@@ -1027,7 +1268,7 @@ export class AddnewrouteComponent2 implements OnInit {
         );
       } else {
         let service;
-        this.decodeSelectedOptions();
+        // this.decodeSelectedOptions();
         if (this.mode == "edit") {
           let data = {
             data: this.applyCriteriaFormattedData,

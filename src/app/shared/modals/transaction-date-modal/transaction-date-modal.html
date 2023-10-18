@@ -1,17 +1,17 @@
 <div>
-  <div class="modal-body-content" [formGroup]="txnCriteriaRangeForm">
+  <div class="modal-body-content" [formGroup]="dateRangeForm">
     <div class="d-flex jc-between">
       <div class="col-6 pb-0">
-        <label style="font-weight: 500" for="amountFrom">Amount From</label>
+        <label style="font-weight: 500" for="amountFrom">Date From</label>
       </div>
       <div class="col-6 pb-0">
-        <label style="font-weight: 500" for="amountTo">Amount To</label>
+        <label style="font-weight: 500" for="amountTo">Date To</label>
       </div>
     </div>
     <div class="all-range-groups">
       <ng-container
-        formArrayName="txnCriteriaRange"
-        *ngFor="let item of txnCriteriaRangeForm.get('txnCriteriaRange')['controls']; let i = index;"
+        formArrayName="dateRange"
+        *ngFor="let item of dateRangeForm.get('dateRange')['controls']; let i = index;"
       >
         <div
           [formGroupName]="i"
@@ -20,7 +20,7 @@
         >
           <div class="index-range">{{i+1}}.</div>
           <div class="col-6 pl-3" style="text-align: right">
-            <p-inputNumber
+            <!-- <p-inputNumber
               #fromInp
               mode="decimal"
               maxlength="10"
@@ -29,13 +29,26 @@
               inputId="integeronly"
               [style]="{width: '95%'}"
               [inputStyle]="{width: '195px', background: '#f4f6fa', border: 'none'}"
-              formControlName="from"
+              formControlName="trnStartDate"
               (onInput)="changeFrom($event, i)"
             >
-            </p-inputNumber>
+            </p-inputNumber> -->
+            <p-calendar
+              #fromInp
+              class="block mr-3"
+              placeholder="DD/MM/YYYY"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              [style]="{width: '95%'}"
+              [inputStyle]="{width: '140px', background: '#f4f6fa', border: 'none'}"
+              formControlName="trnStartDate"
+              [readonlyInput]="true"
+              (onSelect)="changeFrom($event, i)"
+              [appendTo]="'body'"
+            ></p-calendar>
           </div>
           <div class="col-6 pr-3">
-            <p-inputNumber
+            <!-- <p-inputNumber
               #toInp
               mode="decimal"
               maxlength="10"
@@ -44,13 +57,26 @@
               inputId="integeronly"
               [style]="{width: '95%'}"
               [inputStyle]="{width: '190px', background: '#f4f6fa', border: 'none'}"
-              formControlName="to"
+              formControlName="trnEndDate"
               (onInput)="changeTo($event, i)"
             >
-            </p-inputNumber>
+            </p-inputNumber> -->
+            <p-calendar
+              #fromInp
+              class="block mr-3"
+              placeholder="DD/MM/YYYY"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              [style]="{width: '95%'}"
+              [inputStyle]="{width: '140px', background: '#f4f6fa', border: 'none'}"
+              formControlName="trnEndDate"
+              [readonlyInput]="true"
+              (onSelect)="changeTo($event, i)"
+              [appendTo]="'body'"
+            ></p-calendar>
           </div>
           <div
-            *ngIf="i> 0 && i+1 == txnCriteriaRangeForm.get('txnCriteriaRange')['controls'].length"
+            *ngIf="i> 0 && i+1 == dateRangeForm.get('dateRange')['controls'].length"
             class="delete-range"
             (click)="deleteRange(i)"
           >
@@ -76,7 +102,7 @@
           label="+"
           [style]="{minWidth: '100%'}"
           class="p-button-raised addTxnBtn"
-          (click)="addTxnCriteriaRange()"
+          (click)="addDateRange()"
         ></button>
       </div>
     </div>
@@ -88,7 +114,7 @@
           type="button"
           label="Save"
           [style]="{minWidth: '100%'}"
-          (click)="saveTxnCriteriaRanges()"
+          (click)="saveDateRanges()"
           class="p-button-raised"
         ></button>
       </div>
@@ -111,7 +137,7 @@
       >
         <i class="pi pi-info-circle mr-2" style="color: red"></i>
         <span [ngClass]="{'highlightInfo': showError}"
-          >Maximum 10 Amount ranges can be added
+          >Maximum 10 Date ranges can be added
         </span>
       </div>
     </div>

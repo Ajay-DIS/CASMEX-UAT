@@ -80,8 +80,9 @@ import { DocumentListingComponent } from "./document-settings/document-listing/d
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
 import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-benef/add-customer-benef.component";
 import { AutoCompleteModule } from "primeng/autocomplete";
-import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
-import { DateMaskDirective } from "./date-mask.directive";
+import { GetDocSettingsComponent } from './get-doc-settings/get-doc-settings.component';
+import { DateMaskDirective } from './date-mask.directive';
+import { TransactionDateModal } from "./shared/modals/transaction-date-modal/transaction-date-modal";
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 
@@ -123,6 +124,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddCustomerBenefComponent,
     GetDocSettingsComponent,
     DateMaskDirective,
+    TransactionDateModal
     LoyaltyProgramComponent,
     AddLoyaltyComponent,
   ],

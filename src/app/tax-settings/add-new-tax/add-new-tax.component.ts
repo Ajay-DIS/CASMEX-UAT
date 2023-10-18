@@ -51,7 +51,7 @@ export class AddNewTaxComponent implements OnInit {
   cmCriteriaDependency: any = {};
   cmCriteriaDataDetails: any = [];
   independantCriteriaArr: any = [];
-  cmCriteriaSlabType: any = [];
+  cmCriteriaSlabType: any = { Slab: "LCY Amount", date: "Transaction Date" };
   criteriaTemplatesDdlOptions: any = [];
   criteriaMapDdlOptions = [];
   criteriaEqualsDdlOptions = [];
@@ -69,13 +69,13 @@ export class AddNewTaxComponent implements OnInit {
   isLcyFieldPresent = false;
   applyCriteriaDataTableColumns: any[] = [];
   columnsCopy: any[] = [
-    {
-      field: "taxType",
-      header: "Tax Type",
-      fieldType: "dropdown",
-      frozen: false,
-      info: null,
-    },
+    // {
+    //   field: "taxType",
+    //   header: "Tax Type",
+    //   fieldType: "dropdown",
+    //   frozen: false,
+    //   info: null,
+    // },
     {
       field: "setAs",
       header: "Set As",
@@ -300,72 +300,192 @@ export class AddNewTaxComponent implements OnInit {
               this.isTaxSettingLinked = !res["criteriaUpdate"];
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
 
-              this.taxTypeOption = res["taxTypeOption"].map((option) => {
-                return { code: option.code, codeName: option.codeName };
-              });
+              // this.taxTypeOption = res["taxTypeOption"].map((option) => {
+              //   return { code: option.code, codeName: option.codeName };
+              // });
               this.setAsOption = res["setAsOption"].map((option) => {
                 return { code: option.code, codeName: option.codeName };
               });
 
-              if (res["criteriaMap"].indexOf("&&&&") >= 0) {
-                this.isLcyFieldPresent = true;
+              let amtSlabPresent = false;
+              let dateSlabPresent = false;
+
+              if (res["criteriaMap"].indexOf("from:") >= 0) {
+                amtSlabPresent = true;
               }
 
-              if (!this.isLcyFieldPresent) {
-                this.applyCriteriaFormattedData = res["data"];
-              } else {
-                if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
-                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
-                    field: "lcyAmount",
-                    header: "LCY Amount",
-                    fieldType: "text",
-                  });
-                  this.applyCriteriaFormattedData = res["data"];
+              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                dateSlabPresent = true;
+              }
 
-                  this.applyCriteriaFormattedData.forEach((data) => {
-                    let split = data["criteriaMapSplit"];
-                    if (split) {
-                      data["lcyAmount"] = split.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                      data["criteriaMapSplit"] = split.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                    }
-                  });
-                } else if (res["criteriaMap"].indexOf("from") >= 0) {
-                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
+              if (amtSlabPresent && dateSlabPresent) {
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateFrom",
+                  header: "Date From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateTo",
+                  header: "Date To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  fieldType: "text",
+                });
+
+                this.applyCriteriaFormattedData = [];
+              } else {
+                if (amtSlabPresent) {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
                   });
-                  this.applyCriteriaFormattedData = res["data"];
-                  console.log("::", this.applyCriteriaFormattedData);
-                  this.applyCriteriaFormattedData.forEach((data) => {
-                    let split = data["criteriaMapSplit"];
-                    if (split) {
-                      data["lcyAmountFrom"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop().split("::")[0].split(":")[1]
-                        : split?.split("::")[0]?.split(":")[1];
-                      data["lcyAmountTo"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop().split("::")[1].split(":")[1]
-                        : split?.split("::")[1]?.split(":")[1];
-                      data["criteriaMapSplit"] = split?.includes("&&&&")
-                        ? split.split("&&&&").pop()
-                        : split;
-                    }
+                  this.applyCriteriaFormattedData = [];
+                } else if (dateSlabPresent) {
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "dateFrom",
+                    header: "Date From",
+                    fieldType: "text",
                   });
+                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                    field: "dateTo",
+                    header: "Date To",
+                    fieldType: "text",
+                  });
+                  this.applyCriteriaFormattedData = [];
+                } else if (!amtSlabPresent && !dateSlabPresent) {
+                  this.applyCriteriaFormattedData = [];
                 }
               }
+              this.applyCriteriaFormattedData = res["data"];
+              this.applyCriteriaFormattedData.forEach((data) => {
+                let mapSplit = data["criteriaMapSplit"];
+
+                let criteriaMapFirstSplit = null;
+                let criteriaMapSecSplit = null;
+                let criteriaMapThirdSplit = null;
+
+                if (mapSplit && mapSplit.includes("&&&&")) {
+                  if (mapSplit.split("&&&&").length == 3) {
+                    criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
+                    criteriaMapSecSplit = mapSplit.split("&&&&")[1];
+                    criteriaMapThirdSplit = mapSplit.split("&&&&")[2];
+
+                    if (criteriaMapSecSplit.includes("from:")) {
+                      data["lcyAmountFrom"] = criteriaMapSecSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["lcyAmountTo"] = criteriaMapSecSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+
+                    if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+                      data["dateFrom"] = criteriaMapThirdSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["dateTo"] = criteriaMapThirdSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+                  } else if (mapSplit.split("&&&&").length == 2) {
+                    criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
+                    criteriaMapSecSplit = mapSplit.split("&&&&")[1];
+
+                    if (criteriaMapSecSplit.includes("from:")) {
+                      data["lcyAmountFrom"] = criteriaMapSecSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["lcyAmountTo"] = criteriaMapSecSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+                      data["dateFrom"] = criteriaMapThirdSplit
+                        .split("::")[0]
+                        .split(":")[1];
+                      data["dateTo"] = criteriaMapThirdSplit
+                        .split("::")[1]
+                        .split(":")[1];
+                    }
+                  }
+                } else {
+                }
+              });
+
+              // % old-
+
+              // if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+              //   this.isLcyFieldPresent = true;
+              // }
+
+              // if (!this.isLcyFieldPresent) {
+              //   this.applyCriteriaFormattedData = res["data"];
+              // } else {
+              //   if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+              //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+              //       field: "lcyAmount",
+              //       header: "LCY Amount",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaFormattedData = res["data"];
+
+              //     this.applyCriteriaFormattedData.forEach((data) => {
+              //       let split = data["criteriaMapSplit"];
+              //       if (split) {
+              //         data["lcyAmount"] = split.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //         data["criteriaMapSplit"] = split.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //       }
+              //     });
+              //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
+              //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+              //       field: "lcyAmountFrom",
+              //       header: "Amount From",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+              //       field: "lcyAmountTo",
+              //       header: "Amount To",
+              //       fieldType: "text",
+              //     });
+              //     this.applyCriteriaFormattedData = res["data"];
+              //     console.log("::", this.applyCriteriaFormattedData);
+              //     this.applyCriteriaFormattedData.forEach((data) => {
+              //       let split = data["criteriaMapSplit"];
+              //       if (split) {
+              //         data["lcyAmountFrom"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop().split("::")[0].split(":")[1]
+              //           : split?.split("::")[0]?.split(":")[1];
+              //         data["lcyAmountTo"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop().split("::")[1].split(":")[1]
+              //           : split?.split("::")[1]?.split(":")[1];
+              //         data["criteriaMapSplit"] = split?.includes("&&&&")
+              //           ? split.split("&&&&").pop()
+              //           : split;
+              //       }
+              //     });
+              //   }
+              // }
 
               this.applyCriteriaFormattedData.forEach((data) => {
                 delete data.id;
-                data["taxTypeOption"] = this.taxTypeOption;
+                // data["taxTypeOption"] = this.taxTypeOption;
                 data["setAsOption"] = this.setAsOption;
                 data["action"] = res["action"];
                 data["invalidTaxAmount"] = false;
@@ -434,7 +554,10 @@ export class AddNewTaxComponent implements OnInit {
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType.push(data["fieldName"]);
+                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+              }
+              if (data["criteriaType"] == "date") {
+                this.cmCriteriaSlabType["date"] = data["fieldName"];
               }
             }
           );
@@ -663,52 +786,80 @@ export class AddNewTaxComponent implements OnInit {
               this.criteriaMasterData,
               ["LCY Amount"]
             );
-            this.taxTypeOption = res["data"].taxTypeOption.map((option) => {
-              return { code: option.code, codeName: option.codeName };
-            });
+            // this.taxTypeOption = res["data"].taxTypeOption.map((option) => {
+            //   return { code: option.code, codeName: option.codeName };
+            // });
             this.setAsOption = res["data"].setAsOption.map((option) => {
               return { code: option.code, codeName: option.codeName };
             });
 
-            if (res["criteriaMap"].indexOf("&&&&") >= 0) {
-              this.isLcyFieldPresent = true;
-            } else {
-              this.isLcyFieldPresent = false;
+            let amtSlabPresent = false;
+            let dateSlabPresent = false;
+
+            let baseCriteriaMap = res["criteriaMap"].split("&&&&")[0];
+
+            if (res["criteriaMap"].indexOf("from:") >= 0) {
+              amtSlabPresent = true;
             }
 
-            if (!this.isLcyFieldPresent) {
-              this.applyCriteriaFormattedData = [res["data"].taxSetting];
-              this.applyCriteriaFormattedData.forEach((data) => {
-                data["criteriaMapSplit"] = null;
+            if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+              dateSlabPresent = true;
+            }
+
+            if (amtSlabPresent && dateSlabPresent) {
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "dateFrom",
+                header: "Date From",
+                fieldType: "text",
               });
-              console.log(this.applyCriteriaFormattedData);
-            } else {
-              if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
-                let lcyOprFields = crtfields.filter((crt) => {
-                  return crt.includes("LCY Amount");
-                });
-                this.applyCriteriaDataTableColumns.splice(-4, 0, {
-                  field: "lcyAmount",
-                  header: "LCY Amount",
-                  fieldType: "text",
-                });
-                this.applyCriteriaFormattedData = [];
-                lcyOprFields.forEach((field) => {
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "dateTo",
+                header: "Date To",
+                fieldType: "text",
+              });
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "lcyAmountFrom",
+                header: "Amount From",
+                fieldType: "text",
+              });
+              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                field: "lcyAmountTo",
+                header: "Amount To",
+                fieldType: "text",
+              });
+
+              this.applyCriteriaFormattedData = [];
+
+              let dateSlabFields = reqData.dateSlabArr;
+              let lcySlabFields = reqData.lcySlabArr;
+
+              dateSlabFields.forEach((fieldDate) => {
+                console.log(lcySlabFields);
+                lcySlabFields.forEach((fieldAmt) => {
                   let apiData = JSON.parse(
                     JSON.stringify(res["data"].taxSetting)
                   );
-                  apiData["lcyAmount"] = field;
-                  apiData["criteriaMapSplit"] = field;
+                  console.log(fieldAmt);
+                  apiData["dateFrom"] = fieldDate.trnStartDate;
+                  apiData["dateTo"] = fieldDate.trnEndDate;
+                  apiData["lcyAmountFrom"] = fieldAmt.from;
+                  apiData["lcyAmountTo"] = fieldAmt.to;
+
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
                 });
-              } else if (res["criteriaMap"].indexOf("from") >= 0) {
+              });
+            } else {
+              if (amtSlabPresent) {
                 let lcySlabFields = reqData.lcySlabArr;
-                this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-4, 0, {
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -722,15 +873,104 @@ export class AddNewTaxComponent implements OnInit {
                   apiData["lcyAmountTo"] = field.to;
                   apiData[
                     "criteriaMapSplit"
-                  ] = `from:${field["from"]}::to:${field["to"]}`;
+                  ] = `${baseCriteriaMap}&&&&from:${field["from"]}::to:${field["to"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (dateSlabPresent) {
+                let dateSlabFields = reqData.dateSlabArr;
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateFrom",
+                  header: "Date From",
+                  fieldType: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  field: "dateTo",
+                  header: "Date To",
+                  fieldType: "text",
+                });
+                this.applyCriteriaFormattedData = [];
+                dateSlabFields.forEach((field) => {
+                  let apiData = JSON.parse(
+                    JSON.stringify(res["data"].taxSetting)
+                  );
+                  apiData["dateFrom"] = field.trnStartDate;
+                  apiData["dateTo"] = field.trnEndDate;
+                  apiData[
+                    "criteriaMapSplit"
+                  ] = `${baseCriteriaMap}&&&&trnStartDate:${field["trnStartDate"]}::trnEndDate:${field["trnEndDate"]}`;
+                  this.applyCriteriaFormattedData.push(apiData);
+                });
+              } else if (!amtSlabPresent && !dateSlabPresent) {
+                this.applyCriteriaFormattedData = [res["data"].taxSetting];
+                this.applyCriteriaFormattedData.forEach((data) => {
+                  data["criteriaMapSplit"] = baseCriteriaMap;
                 });
               }
             }
 
+            // % old-
+
+            // if (res["criteriaMap"].indexOf("&&&&") >= 0) {
+            //   this.isLcyFieldPresent = true;
+            // } else {
+            //   this.isLcyFieldPresent = false;
+            // }
+
+            // if (!this.isLcyFieldPresent) {
+            //   this.applyCriteriaFormattedData = [res["data"].taxSetting];
+            //   this.applyCriteriaFormattedData.forEach((data) => {
+            //     data["criteriaMapSplit"] = null;
+            //   });
+            //   console.log(this.applyCriteriaFormattedData);
+            // } else {
+            //   if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
+            //     let lcyOprFields = crtfields.filter((crt) => {
+            //       return crt.includes("LCY Amount");
+            //     });
+            //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+            //       field: "lcyAmount",
+            //       header: "LCY Amount",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaFormattedData = [];
+            //     lcyOprFields.forEach((field) => {
+            //       let apiData = JSON.parse(
+            //         JSON.stringify(res["data"].taxSetting)
+            //       );
+            //       apiData["lcyAmount"] = field;
+            //       apiData["criteriaMapSplit"] = field;
+            //       this.applyCriteriaFormattedData.push(apiData);
+            //     });
+            //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
+            //     let lcySlabFields = reqData.lcySlabArr;
+            //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+            //       field: "lcyAmountFrom",
+            //       header: "Amount From",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaDataTableColumns.splice(-4, 0, {
+            //       field: "lcyAmountTo",
+            //       header: "Amount To",
+            //       fieldType: "text",
+            //     });
+            //     this.applyCriteriaFormattedData = [];
+            //     lcySlabFields.forEach((field) => {
+            //       let apiData = JSON.parse(
+            //         JSON.stringify(res["data"].taxSetting)
+            //       );
+            //       apiData["lcyAmountFrom"] = field.from;
+            //       apiData["lcyAmountTo"] = field.to;
+            //       apiData[
+            //         "criteriaMapSplit"
+            //       ] = `from:${field["from"]}::to:${field["to"]}`;
+            //       this.applyCriteriaFormattedData.push(apiData);
+            //     });
+            //   }
+            // }
+
             this.applyCriteriaFormattedData.forEach((data) => {
               delete data.id;
-              data["taxTypeOption"] = this.taxTypeOption;
+              // data["taxTypeOption"] = this.taxTypeOption;
               data["setAsOption"] = this.setAsOption;
               data["action"] = res["data"].action;
               data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
@@ -871,7 +1111,7 @@ export class AddNewTaxComponent implements OnInit {
       this.coreService.displayLoadingScreen();
       let isRequiredFields = false;
       let invalidTaxAmount = false;
-      let taxTypeMissing = false;
+      // let taxTypeMissing = false;
       let setAsMissing = false;
       let taxMissing = false;
       this.applyCriteriaFormattedData.forEach((element) => {
@@ -888,9 +1128,9 @@ export class AddNewTaxComponent implements OnInit {
         if (!element["taxCodeDesc"]) {
           isRequiredFields = true;
         }
-        if (!element["taxType"]) {
-          taxTypeMissing = true;
-        }
+        // if (!element["taxType"]) {
+        //   taxTypeMissing = true;
+        // }
         if (!element["setAs"]) {
           setAsMissing = true;
         }
@@ -901,10 +1141,12 @@ export class AddNewTaxComponent implements OnInit {
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
-      } else if (taxTypeMissing) {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Select Tax Type.");
-      } else if (setAsMissing) {
+      }
+      // else if (taxTypeMissing) {
+      //   this.coreService.removeLoadingScreen();
+      //   this.coreService.showWarningToast("Please Select Tax Type.");
+      // }
+      else if (setAsMissing) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Select Set As.");
       } else if (taxMissing) {
@@ -914,61 +1156,10 @@ export class AddNewTaxComponent implements OnInit {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid Tax Amount.");
       } else {
-        let duplicateTaxType = false;
-        if (
-          this.applyCriteriaFormattedData[0]["lcyAmountFrom"] ||
-          this.applyCriteriaFormattedData[0]["lcyAmount"]
-        ) {
-          let taxTypeObj = {};
-          if (this.applyCriteriaFormattedData[0]["lcyAmountFrom"]) {
-            this.applyCriteriaFormattedData.forEach((data) => {
-              if (
-                taxTypeObj[data["lcyAmountFrom"]] &&
-                taxTypeObj[data["lcyAmountFrom"]].length
-              ) {
-                taxTypeObj[data["lcyAmountFrom"]].push(data["taxType"]);
-              } else {
-                taxTypeObj[data["lcyAmountFrom"]] = [data["taxType"]];
-              }
-            });
-          } else {
-            this.applyCriteriaFormattedData.forEach((data) => {
-              if (
-                taxTypeObj[data["lcyAmount"]] &&
-                taxTypeObj[data["lcyAmount"]].length
-              ) {
-                taxTypeObj[data["lcyAmount"]].push(data["taxType"]);
-              } else {
-                taxTypeObj[data["lcyAmount"]] = [data["taxType"]];
-              }
-            });
-          }
-          Object.values(taxTypeObj).forEach((taxTypeArr: any) => {
-            if (new Set(taxTypeArr).size !== taxTypeArr.length) {
-              this.coreService.removeLoadingScreen();
-              this.coreService.showWarningToast(
-                "Duplicate Tax type value found for a particular LCY Amount !"
-              );
-              duplicateTaxType = true;
-              return;
-            }
-          });
+        if (this.checkDuplicateSetAs()) {
+          return;
         } else {
-          let taxTypeArr = this.applyCriteriaFormattedData.map((data) => {
-            return data["taxType"];
-          });
-          if (new Set(taxTypeArr).size !== taxTypeArr.length) {
-            this.coreService.removeLoadingScreen();
-            this.coreService.showWarningToast(
-              "Duplicate Tax type value found !"
-            );
-            duplicateTaxType = true;
-            return;
-          }
-        }
-        if (!duplicateTaxType) {
           let service;
-          this.decodeSelectedOptions();
           if (this.mode == "edit") {
             let data = {
               data: this.applyCriteriaFormattedData,
@@ -1040,6 +1231,85 @@ export class AddNewTaxComponent implements OnInit {
     } else {
       this.coreService.showWarningToast("Applied criteria already exists.");
     }
+  }
+
+  checkDuplicateSetAs(): boolean {
+    let isDuplicateSetAsFound = false;
+    let currCritMap = this.applyCriteriaFormattedData[0]["criteriaMap"];
+    let amtSlabPresent = false;
+    let dateSlabPresent = false;
+
+    if (currCritMap.indexOf("from:") >= 0) {
+      amtSlabPresent = true;
+    }
+
+    if (currCritMap.indexOf("trnStartDate:") >= 0) {
+      dateSlabPresent = true;
+    }
+
+    if (amtSlabPresent || dateSlabPresent) {
+      let docTypeObj = {};
+      if (amtSlabPresent && dateSlabPresent) {
+        this.applyCriteriaFormattedData.forEach((dataD) => {
+          if (
+            docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`] &&
+            docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`].length
+          ) {
+            docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`].push(
+              dataD["setAs"]
+            );
+          } else {
+            docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`] = [
+              dataD["setAs"],
+            ];
+          }
+        });
+      } else {
+        if (amtSlabPresent) {
+          this.applyCriteriaFormattedData.forEach((data) => {
+            if (
+              docTypeObj[data["lcyAmountFrom"]] &&
+              docTypeObj[data["lcyAmountFrom"]].length
+            ) {
+              docTypeObj[data["lcyAmountFrom"]].push(data["setAs"]);
+            } else {
+              docTypeObj[data["lcyAmountFrom"]] = [data["setAs"]];
+            }
+          });
+        } else if (dateSlabPresent) {
+          this.applyCriteriaFormattedData.forEach((data) => {
+            if (
+              docTypeObj[data["dateFrom"]] &&
+              docTypeObj[data["dateFrom"]].length
+            ) {
+              docTypeObj[data["dateFrom"]].push(data["setAs"]);
+            } else {
+              docTypeObj[data["dateFrom"]] = [data["setAs"]];
+            }
+          });
+        }
+      }
+      console.log("::doctypeobj", docTypeObj);
+      Object.values(docTypeObj).forEach((docTypeArr: any) => {
+        if (new Set(docTypeArr).size !== docTypeArr.length) {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(
+            "Duplicate set as option found for a particular Amount or Date !"
+          );
+          isDuplicateSetAsFound = true;
+        }
+      });
+    } else {
+      let docTypeArr = this.applyCriteriaFormattedData.map((data) => {
+        return data["setAs"];
+      });
+      if (new Set(docTypeArr).size !== docTypeArr.length) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Duplicate set as option found !");
+        isDuplicateSetAsFound = true;
+      }
+    }
+    return isDuplicateSetAsFound;
   }
 
   reset() {
@@ -1116,31 +1386,31 @@ export class AddNewTaxComponent implements OnInit {
     }, 1000);
   }
 
-  setSelectedOptions() {
-    this.applyCriteriaFormattedData.forEach((data) => {
-      if (data["taxType"]) {
-        data["taxType"] = data["taxTypeOption"].filter(
-          (option) => option["code"] == data["taxType"]
-        )[0]["codeName"];
-      }
+  // setSelectedOptions() {
+  //   this.applyCriteriaFormattedData.forEach((data) => {
+  //     if (data["taxType"]) {
+  //       data["taxType"] = data["taxTypeOption"].filter(
+  //         (option) => option["code"] == data["taxType"]
+  //       )[0]["codeName"];
+  //     }
 
-      if (data["setAs"]) {
-        data["setAs"] = data["setAsOption"].filter(
-          (option) => option["code"] == data["setAs"]
-        )[0]["codeName"];
-      }
-    });
-  }
-  decodeSelectedOptions() {
-    this.applyCriteriaFormattedData.forEach((data) => {
-      data["taxType"] = data["taxTypeOption"].filter(
-        (option) => option["codeName"] == data["taxType"]
-      )[0]["code"];
-      data["setAs"] = data["setAsOption"].filter(
-        (option) => option["codeName"] == data["setAs"]
-      )[0]["code"];
-    });
-  }
+  //     if (data["setAs"]) {
+  //       data["setAs"] = data["setAsOption"].filter(
+  //         (option) => option["code"] == data["setAs"]
+  //       )[0]["codeName"];
+  //     }
+  //   });
+  // }
+  // decodeSelectedOptions() {
+  //   this.applyCriteriaFormattedData.forEach((data) => {
+  //     data["taxType"] = data["taxTypeOption"].filter(
+  //       (option) => option["codeName"] == data["taxType"]
+  //     )[0]["code"];
+  //     data["setAs"] = data["setAsOption"].filter(
+  //       (option) => option["codeName"] == data["setAs"]
+  //     )[0]["code"];
+  //   });
+  // }
 
   isMandatoryCol(heading: any) {
     return heading.includes("*") ? true : false;
@@ -1205,20 +1475,15 @@ export class AddNewTaxComponent implements OnInit {
     this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = false;
     let max = 1000000;
     let min = 0;
+
     if (this.applyCriteriaFormattedData[index][selectCol] == "Percentage") {
       max = 100;
-    }
-    if (this.applyCriteriaFormattedData[index].lcyAmount?.length) {
-      let lcyAmountNum =
-        this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[3];
-      let lcyAmountOpr =
-        this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[2];
-
-      if (this.applyCriteriaFormattedData[index][selectCol] == "Percentage") {
-        max = 100;
-      } else if (
-        this.applyCriteriaFormattedData[index][selectCol] == "Amount"
-      ) {
+    } else if (this.applyCriteriaFormattedData[index][selectCol] == "Amount") {
+      if (this.applyCriteriaFormattedData[index].lcyAmount?.length) {
+        let lcyAmountNum =
+          this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[3];
+        let lcyAmountOpr =
+          this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[2];
         if (
           Number(this.applyCriteriaFormattedData[index].lcyAmountFrom) > 0 &&
           Number(this.applyCriteriaFormattedData[index].lcyAmountTo) > 0
@@ -1243,13 +1508,13 @@ export class AddNewTaxComponent implements OnInit {
         } else {
           max = 1000000;
         }
+      } else if (
+        this.applyCriteriaFormattedData[index].lcyAmountFrom?.length ||
+        this.applyCriteriaFormattedData[index].lcyAmountTo?.length
+      ) {
+        min = Number(this.applyCriteriaFormattedData[index].lcyAmountFrom);
+        max = Number(this.applyCriteriaFormattedData[index].lcyAmountTo);
       }
-    } else if (
-      this.applyCriteriaFormattedData[index].lcyAmountFrom?.length ||
-      this.applyCriteriaFormattedData[index].lcyAmountTo?.length
-    ) {
-      min = Number(this.applyCriteriaFormattedData[index].lcyAmountFrom);
-      max = Number(this.applyCriteriaFormattedData[index].lcyAmountTo);
     }
 
     if (event.value <= max) {

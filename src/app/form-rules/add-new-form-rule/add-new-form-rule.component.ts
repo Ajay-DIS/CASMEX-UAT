@@ -50,7 +50,7 @@ export class AddNewFormRuleComponent implements OnInit {
   cmCriteriaDependency: any = {};
   cmCriteriaDataDetails: any = [];
   independantCriteriaArr: any = [];
-  cmCriteriaSlabType: any = [];
+  cmCriteriaSlabType: any = { Slab: "LCY Amount", date: "Transaction Date" };
   criteriaTemplatesDdlOptions: any = [];
   criteriaMapDdlOptions = [];
   criteriaEqualsDdlOptions = [];
@@ -348,23 +348,6 @@ export class AddNewFormRuleComponent implements OnInit {
 
               this.appliedCriteriaCriteriaMap = res["criteriaMap"];
 
-              if (
-                !(res["criteriaMap"].indexOf("&&&&") >= 0) &&
-                !(res["criteriaMap"].indexOf("LCY Amount") >= 0)
-              ) {
-                simpleData = true;
-              } else {
-                simpleData = false;
-                res["data"]["dataOperation"].forEach((data) => {
-                  Object.values(data).forEach((subData) => {
-                    (subData as any[]).forEach((d) => {
-                      d["data"]["key"] =
-                        d["data"]["criteriaMapSplit"].split("&&&&")[1];
-                    });
-                  });
-                });
-              }
-
               this.formRuleCode = this.editFromRulesApiData["formRuleCode"];
               if (this.editFromRulesApiData["formRuleDesc"]) {
                 this.ruleDescription =
@@ -390,106 +373,126 @@ export class AddNewFormRuleComponent implements OnInit {
                 );
               console.log("criteriaText", this.criteriaText);
               this.applyCriteriaDataTableColumns = [];
+              this.applyCriteriaFormattedData = [];
 
               let lcyOprFields = [];
               let isLcyOprFieldPresent = false;
               let lcyOprFieldInserted = false;
               let lcySlabFieldInserted = false;
 
-              let countryCol = {};
-
               this.applyCriteriaDataTableColumns = [...this.cols];
-              this.criteriaText
-                .slice()
-                .reverse()
-                .forEach((crt) => {
-                  console.log("crt", crt);
-                  if (!crt) {
-                    return;
-                  }
-                  let formatCrt;
-                  let opr;
-                  if (crt.includes("!=")) {
-                    formatCrt = crt.replace(/[!=]/g, "");
-                    opr = "!=";
-                  } else if (crt.includes(">=")) {
-                    formatCrt = crt.replace(/[>=]/g, "");
-                    opr = ">=";
-                  } else if (crt.includes("<=")) {
-                    formatCrt = crt.replace(/[<=]/g, "");
-                    opr = "<=";
-                  } else if (crt.includes("<")) {
-                    formatCrt = crt.replace(/[<]/g, "");
-                    opr = "<";
-                  } else if (crt.includes(">")) {
-                    formatCrt = crt.replace(/[>]/g, "");
-                    opr = ">";
-                  } else {
-                    formatCrt = crt.replace(/[=]/g, "");
-                    opr = "=";
-                  }
 
-                  if (formatCrt.split("  ")[0] == "LCY Amount") {
-                    isLcyOprFieldPresent = true;
-                    lcyOprFields.push(
-                      formatCrt.split("  ")[0] +
-                        " " +
-                        opr +
-                        " " +
-                        formatCrt.split("  ")[1]
-                    );
-                  }
-                  if (
-                    this.criteriaCodeText.includes("LCY Amount = Slab") &&
-                    !lcySlabFieldInserted
-                  ) {
-                    this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                      field: "amountFrom",
-                      header: "Amount From",
-                      type: "lcySlabFrom",
-                    });
-                    this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                      field: "amountTo",
-                      header: "Amount To",
-                      type: "lcySlabTo",
-                    });
-                    lcySlabFieldInserted = true;
-                  }
+              let completeData = [];
+              let amtSlabPresent = false;
+              let dateSlabPresent = false;
 
-                  if (formatCrt.split("  ")[0] == "LCY Amount") {
-                    if (!lcyOprFieldInserted) {
-                      this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                        field: "lcyAmount",
-                        header: formatCrt.split("  ")[0],
-                        value: formatCrt.split("  ")[1],
-                        type: "lcyOpr",
-                      });
-                      lcyOprFieldInserted = true;
-                    } else {
-                      return;
-                    }
-                  }
-                  // else {
-                  //   if (formatCrt.split("  ")[0] == "Country") {
-                  //     countryCol = {
-                  //       field: formatCrt.split("  ")[0],
-                  //       header: formatCrt.split("  ")[0],
-                  //       value: formatCrt.split("  ")[1],
-                  //       type: "string",
-                  //     };
-                  //   } else {
-                  //     this.applyCriteriaDataTableColumns.unshift({
-                  //       field: formatCrt.split("  ")[0],
-                  //       header: formatCrt.split("  ")[0],
-                  //       value: formatCrt.split("  ")[1],
-                  //       type: "string",
-                  //     });
-                  //   }
-                  // }
+              if (res["criteriaMap"].indexOf("from:") >= 0) {
+                amtSlabPresent = true;
+              }
+
+              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                dateSlabPresent = true;
+              }
+
+              if (amtSlabPresent && dateSlabPresent) {
+                res["data"]["dataOperation"].forEach((data) => {
+                  Object.values(data).forEach((subData) => {
+                    (subData as any[]).forEach((d) => {
+                      d["data"]["key"] = d["data"]["criteriaMapSplit"]
+                        .split("&&&&")
+                        .slice(1)
+                        .join("&&&&");
+                    });
+                  });
                 });
+                this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                  field: "dateFrom",
+                  header: "Date From",
+                  type: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                  field: "dateTo",
+                  header: "Date To",
+                  type: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                  field: "lcyAmountFrom",
+                  header: "Amount From",
+                  type: "text",
+                });
+                this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                  field: "lcyAmountTo",
+                  header: "Amount To",
+                  type: "text",
+                });
+              } else {
+                if (amtSlabPresent) {
+                  res["data"]["dataOperation"].forEach((data) => {
+                    Object.values(data).forEach((subData) => {
+                      (subData as any[]).forEach((d) => {
+                        d["data"]["key"] =
+                          d["data"]["criteriaMapSplit"].split("&&&&")[1];
+                      });
+                    });
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "lcyAmountFrom",
+                    header: "Amount From",
+                    type: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "lcyAmountTo",
+                    header: "Amount To",
+                    type: "text",
+                  });
+                } else if (dateSlabPresent) {
+                  res["data"]["dataOperation"].forEach((data) => {
+                    Object.values(data).forEach((subData) => {
+                      (subData as any[]).forEach((d) => {
+                        d["data"]["key"] =
+                          d["data"]["criteriaMapSplit"].split("&&&&")[1];
+                      });
+                    });
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "dateFrom",
+                    header: "Date From",
+                    type: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "dateTo",
+                    header: "Date To",
+                    type: "text",
+                  });
+                } else if (!amtSlabPresent && !dateSlabPresent) {
+                  Object.keys(res["labelData"]["label"]).forEach((k, i) => {
+                    let formattedRowData = {
+                      data: {
+                        fieldName: res["labelData"]["label"][k],
+                        key: i,
+                      },
+                      expanded: true,
+                      leaf: false,
+                      children: [],
+                    };
 
-              if (Object.keys(countryCol).length) {
-                this.applyCriteriaDataTableColumns.unshift(countryCol);
+                    let formattedChilds =
+                      res["data"]["dataOperation"][0][
+                        res["labelData"]["label"][k]
+                      ];
+
+                    formattedChilds.forEach((child) => {
+                      child["leaf"] = true;
+                      if (child["data"]["ruleSelected"] == "Y") {
+                        child["partialSelected"] = false;
+                        this.selectedNodes.push(child);
+                      }
+                    });
+
+                    formattedRowData["children"] = formattedChilds;
+                    completeData.push(formattedRowData);
+                  });
+                }
               }
 
               this.applyCriteriaDataTableColumns.forEach((col) => {
@@ -513,99 +516,323 @@ export class AddNewFormRuleComponent implements OnInit {
                 });
               });
 
-              let completeData = [];
-              if (simpleData) {
-                Object.keys(res["labelData"]["label"]).forEach((k, i) => {
-                  let formattedRowData = {
-                    data: {
-                      fieldName: res["labelData"]["label"][k],
-                      key: i,
-                    },
-                    expanded: true,
-                    leaf: false,
-                    children: [],
-                  };
+              if (amtSlabPresent || dateSlabPresent) {
+                if (amtSlabPresent && dateSlabPresent) {
+                  reqData.dateSlabArr.forEach((slabD, di) => {
+                    reqData.lcySlabArr.forEach((slabA, ai) => {
+                      Object.keys(res["labelData"]["label"]).forEach((k) => {
+                        let formattedRowData = {
+                          data: {
+                            fieldName: res["labelData"]["label"][k],
+                            key: ai,
+                          },
+                          expanded: true,
+                          leaf: false,
+                          children: [],
+                        };
+                        let formattedChilds = res["data"]["dataOperation"][0][
+                          res["labelData"]["label"][k]
+                        ].filter((child) => {
+                          return (
+                            child["data"]["key"] ==
+                            `from:${slabA["from"]}::to:${slabA["to"]}&&&&trnStartDate:${slabD["trnStartDate"]}::trnEndDate:${slabD["trnEndDate"]}`
+                          );
+                        });
+                        formattedChilds.forEach((child) => {
+                          child["data"]["dateFrom"] = slabD["trnStartDate"];
+                          child["data"]["dateTo"] = slabD["trnEndDate"];
+                          child["data"]["lcyAmountFrom"] = slabA["from"];
+                          child["data"]["lcyAmountTo"] = slabA["to"];
+                          child["leaf"] = true;
+                          if (child["data"]["ruleSelected"] == "Y") {
+                            child["partialSelected"] = false;
+                            this.selectedNodes.push(child);
+                          }
+                        });
 
-                  let formattedChilds =
-                    res["data"]["dataOperation"][0][
-                      res["labelData"]["label"][k]
-                    ];
-
-                  formattedChilds.forEach((child) => {
-                    child["leaf"] = true;
-                    if (child["data"]["ruleSelected"] == "Y") {
-                      child["partialSelected"] = false;
-                      this.selectedNodes.push(child);
-                    }
-                  });
-
-                  formattedRowData["children"] = formattedChilds;
-                  completeData.push(formattedRowData);
-                });
-              } else {
-                if (reqData.lcySlabArr.length > 0) {
-                  reqData.lcySlabArr.forEach((slab, i) => {
-                    Object.keys(res["labelData"]["label"]).forEach((k) => {
-                      let formattedRowData = {
-                        data: {
-                          fieldName: res["labelData"]["label"][k],
-                          key: i,
-                        },
-                        expanded: true,
-                        leaf: false,
-                        children: [],
-                      };
-                      let formattedChilds = res["data"]["dataOperation"][0][
-                        res["labelData"]["label"][k]
-                      ].filter(
-                        (child) =>
-                          child["data"]["key"] ==
-                          `from:${slab["from"]}::to:${slab["to"]}`
-                      );
-                      formattedChilds.forEach((child) => {
-                        child["data"]["amountFrom"] = slab["from"];
-                        child["data"]["amountTo"] = slab["to"];
-                        child["leaf"] = true;
-                        if (child["data"]["ruleSelected"] == "Y") {
-                          child["partialSelected"] = false;
-                          this.selectedNodes.push(child);
-                        }
+                        console.log(formattedChilds);
+                        formattedRowData["children"] = formattedChilds;
+                        completeData.push(formattedRowData);
                       });
-
-                      formattedRowData["children"] = formattedChilds;
-                      completeData.push(formattedRowData);
                     });
                   });
-                } else if (lcyOprFields.length > 0) {
-                  lcyOprFields.forEach((oprField, i) => {
-                    Object.keys(res["labelData"]["label"]).forEach((k) => {
-                      let formattedRowData = {
-                        data: {
-                          fieldName: res["labelData"]["label"][k],
-                          key: i,
-                        },
-                        expanded: true,
-                        leaf: false,
-                        children: [],
-                      };
-                      let formattedChilds = res["data"]["dataOperation"][0][
-                        res["labelData"]["label"][k]
-                      ].filter((child) => child["data"]["key"] == oprField);
-                      formattedChilds.forEach((child) => {
-                        child["data"]["lcyAmount"] = oprField;
-                        child["leaf"] = true;
-                        if (child["data"]["ruleSelected"] == "Y") {
-                          child["partialSelected"] = false;
-                          this.selectedNodes.push(child);
-                        }
-                      });
+                } else {
+                  if (amtSlabPresent) {
+                    reqData.lcySlabArr.forEach((slab, i) => {
+                      Object.keys(res["labelData"]["label"]).forEach((k) => {
+                        let formattedRowData = {
+                          data: {
+                            fieldName: res["labelData"]["label"][k],
+                            key: i,
+                          },
+                          expanded: true,
+                          leaf: false,
+                          children: [],
+                        };
+                        let formattedChilds = res["data"]["dataOperation"][0][
+                          res["labelData"]["label"][k]
+                        ].filter(
+                          (child) =>
+                            child["data"]["key"] ==
+                            `from:${slab["from"]}::to:${slab["to"]}`
+                        );
+                        formattedChilds.forEach((child) => {
+                          child["data"]["lcyAmountFrom"] = slab["from"];
+                          child["data"]["lcyAmountTo"] = slab["to"];
+                          child["leaf"] = true;
+                          if (child["data"]["ruleSelected"] == "Y") {
+                            child["partialSelected"] = false;
+                            this.selectedNodes.push(child);
+                          }
+                        });
 
-                      formattedRowData["children"] = formattedChilds;
-                      completeData.push(formattedRowData);
+                        formattedRowData["children"] = formattedChilds;
+                        completeData.push(formattedRowData);
+                      });
                     });
-                  });
+                  } else if (dateSlabPresent) {
+                    reqData.dateSlabArr.forEach((slab, i) => {
+                      Object.keys(res["labelData"]["label"]).forEach((k) => {
+                        let formattedRowData = {
+                          data: {
+                            fieldName: res["labelData"]["label"][k],
+                            key: i,
+                          },
+                          expanded: true,
+                          leaf: false,
+                          children: [],
+                        };
+                        let formattedChilds = res["data"]["dataOperation"][0][
+                          res["labelData"]["label"][k]
+                        ].filter(
+                          (child) =>
+                            child["data"]["key"] ==
+                            `trnStartDate:${slab["trnStartDate"]}::trnEndDate:${slab["trnEndDate"]}`
+                        );
+                        formattedChilds.forEach((child) => {
+                          child["data"]["dateFrom"] = slab["trnStartDate"];
+                          child["data"]["dateTo"] = slab["trnEndDate"];
+                          child["leaf"] = true;
+                          if (child["data"]["ruleSelected"] == "Y") {
+                            child["partialSelected"] = false;
+                            this.selectedNodes.push(child);
+                          }
+                        });
+
+                        formattedRowData["children"] = formattedChilds;
+                        completeData.push(formattedRowData);
+                      });
+                    });
+                  }
                 }
+              } else {
               }
+
+              // % old-
+
+              // if (
+              //   !(res["criteriaMap"].indexOf("&&&&") >= 0) &&
+              //   !(res["criteriaMap"].indexOf("LCY Amount") >= 0)
+              // ) {
+              //   simpleData = true;
+              // } else {
+              //   simpleData = false;
+              //   res["data"]["dataOperation"].forEach((data) => {
+              //     Object.values(data).forEach((subData) => {
+              //       (subData as any[]).forEach((d) => {
+              //         d["data"]["key"] =
+              //           d["data"]["criteriaMapSplit"].split("&&&&")[1];
+              //       });
+              //     });
+              //   });
+              // }
+
+              // this.criteriaText
+              //   .slice()
+              //   .reverse()
+              //   .forEach((crt) => {
+              //     console.log("crt", crt);
+              //     if (!crt) {
+              //       return;
+              //     }
+              //     let formatCrt;
+              //     let opr;
+              //     if (crt.includes("!=")) {
+              //       formatCrt = crt.replace(/[!=]/g, "");
+              //       opr = "!=";
+              //     } else if (crt.includes(">=")) {
+              //       formatCrt = crt.replace(/[>=]/g, "");
+              //       opr = ">=";
+              //     } else if (crt.includes("<=")) {
+              //       formatCrt = crt.replace(/[<=]/g, "");
+              //       opr = "<=";
+              //     } else if (crt.includes("<")) {
+              //       formatCrt = crt.replace(/[<]/g, "");
+              //       opr = "<";
+              //     } else if (crt.includes(">")) {
+              //       formatCrt = crt.replace(/[>]/g, "");
+              //       opr = ">";
+              //     } else {
+              //       formatCrt = crt.replace(/[=]/g, "");
+              //       opr = "=";
+              //     }
+
+              //     if (formatCrt.split("  ")[0] == "LCY Amount") {
+              //       isLcyOprFieldPresent = true;
+              //       lcyOprFields.push(
+              //         formatCrt.split("  ")[0] +
+              //           " " +
+              //           opr +
+              //           " " +
+              //           formatCrt.split("  ")[1]
+              //       );
+              //     }
+              //     if (
+              //       this.criteriaCodeText.includes("LCY Amount = Slab") &&
+              //       !lcySlabFieldInserted
+              //     ) {
+              //       this.applyCriteriaDataTableColumns.splice(-7, 0, {
+              //         field: "amountFrom",
+              //         header: "Amount From",
+              //         type: "lcySlabFrom",
+              //       });
+              //       this.applyCriteriaDataTableColumns.splice(-7, 0, {
+              //         field: "amountTo",
+              //         header: "Amount To",
+              //         type: "lcySlabTo",
+              //       });
+              //       lcySlabFieldInserted = true;
+              //     }
+
+              //     if (formatCrt.split("  ")[0] == "LCY Amount") {
+              //       if (!lcyOprFieldInserted) {
+              //         this.applyCriteriaDataTableColumns.splice(-7, 0, {
+              //           field: "lcyAmount",
+              //           header: formatCrt.split("  ")[0],
+              //           value: formatCrt.split("  ")[1],
+              //           type: "lcyOpr",
+              //         });
+              //         lcyOprFieldInserted = true;
+              //       } else {
+              //         return;
+              //       }
+              //     }
+              //   });
+
+              // this.applyCriteriaDataTableColumns.forEach((col) => {
+              //   res["data"]["dataOperation"].forEach((data) => {
+              //     Object.values(data).forEach((subData) => {
+              //       (subData as any[]).forEach((d) => {
+              //         if (d["data"][col["field"]] == "Y") {
+              //           d["data"][col["field"]] = true;
+              //         }
+              //         if (d["data"][col["field"]] == "N") {
+              //           d["data"][col["field"]] = false;
+              //         }
+              //         if (d["data"][col["field"]] == "null") {
+              //           d["data"][col["field"]] = "";
+              //         }
+              //         if (col["value"]) {
+              //           d["data"][col["field"]] = col["value"];
+              //         }
+              //       });
+              //     });
+              //   });
+              // });
+
+              // let completeData = [];
+              // if (simpleData) {
+              //   Object.keys(res["labelData"]["label"]).forEach((k, i) => {
+              //     let formattedRowData = {
+              //       data: {
+              //         fieldName: res["labelData"]["label"][k],
+              //         key: i,
+              //       },
+              //       expanded: true,
+              //       leaf: false,
+              //       children: [],
+              //     };
+
+              //     let formattedChilds =
+              //       res["data"]["dataOperation"][0][
+              //         res["labelData"]["label"][k]
+              //       ];
+
+              //     formattedChilds.forEach((child) => {
+              //       child["leaf"] = true;
+              //       if (child["data"]["ruleSelected"] == "Y") {
+              //         child["partialSelected"] = false;
+              //         this.selectedNodes.push(child);
+              //       }
+              //     });
+
+              //     formattedRowData["children"] = formattedChilds;
+              //     completeData.push(formattedRowData);
+              //   });
+              // } else {
+              //   if (reqData.lcySlabArr.length > 0) {
+              //     reqData.lcySlabArr.forEach((slab, i) => {
+              //       Object.keys(res["labelData"]["label"]).forEach((k) => {
+              //         let formattedRowData = {
+              //           data: {
+              //             fieldName: res["labelData"]["label"][k],
+              //             key: i,
+              //           },
+              //           expanded: true,
+              //           leaf: false,
+              //           children: [],
+              //         };
+              //         let formattedChilds = res["data"]["dataOperation"][0][
+              //           res["labelData"]["label"][k]
+              //         ].filter(
+              //           (child) =>
+              //             child["data"]["key"] ==
+              //             `from:${slab["from"]}::to:${slab["to"]}`
+              //         );
+              //         formattedChilds.forEach((child) => {
+              //           child["data"]["amountFrom"] = slab["from"];
+              //           child["data"]["amountTo"] = slab["to"];
+              //           child["leaf"] = true;
+              //           if (child["data"]["ruleSelected"] == "Y") {
+              //             child["partialSelected"] = false;
+              //             this.selectedNodes.push(child);
+              //           }
+              //         });
+
+              //         formattedRowData["children"] = formattedChilds;
+              //         completeData.push(formattedRowData);
+              //       });
+              //     });
+              //   } else if (lcyOprFields.length > 0) {
+              //     lcyOprFields.forEach((oprField, i) => {
+              //       Object.keys(res["labelData"]["label"]).forEach((k) => {
+              //         let formattedRowData = {
+              //           data: {
+              //             fieldName: res["labelData"]["label"][k],
+              //             key: i,
+              //           },
+              //           expanded: true,
+              //           leaf: false,
+              //           children: [],
+              //         };
+              //         let formattedChilds = res["data"]["dataOperation"][0][
+              //           res["labelData"]["label"][k]
+              //         ].filter((child) => child["data"]["key"] == oprField);
+              //         formattedChilds.forEach((child) => {
+              //           child["data"]["lcyAmount"] = oprField;
+              //           child["leaf"] = true;
+              //           if (child["data"]["ruleSelected"] == "Y") {
+              //             child["partialSelected"] = false;
+              //             this.selectedNodes.push(child);
+              //           }
+              //         });
+
+              //         formattedRowData["children"] = formattedChilds;
+              //         completeData.push(formattedRowData);
+              //       });
+              //     });
+              //   }
+              // }
 
               console.log("::", completeData);
               console.log("::", this.applyCriteriaDataTableColumns);
@@ -672,7 +899,10 @@ export class AddNewFormRuleComponent implements OnInit {
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType.push(data["fieldName"]);
+                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+              }
+              if (data["criteriaType"] == "date") {
+                this.cmCriteriaSlabType["date"] = data["fieldName"];
               }
             }
           );
@@ -906,77 +1136,9 @@ export class AddNewFormRuleComponent implements OnInit {
                 let lcyOprFieldInserted = false;
                 let lcySlabFieldInserted = false;
 
-                let countryCol = {};
-
                 this.applyCriteriaDataTableColumns = [...this.cols];
                 this.appliedCriteriaIsDuplicate = res["duplicate"];
-                crtfields
-                  .slice()
-                  .reverse()
-                  .forEach((crt) => {
-                    let formatCrt;
-                    let opr;
-                    if (crt.includes("!=")) {
-                      formatCrt = crt.replace(/[!=]/g, "");
-                      opr = "!=";
-                    } else if (crt.includes(">=")) {
-                      formatCrt = crt.replace(/[>=]/g, "");
-                      opr = ">=";
-                    } else if (crt.includes("<=")) {
-                      formatCrt = crt.replace(/[<=]/g, "");
-                      opr = "<=";
-                    } else if (crt.includes("<")) {
-                      formatCrt = crt.replace(/[<]/g, "");
-                      opr = "<";
-                    } else if (crt.includes(">")) {
-                      formatCrt = crt.replace(/[>]/g, "");
-                      opr = ">";
-                    } else {
-                      formatCrt = crt.replace(/[=]/g, "");
-                      opr = "=";
-                    }
 
-                    if (formatCrt.split("  ")[0] == "LCY Amount") {
-                      isLcyOprFieldPresent = true;
-                      lcyOprFields.push(
-                        formatCrt.split("  ")[0] +
-                          " " +
-                          opr +
-                          " " +
-                          formatCrt.split("  ")[1]
-                      );
-                      if (!lcyOprFieldInserted) {
-                        this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                          field: "lcyAmount",
-                          header: formatCrt.split("  ")[0],
-                          value: formatCrt.split("  ")[1],
-                          type: "lcyOpr",
-                        });
-                        lcyOprFieldInserted = true;
-                      }
-                    }
-                    // else {
-                    //   if (formatCrt.split("  ")[0] == "Country") {
-                    //     countryCol = {
-                    //       field: formatCrt.split("  ")[0],
-                    //       header: formatCrt.split("  ")[0],
-                    //       value: formatCrt.split("  ")[1],
-                    //       type: "string",
-                    //     };
-                    //   } else {
-                    //     this.applyCriteriaDataTableColumns.unshift({
-                    //       field: formatCrt.split("  ")[0],
-                    //       header: formatCrt.split("  ")[0],
-                    //       value: formatCrt.split("  ")[1],
-                    //       type: "string",
-                    //     });
-                    //   }
-                    // }
-                  });
-
-                if (Object.keys(countryCol).length) {
-                  this.applyCriteriaDataTableColumns.unshift(countryCol);
-                }
                 let completeData = [];
                 Object.keys(res["labelData"]["label"]).forEach((k) => {
                   let formattedRowData = {
@@ -1027,82 +1189,306 @@ export class AddNewFormRuleComponent implements OnInit {
                   completeData.push(formattedRowData);
                 });
 
-                if (
-                  !reqData.lcySlabArr.length &&
-                  reqData.critMap.findIndex((element) =>
-                    element.includes("LCY Amount")
-                  ) < 0
-                ) {
-                  this.isLcySlab = false;
-                  this.isLcyAmount = false;
-                  this.applyCriteriaFormattedData = [...completeData];
-                  this.applyCriteriaFormattedData.forEach((row, i) => {
-                    row["data"]["key"] = i;
-                    row["children"].forEach((child) => {
-                      child["data"]["criteriaMapSplit"] = null;
+                let amtSlabPresent = false;
+                let dateSlabPresent = false;
+
+                let baseCriteriaMap = res["criteriaMap"].split("&&&&")[0];
+
+                if (res["criteriaMap"].indexOf("from:") >= 0) {
+                  amtSlabPresent = true;
+                }
+
+                if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                  dateSlabPresent = true;
+                }
+
+                if (amtSlabPresent && dateSlabPresent) {
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "dateFrom",
+                    header: "Date From",
+                    type: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "dateTo",
+                    header: "Date To",
+                    type: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "lcyAmountFrom",
+                    header: "Amount From",
+                    type: "text",
+                  });
+                  this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                    field: "lcyAmountTo",
+                    header: "Amount To",
+                    type: "text",
+                  });
+
+                  this.applyCriteriaFormattedData = [];
+
+                  let dateSlabFields = reqData.dateSlabArr;
+                  let lcySlabFields = reqData.lcySlabArr;
+
+                  dateSlabFields.forEach((fieldDate) => {
+                    lcySlabFields.forEach((fieldAmt, i) => {
+                      let copy = JSON.parse(JSON.stringify(completeData));
+                      copy.forEach((row) => {
+                        row["data"]["key"] = i;
+                        row["children"].forEach((child) => {
+                          child["data"]["lcyAmountFrom"] = fieldAmt.from;
+                          child["data"]["lcyAmountTo"] = fieldAmt.to;
+                          child["data"]["dateFrom"] = fieldDate.trnStartDate;
+                          child["data"]["dateTo"] = fieldDate.trnEndDate;
+                          child["data"][
+                            "criteriaMapSplit"
+                          ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
+                        });
+                      });
+                      this.applyCriteriaFormattedData.push(...copy);
                     });
                   });
                 } else {
-                  if (
-                    reqData.lcySlabArr.length &&
-                    reqData.critMap.findIndex((element) =>
-                      element.includes("LCY Amount")
-                    ) < 0
-                  ) {
-                    this.isLcySlab = true;
-                    this.isLcyAmount = false;
-                    this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                      field: "amountFrom",
+                  if (amtSlabPresent) {
+                    let lcySlabFields = reqData.lcySlabArr;
+                    this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                      field: "lcyAmountFrom",
                       header: "Amount From",
-                      type: "lcySlabFrom",
+                      type: "text",
                     });
-                    this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                      field: "amountTo",
+                    this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                      field: "lcyAmountTo",
                       header: "Amount To",
-                      type: "lcySlabTo",
+                      type: "text",
                     });
-
                     this.applyCriteriaFormattedData = [];
-
-                    reqData.lcySlabArr.forEach((slab, i) => {
+                    lcySlabFields.forEach((slab, i) => {
                       let copy = JSON.parse(JSON.stringify(completeData));
                       copy.forEach((row) => {
                         row["data"]["key"] = i;
                         row["children"].forEach((child) => {
-                          child["data"]["amountFrom"] = slab["from"];
-                          child["data"]["amountTo"] = slab["to"];
+                          child["data"]["lcyAmountFrom"] = slab["from"];
+                          child["data"]["lcyAmountTo"] = slab["to"];
                           child["data"][
                             "criteriaMapSplit"
-                          ] = `from:${slab["from"]}::to:${slab["to"]}`;
+                          ] = `${baseCriteriaMap}&&&&from:${slab["from"]}::to:${slab["to"]}`;
                         });
                       });
 
                       this.applyCriteriaFormattedData.push(...copy);
                     });
-                  } else if (
-                    !reqData.lcySlabArr.length &&
-                    reqData.critMap.findIndex((element) =>
-                      element.includes("LCY Amount")
-                    ) >= 0
-                  ) {
+                  } else if (dateSlabPresent) {
+                    let dateSlabFields = reqData.dateSlabArr;
+                    this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                      field: "dateFrom",
+                      header: "Date From",
+                      type: "text",
+                    });
+                    this.applyCriteriaDataTableColumns.splice(-8, 0, {
+                      field: "dateTo",
+                      header: "Date To",
+                      type: "text",
+                    });
                     this.applyCriteriaFormattedData = [];
-                    this.isLcySlab = false;
-                    this.isLcyAmount = true;
-
-                    lcyOprFields.forEach((opr, i) => {
+                    dateSlabFields.forEach((slab, i) => {
                       let copy = JSON.parse(JSON.stringify(completeData));
                       copy.forEach((row) => {
                         row["data"]["key"] = i;
                         row["children"].forEach((child) => {
-                          child["data"]["lcyAmount"] = opr;
-                          child["data"]["criteriaMapSplit"] = opr;
+                          child["data"]["dateFrom"] = slab["trnStartDate"];
+                          child["data"]["dateTo"] = slab["trnEndDate"];
+                          child["data"][
+                            "criteriaMapSplit"
+                          ] = `${baseCriteriaMap}&&&&trnStartDate:${slab["trnStartDate"]}::trnEndDate:${slab["trnEndDate"]}`;
                         });
                       });
 
                       this.applyCriteriaFormattedData.push(...copy);
+                    });
+                  } else if (!amtSlabPresent && !dateSlabPresent) {
+                    this.applyCriteriaFormattedData = [...completeData];
+                    this.applyCriteriaFormattedData.forEach((row, i) => {
+                      row["data"]["key"] = i;
+                      row["children"].forEach((child) => {
+                        child["data"]["criteriaMapSplit"] = baseCriteriaMap;
+                      });
                     });
                   }
                 }
+
+                // % old-
+                // crtfields
+                //   .slice()
+                //   .reverse()
+                //   .forEach((crt) => {
+                //     let formatCrt;
+                //     let opr;
+                //     if (crt.includes("!=")) {
+                //       formatCrt = crt.replace(/[!=]/g, "");
+                //       opr = "!=";
+                //     } else if (crt.includes(">=")) {
+                //       formatCrt = crt.replace(/[>=]/g, "");
+                //       opr = ">=";
+                //     } else if (crt.includes("<=")) {
+                //       formatCrt = crt.replace(/[<=]/g, "");
+                //       opr = "<=";
+                //     } else if (crt.includes("<")) {
+                //       formatCrt = crt.replace(/[<]/g, "");
+                //       opr = "<";
+                //     } else if (crt.includes(">")) {
+                //       formatCrt = crt.replace(/[>]/g, "");
+                //       opr = ">";
+                //     } else {
+                //       formatCrt = crt.replace(/[=]/g, "");
+                //       opr = "=";
+                //     }
+
+                //     if (formatCrt.split("  ")[0] == "LCY Amount") {
+                //       isLcyOprFieldPresent = true;
+                //       lcyOprFields.push(
+                //         formatCrt.split("  ")[0] +
+                //           " " +
+                //           opr +
+                //           " " +
+                //           formatCrt.split("  ")[1]
+                //       );
+                //       if (!lcyOprFieldInserted) {
+                //         this.applyCriteriaDataTableColumns.splice(-7, 0, {
+                //           field: "lcyAmount",
+                //           header: formatCrt.split("  ")[0],
+                //           value: formatCrt.split("  ")[1],
+                //           type: "lcyOpr",
+                //         });
+                //         lcyOprFieldInserted = true;
+                //       }
+                //     }
+                //   });
+
+                // let completeData = [];
+                // Object.keys(res["labelData"]["label"]).forEach((k) => {
+                //   let formattedRowData = {
+                //     data: {
+                //       fieldName: res["labelData"]["label"][k],
+                //     },
+                //     expanded: true,
+                //     leaf: false,
+                //     children: [],
+                //   };
+
+                //   res["data"][k].forEach((detail) => {
+                //     let childRow = { data: {} };
+                //     this.applyCriteriaDataTableColumns.forEach((col) => {
+                //       if (detail[col["field"]] == "Y") {
+                //         detail[col["field"]] = true;
+                //       }
+                //       if (detail[col["field"]] == "N") {
+                //         detail[col["field"]] = false;
+                //       }
+                //       childRow["data"][col["field"]] = detail[col["field"]];
+                //     });
+                //     Object.keys(childRow.data).forEach((field) => {
+                //       if (childRow.data[field] === undefined) {
+                //         this.applyCriteriaDataTableColumns.forEach((col) => {
+                //           if (field == col["field"]) {
+                //             childRow.data[field] = col["value"];
+                //           }
+                //         });
+                //       }
+                //     });
+                //     childRow["data"]["formLableFieldSequence"] =
+                //       detail["formLableFieldSequence"];
+                //     childRow["data"]["formSection"] = detail["formSection"];
+                //     childRow["data"]["fieldType"] = detail["fieldType"];
+                //     childRow["data"]["fieldLabel"] = detail["fieldLabel"];
+                //     childRow["data"]["apiKey"] = detail["apiKey"];
+                //     childRow["data"]["obscure"] = detail["obscure"];
+                //     childRow["data"]["multiSelect"] = detail["multiSelect"];
+                //     childRow["data"]["minDate"] = detail["minDate"];
+                //     childRow["data"]["maxDate"] = detail["maxDate"];
+                //     childRow["data"]["initialDate"] = detail["initialDate"];
+
+                //     childRow["leaf"] = true;
+
+                //     formattedRowData["children"].push(childRow);
+                //   });
+                //   completeData.push(formattedRowData);
+                // });
+
+                // if (
+                //   !reqData.lcySlabArr.length &&
+                //   reqData.critMap.findIndex((element) =>
+                //     element.includes("LCY Amount")
+                //   ) < 0
+                // ) {
+                //   this.isLcySlab = false;
+                //   this.isLcyAmount = false;
+                //   this.applyCriteriaFormattedData = [...completeData];
+                //   this.applyCriteriaFormattedData.forEach((row, i) => {
+                //     row["data"]["key"] = i;
+                //     row["children"].forEach((child) => {
+                //       child["data"]["criteriaMapSplit"] = null;
+                //     });
+                //   });
+                // } else {
+                //   if (
+                //     reqData.lcySlabArr.length &&
+                //     reqData.critMap.findIndex((element) =>
+                //       element.includes("LCY Amount")
+                //     ) < 0
+                //   ) {
+                //     this.isLcySlab = true;
+                //     this.isLcyAmount = false;
+                //     this.applyCriteriaDataTableColumns.splice(-7, 0, {
+                //       field: "amountFrom",
+                //       header: "Amount From",
+                //       type: "lcySlabFrom",
+                //     });
+                //     this.applyCriteriaDataTableColumns.splice(-7, 0, {
+                //       field: "amountTo",
+                //       header: "Amount To",
+                //       type: "lcySlabTo",
+                //     });
+
+                //     this.applyCriteriaFormattedData = [];
+
+                //     reqData.lcySlabArr.forEach((slab, i) => {
+                //       let copy = JSON.parse(JSON.stringify(completeData));
+                //       copy.forEach((row) => {
+                //         row["data"]["key"] = i;
+                //         row["children"].forEach((child) => {
+                //           child["data"]["amountFrom"] = slab["from"];
+                //           child["data"]["amountTo"] = slab["to"];
+                //           child["data"][
+                //             "criteriaMapSplit"
+                //           ] = `from:${slab["from"]}::to:${slab["to"]}`;
+                //         });
+                //       });
+
+                //       this.applyCriteriaFormattedData.push(...copy);
+                //     });
+                //   } else if (
+                //     !reqData.lcySlabArr.length &&
+                //     reqData.critMap.findIndex((element) =>
+                //       element.includes("LCY Amount")
+                //     ) >= 0
+                //   ) {
+                //     this.applyCriteriaFormattedData = [];
+                //     this.isLcySlab = false;
+                //     this.isLcyAmount = true;
+
+                //     lcyOprFields.forEach((opr, i) => {
+                //       let copy = JSON.parse(JSON.stringify(completeData));
+                //       copy.forEach((row) => {
+                //         row["data"]["key"] = i;
+                //         row["children"].forEach((child) => {
+                //           child["data"]["lcyAmount"] = opr;
+                //           child["data"]["criteriaMapSplit"] = opr;
+                //         });
+                //       });
+
+                //       this.applyCriteriaFormattedData.push(...copy);
+                //     });
+                //   }
+                // }
 
                 console.log("::", this.applyCriteriaFormattedData);
                 console.log("::", this.applyCriteriaDataTableColumns);
