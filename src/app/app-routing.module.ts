@@ -26,6 +26,8 @@ import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/a
 import { DocumentListingComponent } from "./document-settings/document-listing/document-listing.component";
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
 import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
+import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
+import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -425,6 +427,44 @@ const routes: Routes = [
           { label: "Settings", routerLink: "../navbar/document-settings" },
           { label: "Document Settings", routerLink: "document-settings" },
           { label: "Clone Document Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "loyalty-programs",
+        component: LoyaltyProgramComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Loyalty-Programs",
+            routerLink: "../navbar/loyalty-programs",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "loyalty-programs/add-loyalty",
+        component: AddLoyaltyComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Loyalty-Programs",
+            routerLink: "../navbar/loyalty-programs",
+          },
+          { label: "Add Loyalty-Programs", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "loyalty-programs/add-loyalty/:id/edit",
+        component: AddLoyaltyComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Loyalty-Programs",
+            routerLink: "../navbar/loyalty-programs",
+          },
+          { label: "Edit Loyalty-Programs", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

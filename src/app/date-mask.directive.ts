@@ -17,6 +17,10 @@ export class DateMaskDirective implements AfterViewInit {
   }
 
   getDateMask(): string {
-    return "99/99/9999";
+    if (this.primeCalendar.showTime) {
+      return "99/99/9999  99:99";
+    } else {
+      return "99/99/9999";
+    }
   }
 }
