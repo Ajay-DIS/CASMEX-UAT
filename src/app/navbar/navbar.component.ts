@@ -291,6 +291,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Forex":
         iconName = "forex-icon";
+        matchUrls = ["/navbar/loyalty-programs"];
+        routeName = "/navbar/loyalty-programs";
         break;
       case "Beneficiary Profile":
         iconName = "beneficiary-icon";

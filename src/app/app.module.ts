@@ -24,7 +24,11 @@ import { MultiSelectModule } from "primeng/multiselect";
 import { CardModule } from "primeng/card";
 import { BlockUIModule } from "primeng/blockui";
 import { BreadcrumbModule } from "primeng/breadcrumb";
-import { DynamicDialogModule, DynamicDialogRef } from "primeng/dynamicdialog";
+import {
+  DialogService,
+  DynamicDialogModule,
+  DynamicDialogRef,
+} from "primeng/dynamicdialog";
 import { InputNumberModule } from "primeng/inputnumber";
 import { TooltipModule } from "primeng/tooltip";
 import { PickListModule } from "primeng/picklist";
@@ -76,8 +80,10 @@ import { DocumentListingComponent } from "./document-settings/document-listing/d
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
 import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-benef/add-customer-benef.component";
 import { AutoCompleteModule } from "primeng/autocomplete";
-import { GetDocSettingsComponent } from './get-doc-settings/get-doc-settings.component';
-import { DateMaskDirective } from './date-mask.directive';
+import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
+import { DateMaskDirective } from "./date-mask.directive";
+import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
+import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -117,6 +123,8 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddCustomerBenefComponent,
     GetDocSettingsComponent,
     DateMaskDirective,
+    LoyaltyProgramComponent,
+    AddLoyaltyComponent,
   ],
   imports: [
     BrowserModule,
