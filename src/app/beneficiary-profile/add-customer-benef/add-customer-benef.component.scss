@@ -1,7 +1,9 @@
 :host ::ng-deep .p-dropdown {
-    width: 180px;
+    width: 100%;
   }
-  
+  :host ::ng-deep .p-inputtext {
+    width: 100%;
+  }
   .btnRight {
     text-align: right;
   }
@@ -13,7 +15,7 @@
   }
   
   label {
-    font-size: 13px;
+    font-size: 12px;
   }
   
   .custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
@@ -51,28 +53,6 @@
   
   small.p-error {
     font-size: 10px;
-  }
-  
-  .criteriaMap {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 6px;
-  }
-  
-  .criteriaMap input::placeholder {
-    color: #8a9099;
-    font-size: 12px;
-  }
-  .criteriaMap input {
-    width: 398px;
-  }
-  .criteriaMap p {
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
-  .criteriaMap button {
-    margin-left: 10px;
   }
   
   div.checkbox {
@@ -122,7 +102,7 @@ div.newLineField {
   }
   
   :host ::ng-deep .p-calendar {
-    width: 180px;
+    width: 100%;
   }
   
   :host ::ng-deep .p-button.p-button-icon-only {
@@ -131,7 +111,7 @@ div.newLineField {
   
   // fileupload
   .file-upload {
-    width: 180px;
+    width: 100%;
   }
   
   .file-upload .file-upload-select {
