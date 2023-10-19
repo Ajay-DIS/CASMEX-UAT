@@ -43,6 +43,7 @@
   border-radius: 5px;
   margin-right: 5px;
   margin-left: 10px;
+  font-size: 12px;
 }
 :host ::ng-deep .firstdropdown .p-dropdown {
   // align-items: center;
@@ -86,15 +87,15 @@
 }
 .searchBox.p-inputtext,
 :host ::ng-deep .searchBox .p-inputtext {
-  width: 400px;
+  // width: 400px;
   border-top-left-radius: initial;
   border-bottom-left-radius: initial;
   border: solid 1px#a2a2a2;
-  height: 33.5px;
+  height: 33px;
 }
-:host ::ng-deep p-element p-inputwrapper .searchBox .p-inputtext {
-  width: 48%;
-}
+// :host ::ng-deep p-element p-inputwrapper .searchBox .p-inputtext {
+//   width: 48%;
+// }
 .ptable ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
   font-size: 11px;
   margin-left: 2px;
@@ -102,32 +103,47 @@
 .p-input-icon-right .searchBox.p-inputtext {
   width: 100% !important;
 }
+:host ::ng-deep .p-input-icon-right .searchBox .p-inputnumber {
+  width: 100% !important;
+}
 .p-input-icon-right {
   width: 61% !important;
 }
 .btnround{
   border-radius: 50% !important;
-  height: 28px !important;
-  width: 28px !important;
+  height: 26px !important;
+  width: 26px !important;
 }
 @media screen and (max-width: 660px) {
   .p-input-icon-right {
     width: 48% !important;
   }
 }
-@media screen and (max-width: 1490px) and (min-width: 1201px) {
+@media screen and (max-width: 1502px) and (min-width: 1329px) {
   .p-input-icon-right {
     width: 54% !important;
   }
 }
-@media screen and (max-width: 1200px) and (min-width: 960px) {
+@media screen and (max-width: 1328px) and (min-width: 1201px) {
+  .p-input-icon-right {
+    width: 46% !important;
+  }
+}
+@media screen and (max-width: 1200px) and (min-width: 901px) {
+  :host ::ng-deep .primarydropdown .p-dropdown {
+    width: 80px;
+  }
+
   .p-input-icon-right {
     width: 48% !important;
   }
 }
-@media (min-device-width: 769px) and (max-device-width: 1024px) {
+@media (min-device-width: 769px) and (max-device-width: 900px) {
   .p-input-icon-right {
-    width: 45% !important;
+    width: 35% !important;
+  }
+  :host ::ng-deep .primarydropdown .p-dropdown {
+    width: 80px;
   }
 }
 // @media screen and (min-width: 1478px) {

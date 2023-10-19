@@ -1807,10 +1807,17 @@ export class AddNewFormRuleComponent implements OnInit {
         key: "resetFormDataConfirmation",
         accept: () => {
           this.coreService.displayLoadingScreen();
-          this.getCriteriaMasterData();
-          this.getAllTemplates();
-          this.coreService.setHeaderStickyStyle(true);
-          this.coreService.setSidebarBtnFixedStyle(true);
+          // this.getCriteriaMasterData();
+          // this.getAllTemplates();
+          // this.coreService.setHeaderStickyStyle(true);
+          // this.coreService.setSidebarBtnFixedStyle(true);
+          this.applyCriteriaFormattedData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.ruleDescription = "";
+
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
         },
         reject: () => {
           this.confirmationService.close;
@@ -1848,13 +1855,13 @@ export class AddNewFormRuleComponent implements OnInit {
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
-          this.appCtrl.reset();
-          this.moduleCtrl.reset();
-          this.moduleCtrl.disable();
-          this.formCtrl.reset();
-          this.formCtrl.disable();
-          this.showContent = false;
-          this.appModuleDataPresent = false;
+          // this.appCtrl.reset();
+          // this.moduleCtrl.reset();
+          // this.moduleCtrl.disable();
+          // this.formCtrl.reset();
+          // this.formCtrl.disable();
+          // this.showContent = false;
+          // this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;

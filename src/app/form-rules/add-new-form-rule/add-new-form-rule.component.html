@@ -40,7 +40,6 @@
           <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
             <div class="row">
               <div class="buttons-section">
-                <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 savebtn">
                   <button
                     pButton
                     pRipple
@@ -53,8 +52,6 @@
                     class="p-button-raised"
                     (click)="saveAddNewRule('save')"
                   ></button>
-                </div>
-                <div class="col-md-4 col-lg-4 col-sm-6 col-xs-6 saveAddbtn">
                   <button
                     pButton
                     pRipple
@@ -67,8 +64,6 @@
                     class="p-button-raised"
                     (click)="saveAddNewRule('saveAndAddNew')"
                   ></button>
-                </div>
-                <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 resetbtn">
                   <button
                     pButton
                     pRipple
@@ -77,7 +72,6 @@
                     class="p-button-warning"
                     (click)="reset()"
                   ></button>
-                </div>
               </div>
             </div>
           </div>
@@ -87,7 +81,7 @@
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
         <div class="row">
-          <div class="d-flex field col-md-3 col-lg-3 col-sm-12 col-xs-12 md-3">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12"
               for="application"
@@ -103,7 +97,7 @@
               (onChange)="onAppValueChange()"
             ></p-dropdown>
           </div>
-          <div class="d-flex field col-md-3 col-lg-3 col-sm-12 col-xs-12 md-3">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 small"
               for="module"
@@ -119,7 +113,7 @@
               (onChange)="onModValueChange()"
             ></p-dropdown>
           </div>
-          <div class="d-flex field col-md-3 col-lg-3 col-sm-12 col-xs-12 md-4">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 smallForm"
               for="form"
