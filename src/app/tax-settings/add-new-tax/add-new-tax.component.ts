@@ -1320,10 +1320,16 @@ export class AddNewTaxComponent implements OnInit {
         key: "resetTaxDataConfirmation",
         accept: () => {
           this.coreService.displayLoadingScreen();
-          this.getCriteriaMasterData();
-          this.getAllTemplates();
-          this.coreService.setHeaderStickyStyle(true);
-          this.coreService.setSidebarBtnFixedStyle(true);
+          // this.getCriteriaMasterData();
+          // this.getAllTemplates();
+          this.applyCriteriaFormattedData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.taxDescription = "";
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+          // this.coreService.setHeaderStickyStyle(true);
+          // this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -1361,11 +1367,11 @@ export class AddNewTaxComponent implements OnInit {
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
-          this.appCtrl.reset();
-          this.moduleCtrl.reset();
-          this.moduleCtrl.disable();
-          this.showContent = false;
-          this.appModuleDataPresent = false;
+          // this.appCtrl.reset();
+          // this.moduleCtrl.reset();
+          // this.moduleCtrl.disable();
+          // this.showContent = false;
+          // this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;
@@ -1425,7 +1431,7 @@ export class AddNewTaxComponent implements OnInit {
       if (selectCol == "setAs" && value["code"] == "Percentage") {
         this.applyCriteriaFormattedData[index]["tax"] = 0;
         this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = true;
-        this.coreService.showWarningToast("Please enter tax greater than zero");
+        // this.coreService.showWarningToast("Please enter tax greater than zero");
       } else {
         if (Number(this.applyCriteriaFormattedData[index].lcyAmountFrom)) {
           this.applyCriteriaFormattedData[index]["tax"] = Number(
@@ -1527,7 +1533,7 @@ export class AddNewTaxComponent implements OnInit {
     if (event.value == 0) {
       isDisplayError = true;
       this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = true;
-      this.coreService.showWarningToast("Please enter tax greater than zero");
+      // this.coreService.showWarningToast("Please enter tax greater than zero");
       return false;
     } else if (event.value < min || event.value > max) {
       isDisplayError = true;

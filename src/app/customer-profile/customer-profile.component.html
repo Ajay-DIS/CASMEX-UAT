@@ -14,8 +14,6 @@
           optionLabel="name"
           class="firstdropdown"
         ></p-dropdown>
-            <!-- </div>
-            <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12 mt-3"> -->
               <p-dropdown
           [options]="searchCriteriaOptions"
           [(ngModel)]="customerFieldType"
@@ -25,43 +23,43 @@
           [placeholder]="searchField"
           class="primarydropdown"
         ></p-dropdown>
-        <span
-          class="p-input-icon-right"
-          (keyup.enter)="searchByEnter($event)"
-        >
+        <div  class="p-input-icon-right"
+        (keyup.enter)="searchByEnter($event)">
+
+        <ng-container [ngSwitch]="criteriaType">
+          <input
+            *ngSwitchCase="'text'"
+            type="text"
+            class="block searchBox"
+            pInputText
+            [(ngModel)]="currentCriteriaValue"
+            placeholder="Search"
+          />
+
+          <p-inputNumber
+            *ngSwitchCase="'number'"
+            [(ngModel)]="currentCriteriaValue"
+            mode="decimal"
+            [useGrouping]="false"
+            placeholder="Search"
+            class="block searchBox"
+          >
+          </p-inputNumber>
+          <p-calendar
+            *ngSwitchCase="'date'"
+            class="searchBox"
+            placeholder="DD/MM/YYYY"
+            dateFormat="dd/mm/yy"
+            [(ngModel)]="currentCriteriaValue"
+            [readonlyInput]="false"
+            [appendTo]="'body'"
+            appDateMask
+          ></p-calendar>
           <i class="pi pi-search"></i>
-
-          <ng-container [ngSwitch]="criteriaType">
-            <input
-              *ngSwitchCase="'text'"
-              type="text"
-              class="block searchBox"
-              pInputText
-              [(ngModel)]="currentCriteriaValue"
-              placeholder="Search"
-            />
-
-            <p-inputNumber
-              *ngSwitchCase="'number'"
-              [(ngModel)]="currentCriteriaValue"
-              mode="decimal"
-              [useGrouping]="false"
-              placeholder="Search"
-              class="searchBox"
-            >
-            </p-inputNumber>
-            <p-calendar
-              *ngSwitchCase="'date'"
-              class="searchBox"
-              placeholder="DD/MM/YYYY"
-              dateFormat="dd/mm/yy"
-              [(ngModel)]="currentCriteriaValue"
-              [readonlyInput]="false"
-              [appendTo]="'body'"
-              appDateMask
-            ></p-calendar>
-          </ng-container>
-        </span>
+        </ng-container>
+        </div>
+        
+          
             </div>
             <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 mt-2 pl-0 ml-0">
               <button
@@ -87,7 +85,7 @@
           
         
         </div>
-        <div class="col-md-2 col-lg-2 col-sm-4 col-xs-4 mt-2 headerbtn">
+        <div class="col-md-3 col-lg-2 col-sm-4 col-xs-4 mt-2 headerbtn">
           <button
           pButton
           pRipple
@@ -117,7 +115,7 @@
           {{ criteria }}
           <span
             role="button"
-            style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
+            style="padding: 0px 0px 0px 8px; margin-bottom: 10px"
             (click)="ondeletecriteria(i, criteria)"
           >
             <svg
