@@ -5,12 +5,17 @@ import { AuthService } from "../auth/auth.service";
 import { User } from "../auth/user.model";
 import { BnNgIdleService } from "bn-ng-idle";
 import { take } from "rxjs/operators";
+import { CoreService } from "../core.service";
 
 @Injectable({
   providedIn: "root",
 })
 export class LoginService {
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private coreService: CoreService
+  ) {}
 
   saveLoggedUserInfo(data: any) {
     let expiry = JSON.parse(atob(data.jwt.split(".")[1])).exp;
@@ -22,6 +27,23 @@ export class LoginService {
       data.jwt,
       new Date(expiry * 1000).getTime()
     );
+
+    // save app & mod in localstorage
+    localStorage.setItem(
+      "applicationName",
+      data.application ? data.application : "CASMEX_CORE"
+    );
+    localStorage.setItem(
+      "moduleName",
+      data.module ? data.module : "Remittance"
+    );
+
+    let defAppMod = {
+      applicationName: data.application ? data.application : "CASMEX_CORE",
+      moduleName: data.module ? data.module : "Remittance",
+    };
+
+    localStorage.setItem("defAppModule", JSON.stringify(defAppMod));
 
     let token = data.jwt;
     let menuTree = data.menuItemTree;
