@@ -9,8 +9,22 @@
   text-align: center;
 }
 
-
 .pagetitle {
   padding-top: 20px;
   padding-bottom: 20px;
+}
+
+:host ::ng-deep .p-paginator-rpp-options.p-dropdown {
+  height: 34px;
+  width: 70px;
+  left: 13%;
+  top: 13%;
+  background-color: var(--primary-color);
+}
+:host ::ng-deep .p-dropdown .p-dropdown-label {
+  color: #fff;
+  font-size: 12px;
+}
+:host ::ng-deep .p-dropdown .p-dropdown-trigger {
+  color: #fff;
 }

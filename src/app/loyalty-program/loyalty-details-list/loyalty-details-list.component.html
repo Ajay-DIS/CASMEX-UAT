@@ -1,41 +1,39 @@
 <div class="visible-main-section">
-    <div class="pagetitle">
-      <div class="infoicon">
-        <i class="pi pi-info-circle"></i>
-        List of Customer Loyalty program Details.
-      </div>
+  <div class="pagetitle">
+    <div class="infoicon">
+      <i class="pi pi-info-circle"></i>
+      List of Customer Loyalty program Details.
     </div>
-    <div class="ptable">
-      <p-table
-        #dt
-        [columns]="cols"
-        [value]="loyaltyListData"
-        dataKey="customerCode"
-        [lazy]="true"
-        (onLazyLoad)="loadCustomers($event)"
-        [totalRecords]="totalRecords"
-        [paginator]="true"
-        [rows]="pageSize"
-        [resizableColumns]="true"
-        columnResizeMode="fit"
-        [rowHover]="true"
-        [loading]="customerTableLoading"
-        [rowsPerPageOptions]="[10, 20, 50, 100]"
-      >
-        <ng-template pTemplate="header" let-columns>
-          <tr>
-            <th
-              *ngFor="let col of columns; let c = index"
-              pReorderableColumn
-              [pSortableColumn]="col.field"
-              pResizableColumn
-              [style.width]="col.width"
-            >
-              {{ col.header }}
-              <p-sortIcon
-              [field]="col.field"
-            ></p-sortIcon>
-              <!-- <div
+  </div>
+  <div class="ptable">
+    <p-table
+      #dt
+      [columns]="cols"
+      [value]="loyaltyListData"
+      dataKey="customerCode"
+      [lazy]="true"
+      (onLazyLoad)="loadCustomers($event)"
+      [totalRecords]="totalRecords"
+      [paginator]="true"
+      [rows]="pageSize"
+      [resizableColumns]="true"
+      columnResizeMode="fit"
+      [rowHover]="true"
+      [loading]="customerTableLoading"
+      [rowsPerPageOptions]="[10, 20, 50, 100]"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns; let c = index"
+            pReorderableColumn
+            [pSortableColumn]="col.field"
+            pResizableColumn
+            [style.width]="col.width"
+          >
+            {{ col.header }}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+            <!-- <div
                 *ngIf="c == 0 || col.field == 'status'"
                 (click)="$event.stopPropagation()"
                 class="filter-icon"
@@ -67,40 +65,35 @@
                 >
                 </p-multiSelect>
               </div> -->
-            </th>
-          </tr>
-          <tr class="search-row">
-            <th *ngFor="let col of cols" [style.width]="col.width">
-              <span
-                style="width: 100%"
-                class="p-input-icon-left"
-              >
-                <i class="pi pi-search"></i>
-                <input
-                  type="text"
-                  class="p-inputtext table-search"
-                  placeholder="Search"
-                  (input)="dt.filter($event.target.value, col.field, 'contains')"
-                />
-              </span>
-            </th>
-          </tr>
-        </ng-template>
-        <ng-template
-          pTemplate="body"
-          let-rowData
-          let-columns="columns"
-          let-index="rowIndex"
-        >
-          <tr [pReorderableRow]="index">
-            <ng-container *ngFor="let col of columns;">
-              <td>
-                <div
-                  style="display: inline-block"
-                >
-                  {{ rowData[col["field"]] }}
-                </div>
-                <!-- <a
+          </th>
+        </tr>
+        <tr class="search-row">
+          <th *ngFor="let col of cols" [style.width]="col.width">
+            <span style="width: 100%" class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                class="p-inputtext table-search"
+                placeholder="Search"
+                (input)="dt.filter($event.target.value, col.field, 'contains')"
+              />
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-index="rowIndex"
+      >
+        <tr [pReorderableRow]="index">
+          <ng-container *ngFor="let col of columns">
+            <td>
+              <div style="display: inline-block">
+                {{ rowData[col["field"]] }}
+              </div>
+              <!-- <a
                   *ngIf="i == 0"
                   style="text-decoration: underline !important"
                   [ngStyle]="{
@@ -115,7 +108,7 @@
                   (click)="viewLoyaltyProgram(rowData)"
                   >{{ rowData[col["field"]] }}</a
                 > -->
-                <!-- <span
+              <!-- <span
                   *ngIf="i == 1"
                   [pTooltip]="
                     rowData[col['field']] &&
@@ -135,7 +128,7 @@
                       : ""
                   }}</span
                 > -->
-                <!-- <span
+              <!-- <span
                   *ngIf="i == 2"
                   [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
                   tooltipPosition="bottom"
@@ -144,26 +137,27 @@
                     rowData[col["field"]].split(",").length > 4 ? ".." : ""
                   }}</span
                 > -->
-              </td>
-  
-            </ng-container>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td [attr.colspan]="cols.length">Customer Loyalty program Details Not Available.</td>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="paginatorleft" let-state>
-          {{ state.page * state.rows + 1 }} -
-          {{
-            state.rows * (state.page + 1) > state.totalRecords
-              ? state.totalRecords
-              : state.rows * (state.page + 1)
-          }}
-          of {{ state.totalRecords }}
-        </ng-template>
-      </p-table>
-      
-    </div>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length">
+            Customer Loyalty program Details Not Available.
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state
+        >Showing
+        {{ loyaltyListData.length ? state.page * state.rows + 1 : 0 }} -
+        {{
+          state.rows * (state.page + 1) > state.totalRecords
+            ? state.totalRecords
+            : state.rows * (state.page + 1)
+        }}
+        of {{ state.totalRecords }} Customers {{ state.rows }} {{ state.page }}
+      </ng-template>
+    </p-table>
   </div>
+</div>

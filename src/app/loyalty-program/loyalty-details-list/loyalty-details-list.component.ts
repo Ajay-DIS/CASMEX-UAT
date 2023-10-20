@@ -42,8 +42,8 @@ export class LoyaltyDetailsListComponent implements OnInit {
 
   loyaltyListData: any = [];
 
-  pageNumber = 1;
-  pageSize = 2;
+  pageNumber = 0;
+  pageSize = 10;
   totalPages = 5;
   totalRecords = 0;
   sortBy = "id";

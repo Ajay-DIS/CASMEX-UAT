@@ -413,10 +413,10 @@ export class AddNewTaxComponent implements OnInit {
                         .split("::")[1]
                         .split(":")[1];
                     } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
-                      data["dateFrom"] = criteriaMapThirdSplit
+                      data["dateFrom"] = criteriaMapSecSplit
                         .split("::")[0]
                         .split(":")[1];
-                      data["dateTo"] = criteriaMapThirdSplit
+                      data["dateTo"] = criteriaMapSecSplit
                         .split("::")[1]
                         .split(":")[1];
                     }
