@@ -20,9 +20,8 @@ import { MultiSelect } from "primeng/multiselect";
   styleUrls: ["./loyalty-program.component.scss"],
 })
 export class LoyaltyProgramComponent implements OnInit {
-  formName = "Loyalty Programs";
-  applicationName = "Web Application";
-  loyaltyListData: any[];
+  formName = "Loyalty Programs Manager";
+  loyaltyListData: any[] = [];
 
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
@@ -52,9 +51,9 @@ export class LoyaltyProgramComponent implements OnInit {
   loyaltyApiData: any = {};
   loading: boolean = true;
 
-  noDataMsg: string = "Tax Setting Data Not Available";
+  noDataMsg: string = "Loyalty program Data Not Available";
 
-  linkedprogramCode: any = [];
+  linkedProgramCode: any = [];
 
   cols: any[] = [
     { field: "programCode", header: "Program Code", width: "10%" },
@@ -66,12 +65,14 @@ export class LoyaltyProgramComponent implements OnInit {
     { field: "programType", header: "Program Type", width: "8%" },
     { field: "criteriaMap", header: "Program Rules", width: "26%" },
     { field: "rewardType", header: "Rewards", width: "8%" },
-    { field: "createdDateTime", header: "Created On", width: "8%" },
+    { field: "createdOn", header: "Created On", width: "8%" },
     { field: "createdBy", header: "Created By", width: "8%" },
-    { field: "criteriaTransactionAmountTo", header: "Expiry", width: "8%" },
+    { field: "expiryOn", header: "Expiry", width: "8%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Program Images", width: "7%" },
   ];
+
+  uploadedfileData: any = [];
 
   constructor(
     private router: Router,
@@ -98,7 +99,6 @@ export class LoyaltyProgramComponent implements OnInit {
 
     this.loyaltyService.getTaxSettingAppModuleList().subscribe(
       (res) => {
-        this.coreService.removeLoadingScreen();
         if (
           res["status"] &&
           typeof res["status"] == "string" &&
@@ -109,19 +109,45 @@ export class LoyaltyProgramComponent implements OnInit {
           } else {
             this.coreService.showWarningToast("Some error in fetching data");
           }
+
+          this.coreService.removeLoadingScreen();
         } else {
           if (!res["msg"]) {
             this.searchApplicationOptions = res["data"][
               "cmApplicationMaster"
             ].map((app) => {
-              return { name: app.name, code: app.name };
+              return { name: app.name, code: app.code };
             });
             this.searchModuleOptions = res["data"][
               "cmPrimaryModuleMasterDetails"
             ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
+              return { name: app.codeName, code: app.code };
             });
+            if (localStorage.getItem("applicationName")) {
+              let defApplication = this.searchApplicationOptions.filter(
+                (opt) => opt.code == localStorage.getItem("applicationName")
+              )[0];
+              console.log(defApplication);
+              if (defApplication) {
+                this.appCtrl.patchValue(defApplication);
+              }
+            }
+            if (localStorage.getItem("moduleName")) {
+              let defModule = this.searchModuleOptions.filter(
+                (opt) => opt.code == localStorage.getItem("moduleName")
+              )[0];
+              if (defModule) {
+                this.moduleCtrl.patchValue(defModule);
+              }
+            }
+
+            if (this.appCtrl.value && this.moduleCtrl.value) {
+              this.searchAppModule();
+            } else {
+              this.coreService.removeLoadingScreen();
+            }
           } else {
+            this.coreService.removeLoadingScreen();
           }
         }
       },
@@ -151,10 +177,19 @@ export class LoyaltyProgramComponent implements OnInit {
   }
 
   searchAppModule() {
+    // save app & mod in localstorage
+    localStorage.setItem(
+      "applicationName",
+      this.appCtrl.value ? this.appCtrl.value.code : "CASMEX_CORE"
+    );
+    localStorage.setItem(
+      "moduleName",
+      this.moduleCtrl.value ? this.moduleCtrl.value.code : "Remittance"
+    );
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.code,
-      this.moduleCtrl.value.code
+      this.appCtrl.value.name,
+      this.moduleCtrl.value.name
     );
   }
 
@@ -205,10 +240,10 @@ export class LoyaltyProgramComponent implements OnInit {
             console.log("loyaltyListData", this.loyaltyListData);
             console.log("loyaltyListData", this.loyaltyApiData);
             this.showNoDataFound = false;
-            // this.linkedprogramCode = [
-            //   ...this.loyaltyApiData?.linkedprogramCode,
-            // ];
-            this.programCode = this.loyaltyApiData["programCode "].map(
+            this.linkedProgramCode = [
+              ...this.loyaltyApiData["linkedProgramCode"],
+            ];
+            this.programCode = this.loyaltyApiData["programCode"].map(
               (code) => {
                 return { label: code, value: code };
               }
@@ -224,9 +259,24 @@ export class LoyaltyProgramComponent implements OnInit {
             this.status = this.loyaltyApiData.status.map((code) => {
               return { label: code, value: code };
             });
+
+            this.loyaltyListData.forEach((data) => {
+              console.log(data["programType"]);
+              data["createdOn"] = data["createdDateTime"]
+                ? new Date(data["createdDateTime"]).toLocaleDateString("en-GB")
+                : "-";
+              data["expiryOn"] = data["criteriaTransactionDateTo"]
+                ? new Date(
+                    data["criteriaTransactionDateTo"]
+                      .split(", ")[0]
+                      .split("/")
+                      .reverse()
+                      .join("-")
+                  ).toLocaleDateString("en-GB")
+                : "-";
+            });
           } else {
-            this.noDataMsg = loyaltyListingData["msg"];
-            this.showNoDataFound = true;
+            console.log(loyaltyListingData);
           }
           return loyaltyListingData;
         })
@@ -235,12 +285,14 @@ export class LoyaltyProgramComponent implements OnInit {
         (res) => {
           this.coreService.removeLoadingScreen();
           this.loading = false;
+          console.log(res);
           if (
             res["status"] &&
             typeof res["status"] == "string" &&
             (res["status"] == "400" || res["status"] == "500")
           ) {
             this.showNoDataFound = true;
+            this.loyaltyListData = [];
             if (res["error"]) {
               this.coreService.showWarningToast(res["error"]);
             } else {
@@ -248,7 +300,9 @@ export class LoyaltyProgramComponent implements OnInit {
             }
           } else {
             if (!res["data"]) {
+              this.loyaltyListData = [];
               this.showNoDataFound = true;
+              if (res["msg"]) this.noDataMsg = res["msg"];
             }
           }
         },
@@ -257,17 +311,17 @@ export class LoyaltyProgramComponent implements OnInit {
           this.loyaltyListData = null;
           this.showNoDataFound = true;
           this.loading = false;
-          console.log("Error in getting tax seting list data", err);
+          console.log("Error in getting loyalty program list data", err);
           this.coreService.showWarningToast(
-            "Some Error in getting tax seting list data"
+            "Some Error in getting loyalty program list data"
           );
         }
       );
   }
 
   viewLoyaltyProgram(data: any) {
-    this.loyaltyService.applicationName = this.appCtrl.value.code;
-    this.loyaltyService.moduleName = this.moduleCtrl.value.code;
+    this.loyaltyService.applicationName = this.appCtrl.value.name;
+    this.loyaltyService.moduleName = this.moduleCtrl.value.name;
     this.router.navigate([
       "navbar",
       "loyalty-programs",
@@ -278,7 +332,7 @@ export class LoyaltyProgramComponent implements OnInit {
   }
 
   isLinked(id: any) {
-    return this.linkedprogramCode.includes(id);
+    return this.linkedProgramCode.includes(id);
   }
 
   confirmStatus(e: any, data: any) {
@@ -298,20 +352,20 @@ export class LoyaltyProgramComponent implements OnInit {
     let isLinkedMsg = `Active Transactions Exist. </br>`;
     if (
       reqStatus == "Inactive" &&
-      this.linkedprogramCode.includes(data["taxCode"])
+      this.linkedProgramCode.includes(data["programCode"])
     ) {
       completeMsg =
         `<img src="../../../assets/warning.svg"><br/><br/>` +
         isLinkedMsg +
         `Do you wish to ` +
         type +
-        ` the Tax Record: ${data["taxCode"]}?`;
+        ` the Loyalty program: ${data["programCode"]}?`;
     } else {
       completeMsg =
         `<img src="../../../assets/warning.svg"><br/><br/>` +
         `Do you wish to ` +
         type +
-        ` the Tax Record: ${data["taxCode"]}?`;
+        ` the Loyalty program: ${data["programCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -325,6 +379,66 @@ export class LoyaltyProgramComponent implements OnInit {
         this.setHeaderSidebarBtn(false);
       },
     });
+  }
+
+  viewUploadedImg(data: any) {
+    this.loyaltyService
+      .getLoyaltyProgramForEdit(
+        data["programCode"],
+        "edit",
+        this.userData.userId,
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name,
+        this.formName
+      )
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            this.coreService.removeLoadingScreen();
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast(
+                "Error in fetching Program Images"
+              );
+            }
+          } else {
+            if (res["data"]) {
+              if (
+                res["customerLoyaltyPromoImagesDto"] &&
+                res["customerLoyaltyPromoImagesDto"].length
+              ) {
+                this.uploadedfileData = res["customerLoyaltyPromoImagesDto"];
+              } else {
+                this.coreService.showWarningToast(
+                  "No Images found for this program code"
+                );
+              }
+              console.log(res);
+            } else {
+              if (res && res["msg"]) {
+                this.coreService.showWarningToast(res["msg"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "Error in fetching Program Images"
+                );
+              }
+              this.coreService.removeLoadingScreen();
+            }
+          }
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          console.log("Error in getTaxSettingForEditApi", err);
+          this.coreService.showWarningToast(
+            "Error in fetching Program Images, Please try again later"
+          );
+        }
+      );
   }
 
   setHeaderSidebarBtn(accept: boolean) {
@@ -345,10 +459,10 @@ export class LoyaltyProgramComponent implements OnInit {
 
     const formData = new FormData();
     formData.append("userId", this.userData.userId);
-    formData.append("taxCode", data["taxCode"]);
+    formData.append("programCode", data["programCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.code);
-    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
     formData.append("form", this.formName);
     this.updateTaxCodeStatus(formData, e.target, data);
   }
@@ -359,7 +473,7 @@ export class LoyaltyProgramComponent implements OnInit {
         let message = "";
         if (res["error"] == "true") {
           this.coreService.removeLoadingScreen();
-          message = `Kindly deactivate the Tax code: ${res["msg"]} ( ${taxData["criteriaMap"]} ) to activate the current record.`;
+          message = `Kindly deactivate the Loyalty program code: ${res["msg"]} ( ${taxData["criteriaMap"]} ) to activate the current record.`;
           this.coreService.showWarningToast(message);
         } else {
           if (res["msg"]) {
@@ -367,8 +481,8 @@ export class LoyaltyProgramComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.code,
-              this.moduleCtrl.value.code
+              this.appCtrl.value.name,
+              this.moduleCtrl.value.name
             );
             this.coreService.showSuccessToast(message);
           } else {

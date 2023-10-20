@@ -8,8 +8,8 @@ import { Observable } from "rxjs";
 export class LoyaltyService {
   constructor(private http: HttpClient) {}
 
-  applicationName: "Casmex Core";
-  moduleName: "Remittance";
+  applicationName = "Casmex Core";
+  moduleName = "Remittance";
 
   // COMMON SERVICES
   getTaxSettingAppModuleList() {
@@ -161,8 +161,8 @@ export class LoyaltyService {
   }
 
   addNewLoyaltyProgram(
-    data,
-    userId,
+    userId: any,
+    data: any,
     operation: any,
     appName: any,
     moduleName: any,
@@ -183,18 +183,20 @@ export class LoyaltyService {
   }
 
   updateLoyaltyProgram(
-    userId,
-    data,
+    userId: any,
+    data: any,
+    operation: any,
     appName: any,
     moduleName: any,
     formName: any
   ): Observable<any> {
-    return this.http.put(
+    return this.http.post(
       `/remittance/loyaltyProgramController/updateLoyaltyProgram`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
+          .set("operation", operation)
           .set("applications", appName)
           .set("moduleName", moduleName)
           .set("form", formName),
