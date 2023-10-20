@@ -20,7 +20,7 @@
                       newLineField: field?.newLineField == 'Y'
                       }"
                     >
-                      <label>{{ field.fieldLabel }}</label
+                    <label [attr.title]="field.fieldLabel.length > 27 ? field.fieldLabel : ''" >{{ field.fieldLabel.length > 27 ? field.fieldLabel.substring(0, 27) + '..' : field.fieldLabel }}</label
                       ><span *ngIf="field.required" class="required">*</span>
                       <ng-container [ngSwitch]="field.fieldType">
                         <input

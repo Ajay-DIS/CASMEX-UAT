@@ -106,6 +106,28 @@ export class LoyaltyService {
     );
   }
 
+  getCustomerLoyaltyDetailsData(
+    id: string,
+    criteriaMap: any,
+    pageNumber: any,
+    pageSize: any,
+    sortBy: any,
+    orderBy: any
+  ) {
+    return this.http.get(
+      `/remittance/loyaltyProgramController/getCustomerLoyaltyRedeemDetailsList`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("criteriaMap", criteriaMap)
+          .set("pageNumber", pageNumber)
+          .set("pageSize", pageSize)
+          .set("sortBy", sortBy)
+          .set("orderBy", orderBy),
+      }
+    );
+  }
+
   updateTaxSettingsStatus(data: any) {
     return this.http.post(
       `/remittance/loyaltyProgramController/updateLoyaltyProgramStatus`,
