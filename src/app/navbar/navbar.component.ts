@@ -218,6 +218,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/document-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+
+        case "Loyalty Programs Manager":
+          item["routerLink"] = "/navbar/loyalty-programs";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Customer Loyalty Program Details":
+          item["routerLink"] = "/navbar/loyalty-programs-details";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
       }
     });
     return menu;
@@ -304,6 +313,14 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Customer Service":
         iconName = "beneficiary-icon";
+        break;
+      case "Loyalty":
+        iconName = "settings-icon";
+        matchUrls = [
+          "/navbar/loyalty-programs",
+          "/navbar/loyalty-programs-details",
+        ];
+        routeName = "/navbar/loyalty-programs";
         break;
       case "Settings":
         iconName = "settings-icon";

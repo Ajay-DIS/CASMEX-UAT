@@ -28,6 +28,7 @@ import { DocumentDetailsComponent } from "./document-settings/document-details/d
 import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
+import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -438,6 +439,18 @@ const routes: Routes = [
           {
             label: "Loyalty-Programs",
             routerLink: "../navbar/loyalty-programs",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "loyalty-programs-details",
+        component: LoyaltyDetailsListComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          {
+            label: "Customer Loyalty Programs",
+            routerLink: "../navbar/loyalty-programs-details",
           },
         ],
         canActivate: [AuthGuard],

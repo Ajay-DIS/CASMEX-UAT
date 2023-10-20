@@ -85,6 +85,7 @@ import { DateMaskDirective } from "./date-mask.directive";
 import { TransactionDateModal } from "./shared/modals/transaction-date-modal/transaction-date-modal";
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
+import { LoyaltyDetailsListComponent } from './loyalty-program/loyalty-details-list/loyalty-details-list.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -127,6 +128,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TransactionDateModal,
     LoyaltyProgramComponent,
     AddLoyaltyComponent,
+    LoyaltyDetailsListComponent,
   ],
   imports: [
     BrowserModule,
