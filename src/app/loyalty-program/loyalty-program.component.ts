@@ -13,6 +13,7 @@ import { LoyaltyService } from "./loyalty.service";
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { MultiSelect } from "primeng/multiselect";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-loyalty-program",
@@ -35,16 +36,19 @@ export class LoyaltyProgramComponent implements OnInit {
   searchModuleOptions: any[] = [];
 
   showprogramCodeOptions: boolean = false;
+  showprogramTypeOptions: boolean = false;
   showprogramDescriptionOptions: boolean = false;
   showcriteriaMapOptions: boolean = false;
   showstatusOptions: boolean = false;
 
   programCode = [];
+  programType = [];
   programDescription = [];
   criteriaMap = [];
   status = [];
 
   selectedFilterprogramCode: any[] = [];
+  selectedFilterprogramType: any[] = [];
   selectedFilterprogramDescription: any[] = [];
   selectedFiltercriteriaMap: any[] = [];
   selectedFilterstatus: any[] = [];
@@ -56,23 +60,36 @@ export class LoyaltyProgramComponent implements OnInit {
   linkedProgramCode: any = [];
 
   cols: any[] = [
-    { field: "programCode", header: "Program Code", width: "10%" },
+    { field: "programCode", header: "Program Code", width: "8%" },
     {
       field: "programDescription",
       header: "Program Description",
-      width: "10%",
+      width: "18%",
     },
     { field: "programType", header: "Program Type", width: "8%" },
-    { field: "criteriaMap", header: "Program Rules", width: "26%" },
-    { field: "rewardType", header: "Rewards", width: "8%" },
-    { field: "createdOn", header: "Created On", width: "8%" },
+    { field: "criteriaMap", header: "Program Rules", width: "20%" },
+    // { field: "rewardType", header: "Rewards", width: "8%" },
+    { field: "createdOn", header: "Created On", width: "9%" },
     { field: "createdBy", header: "Created By", width: "8%" },
-    { field: "expiryOn", header: "Expiry", width: "8%" },
-    { field: "status", header: "Status", width: "7%" },
+    { field: "expiryOn", header: "Expiry", width: "9%" },
+    { field: "status", header: "Status", width: "5%" },
     { field: "operation", header: "Program Images", width: "7%" },
   ];
 
   uploadedfileData: any = [];
+
+  uploadedfileDataCols: any = [
+    {
+      field: "imageOriginalName",
+      header: "Image name",
+    },
+    {
+      field: "action",
+      header: "Action",
+    },
+  ];
+
+  showFilesModal: boolean = false;
 
   constructor(
     private router: Router,
@@ -82,7 +99,8 @@ export class LoyaltyProgramComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
     private fb: UntypedFormBuilder,
-    private loyaltyService: LoyaltyService
+    private loyaltyService: LoyaltyService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -218,32 +236,18 @@ export class LoyaltyProgramComponent implements OnInit {
           if (loyaltyListingData["data"]) {
             console.log("loyaltyListingData", loyaltyListingData);
             this.loyaltyApiData = loyaltyListingData;
-            this.loyaltyApiData.data.forEach((tax) => {
-              let beforeSplit = tax.criteriaMap.split("&&&&")[0];
-              let afterSplit = tax.criteriaMap.split("&&&&")[1];
 
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: beforeSplit,
-              });
-              tax.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-              if (afterSplit?.length) {
-                tax.criteriaMap = tax.criteriaMap + "&&&&" + afterSplit;
-              }
-            });
             this.loyaltyListData = [...this.loyaltyApiData.data];
-            console.log("loyaltyListData", this.loyaltyListData);
-            console.log("loyaltyListData", this.loyaltyApiData);
             this.showNoDataFound = false;
             this.linkedProgramCode = [
               ...this.loyaltyApiData["linkedProgramCode"],
             ];
             this.programCode = this.loyaltyApiData["programCode"].map(
+              (code) => {
+                return { label: code, value: code };
+              }
+            );
+            this.programType = this.loyaltyApiData["programType"].map(
               (code) => {
                 return { label: code, value: code };
               }
@@ -261,18 +265,68 @@ export class LoyaltyProgramComponent implements OnInit {
             });
 
             this.loyaltyListData.forEach((data) => {
-              console.log(data["programType"]);
-              data["createdOn"] = data["createdDateTime"]
-                ? new Date(data["createdDateTime"]).toLocaleDateString("en-GB")
+              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                criteriaMap: data.criteriaMap.split("&&&&")[0],
+              });
+              let primaryCrit = (
+                this.setCriteriaService.decodeFormattedCriteria(
+                  criteriaCodeText,
+                  criteriaMasterData,
+                  [""]
+                ) as []
+              ).join(", ");
+              // %
+              let amtSlabPresent = false;
+              let dateSlabPresent = false;
+
+              if (data["criteriaMap"].indexOf("from:") >= 0) {
+                amtSlabPresent = true;
+              }
+
+              if (data["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                dateSlabPresent = true;
+              }
+              let dateSlabs = null;
+              if (amtSlabPresent && dateSlabPresent) {
+                dateSlabs = data["criteriaMap"].split("&&&&")[2];
+                data.criteriaMap =
+                  primaryCrit +
+                  "&&&&" +
+                  data["criteriaMap"].split("&&&&")[1] +
+                  "&&&&" +
+                  data["criteriaMap"].split("&&&&")[2];
+              } else {
+                if (amtSlabPresent) {
+                  data.criteriaMap =
+                    primaryCrit + "&&&&" + data["criteriaMap"].split("&&&&")[1];
+                } else if (dateSlabPresent) {
+                  data.criteriaMap =
+                    primaryCrit + "&&&&" + data["criteriaMap"].split("&&&&")[1];
+                  dateSlabs = data["criteriaMap"].split("&&&&")[1];
+                } else if (!amtSlabPresent && !dateSlabPresent) {
+                  data.criteriaMap = primaryCrit;
+                }
+              }
+              data["expiryOn"] = dateSlabs
+                ? dateSlabs.split("trnEndDate:").pop()
                 : "-";
-              data["expiryOn"] = data["criteriaTransactionDateTo"]
+              data["isExpired"] = dateSlabs
                 ? new Date(
-                    data["criteriaTransactionDateTo"]
+                    dateSlabs
+                      .split("trnEndDate:")
+                      .pop()
                       .split(", ")[0]
                       .split("/")
                       .reverse()
                       .join("-")
-                  ).toLocaleDateString("en-GB")
+                  ) < new Date()
+                  ? true
+                  : false
+                : false;
+              // %
+              console.log(data["programType"]);
+              data["createdOn"] = data["createdDateTime"]
+                ? new Date(data["createdDateTime"]).toLocaleDateString("en-GB")
                 : "-";
             });
           } else {
@@ -331,6 +385,98 @@ export class LoyaltyProgramComponent implements OnInit {
     ]);
   }
 
+  showUploadedFilesModal() {
+    this.showFilesModal = true;
+    this.coreService.setHeaderStickyStyle(false);
+    this.coreService.setSidebarBtnFixedStyle(false);
+  }
+
+  closeDialog() {
+    this.showFilesModal = false;
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
+  }
+
+  fileOperation(fileData: any, fileIndex: any, operation: any) {
+    console.log(fileData, fileIndex, operation);
+    if (operation == "view") {
+      this.viewDoc(fileData?.imageName);
+    } else if (operation == "download") {
+      this.downloadDoc(fileData?.imageName);
+    }
+  }
+
+  viewDoc(dbFileName: any) {
+    this.coreService.displayLoadingScreen();
+    let service;
+    service = this.http.get(`/remittance/kycUpload/view/${dbFileName}`, {
+      headers: new HttpHeaders().set("userId", this.userData.userId),
+      responseType: "blob",
+    });
+
+    service.subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        const blobData = new Blob([res], { type: "image/jpeg" });
+        const blobUrl = window.URL.createObjectURL(blobData);
+
+        window.open(blobUrl, "_blank");
+        window.URL.revokeObjectURL(blobUrl);
+      },
+      (err) => {
+        if (err.status == 404) {
+          this.coreService.showWarningToast("File not found");
+        } else {
+          this.coreService.showWarningToast(
+            "Some error while fetching file, Try again in sometime"
+          );
+        }
+        this.coreService.removeLoadingScreen();
+      }
+    );
+  }
+  downloadDoc(dbFileName: any) {
+    this.coreService.displayLoadingScreen();
+    let services = this.http.get(
+      `/remittance/kycUpload/fileDownload/${dbFileName}`,
+      {
+        headers: new HttpHeaders().set("userId", this.userData.userId),
+        observe: "response",
+        responseType: "blob",
+      }
+    );
+
+    services.subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        let blob: Blob = res.body as Blob;
+        let a = document.createElement("a");
+        a.download = res.url && res.url.split("/").pop();
+        const blobUrl = window.URL.createObjectURL(blob);
+        a.href = blobUrl;
+        a.click();
+        window.URL.revokeObjectURL(blobUrl);
+        this.coreService.showSuccessToast("File downloaded successfully");
+      },
+      (err) => {
+        if (err.status == 404) {
+          this.coreService.showWarningToast("File not found");
+        } else {
+          this.coreService.showWarningToast(
+            "Some error while fetching file, Try again in sometime"
+          );
+        }
+        this.coreService.removeLoadingScreen();
+      }
+    );
+  }
+
   isLinked(id: any) {
     return this.linkedProgramCode.includes(id);
   }
@@ -357,15 +503,25 @@ export class LoyaltyProgramComponent implements OnInit {
       completeMsg =
         `<img src="../../../assets/warning.svg"><br/><br/>` +
         isLinkedMsg +
-        `Do you wish to ` +
+        `This action will ` +
         type +
-        ` the Loyalty program: ${data["programCode"]}?`;
+        ` the promotion: ${data["programCode"]}.` +
+        `Would you like to proceed?`;
+      // `Do you wish to ` +
+      // type +
+      // ` the Loyalty program: ${data["programCode"]}?`;
     } else {
       completeMsg =
         `<img src="../../../assets/warning.svg"><br/><br/>` +
-        `Do you wish to ` +
+        `Record Deactivation - This action will ` +
         type +
-        ` the Loyalty program: ${data["programCode"]}?`;
+        ` the promotion: ${data["programCode"]}.` +
+        "<br/>" +
+        `Would you like to proceed?`;
+      // +
+      // `Do you wish to ` +
+      // type +
+      // ` the Loyalty program: ${data["programCode"]}?`;
     }
     this.confirmationService.confirm({
       message: completeMsg,
@@ -413,6 +569,7 @@ export class LoyaltyProgramComponent implements OnInit {
                 res["customerLoyaltyPromoImagesDto"].length
               ) {
                 this.uploadedfileData = res["customerLoyaltyPromoImagesDto"];
+                this.showUploadedFilesModal();
               } else {
                 this.coreService.showWarningToast(
                   "No Images found for this program code"

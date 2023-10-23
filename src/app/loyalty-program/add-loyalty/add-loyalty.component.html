@@ -45,6 +45,7 @@
                     pButton
                     pRipple
                     type="button"
+                    [disabled]="!applyCriteriaFormattedData?.length"
                     label="Save"
                     class="p-button-raised"
                     (click)="saveAddNewTax()"
@@ -185,7 +186,7 @@
                   <span (click)="showUploadedFilesModal()">Uploaded files</span>
                 </div>
               </div>
-              <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 pl-0">
+              <!-- <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 pl-0">
                 <div class="program-checkbox">
                   <p-checkbox
                     [(ngModel)]="Emailchecked"
@@ -202,7 +203,7 @@
                   ></p-checkbox>
                   <label style="padding-left: 10px"> Send Message</label>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -260,7 +261,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       *ngIf="appModuleDataPresent && showContent"
       class="d-flex m-3 tax-code-desc-section"
     >
@@ -307,7 +308,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <app-set-criteria
       *ngIf="appModuleDataPresent && showContent"
@@ -497,7 +498,7 @@
   </div>
 </div>
 
-<div>
+<div class="uploadedImgModal">
   <p-dialog
     [(visible)]="showFilesModal"
     [modal]="true"
@@ -508,7 +509,7 @@
       <div class="application-header">Uploaded Files</div>
     </ng-template>
     <p-table
-      [value]="uploadedfileData"
+      [value]="getUploadedImgData"
       class="criteria-view-table"
       [rowHover]="true"
       [style]="{ width: '100%' }"

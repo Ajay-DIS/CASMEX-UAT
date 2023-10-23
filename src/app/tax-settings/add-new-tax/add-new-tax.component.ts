@@ -1523,12 +1523,6 @@ export class AddNewTaxComponent implements OnInit {
       }
     }
 
-    if (event.value <= max) {
-      this.applyCriteriaFormattedData[index][inputCol] = event.value;
-    } else {
-      let lastValueEntered = valueInputElm.lastValue;
-      valueInputElm.input.nativeElement.value = lastValueEntered;
-    }
     let isDisplayError = false;
     if (event.value == 0) {
       isDisplayError = true;
@@ -1541,6 +1535,15 @@ export class AddNewTaxComponent implements OnInit {
       this.coreService.showWarningToast(
         "Please enter tax between " + min + " to " + max
       );
+      if (event.value <= max && event.value >= min) {
+        this.applyCriteriaFormattedData[index][inputCol] = event.value;
+        this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = false;
+      } else if (event.value > max) {
+        let lastValueEntered = valueInputElm.lastValue;
+        valueInputElm.input.nativeElement.value = lastValueEntered;
+        this.applyCriteriaFormattedData[index]["invalidTaxAmount"] = false;
+      } else if (event.value < min) {
+      }
       return false;
     }
   }

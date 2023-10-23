@@ -90,7 +90,7 @@
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns">
             <td>
-              <div style="display: inline-block">
+              <div style="display: inline-block; white-space: pre-line">
                 {{ rowData[col["field"]] }}
               </div>
               <!-- <a
@@ -156,7 +156,7 @@
             ? state.totalRecords
             : state.rows * (state.page + 1)
         }}
-        of {{ state.totalRecords }} Customers {{ state.rows }} {{ state.page }}
+        of {{ state.totalRecords }} Customers
       </ng-template>
     </p-table>
   </div>

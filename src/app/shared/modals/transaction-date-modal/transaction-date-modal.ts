@@ -29,6 +29,8 @@ export class TransactionDateModal {
   isFormDataChanged = true;
   isRangeValueLessThanZero = false;
 
+  today : Date = new Date()
+
   constructor(
     private formBuilder: UntypedFormBuilder,
     private ref: DynamicDialogRef,

@@ -4,147 +4,148 @@
       <div class="col-12">
         <div class="row">
           <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
-      <p class="description-text">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="41"
-          height="35"
-          viewBox="0 0 41 41"
-        >
-          <g
-            id="Group_2248"
-            data-name="Group 2248"
-            transform="translate(-341 -138)"
-          >
-            <circle
-              id="Ellipse_130"
-              data-name="Ellipse 130"
-              cx="20.5"
-              cy="20.5"
-              r="20.5"
-              transform="translate(341 138)"
-              [attr.fill]="primaryColor"
-            />
-            <path
-              id="_52_Note_Basic_Description"
-              data-name="52  Note, Basic, Description"
-              d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
-              transform="translate(348.213 145.945)"
-              fill="#fff"
-            />
-          </g>
-        </svg>
-        Enables users to configure tax related settings.
-      </p>
+            <p class="description-text">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="41"
+                height="35"
+                viewBox="0 0 41 41"
+              >
+                <g
+                  id="Group_2248"
+                  data-name="Group 2248"
+                  transform="translate(-341 -138)"
+                >
+                  <circle
+                    id="Ellipse_130"
+                    data-name="Ellipse 130"
+                    cx="20.5"
+                    cy="20.5"
+                    r="20.5"
+                    transform="translate(341 138)"
+                    [attr.fill]="primaryColor"
+                  />
+                  <path
+                    id="_52_Note_Basic_Description"
+                    data-name="52  Note, Basic, Description"
+                    d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+                    transform="translate(348.213 145.945)"
+                    fill="#fff"
+                  />
+                </g>
+              </svg>
+              Enables users to configure tax related settings.
+            </p>
+          </div>
+          <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+            <div class="row">
+              <div class="buttons-section">
+                <button
+                  pButton
+                  pRipple
+                  [disabled]="!applyCriteriaFormattedData?.length"
+                  type="button"
+                  label="Save"
+                  class="p-button-raised"
+                  (click)="saveAddNewTax('save')"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  [disabled]="!applyCriteriaFormattedData.length"
+                  label="Save & Add New"
+                  class="p-button-raised"
+                  (click)="saveAddNewTax('saveAndAddNew')"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Reset"
+                  class="p-button-warning"
+                  (click)="reset()"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
-  <div class="row">
-      <div class="buttons-section">
-        <button
-          pButton
-          pRipple
-          [disabled]="
-            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
-          "
-          type="button"
-          label="Save"
-          class="p-button-raised"
-          (click)="saveAddNewTax('save')"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          [disabled]="
-            !applyCriteriaFormattedData.length ||
-            !applyCriteriaFormattedData.length
-          "
-          label="Save & Add New"
-          class="p-button-raised"
-          (click)="saveAddNewTax('saveAndAddNew')"
-        ></button>
-        <button
-          pButton
-          pRipple
-          type="button"
-          label="Reset"
-          class="p-button-warning"
-          (click)="reset()"
-        ></button>
-    </div>
-  </div>
-</div>
-</div>
-</div>
-</div>
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
         <div class="row">
-      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
-        <label class="detail-page-section-heading col-sm-3 col-xs-12" for="application"
-          >Application</label
-        >
-        <p-dropdown
-          name="application"
-          inputId="application"
-          [options]="searchApplicationOptions"
-          placeholder="Select"
-          optionLabel="name"
-          formControlName="applications"
-          (onChange)="onAppValueChange()"
-        ></p-dropdown>
-      </div>
-      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
-        <label class="detail-page-section-heading col-sm-3 col-xs-12 small" for="module">Module</label>
-        <p-dropdown
-          name="module"
-          inputId="module"
-          [options]="searchModuleOptions"
-          placeholder="Select"
-          optionLabel="name"
-          formControlName="modules"
-          (onChange)="searchAppModule()"
-        ></p-dropdown>
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+            <label
+              class="detail-page-section-heading col-sm-3 col-xs-12"
+              for="application"
+              >Application</label
+            >
+            <p-dropdown
+              name="application"
+              inputId="application"
+              [options]="searchApplicationOptions"
+              placeholder="Select"
+              optionLabel="name"
+              formControlName="applications"
+              (onChange)="onAppValueChange()"
+            ></p-dropdown>
+          </div>
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+            <label
+              class="detail-page-section-heading col-sm-3 col-xs-12 small"
+              for="module"
+              >Module</label
+            >
+            <p-dropdown
+              name="module"
+              inputId="module"
+              [options]="searchModuleOptions"
+              placeholder="Select"
+              optionLabel="name"
+              formControlName="modules"
+              (onChange)="searchAppModule()"
+            ></p-dropdown>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
     <div
       *ngIf="appModuleDataPresent && showContent"
       class="d-flex m-3 tax-code-desc-section"
     >
-    <div class="col-12">
-      <div class="row">
-        <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
-      <div
-        class="taxCode"
-        [pTooltip]="
-          this.mode == 'add'
-            ? 'Tax Code is automatically generated, It may get changed in saving process.'
-            : ''
-        "
-      >
-        <p>Tax Code</p>
-        <input type="text" pInputText [(ngModel)]="taxCode" disabled />
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+            <div
+              class="taxCode"
+              [pTooltip]="
+                this.mode == 'add'
+                  ? 'Tax Code is automatically generated, It may get changed in saving process.'
+                  : ''
+              "
+            >
+              <p>Tax Code</p>
+              <input type="text" pInputText [(ngModel)]="taxCode" disabled />
+            </div>
+          </div>
+          <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+            <div class="taxDesc">
+              <p style="position: relative">
+                Tax Description <span class="description red-star">*</span>
+              </p>
+              <input
+                type="text"
+                pInputText
+                [(ngModel)]="taxDescription"
+                maxlength="100"
+                placeholder="Max 100 characters"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
-      <div class="taxDesc">
-        <p style="position: relative">
-          Tax Description <span class="description red-star">*</span>
-        </p>
-        <input
-          type="text"
-          pInputText
-          [(ngModel)]="taxDescription"
-          maxlength="100"
-          placeholder="Max 100 characters"
-        />
-      </div>
-    </div>
-  </div>
-</div>
-</div>
     <app-set-criteria
       *ngIf="appModuleDataPresent && showContent"
       #setCriteriaSharedComponent

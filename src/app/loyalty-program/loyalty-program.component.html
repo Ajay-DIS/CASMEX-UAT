@@ -87,7 +87,9 @@
           >
             {{ col.header }}
             <div
-              *ngIf="c == 0 || col.field == 'status'"
+              *ngIf="
+                c == 0 || col.field == 'programType' || col.field == 'status'
+              "
               (click)="$event.stopPropagation()"
               class="filter-icon"
             >
@@ -144,10 +146,20 @@
         let-columns="columns"
         let-index="rowIndex"
       >
-        <tr [pReorderableRow]="index">
+        <tr
+          [pReorderableRow]="index"
+          [pTooltip]="rowData['isExpired'] ? 'This program has expired' : ''"
+          tooltipPosition="top"
+        >
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="col.field != 'status' && col.field != 'operation'">
-              <div *ngIf="!(i == 0 || i == 1)" style="display: inline-block">
+            <td
+              *ngIf="col.field != 'status' && col.field != 'operation'"
+              [ngStyle]="{ color: rowData['isExpired'] ? 'red' : 'black' }"
+            >
+              <div
+                *ngIf="!(i == 0 || i == 1 || i == 3)"
+                style="display: inline-block"
+              >
                 {{ rowData[col["field"]] }}
               </div>
               <a
@@ -165,40 +177,26 @@
                 (click)="viewLoyaltyProgram(rowData)"
                 >{{ rowData[col["field"]] }}</a
               >
+
               <span
-                *ngIf="i == 1"
+                *ngIf="i == 3 || i == 1"
                 [pTooltip]="
-                  rowData[col['field']] &&
-                  rowData[col['field']].substring(
-                    31,
-                    rowData[col['field']].length
-                  )
+                  rowData[col['field']].length > 30 ? rowData[col['field']] : ''
                 "
                 tooltipPosition="bottom"
-                >{{
-                  rowData[col["field"]] &&
-                    rowData[col["field"]].substring(0, 30)
-                }}
+              >
                 {{
-                  rowData[col["field"]] && rowData[col["field"]].length > 30
-                    ? ".."
-                    : ""
+                  rowData[col["field"]].length > 30
+                    ? rowData[col["field"]].substring(0, 30) + ".."
+                    : rowData[col["field"]]
                 }}</span
               >
-              <!-- <span
-                  *ngIf="i == 2"
-                  [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
-                  tooltipPosition="bottom"
-                  >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
-                  {{
-                    rowData[col["field"]].split(",").length > 4 ? ".." : ""
-                  }}</span
-                > -->
             </td>
 
             <td
               *ngIf="col.field == 'status'"
               style="border: none; text-align: center"
+              [ngStyle]="{ color: rowData['isExpired'] ? 'red' : 'black' }"
             >
               <label class="switch" style="border: none">
                 <input
@@ -219,6 +217,7 @@
             <td
               *ngIf="col.field == 'operation'"
               style="border: none; text-align: center"
+              [ngStyle]="{ color: rowData['isExpired'] ? 'red' : 'black' }"
             >
               <span class="image-text">
                 <button
@@ -250,7 +249,7 @@
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!loyaltyListData.length && showNoDataFound">
+<div class="NorecordFound" *ngIf="!loyaltyListData?.length && showNoDataFound">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>
@@ -268,6 +267,80 @@
     </div>
   </div>
 </div>
+
+<div class="uploadedImgModal">
+  <p-dialog
+    [(visible)]="showFilesModal"
+    [modal]="true"
+    [style]="{ width: '40vw', left: '50px' }"
+    (onHide)="closeDialog()"
+  >
+    <ng-template pTemplate="header">
+      <div class="application-header">Program Images</div>
+    </ng-template>
+    <p-table
+      [value]="uploadedfileData"
+      class="criteria-view-table"
+      [rowHover]="true"
+      [style]="{ width: '100%' }"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th
+            *ngFor="let col of uploadedfileDataCols"
+            [style.text-align]="col['field'] == 'action' ? 'center' : ''"
+          >
+            {{ col.header }}
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-file let-rowIndex="rowIndex">
+        <tr>
+          <ng-container *ngFor="let col of uploadedfileDataCols; let i = index">
+            <td *ngIf="col['field'] != 'action'">
+              <input
+                type="text"
+                [placeholder]="file[col['field']]"
+                [disabled]="true"
+              />
+            </td>
+            <td
+              *ngIf="col['field'] == 'action'"
+              style="border: none; text-align: center; padding-left: 1rem"
+            >
+              <span class="image-text">
+                <!-- <ng-container *ngFor="let icon of col['value'].split(',')"> -->
+                <button
+                  pButton
+                  type="button"
+                  [icon]="'pi pi-eye'"
+                  class="operation-btns mr-2"
+                  (click)="fileOperation(file, rowIndex, 'view')"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  [icon]="'pi pi-download'"
+                  class="operation-btns mr-2"
+                  (click)="fileOperation(file, rowIndex, 'download')"
+                ></button>
+                <!-- </ng-container> -->
+              </span>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="uploadedfileDataCols.length">
+            No files uploaded.
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-dialog>
+</div>
+
 <p-confirmDialog
   key="activeDeactiveStatus"
   class="status-confirm confirm-popup"

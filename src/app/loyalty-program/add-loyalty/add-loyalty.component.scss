@@ -115,6 +115,9 @@
   width: 100% !important;
   max-width: 160px;
 }
+.uploadedImgModal ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+  max-width: 100%;
+}
 .file-upload-select input[type="file"] {
   display: none;
 }
@@ -133,6 +136,7 @@
 }
 
 span.error-message {
+  display: block;
   font-size: 10px;
   color: red;
 }

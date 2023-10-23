@@ -45,6 +45,7 @@
               [readonlyInput]="true"
               (onSelect)="changeFrom($event, i)"
               [appendTo]="'body'"
+              [minDate]="today"
             ></p-calendar>
           </div>
           <div class="col-6 pr-3">
@@ -73,6 +74,7 @@
               [readonlyInput]="true"
               (onSelect)="changeTo($event, i)"
               [appendTo]="'body'"
+              [minDate]="today"
             ></p-calendar>
           </div>
           <div
