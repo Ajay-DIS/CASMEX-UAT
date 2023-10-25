@@ -127,6 +127,13 @@ export class AddLoyaltyComponent implements OnInit {
       info: null,
     },
     {
+      field: "discountAs",
+      header: "Discount As",
+      fieldType: "dropdown",
+      frozen: false,
+      info: "Select reward as 'Discount' to enable it",
+    },
+    {
       field: "loyaltyType",
       header: "Loyalty Type",
       fieldType: "dropdown",
@@ -145,6 +152,7 @@ export class AddLoyaltyComponent implements OnInit {
 
   taxTypeOption: any[] = [];
   rewardsAsOption: any[] = [];
+  discountAsOption: any[] = [];
   loyaltyTypeOption: any[] = [];
   programTypeOptions: any[] = [];
 
@@ -403,10 +411,16 @@ export class AddLoyaltyComponent implements OnInit {
 
   fileUploadChange(e: any) {
     console.log(e.target.files[0]);
-    if (this.uploadedfileData.length >= 5) {
-      this.coreService.showWarningToast(
-        "Maximum 5 files can be uploaded at a time."
-      );
+    if (
+      !(
+        e.target.files[0]?.type == "image/jpeg" ||
+        e.target.files[0]?.type == "image/png" ||
+        e.target.files[0]?.type == "image/svg+xml"
+      )
+    ) {
+      this.coreService.showWarningToast("Valid formats are JPEG, PNG, SVG.");
+    } else if (e.target.files[0]?.size > 2097152) {
+      this.coreService.showWarningToast("Please upload file less than 2MB.");
     } else {
       if (e.target.files[0]) {
         if (this.editingFileIndex != null) {
@@ -415,15 +429,29 @@ export class AddLoyaltyComponent implements OnInit {
           this.uploadedfileData[this.editingFileIndex]["promoImage"] =
             e.target.files[0];
           this.uploadedfileData[this.editingFileIndex]["operation"] = "edit";
+          this.coreService.showSuccessToast("Image updated.");
         } else {
-          this.uploadedfileData.push({
-            id: null,
-            imageOriginalName: e.target.files[0]?.name,
-            imageName: null,
-            promoImage: e.target.files[0],
-            operation: "add",
-            programCode: this.programCode,
-          });
+          if (
+            this.uploadedfileData.filter(
+              (file) => file["operation"] != "delete"
+            ).length >= 5
+          ) {
+            this.coreService.showWarningToast(
+              "Maximum 5 files can be uploaded."
+            );
+          } else {
+            this.uploadedfileData.push({
+              id: null,
+              imageOriginalName: e.target.files[0]?.name,
+              imageName: null,
+              promoImage: e.target.files[0],
+              operation: "add",
+              programCode: this.programCode,
+            });
+            this.coreService.showSuccessToast(
+              "Image added, check uploaded Images"
+            );
+          }
         }
       }
     }
@@ -435,7 +463,11 @@ export class AddLoyaltyComponent implements OnInit {
   fileOperation(fileData: any, fileIndex: any, operation: any) {
     console.log(fileData, fileIndex, operation);
     if (operation == "delete") {
-      this.uploadedfileData[fileIndex]["operation"] = "delete";
+      if (fileData?.id) {
+        this.uploadedfileData.splice(fileIndex, 1);
+      } else {
+        this.uploadedfileData[fileIndex]["operation"] = "delete";
+      }
     } else if (operation == "download") {
       if (fileData?.id) {
         this.downloadDoc(fileData?.imageName);
@@ -629,6 +661,10 @@ export class AddLoyaltyComponent implements OnInit {
                 return { code: option.code, codeName: option.codeName };
               });
 
+              this.discountAsOption = res["discountAsOption"].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+
               this.uploadedfileData = [];
               if (
                 res["customerLoyaltyPromoImagesDto"] &&
@@ -659,22 +695,22 @@ export class AddLoyaltyComponent implements OnInit {
               }
 
               if (amtSlabPresent && dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -683,24 +719,24 @@ export class AddLoyaltyComponent implements OnInit {
                 this.applyCriteriaFormattedData = [];
               } else {
                 if (amtSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
                   });
                   this.applyCriteriaFormattedData = [];
                 } else if (dateSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateFrom",
                     header: "Date From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateTo",
                     header: "Date To",
                     fieldType: "text",
@@ -832,6 +868,7 @@ export class AddLoyaltyComponent implements OnInit {
                 data["programType"] = res["programType"];
                 data["loyaltyTypeOption"] = this.loyaltyTypeOption;
                 data["rewardsAsOption"] = this.rewardsAsOption;
+                data["discountAsOption"] = this.discountAsOption;
                 data["invalidLoyaltyValue"] = false;
                 data["status"] = "Active";
               });
@@ -1156,6 +1193,11 @@ export class AddLoyaltyComponent implements OnInit {
                   return { code: option.code, codeName: option.codeName };
                 }
               );
+              this.discountAsOption = res["data"].discountAsOption.map(
+                (option) => {
+                  return { code: option.code, codeName: option.codeName };
+                }
+              );
 
               let amtSlabPresent = false;
               let dateSlabPresent = false;
@@ -1171,22 +1213,22 @@ export class AddLoyaltyComponent implements OnInit {
               }
 
               if (amtSlabPresent && dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -1218,12 +1260,12 @@ export class AddLoyaltyComponent implements OnInit {
               } else {
                 if (amtSlabPresent) {
                   let lcySlabFields = reqData.lcySlabArr;
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
@@ -1242,12 +1284,12 @@ export class AddLoyaltyComponent implements OnInit {
                   });
                 } else if (dateSlabPresent) {
                   let dateSlabFields = reqData.dateSlabArr;
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateFrom",
                     header: "Date From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateTo",
                     header: "Date To",
                     fieldType: "text",
@@ -1342,6 +1384,7 @@ export class AddLoyaltyComponent implements OnInit {
                 delete data.id;
                 data["loyaltyTypeOption"] = this.loyaltyTypeOption;
                 data["rewardsAsOption"] = this.rewardsAsOption;
+                data["discountAsOption"] = this.discountAsOption;
                 data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
                 data["invalidLoyaltyValue"] = false;
                 data["status"] = "Active";
@@ -1533,24 +1576,6 @@ export class AddLoyaltyComponent implements OnInit {
 
     // % CALL FILE UPLOAD API
 
-    // let promoCodeFrom = new Date(
-    //   this.criteriaTransactionDateFrom
-    // ).toLocaleString("en-GB");
-    // let promoCodeTo = new Date(this.criteriaTransactionDateTo).toLocaleString(
-    //   "en-GB"
-    // );
-
-    // let firstD = this.applyCriteriaFormattedData[0];
-    // if (
-    //   !(
-    //     firstD["criteriaTransactionDateFrom"] == promoCodeFrom &&
-    //     firstD["criteriaTransactionDateTo"] == promoCodeTo
-    //   )
-    // ) {
-    //   this.coreService.showWarningToast(
-    //     "Program dates change detected, please click on apply first then Save"
-    //   );
-    // } else {
     if (
       this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
       this.appliedCriteriaCriteriaMap
@@ -1740,7 +1765,6 @@ export class AddLoyaltyComponent implements OnInit {
     } else {
       this.coreService.showWarningToast("Applied criteria already exists.");
     }
-    // }
   }
 
   reset() {
@@ -1861,9 +1885,22 @@ export class AddLoyaltyComponent implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
-    console.log(selectCol, value, index);
     if (selectCol == "rewardsAs") {
       this.rewardsAs = value.codeName;
+      if (value.codeName == "Discount") {
+        this.applyCriteriaFormattedData[index]["discountAsOption"] = [];
+        this.applyCriteriaFormattedData[index]["discountAsOption"] =
+          this.discountAsOption;
+      } else {
+        this.applyCriteriaFormattedData[index]["discountAsOption"] = [];
+        this.applyCriteriaFormattedData[index]["discountAsOption"].unshift({
+          code: null,
+          codeName: "Select",
+        });
+      }
+      this.applyCriteriaFormattedData[index]["discountAs"] = null;
+    }
+    if (selectCol == "discountAs") {
     }
     if (selectCol == "loyaltyType") {
       this.loyaltyType = value.codeName;

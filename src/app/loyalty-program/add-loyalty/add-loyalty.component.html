@@ -179,11 +179,14 @@
                       type="file"
                       name="file-upload-input"
                       id="file-upload-input"
+                      accept=".svg, .png, .jpeg"
                     />
                   </div>
                 </div>
-                <div class="fileUploadLabel" *ngIf="uploadedfileData.length">
-                  <span (click)="showUploadedFilesModal()">Uploaded files</span>
+                <div class="fileUploadLabel" *ngIf="getUploadedImgData?.length">
+                  <span (click)="showUploadedFilesModal()"
+                    >Uploaded Images</span
+                  >
                 </div>
               </div>
               <!-- <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 pl-0">
@@ -395,6 +398,9 @@
                     <div
                       *ngIf="col['fieldType'] == 'dropdown'"
                       class="appliedCriteriaSelect"
+                      [pTooltip]="
+                        rowData['rewardsAs'] != 'Discount' && col['info']
+                      "
                     >
                       <p-dropdown
                         [options]="rowData[col.field + 'Option']"
@@ -408,7 +414,11 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          (col['field'] == 'discountAs' &&
+                            rowData['rewardsAs'] != 'Discount')
+                        "
                       ></p-dropdown>
                     </div>
                     <div
