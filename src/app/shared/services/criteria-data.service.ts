@@ -253,7 +253,7 @@ export class CriteriaDataService {
           } = Slab`;
         }
 
-        if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+        if (criteriaMapThirdSplit.includes("trnStartDate=")) {
           dateSlabArr = this.getDateSlabArr(criteriaMapThirdSplit);
           criteriaMapFirstSplit += `;${
             dateTypeName ? dateTypeName : "Date"
@@ -268,7 +268,7 @@ export class CriteriaDataService {
           criteriaMapFirstSplit += `;${
             slabTypeName ? slabTypeName : "Amount"
           } = Slab`;
-        } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+        } else if (criteriaMapSecSplit.includes("trnStartDate=")) {
           dateSlabArr = this.getDateSlabArr(criteriaMapSecSplit);
           criteriaMapFirstSplit += `;${
             dateTypeName ? dateTypeName : "Date"
@@ -289,8 +289,8 @@ export class CriteriaDataService {
   getDateSlabArr(mapSplit: string) {
     let dateArr = [];
     mapSplit.split("#").forEach((rngTxt) => {
-      let fromVal = rngTxt.split("::")[0].split(":")[1];
-      let toVal = rngTxt.split("::")[1].split(":")[1];
+      let fromVal = rngTxt.split("::")[0].split("=")[1];
+      let toVal = rngTxt.split("::")[1].split("=")[1];
       dateArr.push({
         trnStartDate: fromVal,
         trnEndDate: toVal,

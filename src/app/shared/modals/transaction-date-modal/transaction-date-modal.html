@@ -35,7 +35,7 @@
             </p-inputNumber> -->
             <p-calendar
               #fromInp
-              class="block mr-3"
+              class="block"
               placeholder="DD/MM/YYYY"
               dateFormat="dd/mm/yy"
               [showIcon]="true"
@@ -45,6 +45,8 @@
               [readonlyInput]="true"
               (onSelect)="changeFrom($event, i)"
               [appendTo]="'body'"
+              [showTime]="true"
+              [showSeconds]="true"
               [minDate]="today"
             ></p-calendar>
           </div>
@@ -64,7 +66,7 @@
             </p-inputNumber> -->
             <p-calendar
               #fromInp
-              class="block mr-3"
+              class="block"
               placeholder="DD/MM/YYYY"
               dateFormat="dd/mm/yy"
               [showIcon]="true"
@@ -74,6 +76,8 @@
               [readonlyInput]="true"
               (onSelect)="changeTo($event, i)"
               [appendTo]="'body'"
+              [showTime]="true"
+              [showSeconds]="true"
               [minDate]="today"
             ></p-calendar>
           </div>

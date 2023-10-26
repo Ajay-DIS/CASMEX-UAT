@@ -390,7 +390,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 amtSlabPresent = true;
               }
 
-              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+              if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
                 dateSlabPresent = true;
               }
 
@@ -535,7 +535,7 @@ export class AddNewFormRuleComponent implements OnInit {
                         ].filter((child) => {
                           return (
                             child["data"]["key"] ==
-                            `from:${slabA["from"]}::to:${slabA["to"]}&&&&trnStartDate:${slabD["trnStartDate"]}::trnEndDate:${slabD["trnEndDate"]}`
+                            `from:${slabA["from"]}::to:${slabA["to"]}&&&&trnStartDate=${slabD["trnStartDate"]}::trnEndDate=${slabD["trnEndDate"]}`
                           );
                         });
                         formattedChilds.forEach((child) => {
@@ -607,7 +607,7 @@ export class AddNewFormRuleComponent implements OnInit {
                         ].filter(
                           (child) =>
                             child["data"]["key"] ==
-                            `trnStartDate:${slab["trnStartDate"]}::trnEndDate:${slab["trnEndDate"]}`
+                            `trnStartDate=${slab["trnStartDate"]}::trnEndDate=${slab["trnEndDate"]}`
                         );
                         formattedChilds.forEach((child) => {
                           child["data"]["dateFrom"] = slab["trnStartDate"];
@@ -1198,7 +1198,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   amtSlabPresent = true;
                 }
 
-                if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+                if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
                   dateSlabPresent = true;
                 }
 
@@ -1241,7 +1241,7 @@ export class AddNewFormRuleComponent implements OnInit {
                           child["data"]["dateTo"] = fieldDate.trnEndDate;
                           child["data"][
                             "criteriaMapSplit"
-                          ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
+                          ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate=${fieldDate["trnStartDate"]}::trnEndDate=${fieldDate["trnEndDate"]}`;
                         });
                       });
                       this.applyCriteriaFormattedData.push(...copy);
@@ -1298,7 +1298,7 @@ export class AddNewFormRuleComponent implements OnInit {
                           child["data"]["dateTo"] = slab["trnEndDate"];
                           child["data"][
                             "criteriaMapSplit"
-                          ] = `${baseCriteriaMap}&&&&trnStartDate:${slab["trnStartDate"]}::trnEndDate:${slab["trnEndDate"]}`;
+                          ] = `${baseCriteriaMap}&&&&trnStartDate=${slab["trnStartDate"]}::trnEndDate=${slab["trnEndDate"]}`;
                         });
                       });
 
@@ -1506,9 +1506,14 @@ export class AddNewFormRuleComponent implements OnInit {
                 );
               }
             } else {
-              this.coreService.showWarningToast(res["msg"]);
-
-              this.applyCriteriaFormattedData = [];
+              if (res["msg"] && res["msg"] == "No search criteria available.") {
+                this.applyCriteriaFormattedData = [];
+                this.appliedCriteriaCriteriaMap = null;
+                this.appliedCriteriaIsDuplicate = null;
+                this.applyCriteriaDataTableColumns = [];
+                this.coreService.showWarningToast(res["msg"]);
+                return;
+              }
             }
           }
         },

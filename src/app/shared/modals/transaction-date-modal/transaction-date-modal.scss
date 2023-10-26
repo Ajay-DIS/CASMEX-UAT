@@ -25,3 +25,10 @@
   right: 0px;
   cursor: pointer;
 }
+
+.all-range-groups
+  ::ng-deep
+  .p-calendar
+  .p-button.p-component.p-button-icon-only {
+  width: 30px;
+}
