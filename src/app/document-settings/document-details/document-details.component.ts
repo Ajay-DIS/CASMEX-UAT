@@ -373,7 +373,7 @@ export class DocumentDetailsComponent implements OnInit {
               amtSlabPresent = true;
             }
 
-            if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+            if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
               dateSlabPresent = true;
             }
 
@@ -452,13 +452,13 @@ export class DocumentDetailsComponent implements OnInit {
                       .split(":")[1];
                   }
 
-                  if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+                  if (criteriaMapThirdSplit.includes("trnStartDate=")) {
                     data["dateFrom"] = criteriaMapThirdSplit
                       .split("::")[0]
-                      .split(":")[1];
+                      .split("=")[1];
                     data["dateTo"] = criteriaMapThirdSplit
                       .split("::")[1]
-                      .split(":")[1];
+                      .split("=")[1];
                   }
                 } else if (mapSplit.split("&&&&").length == 2) {
                   criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
@@ -471,13 +471,13 @@ export class DocumentDetailsComponent implements OnInit {
                     data["lcyAmountTo"] = criteriaMapSecSplit
                       .split("::")[1]
                       .split(":")[1];
-                  } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+                  } else if (criteriaMapSecSplit.includes("trnStartDate=")) {
                     data["dateFrom"] = criteriaMapSecSplit
                       .split("::")[0]
-                      .split(":")[1];
+                      .split("=")[1];
                     data["dateTo"] = criteriaMapSecSplit
                       .split("::")[1]
-                      .split(":")[1];
+                      .split("=")[1];
                   }
                 }
               } else {
@@ -594,7 +594,14 @@ export class DocumentDetailsComponent implements OnInit {
         } else {
           this.coreService.removeLoadingScreen();
 
-          console.log(res);
+          if (res["msg"] && res["msg"] == "No search criteria available.") {
+            this.applyCriteriaFormattedData = [];
+            this.appliedCriteriaCriteriaMap = null;
+            this.appliedCriteriaIsDuplicate = null;
+            this.applyCriteriaDataTableColumns = [];
+            this.coreService.showWarningToast(res["msg"]);
+            return;
+          }
 
           if (!res["duplicate"]) {
             this.applyCriteriaResponse = JSON.parse(JSON.stringify(res));
@@ -628,7 +635,7 @@ export class DocumentDetailsComponent implements OnInit {
               amtSlabPresent = true;
             }
 
-            if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+            if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
               dateSlabPresent = true;
             }
 
@@ -673,7 +680,7 @@ export class DocumentDetailsComponent implements OnInit {
 
                   apiData[
                     "criteriaMapSplit"
-                  ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
+                  ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate=${fieldDate["trnStartDate"]}::trnEndDate=${fieldDate["trnEndDate"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
                 });
               });
@@ -723,7 +730,7 @@ export class DocumentDetailsComponent implements OnInit {
                   apiData["dateTo"] = field.trnEndDate;
                   apiData[
                     "criteriaMapSplit"
-                  ] = `${baseCriteriaMap}&&&&trnStartDate:${field["trnStartDate"]}::trnEndDate:${field["trnEndDate"]}`;
+                  ] = `${baseCriteriaMap}&&&&trnStartDate=${field["trnStartDate"]}::trnEndDate=${field["trnEndDate"]}`;
                   this.applyCriteriaFormattedData.push(apiData);
                 });
               } else if (!amtSlabPresent && !dateSlabPresent) {
@@ -1445,7 +1452,7 @@ export class DocumentDetailsComponent implements OnInit {
       amtSlabPresent = true;
     }
 
-    if (currCritMap.indexOf("trnStartDate:") >= 0) {
+    if (currCritMap.indexOf("trnStartDate=") >= 0) {
       dateSlabPresent = true;
     }
 

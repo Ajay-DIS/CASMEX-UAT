@@ -9,8 +9,8 @@ import { ConfirmationService, MessageService } from "primeng/api";
 import { Dropdown } from "primeng/dropdown";
 import { DialogService } from "primeng/dynamicdialog";
 import { Table } from "primeng/table";
-import { forkJoin } from "rxjs";
-import { map, take } from "rxjs/operators";
+import { forkJoin, of } from "rxjs";
+import { catchError, map, switchMap, take } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
@@ -105,26 +105,33 @@ export class AddLoyaltyComponent implements OnInit {
   isLcyFieldPresent = false;
   applyCriteriaDataTableColumns: any[] = [];
   columnsCopy: any[] = [
-    {
-      field: "criteriaTransactionDateFrom",
-      header: "Transaction From Date&Time",
-      fieldType: "text",
-      frozen: false,
-      info: null,
-    },
-    {
-      field: "criteriaTransactionDateTo",
-      header: "Transaction To Date&Time",
-      fieldType: "text",
-      frozen: false,
-      info: null,
-    },
+    // {
+    //   field: "criteriaTransactionDateFrom",
+    //   header: "Transaction From Date&Time",
+    //   fieldType: "text",
+    //   frozen: false,
+    //   info: null,
+    // },
+    // {
+    //   field: "criteriaTransactionDateTo",
+    //   header: "Transaction To Date&Time",
+    //   fieldType: "text",
+    //   frozen: false,
+    //   info: null,
+    // },
     {
       field: "rewardsAs",
       header: "Reward As",
       fieldType: "dropdown",
       frozen: false,
       info: null,
+    },
+    {
+      field: "discountAs",
+      header: "Discount As",
+      fieldType: "dropdown",
+      frozen: false,
+      info: "Select reward as 'Discount' to enable it",
     },
     {
       field: "loyaltyType",
@@ -145,6 +152,7 @@ export class AddLoyaltyComponent implements OnInit {
 
   taxTypeOption: any[] = [];
   rewardsAsOption: any[] = [];
+  discountAsOption: any[] = [];
   loyaltyTypeOption: any[] = [];
   programTypeOptions: any[] = [];
 
@@ -403,10 +411,16 @@ export class AddLoyaltyComponent implements OnInit {
 
   fileUploadChange(e: any) {
     console.log(e.target.files[0]);
-    if (this.uploadedfileData.length >= 5) {
-      this.coreService.showWarningToast(
-        "Maximum 5 files can be uploaded at a time."
-      );
+    if (
+      !(
+        e.target.files[0]?.type == "image/jpeg" ||
+        e.target.files[0]?.type == "image/png" ||
+        e.target.files[0]?.type == "image/svg+xml"
+      )
+    ) {
+      this.coreService.showWarningToast("Valid formats are JPEG, PNG, SVG.");
+    } else if (e.target.files[0]?.size > 2097152) {
+      this.coreService.showWarningToast("Please upload file less than 2MB.");
     } else {
       if (e.target.files[0]) {
         if (this.editingFileIndex != null) {
@@ -415,15 +429,29 @@ export class AddLoyaltyComponent implements OnInit {
           this.uploadedfileData[this.editingFileIndex]["promoImage"] =
             e.target.files[0];
           this.uploadedfileData[this.editingFileIndex]["operation"] = "edit";
+          this.coreService.showSuccessToast("Image updated.");
         } else {
-          this.uploadedfileData.push({
-            id: null,
-            imageOriginalName: e.target.files[0]?.name,
-            imageName: null,
-            promoImage: e.target.files[0],
-            operation: "add",
-            programCode: this.programCode,
-          });
+          if (
+            this.uploadedfileData.filter(
+              (file) => file["operation"] != "delete"
+            ).length >= 5
+          ) {
+            this.coreService.showWarningToast(
+              "Maximum 5 files can be uploaded."
+            );
+          } else {
+            this.uploadedfileData.push({
+              id: null,
+              imageOriginalName: e.target.files[0]?.name,
+              imageName: null,
+              promoImage: e.target.files[0],
+              operation: "add",
+              programCode: this.programCode,
+            });
+            this.coreService.showSuccessToast(
+              "Image added, check uploaded Images"
+            );
+          }
         }
       }
     }
@@ -435,7 +463,11 @@ export class AddLoyaltyComponent implements OnInit {
   fileOperation(fileData: any, fileIndex: any, operation: any) {
     console.log(fileData, fileIndex, operation);
     if (operation == "delete") {
-      this.uploadedfileData.splice(fileIndex, 1);
+      if (fileData?.id) {
+        this.uploadedfileData.splice(fileIndex, 1);
+      } else {
+        this.uploadedfileData[fileIndex]["operation"] = "delete";
+      }
     } else if (operation == "download") {
       if (fileData?.id) {
         this.downloadDoc(fileData?.imageName);
@@ -460,6 +492,12 @@ export class AddLoyaltyComponent implements OnInit {
     }
   }
 
+  get getUploadedImgData() {
+    return this.uploadedfileData.filter(
+      (file) => file["operation"] != "delete"
+    );
+  }
+
   downloadDoc(dbFileName: any) {
     this.coreService.displayLoadingScreen();
     let services = this.http.get(
@@ -471,23 +509,29 @@ export class AddLoyaltyComponent implements OnInit {
       }
     );
 
-    services.subscribe((res) => {
-      this.coreService.removeLoadingScreen();
-      let blob: Blob = res.body as Blob;
-      let a = document.createElement("a");
-      a.download = res.url && res.url.split("/").pop();
-      const blobUrl = window.URL.createObjectURL(blob);
-      a.href = blobUrl;
-      a.click();
-      window.URL.revokeObjectURL(blobUrl);
-      this.coreService.showSuccessToast("File downloaded successfully");
-    }),
-      (err) => {
-        this.coreService.showWarningToast(
-          "Some error while downloading file, Try again in sometime"
-        );
+    services.subscribe(
+      (res) => {
         this.coreService.removeLoadingScreen();
-      };
+        let blob: Blob = res.body as Blob;
+        let a = document.createElement("a");
+        a.download = res.url && res.url.split("/").pop();
+        const blobUrl = window.URL.createObjectURL(blob);
+        a.href = blobUrl;
+        a.click();
+        window.URL.revokeObjectURL(blobUrl);
+        this.coreService.showSuccessToast("File downloaded successfully");
+      },
+      (err) => {
+        if (err.status == 404) {
+          this.coreService.showWarningToast("File not found");
+        } else {
+          this.coreService.showWarningToast(
+            "Some error while downloading file, Try again in sometime"
+          );
+        }
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   onAppValueChange() {
@@ -505,14 +549,14 @@ export class AddLoyaltyComponent implements OnInit {
     this.showContent = false;
     this.getCriteriaMasterData();
     this.getAllTemplates();
-    console.log(
-      "criteriaTransactionDateFrom",
-      this.criteriaTransactionDateFrom
-    );
-    let promoCodeFrom = new Date(
-      this.criteriaTransactionDateFrom
-    ).toLocaleString("en-GB");
-    console.log("promoCodeFrom", promoCodeFrom);
+    // console.log(
+    //   "criteriaTransactionDateFrom",
+    //   this.criteriaTransactionDateFrom
+    // );
+    // let promoCodeFrom = new Date(
+    //   this.criteriaTransactionDateFrom
+    // ).toLocaleString("en-GB");
+    // console.log("promoCodeFrom", promoCodeFrom);
   }
 
   getLoyaltyProgramForEditApi(programCode: any, operation: any) {
@@ -566,28 +610,28 @@ export class AddLoyaltyComponent implements OnInit {
               if (res["loyaltyProgramDesc"]) {
                 this.programDescription = res["loyaltyProgramDesc"];
               }
-              if (res["criteriaTransactionDateFrom"]) {
-                let formatDate =
-                  res["criteriaTransactionDateFrom"]
-                    .split(", ")[0]
-                    .split("/")
-                    .reverse()
-                    .join("-") +
-                  "T" +
-                  res["criteriaTransactionDateFrom"].split(", ")[1];
-                this.criteriaTransactionDateFrom = new Date(formatDate);
-              }
-              if (res["criteriaTransactionDateTo"]) {
-                let formatDate =
-                  res["criteriaTransactionDateTo"]
-                    .split(", ")[0]
-                    .split("/")
-                    .reverse()
-                    .join("-") +
-                  "T" +
-                  res["criteriaTransactionDateTo"].split(", ")[1];
-                this.criteriaTransactionDateTo = new Date(formatDate);
-              }
+              // if (res["criteriaTransactionDateFrom"]) {
+              //   let formatDate =
+              //     res["criteriaTransactionDateFrom"]
+              //       .split(", ")[0]
+              //       .split("/")
+              //       .reverse()
+              //       .join("-") +
+              //     "T" +
+              //     res["criteriaTransactionDateFrom"].split(", ")[1];
+              //   this.criteriaTransactionDateFrom = new Date(formatDate);
+              // }
+              // if (res["criteriaTransactionDateTo"]) {
+              //   let formatDate =
+              //     res["criteriaTransactionDateTo"]
+              //       .split(", ")[0]
+              //       .split("/")
+              //       .reverse()
+              //       .join("-") +
+              //     "T" +
+              //     res["criteriaTransactionDateTo"].split(", ")[1];
+              //   this.criteriaTransactionDateTo = new Date(formatDate);
+              // }
               if (res["promoCode"]) {
                 this.promoCode = res["promoCode"];
               }
@@ -617,6 +661,10 @@ export class AddLoyaltyComponent implements OnInit {
                 return { code: option.code, codeName: option.codeName };
               });
 
+              this.discountAsOption = res["discountAsOption"].map((option) => {
+                return { code: option.code, codeName: option.codeName };
+              });
+
               this.uploadedfileData = [];
               if (
                 res["customerLoyaltyPromoImagesDto"] &&
@@ -642,27 +690,27 @@ export class AddLoyaltyComponent implements OnInit {
                 amtSlabPresent = true;
               }
 
-              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+              if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
                 dateSlabPresent = true;
               }
 
               if (amtSlabPresent && dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -671,24 +719,24 @@ export class AddLoyaltyComponent implements OnInit {
                 this.applyCriteriaFormattedData = [];
               } else {
                 if (amtSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
                   });
                   this.applyCriteriaFormattedData = [];
                 } else if (dateSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateFrom",
                     header: "Date From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateTo",
                     header: "Date To",
                     fieldType: "text",
@@ -721,13 +769,13 @@ export class AddLoyaltyComponent implements OnInit {
                         .split(":")[1];
                     }
 
-                    if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+                    if (criteriaMapThirdSplit.includes("trnStartDate=")) {
                       data["dateFrom"] = criteriaMapThirdSplit
                         .split("::")[0]
-                        .split(":")[1];
+                        .split("=")[1];
                       data["dateTo"] = criteriaMapThirdSplit
                         .split("::")[1]
-                        .split(":")[1];
+                        .split("=")[1];
                     }
                   } else if (mapSplit.split("&&&&").length == 2) {
                     criteriaMapFirstSplit = mapSplit.split("&&&&")[0];
@@ -740,13 +788,13 @@ export class AddLoyaltyComponent implements OnInit {
                       data["lcyAmountTo"] = criteriaMapSecSplit
                         .split("::")[1]
                         .split(":")[1];
-                    } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+                    } else if (criteriaMapSecSplit.includes("trnStartDate=")) {
                       data["dateFrom"] = criteriaMapSecSplit
                         .split("::")[0]
-                        .split(":")[1];
+                        .split("=")[1];
                       data["dateTo"] = criteriaMapSecSplit
                         .split("::")[1]
-                        .split(":")[1];
+                        .split("=")[1];
                     }
                   }
                 } else {
@@ -813,13 +861,14 @@ export class AddLoyaltyComponent implements OnInit {
 
               this.applyCriteriaFormattedData.forEach((data) => {
                 delete data.id;
-                data["criteriaTransactionDateFrom"] =
-                  res["criteriaTransactionDateFrom"];
-                data["criteriaTransactionDateTo"] =
-                  res["criteriaTransactionDateTo"];
+                // data["criteriaTransactionDateFrom"] =
+                //   res["criteriaTransactionDateFrom"];
+                // data["criteriaTransactionDateTo"] =
+                //   res["criteriaTransactionDateTo"];
                 data["programType"] = res["programType"];
                 data["loyaltyTypeOption"] = this.loyaltyTypeOption;
                 data["rewardsAsOption"] = this.rewardsAsOption;
+                data["discountAsOption"] = this.discountAsOption;
                 data["invalidLoyaltyValue"] = false;
                 data["status"] = "Active";
               });
@@ -1077,16 +1126,16 @@ export class AddLoyaltyComponent implements OnInit {
         },
       });
     } else {
-      if (
-        this.criteriaTransactionDateFrom &&
-        this.criteriaTransactionAmountTo
-      ) {
-        this.LoyaltyProgramSearchApi(postDataCriteria);
-      } else {
-        this.coreService.showWarningToast(
-          "Please select transaction date range."
-        );
-      }
+      // if (
+      //   this.criteriaTransactionDateFrom &&
+      //   this.criteriaTransactionAmountTo
+      // ) {
+      this.LoyaltyProgramSearchApi(postDataCriteria);
+      // } else {
+      //   this.coreService.showWarningToast(
+      //     "Please select transaction date range."
+      //   );
+      // }
     }
   }
 
@@ -1094,12 +1143,12 @@ export class AddLoyaltyComponent implements OnInit {
     this.applyCriteriaFormattedData = [];
     this.applyCriteriaDataTableColumns = [];
     this.coreService.displayLoadingScreen();
-    let promoCodeFrom = new Date(
-      this.criteriaTransactionDateFrom
-    ).toLocaleString("en-GB");
-    let promoCodeTo = new Date(this.criteriaTransactionDateTo).toLocaleString(
-      "en-GB"
-    );
+    // let promoCodeFrom = new Date(
+    //   this.criteriaTransactionDateFrom
+    // ).toLocaleString("en-GB");
+    // let promoCodeTo = new Date(this.criteriaTransactionDateTo).toLocaleString(
+    //   "en-GB"
+    // );
 
     this.applyCriteriaDataTableColumns = JSON.parse(
       JSON.stringify(this.columnsCopy)
@@ -1144,6 +1193,11 @@ export class AddLoyaltyComponent implements OnInit {
                   return { code: option.code, codeName: option.codeName };
                 }
               );
+              this.discountAsOption = res["data"].discountAsOption.map(
+                (option) => {
+                  return { code: option.code, codeName: option.codeName };
+                }
+              );
 
               let amtSlabPresent = false;
               let dateSlabPresent = false;
@@ -1154,27 +1208,27 @@ export class AddLoyaltyComponent implements OnInit {
                 amtSlabPresent = true;
               }
 
-              if (res["criteriaMap"].indexOf("trnStartDate:") >= 0) {
+              if (res["criteriaMap"].indexOf("trnStartDate=") >= 0) {
                 dateSlabPresent = true;
               }
 
               if (amtSlabPresent && dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -1199,19 +1253,19 @@ export class AddLoyaltyComponent implements OnInit {
 
                     apiData[
                       "criteriaMapSplit"
-                    ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate:${fieldDate["trnStartDate"]}::trnEndDate:${fieldDate["trnEndDate"]}`;
+                    ] = `${baseCriteriaMap}&&&&from:${fieldAmt["from"]}::to:${fieldAmt["to"]}&&&&trnStartDate=${fieldDate["trnStartDate"]}::trnEndDate=${fieldDate["trnEndDate"]}`;
                     this.applyCriteriaFormattedData.push(apiData);
                   });
                 });
               } else {
                 if (amtSlabPresent) {
                   let lcySlabFields = reqData.lcySlabArr;
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
@@ -1230,12 +1284,12 @@ export class AddLoyaltyComponent implements OnInit {
                   });
                 } else if (dateSlabPresent) {
                   let dateSlabFields = reqData.dateSlabArr;
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateFrom",
                     header: "Date From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-5, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateTo",
                     header: "Date To",
                     fieldType: "text",
@@ -1249,7 +1303,7 @@ export class AddLoyaltyComponent implements OnInit {
                     apiData["dateTo"] = field.trnEndDate;
                     apiData[
                       "criteriaMapSplit"
-                    ] = `${baseCriteriaMap}&&&&trnStartDate:${field["trnStartDate"]}::trnEndDate:${field["trnEndDate"]}`;
+                    ] = `${baseCriteriaMap}&&&&trnStartDate=${field["trnStartDate"]}::trnEndDate=${field["trnEndDate"]}`;
                     this.applyCriteriaFormattedData.push(apiData);
                   });
                 } else if (!amtSlabPresent && !dateSlabPresent) {
@@ -1330,6 +1384,7 @@ export class AddLoyaltyComponent implements OnInit {
                 delete data.id;
                 data["loyaltyTypeOption"] = this.loyaltyTypeOption;
                 data["rewardsAsOption"] = this.rewardsAsOption;
+                data["discountAsOption"] = this.discountAsOption;
                 data["criteriaMap"] = this.appliedCriteriaCriteriaMap;
                 data["invalidLoyaltyValue"] = false;
                 data["status"] = "Active";
@@ -1339,8 +1394,8 @@ export class AddLoyaltyComponent implements OnInit {
                 data["programType"] = this.programType;
                 data["promoCode"] = this.promoCode;
                 data["promoCodeLength"] = this.promoCodeLength;
-                data["criteriaTransactionDateFrom"] = promoCodeFrom;
-                data["criteriaTransactionDateTo"] = promoCodeTo;
+                // data["criteriaTransactionDateFrom"] = promoCodeFrom;
+                // data["criteriaTransactionDateTo"] = promoCodeTo;
               });
               // this.setSelectedOptions();
               console.log("::", this.applyCriteriaFormattedData);
@@ -1464,6 +1519,7 @@ export class AddLoyaltyComponent implements OnInit {
     );
 
     let formData = new FormData();
+    let fileService = null;
     if (this.uploadedfileData.length) {
       for (let i = 0; i < this.uploadedfileData.length; i++) {
         for (let key in this.uploadedfileData[i]) {
@@ -1487,199 +1543,252 @@ export class AddLoyaltyComponent implements OnInit {
                   this.uploadedfileData[i][key]
                 );
               }
+            } else {
+              formData.append(
+                `customerLoyaltyPromoImagesDto[${i}].${key}`,
+                this.uploadedfileData[i][key]
+              );
             }
           }
         }
       }
+      fileService = this.http.post(
+        `/remittance/loyaltyProgramController/${
+          this.mode == "add" ? "savePromoImages" : "updatePromoImages"
+        }`,
+        formData,
+        {
+          headers: new HttpHeaders()
+            .set("userId", this.userId)
+            .set("operation", this.mode)
+            .set("applications", this.appCtrl.value.name)
+            .set("moduleName", this.moduleCtrl.value.name)
+            .set("form", this.formName),
+        }
+      );
     }
+
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+
+    console.log(this.uploadedfileData);
 
     // % CALL FILE UPLOAD API
 
-    let promoCodeFrom = new Date(
-      this.criteriaTransactionDateFrom
-    ).toLocaleString("en-GB");
-    let promoCodeTo = new Date(this.criteriaTransactionDateTo).toLocaleString(
-      "en-GB"
-    );
-
-    let firstD = this.applyCriteriaFormattedData[0];
     if (
-      !(
-        firstD["criteriaTransactionDateFrom"] == promoCodeFrom &&
-        firstD["criteriaTransactionDateTo"] == promoCodeTo
-      )
+      this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
+      this.appliedCriteriaCriteriaMap
     ) {
       this.coreService.showWarningToast(
-        "Program dates change detected, please click on apply first then Save"
+        "Recent changes in Criteria map has not been applied, Saving last applied data"
       );
-    } else {
-      if (
-        this.setCriteriaSharedComponent.getCurrentCriteriaMap() !=
-        this.appliedCriteriaCriteriaMap
-      ) {
+    }
+
+    if (
+      this.mode != "clone" ||
+      (this.mode == "clone" && this.isApplyCriteriaClicked)
+    ) {
+      this.coreService.displayLoadingScreen();
+      let isRequiredFields = false;
+      let invalidLoyaltyValue = false;
+      let loyaltyTypeMissing = false;
+      let rewardsAsMissing = false;
+      let loyaltyValueMissing = false;
+      let invalidPromoCodeLength = false;
+      this.applyCriteriaFormattedData.forEach((element) => {
+        console.log(element);
+
+        if (element["invalidLoyaltyValue"]) {
+          invalidLoyaltyValue = true;
+        }
+        element["programDescription"] = this.programDescription
+          ? this.programDescription.replace(/\s/g, "").length
+            ? this.programDescription
+            : null
+          : null;
+        element["programType"] = this.programType
+          ? this.programType.replace(/\s/g, "").length
+            ? this.programType
+            : null
+          : null;
+        element["promoCodeLength"] = this.promoCodeLength
+          ? this.promoCodeLength
+          : null;
+
+        if (
+          !(
+            element["programDescription"] &&
+            element["programType"] &&
+            element["promoCodeLength"]
+          )
+        ) {
+          isRequiredFields = true;
+        }
+        if (!element["loyaltyType"]) {
+          loyaltyTypeMissing = true;
+        }
+        if (!element["rewardsAs"]) {
+          rewardsAsMissing = true;
+        }
+        if (!element["loyaltyValue"] && element["loyaltyValue"] != "0") {
+          loyaltyValueMissing = true;
+        }
+      });
+      if (isRequiredFields) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Fill required fields.");
+      } else if (loyaltyTypeMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select loyalty Type.");
+      } else if (rewardsAsMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Reward As.");
+      } else if (loyaltyValueMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Fill loyalty value.");
+      } else if (invalidLoyaltyValue) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Enter Valid loyalty Value.");
+      } else if (!this.validPromoCodeLength) {
+        this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast(
-          "Recent changes in Criteria map has not been applied, Saving last applied data"
+          "Please Enter Valid Promo Code Length."
         );
-      }
-
-      if (
-        this.mode != "clone" ||
-        (this.mode == "clone" && this.isApplyCriteriaClicked)
-      ) {
-        this.coreService.displayLoadingScreen();
-        let isRequiredFields = false;
-        let invalidLoyaltyValue = false;
-        let loyaltyTypeMissing = false;
-        let rewardsAsMissing = false;
-        let loyaltyValueMissing = false;
-        this.applyCriteriaFormattedData.forEach((element) => {
-          console.log(element);
-
-          if (element["invalidLoyaltyValue"]) {
-            invalidLoyaltyValue = true;
-          }
-          element["programDescription"] = this.programDescription
-            ? this.programDescription.replace(/\s/g, "").length
-              ? this.programDescription
-              : null
-            : null;
-          element["programType"] = this.programType
-            ? this.programType.replace(/\s/g, "").length
-              ? this.programType
-              : null
-            : null;
-          element["promoCodeLength"] = this.promoCodeLength
-            ? this.promoCodeLength
-            : null;
-          if (
-            !(
-              element["programDescription"] &&
-              element["programType"] &&
-              element["promoCodeLength"]
-            )
-          ) {
-            isRequiredFields = true;
-          }
-          if (!element["loyaltyType"]) {
-            loyaltyTypeMissing = true;
-          }
-          if (!element["rewardsAs"]) {
-            rewardsAsMissing = true;
-          }
-          if (!element["loyaltyValue"] && element["loyaltyValue"] != "0") {
-            loyaltyValueMissing = true;
-          }
-        });
-        if (isRequiredFields) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Please Fill required fields.");
-        } else if (loyaltyTypeMissing) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Please Select loyalty Type.");
-        } else if (rewardsAsMissing) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Please Select Set As.");
-        } else if (loyaltyValueMissing) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Please Fill loyalty value.");
-        } else if (invalidLoyaltyValue) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast(
-            "Please Enter Valid loyalty Value."
-          );
-        } else if (!this.validPromoCodeLength) {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast(
-            "Please Enter Valid Promo Code Length."
+      } else {
+        let service;
+        // this.decodeSelectedOptions();
+        if (this.mode == "edit") {
+          service = this.loyaltyService.updateLoyaltyProgram(
+            this.userId,
+            this.applyCriteriaFormattedData,
+            this.mode,
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
+            this.formName
           );
         } else {
-          let service;
-          // this.decodeSelectedOptions();
-          if (this.mode == "edit") {
-            // let data = {
-            //   data: this.applyCriteriaFormattedData,
-            //   duplicate: this.appliedCriteriaIsDuplicate,
-            //   criteriaMap: this.appliedCriteriaCriteriaMap,
-            //   programCode: this.loyaltyID,
-            // };
-            service = this.loyaltyService.updateLoyaltyProgram(
-              this.userId,
-              this.applyCriteriaFormattedData,
-              this.mode,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
-              this.formName
-            );
-          } else {
-            let data = {
-              data: this.applyCriteriaFormattedData,
-              duplicate: this.appliedCriteriaIsDuplicate,
-              criteriaMap: this.appliedCriteriaCriteriaMap,
-            };
-            service = this.loyaltyService.addNewLoyaltyProgram(
-              this.userId,
-              this.applyCriteriaFormattedData,
-              this.mode,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
-              this.formName
-            );
-          }
+          service = this.loyaltyService.addNewLoyaltyProgram(
+            this.userId,
+            this.applyCriteriaFormattedData,
+            this.mode,
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
+            this.formName
+          );
+        }
 
-          if (service) {
-            service.subscribe(
-              (res) => {
-                if (
-                  res["status"] &&
-                  typeof res["status"] == "string" &&
-                  (res["status"] == "400" || res["status"] == "500")
-                ) {
+        if (service) {
+          service
+            .pipe(
+              switchMap((data) => {
+                if (data["msg"] && fileService) {
+                  return fileService.pipe(
+                    catchError((fileError) => {
+                      return of({ fileError });
+                    })
+                  );
+                } else {
+                  return of({ dataError: !data["msg"] });
+                }
+              })
+            )
+            .subscribe(
+              (result) => {
+                if (result.dataError) {
                   this.coreService.removeLoadingScreen();
-                  if (res["error"]) {
-                    this.coreService.showWarningToast(res["error"]);
+                  console.log("Data service returned an error.");
+                  this.coreService.showWarningToast(
+                    "Loyalty program data not saved properly, Please try again in sometime"
+                  );
+                } else if (result.fileError) {
+                  console.log(
+                    "Data saved successfully, but there was an issue with files."
+                  );
+                  this.coreService.showSuccessToast(
+                    "Loyalty program data saved successfully, But some issue in saving program images, Please try again in sometime"
+                  );
+                  this.router.navigate([`navbar/loyalty-programs`]);
+                } else {
+                  this.router.navigate([`navbar/loyalty-programs`]);
+                  if (this.mode == "add") {
+                    this.coreService.showSuccessToast(
+                      "Program data saved successfully"
+                    );
                   } else {
-                    this.coreService.showWarningToast(
-                      "Something went wrong, Please try again later"
+                    this.coreService.showSuccessToast(
+                      "Program data updated successfully"
                     );
                   }
-                } else {
-                  if (res["msg"]) {
-                    this.coreService.showSuccessToast(res.msg);
-
-                    this.loyaltyService.applicationName = null;
-                    this.loyaltyService.moduleName = null;
-                    this.router.navigate([`navbar/loyalty-programs`]);
-                  }
+                  console.log("Data and files saved successfully.");
                 }
               },
               (err) => {
+                console.log("Error", err);
                 this.coreService.removeLoadingScreen();
-                console.log("error in saveAddNewTax", err);
-                this.coreService.showWarningToast(
-                  "Something went wrong, Please try again later"
-                );
               }
             );
-          }
+
+          // service.subscribe(
+          //   (res) => {
+          //     if (
+          //       res["status"] &&
+          //       typeof res["status"] == "string" &&
+          //       (res["status"] == "400" || res["status"] == "500")
+          //     ) {
+          //       this.coreService.removeLoadingScreen();
+          //       if (res["error"]) {
+          //         this.coreService.showWarningToast(res["error"]);
+          //       } else {
+          //         this.coreService.showWarningToast(
+          //           "Something went wrong, Please try again later"
+          //         );
+          //       }
+          //     } else {
+          //       if (res["msg"]) {
+          //         this.coreService.showSuccessToast(res.msg);
+
+          //         this.loyaltyService.applicationName = null;
+          //         this.loyaltyService.moduleName = null;
+          //         this.router.navigate([`navbar/loyalty-programs`]);
+          //       }
+          //     }
+          //   },
+          //   (err) => {
+          //     this.coreService.removeLoadingScreen();
+          //     console.log("error in saveAddNewTax", err);
+          //     this.coreService.showWarningToast(
+          //       "Something went wrong, Please try again later"
+          //     );
+          //   }
+          // );
         }
-      } else {
-        this.coreService.showWarningToast("Applied criteria already exists.");
       }
+    } else {
+      this.coreService.showWarningToast("Applied criteria already exists.");
     }
   }
 
   reset() {
     if (this.mode == "edit") {
+      this.coreService.setHeaderStickyStyle(false);
       this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
         key: "resetTaxDataConfirmation",
         accept: () => {
           this.coreService.displayLoadingScreen();
-          this.getCriteriaMasterData();
-          this.getAllTemplates();
-          this.coreService.setHeaderStickyStyle(true);
-          this.coreService.setSidebarBtnFixedStyle(true);
+          // this.getCriteriaMasterData();
+          // this.getAllTemplates();
+          this.applyCriteriaFormattedData = [];
+          this.appliedCriteriaCriteriaMap = null;
+          this.appliedCriteriaIsDuplicate = null;
+          this.programDescription = "";
+          this.programType = "";
+          this.setCriteriaSharedComponent.resetSetCriteria();
+          this.setHeaderSidebarBtn();
+          // this.coreService.setHeaderStickyStyle(true);
+          // this.coreService.setSidebarBtnFixedStyle(true);
         },
         reject: () => {
           this.confirmationService.close;
@@ -1687,6 +1796,7 @@ export class AddLoyaltyComponent implements OnInit {
         },
       });
     } else if (this.mode == "clone") {
+      this.coreService.setHeaderStickyStyle(false);
       this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
@@ -1714,14 +1824,15 @@ export class AddLoyaltyComponent implements OnInit {
           this.appliedCriteriaCriteriaMap = null;
           this.appliedCriteriaIsDuplicate = null;
           this.programDescription = "";
+          this.programType = "";
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
-          this.appCtrl.reset();
-          this.moduleCtrl.reset();
-          this.moduleCtrl.disable();
-          this.showContent = false;
-          this.appModuleDataPresent = false;
+          // this.appCtrl.reset();
+          // this.moduleCtrl.reset();
+          // this.moduleCtrl.disable();
+          // this.showContent = false;
+          // this.appModuleDataPresent = false;
         },
         reject: () => {
           this.confirmationService.close;
@@ -1776,9 +1887,22 @@ export class AddLoyaltyComponent implements OnInit {
     return this.criteriaDataService.getAppliedCriteriaTableColumns(colData);
   }
   selectedColumn(selectCol: any, value: any, index: any) {
-    console.log(selectCol, value, index);
     if (selectCol == "rewardsAs") {
       this.rewardsAs = value.codeName;
+      if (value.codeName == "Discount") {
+        this.applyCriteriaFormattedData[index]["discountAsOption"] = [];
+        this.applyCriteriaFormattedData[index]["discountAsOption"] =
+          this.discountAsOption;
+      } else {
+        this.applyCriteriaFormattedData[index]["discountAsOption"] = [];
+        this.applyCriteriaFormattedData[index]["discountAsOption"].unshift({
+          code: null,
+          codeName: "Select",
+        });
+      }
+      this.applyCriteriaFormattedData[index]["discountAs"] = null;
+    }
+    if (selectCol == "discountAs") {
     }
     if (selectCol == "loyaltyType") {
       this.loyaltyType = value.codeName;
@@ -1839,8 +1963,7 @@ export class AddLoyaltyComponent implements OnInit {
     let min = 0;
     if (this.applyCriteriaFormattedData[index][selectCol] == "Percentage") {
       max = 100;
-    }
-    if (this.applyCriteriaFormattedData[index].lcyAmount?.length) {
+    } else if (this.applyCriteriaFormattedData[index].lcyAmount?.length) {
       let lcyAmountNum =
         this.applyCriteriaFormattedData[index].lcyAmount.split(" ")[3];
       let lcyAmountOpr =
@@ -1884,12 +2007,6 @@ export class AddLoyaltyComponent implements OnInit {
       max = Number(this.applyCriteriaFormattedData[index].lcyAmountTo);
     }
 
-    if (event.value <= max) {
-      this.applyCriteriaFormattedData[index][inputCol] = event.value;
-    } else {
-      let lastValueEntered = valueInputElm.lastValue;
-      valueInputElm.input.nativeElement.value = lastValueEntered;
-    }
     let isDisplayError = false;
     if (event.value == 0) {
       isDisplayError = true;
@@ -1904,8 +2021,18 @@ export class AddLoyaltyComponent implements OnInit {
       this.coreService.showWarningToast(
         "Please enter loyalty between " + min + " to " + max
       );
+      if (event.value <= max && event.value >= min) {
+        this.applyCriteriaFormattedData[index][inputCol] = event.value;
+        this.applyCriteriaFormattedData[index]["invalidLoyaltyValue"] = false;
+      } else if (event.value > max) {
+        let lastValueEntered = valueInputElm.lastValue;
+        valueInputElm.input.nativeElement.value = lastValueEntered;
+        this.applyCriteriaFormattedData[index]["invalidLoyaltyValue"] = false;
+      } else if (event.value < min) {
+      }
       return false;
     }
+
     this.loyaltyValue = event.value;
   }
 

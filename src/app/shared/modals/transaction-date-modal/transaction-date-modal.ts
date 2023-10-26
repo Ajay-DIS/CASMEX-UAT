@@ -29,6 +29,8 @@ export class TransactionDateModal {
   isFormDataChanged = true;
   isRangeValueLessThanZero = false;
 
+  today: Date = new Date();
+
   constructor(
     private formBuilder: UntypedFormBuilder,
     private ref: DynamicDialogRef,
@@ -51,8 +53,12 @@ export class TransactionDateModal {
         this.isFormDataChanged = true;
       }
     });
-
-    if (Object.keys(this.config.data.dateRange).length) {
+    console.log(this.config.data.dateRange);
+    if (
+      Object.keys(this.config.data.dateRange).length > 1 ||
+      (Object.keys(this.config.data.dateRange).length == 1 &&
+        this.config.data.dateRange.dateRange[0].trnStartDate != null)
+    ) {
       this.config.data.dateRange.dateRange.forEach((range) => {
         console.log(range);
         this.dateRange.push(
@@ -140,11 +146,27 @@ export class TransactionDateModal {
     }
   }
   changeFrom(e: any, i: any) {
-    console.log(e, typeof e);
+    console.log(
+      e,
+      (this.dateRange.controls[i] as UntypedFormGroup)?.controls["trnEndDate"]
+    );
     if (this.dateRange.controls) {
       (this.dateRange.controls[i] as UntypedFormGroup)?.controls[
         "trnStartDate"
       ].setValue(e);
+    }
+    if (
+      !(this.dateRange.controls[i] as UntypedFormGroup)?.controls["trnEndDate"]
+        .value ||
+      (this.dateRange.controls[i] as UntypedFormGroup)?.controls["trnEndDate"]
+        .value < e
+    ) {
+      let dateVal = new Date(e);
+      dateVal.setHours(23, 59, 59);
+      console.log(dateVal);
+      (this.dateRange.controls[i] as UntypedFormGroup)?.controls[
+        "trnEndDate"
+      ].setValue(dateVal);
     }
   }
 

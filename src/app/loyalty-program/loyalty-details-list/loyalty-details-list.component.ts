@@ -65,12 +65,12 @@ export class LoyaltyDetailsListComponent implements OnInit {
     {
       field: "customerName",
       header: "Customer Name",
-      width: "22%",
+      width: "30%",
     },
-    { field: "mobileNumber", header: "Mobile Number", width: "10%" },
-    { field: "redeemDate", header: "Redeem Date", width: "26%" },
-    { field: "promotionRedeemed", header: "Promotion Redeemed", width: "10%" },
-    { field: "promotionDetails", header: "Created On", width: "22%" },
+    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
+    { field: "redeemDate", header: "Redeem Date", width: "15%" },
+    { field: "promotionRedeemed", header: "Promotion Redeemed", width: "15%" },
+    { field: "promotionDetails", header: "Promotion Details", width: "15%" },
   ];
 
   sortOrder: any = {
@@ -253,6 +253,13 @@ export class LoyaltyDetailsListComponent implements OnInit {
             // this.idNumber = res.idNumber?.map((code) => {
             //   if (code) return { label: code, value: code };
             // });
+            if (this.loyaltyListData) {
+              this.loyaltyListData.forEach((data) => {
+                data["promotionDetails"] = data["promotionDetails"]
+                  .split("#")
+                  .join("\n");
+              });
+            }
           }
         }
       },

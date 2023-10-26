@@ -23,11 +23,11 @@
   gap: 15px;
   margin-bottom: 0;
 }
-@media screen and (max-width: 575px){
+@media screen and (max-width: 575px) {
   .small {
-     padding-right: 25px !important;
-   }
- }
+    padding-right: 25px !important;
+  }
+}
 .select-module-application label {
   margin-bottom: 0;
   font-size: 14px;
@@ -40,4 +40,12 @@
   height: 35px;
   align-items: center;
   border: none !important;
+}
+
+.application-header {
+  font-weight: 500;
+}
+
+.uploadedImgModal ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+  width: 100%;
 }

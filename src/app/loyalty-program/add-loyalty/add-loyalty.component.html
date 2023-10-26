@@ -45,6 +45,7 @@
                     pButton
                     pRipple
                     type="button"
+                    [disabled]="!applyCriteriaFormattedData?.length"
                     label="Save"
                     class="p-button-raised"
                     (click)="saveAddNewTax()"
@@ -110,7 +111,7 @@
     >
       <div class="col-12">
         <div class="row d-flex">
-          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
             <div
               class="programCode"
               [pTooltip]="
@@ -130,7 +131,7 @@
               />
             </div>
           </div>
-          <div class="col-md-2 col-lg-2 col-sm-12 col-xs-12">
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
             <div class="taxCode">
               <p style="position: relative">
                 Program Type <span class="description red-star">*</span>
@@ -146,9 +147,9 @@
               ></p-dropdown>
             </div>
           </div>
-          <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+          <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
             <div class="row d-flex">
-              <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12 pr-0">
+              <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12 pr-0">
                 <div class="taxDesc">
                   <p style="position: relative">
                     Program Description
@@ -163,7 +164,7 @@
                   />
                 </div>
               </div>
-              <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 pl-0 d-flex">
+              <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5 pl-0 d-flex">
                 <div class="uploadBtn">
                   <div class="file-upload-select" (click)="inpFile.click()">
                     <button
@@ -178,14 +179,17 @@
                       type="file"
                       name="file-upload-input"
                       id="file-upload-input"
+                      accept=".svg, .png, .jpeg"
                     />
                   </div>
                 </div>
-                <div class="fileUploadLabel" *ngIf="uploadedfileData.length">
-                  <span (click)="showUploadedFilesModal()">Uploaded files</span>
+                <div class="fileUploadLabel" *ngIf="getUploadedImgData?.length">
+                  <span (click)="showUploadedFilesModal()"
+                    >Uploaded Images</span
+                  >
                 </div>
               </div>
-              <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 pl-0">
+              <!-- <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 pl-0">
                 <div class="program-checkbox">
                   <p-checkbox
                     [(ngModel)]="Emailchecked"
@@ -202,7 +206,7 @@
                   ></p-checkbox>
                   <label style="padding-left: 10px"> Send Message</label>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -218,7 +222,7 @@
             <div class="taxCode">
               <p style="color: var(--primary-color)">Promo Code Generation</p>
               <div class="row">
-                <div class="col-lg-2">
+                <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3">
                   <label for="" style="margin-right: 15px; position: relative"
                     >Promo Code Length
                     <span class="description red-star">*</span></label
@@ -236,7 +240,7 @@
                     >Length should be between 5 to 10.</span
                   >
                 </div>
-                <div class="col-lg-5">
+                <div class="col-md-5 col-lg-5 col-sm-5 col-xs-5">
                   <label for="" style="margin-right: 15px">Promo Code</label>
                   <input
                     type="text"
@@ -260,7 +264,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       *ngIf="appModuleDataPresent && showContent"
       class="d-flex m-3 tax-code-desc-section"
     >
@@ -307,7 +311,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <app-set-criteria
       *ngIf="appModuleDataPresent && showContent"
@@ -394,6 +398,9 @@
                     <div
                       *ngIf="col['fieldType'] == 'dropdown'"
                       class="appliedCriteriaSelect"
+                      [pTooltip]="
+                        rowData['rewardsAs'] != 'Discount' && col['info']
+                      "
                     >
                       <p-dropdown
                         [options]="rowData[col.field + 'Option']"
@@ -407,7 +414,11 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          (col['field'] == 'discountAs' &&
+                            rowData['rewardsAs'] != 'Discount')
+                        "
                       ></p-dropdown>
                     </div>
                     <div
@@ -497,7 +508,7 @@
   </div>
 </div>
 
-<div>
+<div class="uploadedImgModal">
   <p-dialog
     [(visible)]="showFilesModal"
     [modal]="true"
@@ -508,7 +519,7 @@
       <div class="application-header">Uploaded Files</div>
     </ng-template>
     <p-table
-      [value]="uploadedfileData"
+      [value]="getUploadedImgData"
       class="criteria-view-table"
       [rowHover]="true"
       [style]="{ width: '100%' }"

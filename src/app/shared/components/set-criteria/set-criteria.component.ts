@@ -996,14 +996,8 @@ export class SetCriteriaComponent implements OnInit {
         valueCode = "Slab";
       } else {
         if (this.selectedCriteria.criteriaType == "date") {
-          value = new Date(this.valueCtrl.value)
-            .toLocaleDateString("en-UK")
-            .split("/")
-            .join("-");
-          valueCode = new Date(this.valueCtrl.value)
-            .toLocaleDateString("en-UK")
-            .split("/")
-            .join("-");
+          value = new Date(this.valueCtrl.value).toLocaleString("en-GB");
+          valueCode = new Date(this.valueCtrl.value).toLocaleString("en-GB");
         } else {
           value = this.valueCtrl.value;
           valueCode = this.valueCtrl.value;
@@ -2322,8 +2316,8 @@ export class SetCriteriaComponent implements OnInit {
               rng[1] =
                 typeof rng[1] == "string"
                   ? rng[1]
-                  : (rng[1] as Date).toLocaleDateString("en-GB");
-              rngArr.push(rng.join(":"));
+                  : (rng[1] as Date).toLocaleString("en-GB");
+              rngArr.push(rng.join("="));
             });
             dateArr.push(rngArr.join("::"));
           });
@@ -2380,8 +2374,8 @@ export class SetCriteriaComponent implements OnInit {
             rng[1] =
               typeof rng[1] == "string"
                 ? rng[1]
-                : (rng[1] as Date).toLocaleDateString("en-GB");
-            rngArr.push(rng.join(":"));
+                : (rng[1] as Date).toLocaleString("en-GB");
+            rngArr.push(rng.join("="));
           });
           dateArr.push(rngArr.join("::"));
         });
@@ -2626,8 +2620,8 @@ export class SetCriteriaComponent implements OnInit {
             rng[1] =
               typeof rng[1] == "string"
                 ? rng[1]
-                : (rng[1] as Date).toLocaleDateString("en-GB");
-            rngArr.push(rng.join(":"));
+                : (rng[1] as Date).toLocaleString("en-GB");
+            rngArr.push(rng.join("="));
           });
           dateArr.push(rngArr.join("::"));
         });
@@ -2644,7 +2638,6 @@ export class SetCriteriaComponent implements OnInit {
       formData.append("criteriaMap", criteriaMap);
 
       formData.append("lcySlab", this.lcySlab);
-
       this.saveCriteriaAsTemplate.emit(formData);
     }
   }

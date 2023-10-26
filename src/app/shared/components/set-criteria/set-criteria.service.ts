@@ -52,11 +52,21 @@ export class SetCriteriaService {
     let dateForm = {};
     let dateArr = [];
     mapSplit.split("#").forEach((rngTxt) => {
-      let fromVal = rngTxt.split("::")[0].split(":")[1];
-      let toVal = rngTxt.split("::")[1].split(":")[1];
+      let fromVal = rngTxt.split("::")[0].split("=")[1];
+      let toVal = rngTxt.split("::")[1].split("=")[1];
       dateArr.push({
-        trnStartDate: fromVal,
-        trnEndDate: toVal,
+        trnStartDate: new Date(
+          fromVal.replace(
+            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/,
+            "$3-$2-$1T$4"
+          )
+        ),
+        trnEndDate: new Date(
+          toVal.replace(
+            /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}:\d{2}:\d{2})/,
+            "$3-$2-$1T$4"
+          )
+        ),
       });
     });
     dateForm = {
@@ -91,17 +101,19 @@ export class SetCriteriaService {
             this.getlcyForm(criteriaMapSecSplit)
           );
 
-          criteriaMapFirstSplit += `;${
-            slabTypeName ? slabTypeName : "Amount"
-          } = Slab`;
+          criteriaMapFirstSplit = criteriaMapFirstSplit.length
+            ? criteriaMapFirstSplit +
+              `;${slabTypeName ? slabTypeName : "Amount"} = Slab`
+            : `${slabTypeName ? slabTypeName : "Amount"} = Slab`;
         }
 
-        if (criteriaMapThirdSplit.includes("trnStartDate:")) {
+        if (criteriaMapThirdSplit.includes("trnStartDate=")) {
           this.setDateRange(this.getdateForm(criteriaMapThirdSplit));
 
-          criteriaMapFirstSplit += `;${
-            dateTypeName ? dateTypeName : "Date"
-          } = Slab`;
+          criteriaMapFirstSplit = criteriaMapFirstSplit.length
+            ? criteriaMapFirstSplit +
+              `;${dateTypeName ? dateTypeName : "Date"} = Slab`
+            : `${dateTypeName ? dateTypeName : "Date"} = Slab`;
         }
       } else if (criteriaData["criteriaMap"].split("&&&&").length == 2) {
         criteriaMapFirstSplit = criteriaData["criteriaMap"].split("&&&&")[0];
@@ -112,15 +124,17 @@ export class SetCriteriaService {
             this.getlcyForm(criteriaMapSecSplit)
           );
 
-          criteriaMapFirstSplit += `;${
-            slabTypeName ? slabTypeName : "Amount"
-          } = Slab`;
-        } else if (criteriaMapSecSplit.includes("trnStartDate:")) {
+          criteriaMapFirstSplit = criteriaMapFirstSplit.length
+            ? criteriaMapFirstSplit +
+              `;${slabTypeName ? slabTypeName : "Amount"} = Slab`
+            : `${slabTypeName ? slabTypeName : "Amount"} = Slab`;
+        } else if (criteriaMapSecSplit.includes("trnStartDate=")) {
           this.setDateRange(this.getdateForm(criteriaMapSecSplit));
 
-          criteriaMapFirstSplit += `;${
-            dateTypeName ? dateTypeName : "Date"
-          } = Slab`;
+          criteriaMapFirstSplit = criteriaMapFirstSplit.length
+            ? criteriaMapFirstSplit +
+              `;${dateTypeName ? dateTypeName : "Date"} = Slab`
+            : `${dateTypeName ? dateTypeName : "Date"} = Slab`;
         }
       }
     } else {
