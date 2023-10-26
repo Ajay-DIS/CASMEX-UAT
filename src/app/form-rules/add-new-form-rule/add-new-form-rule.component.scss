@@ -147,11 +147,11 @@ input.inputError {
 
 .select-module-application {
   display: flex;
-  gap: 10px;
+  // gap: 10px;
 }
 .select-module-application .field {
   align-items: center;
-  gap: 15px;
+  // gap: 15px;
   margin-bottom: 0;
 }
 
@@ -163,7 +163,7 @@ input.inputError {
   width: 100%;
 }
 .select-module-application::ng-deep .p-dropdown {
-  width: 95%;
+  width: 90%;
   height: 35px;
   align-items: center;
   border: none !important;
