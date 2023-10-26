@@ -156,6 +156,12 @@ export class DocumentDetailsComponent implements OnInit {
       info: null,
     },
     {
+      field: "isActive",
+      header: "Status",
+      frozen: false,
+      info: null,
+    },
+    {
       field: "action",
       header: "Action",
 
@@ -908,6 +914,7 @@ export class DocumentDetailsComponent implements OnInit {
     };
     clonedRow[fieldName] = "clone,delete";
     clonedRow["linked"] = "N";
+    clonedRow["isActive"] = "Y";
     clonedRow["isDefault"] = false;
     this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
@@ -1292,7 +1299,25 @@ export class DocumentDetailsComponent implements OnInit {
       let invalidLength = false;
       let docMissing = false;
       let primaryDocNos = 0;
-      this.applyCriteriaFormattedData.forEach((element) => {
+
+      this.applyCriteriaFormattedData.forEach((data) => {
+        if (data["isActive"] == "N") {
+          data["documentDesc"] = this.documentDesc
+            ? this.documentDesc.replace(/\s/g, "").length
+              ? this.documentDesc
+              : null
+            : null;
+          // if (data["tax"] == "null" || data["tax"] == null) {
+          //   data["tax"] = "";
+
+          // }
+        }
+      });
+
+      let activeData = this.applyCriteriaFormattedData.filter(
+        (d) => d["isActive"] == "Y"
+      );
+      activeData.forEach((element) => {
         if (element["isDefault"]) {
           primaryDocNos++;
         }
@@ -1310,7 +1335,7 @@ export class DocumentDetailsComponent implements OnInit {
             ? this.documentDesc
             : null
           : null;
-        if (!element["documentDesc"]) {
+        if (!element["documentDesc"] || element["documentDesc"] == "null") {
           isRequiredFields = true;
         }
         if (!element["document"]) {
@@ -1413,6 +1438,9 @@ export class DocumentDetailsComponent implements OnInit {
     let amtSlabPresent = false;
     let dateSlabPresent = false;
 
+    let activeData = this.applyCriteriaFormattedData.filter(
+      (d) => d["isActive"] == "Y"
+    );
     if (currCritMap.indexOf("from:") >= 0) {
       amtSlabPresent = true;
     }
@@ -1424,7 +1452,7 @@ export class DocumentDetailsComponent implements OnInit {
     if (amtSlabPresent || dateSlabPresent) {
       let docTypeObj = {};
       if (amtSlabPresent && dateSlabPresent) {
-        this.applyCriteriaFormattedData.forEach((dataD) => {
+        activeData.forEach((dataD) => {
           if (
             docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`] &&
             docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`].length
@@ -1440,7 +1468,7 @@ export class DocumentDetailsComponent implements OnInit {
         });
       } else {
         if (amtSlabPresent) {
-          this.applyCriteriaFormattedData.forEach((data) => {
+          activeData.forEach((data) => {
             if (
               docTypeObj[data["lcyAmountFrom"]] &&
               docTypeObj[data["lcyAmountFrom"]].length
@@ -1451,7 +1479,7 @@ export class DocumentDetailsComponent implements OnInit {
             }
           });
         } else if (dateSlabPresent) {
-          this.applyCriteriaFormattedData.forEach((data) => {
+          activeData.forEach((data) => {
             if (
               docTypeObj[data["dateFrom"]] &&
               docTypeObj[data["dateFrom"]].length
@@ -1474,7 +1502,7 @@ export class DocumentDetailsComponent implements OnInit {
         }
       });
     } else {
-      let docTypeArr = this.applyCriteriaFormattedData.map((data) => {
+      let docTypeArr = activeData.map((data) => {
         return data["document"];
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
@@ -1513,6 +1541,41 @@ export class DocumentDetailsComponent implements OnInit {
   //     )[0]["code"];
   //   });
   // }
+
+  confirmStatus(e: any, data: any) {
+    e.preventDefault();
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Y";
+      type = "activate";
+    } else {
+      reqStatus = "N";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Document Record?`;
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        data["isActive"] = reqStatus;
+        this.setHeaderSidebarBtn();
+        console.log("accepting", reqStatus);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+        console.log("reject");
+      },
+    });
+  }
 
   setHeaderSidebarBtn() {
     this.coreService.displayLoadingScreen();

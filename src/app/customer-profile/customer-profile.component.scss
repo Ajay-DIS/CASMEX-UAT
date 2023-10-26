@@ -5,9 +5,9 @@
 :host ::ng-deep .p-dropdown {
   font-size: 14px;
 }
-// :host ::ng-deep .p-calendar {
-//   width: 448px;
-// }
+:host ::ng-deep .p-calendar {
+  width: 100%;
+}
 
 :host ::ng-deep .p-inputtext:enabled:hover {
   border-color: #2455cf;
@@ -91,7 +91,7 @@
   border-top-left-radius: initial;
   border-bottom-left-radius: initial;
   border: solid 1px#a2a2a2;
-  height: 33px;
+  height: 33.5px;
 }
 // :host ::ng-deep p-element p-inputwrapper .searchBox .p-inputtext {
 //   width: 48%;
@@ -107,21 +107,35 @@
   width: 100% !important;
 }
 .p-input-icon-right {
-  width: 61% !important;
+  width: 63% !important;
 }
+
 .btnround{
   border-radius: 50% !important;
   height: 26px !important;
   width: 26px !important;
+}
+.searchInBtn{
+  margin-right: -100px;
 }
 @media screen and (max-width: 660px) {
   .p-input-icon-right {
     width: 48% !important;
   }
 }
-@media screen and (max-width: 1502px) and (min-width: 1329px) {
+@media screen and (max-width: 1502px) and (min-width: 1381px) {
   .p-input-icon-right {
-    width: 54% !important;
+    width: 58% !important;
+  }
+}
+@media screen and (max-width: 1750px) and (min-width: 1550pxpx) {
+  .p-input-icon-right {
+    width: 65% !important;
+  }
+}
+@media screen and (max-width: 1380px) and (min-width: 1329px) {
+  .p-input-icon-right {
+    width: 56% !important;
   }
 }
 @media screen and (max-width: 1328px) and (min-width: 1201px) {
@@ -129,21 +143,61 @@
     width: 46% !important;
   }
 }
-@media screen and (max-width: 1200px) and (min-width: 901px) {
-  :host ::ng-deep .primarydropdown .p-dropdown {
-    width: 80px;
-  }
-
-  .p-input-icon-right {
-    width: 48% !important;
+@media screen and (max-width: 1200px) and (min-width: 790px) {
+  .searchInBtn{
+    margin-right: 0px;
   }
 }
-@media (min-device-width: 769px) and (max-device-width: 900px) {
+// @media screen and (max-width: 1249px) and (min-width: 1200px) {
+//   .p-input-icon-right i{
+//     position: absolute;
+//     top: 25% !important;
+//   }
+// }
+@media screen and (max-width: 785px) and (min-width: 768px) {
+  .p-input-icon-right i{
+    position: absolute;
+    top: 25% !important;
+  }
+}
+// @media screen and (max-width: 543px) and (min-width: 435px) {
+//   .p-input-icon-right i{
+//     position: absolute;
+//     top: 25% !important;
+//   }
+// }
+// @media screen and (max-width: 575px) and (min-width: 545px) {
+//   .p-input-icon-right i{
+//     position: absolute;
+//     top: 25% !important;
+//   }
+// }
+@media screen and (max-width: 1200px) and (min-width: 885px) {
+  // :host ::ng-deep .primarydropdown .p-dropdown {
+  //   width: 80px;
+  // }
+
   .p-input-icon-right {
-    width: 35% !important;
+    width: 60% !important;
+  }
+}
+@media (min-device-width: 801px) and (max-device-width: 900px) {
+  .p-input-icon-right {
+    width: 60% !important;
   }
   :host ::ng-deep .primarydropdown .p-dropdown {
-    width: 80px;
+    width: 100px;
+  }
+}
+@media (min-device-width: 768px) and (max-device-width: 800px) {
+  .p-input-icon-right {
+    width: 56% !important;
+  }
+  :host ::ng-deep .primarydropdown .p-dropdown {
+    width: 100px;
+  }
+  .searchInBtn{
+    margin-right: 0px;
   }
 }
 // @media screen and (min-width: 1478px) {

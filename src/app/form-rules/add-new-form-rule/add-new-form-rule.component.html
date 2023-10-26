@@ -81,7 +81,7 @@
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
         <div class="row">
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12"
               for="application"
@@ -97,7 +97,7 @@
               (onChange)="onAppValueChange()"
             ></p-dropdown>
           </div>
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0 pl-0">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 small"
               for="module"
@@ -113,7 +113,7 @@
               (onChange)="onModValueChange()"
             ></p-dropdown>
           </div>
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4 pl-0">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 smallForm"
               for="form"
@@ -344,6 +344,7 @@
                             defValueInp
                           )
                         "
+                        [disabled]="rowData['fieldType'] == 'date'"
                         [pTooltip]="
                           col.type == 'input' &&
                           col.field == 'validLength' &&
@@ -356,7 +357,7 @@
                       <input
                         #defValueInp
                         *ngIf="
-                          col.type == 'input' && col.field == 'defaultValue'
+                          col.type == 'input' && col.field == 'defaultValue' 
                         "
                         type="text"
                         [(ngModel)]="rowData[col.field]"

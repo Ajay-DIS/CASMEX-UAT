@@ -194,6 +194,50 @@ export class FormRuleListingComponent implements OnInit {
             if (formRuleListingData["data"]) {
               this.formruleListingApiData = formRuleListingData;
               this.formruleListingApiData.data.forEach((rule) => {
+                const sections = rule.criteriaMap.split("&&&&");
+                let criteria = {};
+                let amounts = "";
+                let dates = "";
+                let afterSplit = "";
+
+                // Process each section
+                sections.forEach((section) => {
+                  if (section.includes("from") && section.includes("to")) {
+                    const amountsArray = section
+                      .split("#")
+                      .map((amountSection) => {
+                        const [from, to] = amountSection
+                          .split("::")
+                          .map((part) => part.split(":")[1]);
+                        return `Between ${from}-${to}`;
+                      });
+                    amounts = amountsArray.join(" & ");
+                  } else if (
+                    section.startsWith("trnStartDate") &&
+                    section.includes("trnEndDate")
+                  ) {
+                    // Extract the dates
+                    const dateSections = section
+                      .split("#")
+                      .map((dateSection) => {
+                        const [startDate, endDate] = dateSection
+                          .split("::")
+                          .map((part) => part.split(":")[1]);
+                        return `Between ${startDate}-${endDate}`;
+                      });
+                    dates = dateSections.join(" & ");
+                  }
+                });
+
+                if (amounts.length && dates.length) {
+                  afterSplit += `Amount (${amounts}), Date (${dates})`;
+                } else if (amounts.length) {
+                  afterSplit += `Amount (${amounts})`;
+                } else if (dates.length) {
+                  afterSplit += `Date (${dates})`;
+                }
+                console.log("555", afterSplit);
+
                 let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
                   criteriaMap: rule.criteriaMap.split("&&&&")[0],
                 });
@@ -206,6 +250,10 @@ export class FormRuleListingComponent implements OnInit {
                 ).join(", ");
 
                 rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
+
+                if (afterSplit?.length) {
+                  rule.criteriaMap = rule.criteriaMap + ", " + afterSplit;
+                }
               });
               this.formRuleData = [...this.formruleListingApiData.data];
               this.showNoDataFound = false;

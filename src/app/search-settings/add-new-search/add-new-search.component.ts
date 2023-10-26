@@ -690,10 +690,10 @@ export class AddNewSearchComponent implements OnInit {
     this.searchSettingtable = [];
     this.selectFields = [];
     this.selectedFields = [];
-    this.appCtrl.reset();
-    this.formCtrl.reset();
-    this.moduleCtrl.reset();
-    this.formCtrl.disable();
-    this.moduleCtrl.disable();
+    // this.appCtrl.reset();
+    // this.formCtrl.reset();
+    // this.moduleCtrl.reset();
+    // this.formCtrl.disable();
+    // this.moduleCtrl.disable();
   }
 }
