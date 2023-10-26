@@ -378,22 +378,22 @@ export class DocumentDetailsComponent implements OnInit {
             }
 
             if (amtSlabPresent && dateSlabPresent) {
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "dateFrom",
                 header: "Date From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "dateTo",
                 header: "Date To",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "lcyAmountFrom",
                 header: "Amount From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "lcyAmountTo",
                 header: "Amount To",
                 fieldType: "text",
@@ -402,24 +402,24 @@ export class DocumentDetailsComponent implements OnInit {
               this.applyCriteriaFormattedData = [];
             } else {
               if (amtSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
                 });
                 this.applyCriteriaFormattedData = [];
               } else if (dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
@@ -494,7 +494,7 @@ export class DocumentDetailsComponent implements OnInit {
             //   this.applyCriteriaFormattedData = res["data"];
             // } else {
             //   if (res["criteriaMap"].indexOf("LCY Amount") >= 0) {
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmount",
             //       header: "LCY Amount",
             //       fieldType: "text",
@@ -510,12 +510,12 @@ export class DocumentDetailsComponent implements OnInit {
             //         : split;
             //     });
             //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmountFrom",
             //       header: "Amount From",
             //       fieldType: "text",
             //     });
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmountTo",
             //       header: "Amount To",
             //       fieldType: "text",
@@ -640,22 +640,22 @@ export class DocumentDetailsComponent implements OnInit {
             }
 
             if (amtSlabPresent && dateSlabPresent) {
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "dateFrom",
                 header: "Date From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "dateTo",
                 header: "Date To",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "lcyAmountFrom",
                 header: "Amount From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-12, 0, {
+              this.applyCriteriaDataTableColumns.splice(-13, 0, {
                 field: "lcyAmountTo",
                 header: "Amount To",
                 fieldType: "text",
@@ -687,12 +687,12 @@ export class DocumentDetailsComponent implements OnInit {
             } else {
               if (amtSlabPresent) {
                 let lcySlabFields = reqData.lcySlabArr;
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -711,12 +711,12 @@ export class DocumentDetailsComponent implements OnInit {
                 });
               } else if (dateSlabPresent) {
                 let dateSlabFields = reqData.dateSlabArr;
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-12, 0, {
+                this.applyCriteriaDataTableColumns.splice(-13, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
@@ -774,7 +774,7 @@ export class DocumentDetailsComponent implements OnInit {
             //     let lcyOprFields = crtfields.filter((crt) => {
             //       return crt.includes("LCY Amount");
             //     });
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmount",
             //       header: "LCY Amount",
             //       fieldType: "text",
@@ -790,12 +790,12 @@ export class DocumentDetailsComponent implements OnInit {
             //     });
             //   } else if (res["criteriaMap"].indexOf("from") >= 0) {
             //     let lcySlabFields = reqData.lcySlabArr;
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmountFrom",
             //       header: "Amount From",
             //       fieldType: "text",
             //     });
-            //     this.applyCriteriaDataTableColumns.splice(-12, 0, {
+            //     this.applyCriteriaDataTableColumns.splice(-13, 0, {
             //       field: "lcyAmountTo",
             //       header: "Amount To",
             //       fieldType: "text",

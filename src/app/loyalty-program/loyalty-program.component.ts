@@ -263,11 +263,12 @@ export class LoyaltyProgramComponent implements OnInit {
                   section.includes("trnEndDate")
                 ) {
                   // Extract the dates
+                  console.log(section);
                   const dateSections = section.split("#").map((dateSection) => {
                     const [startDate, endDate] = dateSection
                       .split("::")
-                      .map((part) => part.split(":")[1]);
-                    return `Between ${startDate}-${endDate}`;
+                      .map((part) => part.split("=")[1]);
+                    return `Between ${startDate} - ${endDate}`;
                   });
                   dates = dateSections.join(" & ");
                 }
@@ -294,7 +295,9 @@ export class LoyaltyProgramComponent implements OnInit {
               ).join(", ");
               if (afterSplit?.length) {
                 tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+                console.log(tax.criteriaMap, afterSplit);
               }
+              // tax.criteriaMap = "HELLO";
             });
             this.loyaltyListData = [...this.loyaltyApiData.data];
             this.showNoDataFound = false;
@@ -324,16 +327,6 @@ export class LoyaltyProgramComponent implements OnInit {
             });
 
             this.loyaltyListData.forEach((data) => {
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: data.criteriaMap.split("&&&&")[0],
-              });
-              let primaryCrit = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
               // %
               let amtSlabPresent = false;
               let dateSlabPresent = false;
@@ -348,31 +341,20 @@ export class LoyaltyProgramComponent implements OnInit {
               let dateSlabs = null;
               if (amtSlabPresent && dateSlabPresent) {
                 dateSlabs = data["criteriaMap"].split("&&&&")[2];
-                data.criteriaMap =
-                  primaryCrit +
-                  "&&&&" +
-                  data["criteriaMap"].split("&&&&")[1] +
-                  "&&&&" +
-                  data["criteriaMap"].split("&&&&")[2];
               } else {
                 if (amtSlabPresent) {
-                  data.criteriaMap =
-                    primaryCrit + "&&&&" + data["criteriaMap"].split("&&&&")[1];
                 } else if (dateSlabPresent) {
-                  data.criteriaMap =
-                    primaryCrit + "&&&&" + data["criteriaMap"].split("&&&&")[1];
                   dateSlabs = data["criteriaMap"].split("&&&&")[1];
                 } else if (!amtSlabPresent && !dateSlabPresent) {
-                  data.criteriaMap = primaryCrit;
                 }
               }
               data["expiryOn"] = dateSlabs
-                ? dateSlabs.split("trnEndDate:").pop()
+                ? dateSlabs.split("trnEndDate=").pop()
                 : "-";
               data["isExpired"] = dateSlabs
                 ? new Date(
                     dateSlabs
-                      .split("trnEndDate:")
+                      .split("trnEndDate=")
                       .pop()
                       .split(", ")[0]
                       .split("/")

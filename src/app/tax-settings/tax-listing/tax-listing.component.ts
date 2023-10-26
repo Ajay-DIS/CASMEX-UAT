@@ -31,8 +31,8 @@ export class TaxListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "taxCode", header: "Tax Code", width: "10%" },
-    { field: "taxCodeDesc", header: "Tax Description", width: "20%" },
-    { field: "criteriaMap", header: "Criteria", width: "55%" },
+    { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
+    { field: "criteriaMap", header: "Criteria", width: "50%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Operations", width: "8%" },
   ];
@@ -189,7 +189,7 @@ export class TaxListingComponent implements OnInit {
                       const [from, to] = amountSection
                         .split("::")
                         .map((part) => part.split(":")[1]);
-                      return `Between ${from}-${to}`;
+                      return `Between ${from} - ${to}`;
                     });
                   amounts = amountsArray.join(" & ");
                 } else if (
@@ -200,8 +200,8 @@ export class TaxListingComponent implements OnInit {
                   const dateSections = section.split("#").map((dateSection) => {
                     const [startDate, endDate] = dateSection
                       .split("::")
-                      .map((part) => part.split(":")[1]);
-                    return `Between ${startDate}-${endDate}`;
+                      .map((part) => part.split("=")[1]);
+                    return `Between ${startDate} - ${endDate}`;
                   });
                   dates = dateSections.join(" & ");
                 }

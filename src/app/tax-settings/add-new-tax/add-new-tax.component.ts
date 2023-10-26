@@ -325,22 +325,22 @@ export class AddNewTaxComponent implements OnInit {
               }
 
               if (amtSlabPresent && dateSlabPresent) {
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -349,24 +349,24 @@ export class AddNewTaxComponent implements OnInit {
                 this.applyCriteriaFormattedData = [];
               } else {
                 if (amtSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountFrom",
                     header: "Amount From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "lcyAmountTo",
                     header: "Amount To",
                     fieldType: "text",
                   });
                   this.applyCriteriaFormattedData = [];
                 } else if (dateSlabPresent) {
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateFrom",
                     header: "Date From",
                     fieldType: "text",
                   });
-                  this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                  this.applyCriteriaDataTableColumns.splice(-4, 0, {
                     field: "dateTo",
                     header: "Date To",
                     fieldType: "text",
@@ -822,22 +822,22 @@ export class AddNewTaxComponent implements OnInit {
             }
 
             if (amtSlabPresent && dateSlabPresent) {
-              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              this.applyCriteriaDataTableColumns.splice(-4, 0, {
                 field: "dateFrom",
                 header: "Date From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              this.applyCriteriaDataTableColumns.splice(-4, 0, {
                 field: "dateTo",
                 header: "Date To",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              this.applyCriteriaDataTableColumns.splice(-4, 0, {
                 field: "lcyAmountFrom",
                 header: "Amount From",
                 fieldType: "text",
               });
-              this.applyCriteriaDataTableColumns.splice(-3, 0, {
+              this.applyCriteriaDataTableColumns.splice(-4, 0, {
                 field: "lcyAmountTo",
                 header: "Amount To",
                 fieldType: "text",
@@ -869,12 +869,12 @@ export class AddNewTaxComponent implements OnInit {
             } else {
               if (amtSlabPresent) {
                 let lcySlabFields = reqData.lcySlabArr;
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountFrom",
                   header: "Amount From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "lcyAmountTo",
                   header: "Amount To",
                   fieldType: "text",
@@ -893,12 +893,12 @@ export class AddNewTaxComponent implements OnInit {
                 });
               } else if (dateSlabPresent) {
                 let dateSlabFields = reqData.dateSlabArr;
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateFrom",
                   header: "Date From",
                   fieldType: "text",
                 });
-                this.applyCriteriaDataTableColumns.splice(-3, 0, {
+                this.applyCriteriaDataTableColumns.splice(-4, 0, {
                   field: "dateTo",
                   header: "Date To",
                   fieldType: "text",

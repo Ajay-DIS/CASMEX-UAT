@@ -18,45 +18,51 @@
   <div class="app-form-search">
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
-      <div class="row">
-      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
-        <label class="detail-page-section-heading col-sm-3 col-xs-12" for="application"
-          >Application</label
-        >
-        <p-dropdown
-          name="application"
-          inputId="application"
-          [options]="searchApplicationOptions"
-          placeholder="Select"
-          optionLabel="name"
-          formControlName="applications"
-        ></p-dropdown>
-      </div>
-      <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
-        <label class="detail-page-section-heading small col-sm-3 col-xs-12" for="module">Module</label>
-        <p-dropdown
-          name="module"
-          inputId="module"
-          [options]="searchModuleOptions"
-          placeholder="Select"
-          optionLabel="name"
-          formControlName="modules"
-        ></p-dropdown>
-      </div>
+        <div class="row">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+            <label
+              class="detail-page-section-heading col-sm-3 col-xs-12"
+              for="application"
+              >Application</label
+            >
+            <p-dropdown
+              name="application"
+              inputId="application"
+              [options]="searchApplicationOptions"
+              placeholder="Select"
+              optionLabel="name"
+              formControlName="applications"
+            ></p-dropdown>
+          </div>
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+            <label
+              class="detail-page-section-heading small col-sm-3 col-xs-12"
+              for="module"
+              >Module</label
+            >
+            <p-dropdown
+              name="module"
+              inputId="module"
+              [options]="searchModuleOptions"
+              placeholder="Select"
+              optionLabel="name"
+              formControlName="modules"
+            ></p-dropdown>
+          </div>
           <div class="addnew field col-md-2 col-lg-2 col-sm-4 col-xs-4 md-2">
             <button
-             pButton
-          pRipple
-          type="button"
-          (click)="searchAppModule()"
-          label="Apply"
-          class="p-button-raised"
-          [disabled]="selectAppModule.invalid"
+              pButton
+              pRipple
+              type="button"
+              (click)="searchAppModule()"
+              label="Apply"
+              class="p-button-raised"
+              [disabled]="selectAppModule.invalid"
             ></button>
           </div>
+        </div>
       </div>
     </div>
-  </div>
   </div>
   <div class="ptable" *ngIf="docListingData.length">
     <p-table
@@ -165,30 +171,27 @@
               <span
                 *ngIf="i == 1"
                 [pTooltip]="
-                  rowData[col['field']] &&
-                  rowData[col['field']].substring(
-                    31,
-                    rowData[col['field']].length
-                  )
+                  rowData[col['field']].length > 30 ? rowData[col['field']] : ''
                 "
                 tooltipPosition="bottom"
-                >{{
-                  rowData[col["field"]] &&
-                    rowData[col["field"]].substring(0, 30)
-                }}
+              >
                 {{
-                  rowData[col["field"]] && rowData[col["field"]].length > 30
-                    ? ".."
-                    : ""
+                  rowData[col["field"]].length > 30
+                    ? rowData[col["field"]].substring(0, 30) + ".."
+                    : rowData[col["field"]]
                 }}</span
               >
               <span
                 *ngIf="i == 2"
-                [pTooltip]="rowData[col['field']].split(',').slice(4).join()"
+                [pTooltip]="
+                  rowData[col['field']].length > 80 ? rowData[col['field']] : ''
+                "
                 tooltipPosition="bottom"
-                >{{ rowData[col["field"]].split(",").slice(0, 4).join() }}
+              >
                 {{
-                  rowData[col["field"]].split(",").length > 4 ? ".." : ""
+                  rowData[col["field"]].length > 80
+                    ? rowData[col["field"]].substring(0, 80) + ".."
+                    : rowData[col["field"]]
                 }}</span
               >
             </td>

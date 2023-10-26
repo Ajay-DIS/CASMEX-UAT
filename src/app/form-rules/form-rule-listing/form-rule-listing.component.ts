@@ -209,7 +209,7 @@ export class FormRuleListingComponent implements OnInit {
                         const [from, to] = amountSection
                           .split("::")
                           .map((part) => part.split(":")[1]);
-                        return `Between ${from}-${to}`;
+                        return `Between ${from} - ${to}`;
                       });
                     amounts = amountsArray.join(" & ");
                   } else if (
@@ -222,8 +222,8 @@ export class FormRuleListingComponent implements OnInit {
                       .map((dateSection) => {
                         const [startDate, endDate] = dateSection
                           .split("::")
-                          .map((part) => part.split(":")[1]);
-                        return `Between ${startDate}-${endDate}`;
+                          .map((part) => part.split("=")[1]);
+                        return `Between ${startDate} - ${endDate}`;
                       });
                     dates = dateSections.join(" & ");
                   }
