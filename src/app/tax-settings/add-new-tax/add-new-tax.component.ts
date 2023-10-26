@@ -91,6 +91,12 @@ export class AddNewTaxComponent implements OnInit {
       info: null,
     },
     {
+      field: "isActive",
+      header: "Status",
+      frozen: false,
+      info: null,
+    },
+    {
       field: "action",
       header: "Action",
 
@@ -1123,7 +1129,23 @@ export class AddNewTaxComponent implements OnInit {
       // let taxTypeMissing = false;
       let setAsMissing = false;
       let taxMissing = false;
-      this.applyCriteriaFormattedData.forEach((element) => {
+      this.applyCriteriaFormattedData.forEach((data) => {
+        if (data["isActive"] == "N") {
+          data["taxCodeDesc"] = this.taxDescription
+            ? this.taxDescription.replace(/\s/g, "").length
+              ? this.taxDescription
+              : null
+            : null;
+          if (data["tax"] == "null" || data["tax"] == null) {
+            data["tax"] = "";
+          }
+        }
+      });
+      let activeData = this.applyCriteriaFormattedData.filter(
+        (d) => d["isActive"] == "Y"
+      );
+
+      activeData.forEach((element) => {
         console.log(element);
 
         if (element["invalidTaxAmount"]) {
@@ -1140,7 +1162,7 @@ export class AddNewTaxComponent implements OnInit {
         // if (!element["taxType"]) {
         //   taxTypeMissing = true;
         // }
-        if (!element["setAs"]) {
+        if (!element["setAs"] || element["setAs"] == "null") {
           setAsMissing = true;
         }
         if (!element["tax"] && element["tax"] != "0") {
@@ -1248,6 +1270,10 @@ export class AddNewTaxComponent implements OnInit {
     let amtSlabPresent = false;
     let dateSlabPresent = false;
 
+    let activeData = this.applyCriteriaFormattedData.filter(
+      (d) => d["isActive"] == "Y"
+    );
+
     if (currCritMap.indexOf("from:") >= 0) {
       amtSlabPresent = true;
     }
@@ -1259,7 +1285,7 @@ export class AddNewTaxComponent implements OnInit {
     if (amtSlabPresent || dateSlabPresent) {
       let docTypeObj = {};
       if (amtSlabPresent && dateSlabPresent) {
-        this.applyCriteriaFormattedData.forEach((dataD) => {
+        activeData.forEach((dataD) => {
           if (
             docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`] &&
             docTypeObj[`${dataD["dateFrom"]}_${dataD["lcyAmountFrom"]}`].length
@@ -1275,7 +1301,7 @@ export class AddNewTaxComponent implements OnInit {
         });
       } else {
         if (amtSlabPresent) {
-          this.applyCriteriaFormattedData.forEach((data) => {
+          activeData.forEach((data) => {
             if (
               docTypeObj[data["lcyAmountFrom"]] &&
               docTypeObj[data["lcyAmountFrom"]].length
@@ -1286,7 +1312,7 @@ export class AddNewTaxComponent implements OnInit {
             }
           });
         } else if (dateSlabPresent) {
-          this.applyCriteriaFormattedData.forEach((data) => {
+          activeData.forEach((data) => {
             if (
               docTypeObj[data["dateFrom"]] &&
               docTypeObj[data["dateFrom"]].length
@@ -1309,7 +1335,7 @@ export class AddNewTaxComponent implements OnInit {
         }
       });
     } else {
-      let docTypeArr = this.applyCriteriaFormattedData.map((data) => {
+      let docTypeArr = activeData.map((data) => {
         return data["setAs"];
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
@@ -1388,6 +1414,41 @@ export class AddNewTaxComponent implements OnInit {
         },
       });
     }
+  }
+
+  confirmStatus(e: any, data: any) {
+    e.preventDefault();
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Y";
+      type = "activate";
+    } else {
+      reqStatus = "N";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Tax Record?`;
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        data["isActive"] = reqStatus;
+        this.setHeaderSidebarBtn();
+        console.log("accepting", reqStatus);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+        console.log("reject");
+      },
+    });
   }
 
   setHeaderSidebarBtn() {
@@ -1573,6 +1634,7 @@ export class AddNewTaxComponent implements OnInit {
     };
     clonedRow[fieldName] = "clone,delete";
     clonedRow["linked"] = "N";
+    clonedRow["isActive"] = "Y";
     this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {

@@ -551,7 +551,7 @@ export class CustomerProfileComponent implements OnInit {
       this.globalSearch = true;
       this.showTable = false;
       this.getCustomerListData(this.criteriaMap);
-      // this.currentCriteriaValue = null;
+      this.currentCriteriaValue = null;
       // this.customerFieldType = null;
       // this.currentCriteriaKey = "Customer ID = ";
       // this.currentCriteriaMapKey = "customerId = ";

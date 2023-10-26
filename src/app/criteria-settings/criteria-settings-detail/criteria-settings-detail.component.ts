@@ -713,10 +713,10 @@ export class CriteriaSettingsDetailComponent implements OnInit {
     this.criteriaSettingtable = [];
     this.selectFields = [];
     this.selectedFields = [];
-    this.appCtrl.reset();
-    this.formCtrl.reset();
-    this.formCtrl.disable();
-    this.moduleCtrl.reset();
-    this.moduleCtrl.disable();
+    // this.appCtrl.reset();
+    // this.formCtrl.reset();
+    // this.formCtrl.disable();
+    // this.moduleCtrl.reset();
+    // this.moduleCtrl.disable();
   }
 }

@@ -92,6 +92,12 @@ export class AddnewrouteComponent2 implements OnInit {
       frozen: false,
       info: null,
     },
+    {
+      field: "isActive",
+      header: "Status",
+      frozen: false,
+      info: null,
+    },
   ];
   applyCriteriaFormattedData: any[] = [];
 
@@ -1245,7 +1251,26 @@ export class AddnewrouteComponent2 implements OnInit {
       let routeToBankNameMissing = false;
       let routeToServiceCategoryMissing = false;
       let routeToServiceTypeMissing = false;
-      this.applyCriteriaFormattedData.forEach((element) => {
+
+      this.applyCriteriaFormattedData.forEach((data) => {
+        if (data["isActive"] == "N") {
+          data["routeDesc"] = this.routeDescription
+            ? this.routeDescription.replace(/\s/g, "").length
+              ? this.routeDescription
+              : null
+            : null;
+          // if (data["tax"] == "null" || data["tax"] == null) {
+          //   data["tax"] = "";
+
+          // }
+        }
+      });
+
+      let activeData = this.applyCriteriaFormattedData.filter(
+        (d) => d["isActive"] == "Y"
+      );
+      console.log("111", activeData);
+      activeData.forEach((element) => {
         element["routeDesc"] = this.routeDescription
           ? this.routeDescription.replace(/\s/g, "").length
             ? this.routeDescription
@@ -1349,5 +1374,40 @@ export class AddnewrouteComponent2 implements OnInit {
     } else {
       this.coreService.showWarningToast("Applied criteria already exists.");
     }
+  }
+
+  confirmStatus(e: any, data: any) {
+    e.preventDefault();
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Y";
+      type = "activate";
+    } else {
+      reqStatus = "N";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Bank Record?`;
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        data["isActive"] = reqStatus;
+        this.setHeaderSidebarBtn();
+        console.log("accepting", reqStatus);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+        console.log("reject");
+      },
+    });
   }
 }

@@ -236,7 +236,66 @@ export class LoyaltyProgramComponent implements OnInit {
           if (loyaltyListingData["data"]) {
             console.log("loyaltyListingData", loyaltyListingData);
             this.loyaltyApiData = loyaltyListingData;
+            this.loyaltyApiData.data.forEach((tax) => {
+              let beforeSplit = tax.criteriaMap.split("&&&&")[0];
+              // let afterSplit = tax.criteriaMap.split("&&&&")[1];
 
+              const sections = tax.criteriaMap.split("&&&&");
+              let amounts = "";
+              let dates = "";
+              let afterSplit = "";
+
+              // Process each section
+              sections.forEach((section) => {
+                if (section.includes("from") && section.includes("to")) {
+                  // Extract the amounts
+                  const amountsArray = section
+                    .split("#")
+                    .map((amountSection) => {
+                      const [from, to] = amountSection
+                        .split("::")
+                        .map((part) => part.split(":")[1]);
+                      return `Between ${from}-${to}`;
+                    });
+                  amounts = amountsArray.join(" & ");
+                } else if (
+                  section.startsWith("trnStartDate") &&
+                  section.includes("trnEndDate")
+                ) {
+                  // Extract the dates
+                  const dateSections = section.split("#").map((dateSection) => {
+                    const [startDate, endDate] = dateSection
+                      .split("::")
+                      .map((part) => part.split(":")[1]);
+                    return `Between ${startDate}-${endDate}`;
+                  });
+                  dates = dateSections.join(" & ");
+                }
+              });
+
+              if (amounts.length && dates.length) {
+                afterSplit += `Amount (${amounts}), Date (${dates})`;
+              } else if (amounts.length) {
+                afterSplit += `Amount (${amounts})`;
+              } else if (dates.length) {
+                afterSplit += `Date (${dates})`;
+              }
+              console.log("555", afterSplit);
+
+              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                criteriaMap: beforeSplit,
+              });
+              tax.criteriaMap = (
+                this.setCriteriaService.decodeFormattedCriteria(
+                  criteriaCodeText,
+                  criteriaMasterData,
+                  [""]
+                ) as []
+              ).join(", ");
+              if (afterSplit?.length) {
+                tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+              }
+            });
             this.loyaltyListData = [...this.loyaltyApiData.data];
             this.showNoDataFound = false;
             this.linkedProgramCode = [
