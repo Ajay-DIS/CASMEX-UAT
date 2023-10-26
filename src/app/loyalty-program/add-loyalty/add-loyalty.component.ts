@@ -1595,6 +1595,7 @@ export class AddLoyaltyComponent implements OnInit {
       let loyaltyTypeMissing = false;
       let rewardsAsMissing = false;
       let loyaltyValueMissing = false;
+      let invalidPromoCodeLength = false;
       this.applyCriteriaFormattedData.forEach((element) => {
         console.log(element);
 
@@ -1614,6 +1615,7 @@ export class AddLoyaltyComponent implements OnInit {
         element["promoCodeLength"] = this.promoCodeLength
           ? this.promoCodeLength
           : null;
+
         if (
           !(
             element["programDescription"] &&
@@ -1641,7 +1643,7 @@ export class AddLoyaltyComponent implements OnInit {
         this.coreService.showWarningToast("Please Select loyalty Type.");
       } else if (rewardsAsMissing) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Select Set As.");
+        this.coreService.showWarningToast("Please Select Reward As.");
       } else if (loyaltyValueMissing) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill loyalty value.");
