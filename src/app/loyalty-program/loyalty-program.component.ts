@@ -236,11 +236,53 @@ export class LoyaltyProgramComponent implements OnInit {
           if (loyaltyListingData["data"]) {
             console.log("loyaltyListingData", loyaltyListingData);
             this.loyaltyApiData = loyaltyListingData;
-            this.loyaltyApiData.data.forEach((tax) => {
-              let beforeSplit = tax.criteriaMap.split("&&&&")[0];
-              // let afterSplit = tax.criteriaMap.split("&&&&")[1];
+            this.loyaltyApiData.data.forEach((data) => {
+              let amtSlabPresent = false;
+              let dateSlabPresent = false;
 
-              const sections = tax.criteriaMap.split("&&&&");
+              if (data["criteriaMap"].indexOf("from:") >= 0) {
+                amtSlabPresent = true;
+              }
+
+              if (data["criteriaMap"].indexOf("trnStartDate=") >= 0) {
+                dateSlabPresent = true;
+              }
+              let dateSlabs = null;
+              if (amtSlabPresent && dateSlabPresent) {
+                dateSlabs = data["criteriaMap"].split("&&&&")[2];
+              } else {
+                if (amtSlabPresent) {
+                } else if (dateSlabPresent) {
+                  dateSlabs = data["criteriaMap"].split("&&&&")[1];
+                } else if (!amtSlabPresent && !dateSlabPresent) {
+                }
+              }
+              data["expiryOn"] = dateSlabs
+                ? dateSlabs.split("trnEndDate=").pop()
+                : "-";
+              data["isExpired"] = dateSlabs
+                ? new Date(
+                    dateSlabs
+                      .split("trnEndDate=")
+                      .pop()
+                      .split(", ")[0]
+                      .split("/")
+                      .reverse()
+                      .join("-") +
+                      "T" +
+                      dateSlabs.split("trnEndDate=").pop().split(", ")[1]
+                  ) < new Date()
+                  ? true
+                  : false
+                : false;
+              // %
+              data["createdOn"] = data["createdDateTime"]
+                ? new Date(data["createdDateTime"]).toLocaleDateString("en-GB")
+                : "-";
+
+              let beforeSplit = data.criteriaMap.split("&&&&")[0];
+
+              const sections = data.criteriaMap.split("&&&&");
               let amounts = "";
               let dates = "";
               let afterSplit = "";
@@ -281,12 +323,11 @@ export class LoyaltyProgramComponent implements OnInit {
               } else if (dates.length) {
                 afterSplit += `Date (${dates})`;
               }
-              console.log("555", afterSplit);
 
               let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
                 criteriaMap: beforeSplit,
               });
-              tax.criteriaMap = (
+              data.criteriaMap = (
                 this.setCriteriaService.decodeFormattedCriteria(
                   criteriaCodeText,
                   criteriaMasterData,
@@ -294,8 +335,7 @@ export class LoyaltyProgramComponent implements OnInit {
                 ) as []
               ).join(", ");
               if (afterSplit?.length) {
-                tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
-                console.log(tax.criteriaMap, afterSplit);
+                data.criteriaMap = data.criteriaMap + ", " + afterSplit;
               }
               // tax.criteriaMap = "HELLO";
             });
@@ -324,51 +364,6 @@ export class LoyaltyProgramComponent implements OnInit {
             });
             this.status = this.loyaltyApiData.status.map((code) => {
               return { label: code, value: code };
-            });
-
-            this.loyaltyListData.forEach((data) => {
-              // %
-              let amtSlabPresent = false;
-              let dateSlabPresent = false;
-
-              if (data["criteriaMap"].indexOf("from:") >= 0) {
-                amtSlabPresent = true;
-              }
-
-              if (data["criteriaMap"].indexOf("trnStartDate:") >= 0) {
-                dateSlabPresent = true;
-              }
-              let dateSlabs = null;
-              if (amtSlabPresent && dateSlabPresent) {
-                dateSlabs = data["criteriaMap"].split("&&&&")[2];
-              } else {
-                if (amtSlabPresent) {
-                } else if (dateSlabPresent) {
-                  dateSlabs = data["criteriaMap"].split("&&&&")[1];
-                } else if (!amtSlabPresent && !dateSlabPresent) {
-                }
-              }
-              data["expiryOn"] = dateSlabs
-                ? dateSlabs.split("trnEndDate=").pop()
-                : "-";
-              data["isExpired"] = dateSlabs
-                ? new Date(
-                    dateSlabs
-                      .split("trnEndDate=")
-                      .pop()
-                      .split(", ")[0]
-                      .split("/")
-                      .reverse()
-                      .join("-")
-                  ) < new Date()
-                  ? true
-                  : false
-                : false;
-              // %
-              console.log(data["programType"]);
-              data["createdOn"] = data["createdDateTime"]
-                ? new Date(data["createdDateTime"]).toLocaleDateString("en-GB")
-                : "-";
             });
           } else {
             console.log(loyaltyListingData);
