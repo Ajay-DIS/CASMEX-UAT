@@ -31,7 +31,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   breadcrumbsItems: MenuItem[] = [
     { label: "Home", routerLink: "/navbar" },
     { label: "Settings", routerLink: "/navbar" },
-    { label: "Bank Routing", routerLink: "bank-routing" },
+    { label: "Bank Routing Settings", routerLink: "bank-routing" },
   ];
   getdata: any;
   cities1: any[];
@@ -169,7 +169,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   getSubMenus(menu: any) {
     menu.forEach((item) => {
       switch (item["label"]) {
-        case "Bank Routing":
+        case "Bank Routing Settings":
           item["routerLink"] = "/navbar/bank-routing";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
@@ -187,25 +187,25 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        case "Tax":
+        case "Tax Settings":
           item["routerLink"] = "/navbar/tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        case "Form Rules":
+        case "Form Rules Settings":
           item["routerLink"] = "/navbar/form-rules";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        case "Group Settings":
+        case "Bank Routing Settings API":
           item["routerLink"] = "/navbar/group-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Custom Fields":
+        case "Tax Settings API":
           item["routerLink"] = "/navbar/custom-fields";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Get Doc Settings":
+        case "Document Settings API":
           item["routerLink"] = "/navbar/get-doc-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
@@ -214,7 +214,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLinkActiveOptions"] = { subset: true };
           break;
 
-        case "Document":
+        case "Document Settings":
           item["routerLink"] = "/navbar/document-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
@@ -298,11 +298,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       case "Rate Setup":
         iconName = "rateSetup-icon";
         break;
-      case "Forex":
-        iconName = "forex-icon";
-        matchUrls = ["/navbar/loyalty-programs"];
-        routeName = "/navbar/loyalty-programs";
-        break;
       case "Beneficiary Profile":
         iconName = "beneficiary-icon";
         matchUrls = ["/navbar/beneficiary-profile"];
@@ -335,10 +330,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Application Settings":
         iconName = "applicationsettings-icon";
+        matchUrls = ["/navbar/criteria-settings", "/navbar/search-settings"];
+        routeName = "/navbar/criteria-settings";
+        break;
+      case "API Test":
+        iconName = "applicationsettings-icon";
         matchUrls = [
-          "/navbar/criteria-settings",
           "/navbar/group-settings",
-          "/navbar/search-settings",
           "/navbar/authorization-page-setting",
           "/navbar/custom-fields",
           "/navbar/get-doc-settings",

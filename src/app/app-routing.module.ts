@@ -179,7 +179,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "/navbar/bank-routing" },
           { label: "Settings", routerLink: "/navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "" },
+          { label: "Bank Routing Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -189,7 +189,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Add New Route", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -200,7 +200,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Edit Route", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -211,7 +211,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
-          { label: "Bank Routing", routerLink: "bank-routing" },
+          { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Clone Route", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -308,7 +308,7 @@ const routes: Routes = [
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Application Settings", routerLink: "group-settings" },
-          { label: "Bank Routing", routerLink: "" },
+          { label: "Bank Routing Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

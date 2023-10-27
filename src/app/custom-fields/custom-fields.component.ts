@@ -3,6 +3,7 @@ import { CustomfieldServiceService } from "./customfield-service.service";
 import { ActivatedRoute } from "@angular/router";
 import { CoreService } from "../core.service";
 import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-custom-fields",
@@ -30,7 +31,8 @@ export class CustomFieldsComponent implements OnInit {
     private customService: CustomfieldServiceService,
     private route: ActivatedRoute,
     private coreService: CoreService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -42,8 +44,14 @@ export class CustomFieldsComponent implements OnInit {
     this.getMasterData();
   }
   getMasterData() {
-    this.customService
-      .getCriteriaMasterData(this.formName, this.appName, this.moduleName)
+    return this.http
+      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+        headers: new HttpHeaders()
+          .set("userId", String(this.userData.userId))
+          .set("form", "Tax Settings")
+          .set("applications", "Casmex Core")
+          .set("moduleName", "Remittance"),
+      })
       .subscribe((res: any) => {
         console.log("masterdata", res);
         this.masterData = res;

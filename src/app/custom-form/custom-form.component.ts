@@ -268,9 +268,9 @@ export class CustomFormComponent implements OnInit {
 
   getCriteriaMasterData() {
     return this.http
-      .get(`/remittance/formRulesController/getCriteriaMasterData`, {
+      .get(`remittance/formRulesController/getCriteriaMasterData`, {
         headers: new HttpHeaders()
-          .set("userId", String(this.userData))
+          .set("userId", String(this.userData.userId))
           .set("form", "Customer Profile_Form Rules")
           .set("applications", "Casmex Core")
           .set("moduleName", "Remittance"),

@@ -244,7 +244,7 @@ export class AddLoyaltyComponent implements OnInit {
             }
             if (localStorage.getItem("moduleName")) {
               let defModule = this.searchModuleOptions.filter(
-                (opt) => opt.code == localStorage.getItem("moduleName")
+                (opt) => opt.code == "Loyalty Programs"
               )[0];
               if (defModule) {
                 this.moduleCtrl.patchValue(defModule);
