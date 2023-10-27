@@ -147,6 +147,12 @@ export class AddLoyaltyComponent implements OnInit {
       frozen: false,
       info: null,
     },
+    {
+      field: "isActive",
+      header: "Status",
+      frozen: false,
+      info: null,
+    },
   ];
   applyCriteriaFormattedData: any[] = [];
 
@@ -1596,7 +1602,24 @@ export class AddLoyaltyComponent implements OnInit {
       let rewardsAsMissing = false;
       let loyaltyValueMissing = false;
       let invalidPromoCodeLength = false;
-      this.applyCriteriaFormattedData.forEach((element) => {
+
+      this.applyCriteriaFormattedData.forEach((data) => {
+        if (data["isActive"] == "N") {
+          data["programDescription"] = this.programDescription
+            ? this.programDescription.replace(/\s/g, "").length
+              ? this.programDescription
+              : null
+            : null;
+          if (data["loyaltyValue"] == "null" || data["loyaltyValue"] == null) {
+            data["loyaltyValue"] = "";
+          }
+        }
+      });
+      let activeData = this.applyCriteriaFormattedData.filter(
+        (d) => d["isActive"] == "Y"
+      );
+
+      activeData.forEach((element) => {
         console.log(element);
 
         if (element["invalidLoyaltyValue"]) {
@@ -1625,10 +1648,10 @@ export class AddLoyaltyComponent implements OnInit {
         ) {
           isRequiredFields = true;
         }
-        if (!element["loyaltyType"]) {
+        if (!element["loyaltyType"] || element["loyaltyType"] == "null") {
           loyaltyTypeMissing = true;
         }
-        if (!element["rewardsAs"]) {
+        if (!element["rewardsAs"] || element["rewardsAs"] == "null") {
           rewardsAsMissing = true;
         }
         if (!element["loyaltyValue"] && element["loyaltyValue"] != "0") {
@@ -1767,6 +1790,41 @@ export class AddLoyaltyComponent implements OnInit {
     } else {
       this.coreService.showWarningToast("Applied criteria already exists.");
     }
+  }
+
+  confirmStatus(e: any, data: any) {
+    e.preventDefault();
+    let type = "";
+    let reqStatus = "";
+    if (e.target.checked) {
+      reqStatus = "Y";
+      type = "activate";
+    } else {
+      reqStatus = "N";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the loyalty Record?`;
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        data["isActive"] = reqStatus;
+        this.setHeaderSidebarBtn();
+        console.log("accepting", reqStatus);
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+        console.log("reject");
+      },
+    });
   }
 
   reset() {
@@ -2052,6 +2110,7 @@ export class AddLoyaltyComponent implements OnInit {
     };
     clonedRow[fieldName] = "clone,delete";
     clonedRow["linked"] = "N";
+    clonedRow["isActive"] = "Y";
     this.applyCriteriaFormattedData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {

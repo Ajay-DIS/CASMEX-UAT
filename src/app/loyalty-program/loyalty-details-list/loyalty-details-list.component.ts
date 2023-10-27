@@ -61,16 +61,16 @@ export class LoyaltyDetailsListComponent implements OnInit {
   ) {}
 
   cols: any[] = [
-    { field: "customerCode", header: "Customer Code", width: "10%" },
+    { field: "customerCode", header: "Customer Code", width: "14%" },
     {
       field: "customerName",
       header: "Customer Name",
-      width: "30%",
+      width: "24%",
     },
-    { field: "mobileNumber", header: "Mobile Number", width: "15%" },
-    { field: "redeemDate", header: "Redeem Date", width: "15%" },
-    { field: "promotionRedeemed", header: "Promotion Redeemed", width: "15%" },
-    { field: "promotionDetails", header: "Promotion Details", width: "15%" },
+    { field: "mobileNumber", header: "Mobile Number", width: "14%" },
+    { field: "redeemDate", header: "Redeem Date", width: "13%" },
+    { field: "promotionRedeemed", header: "Promotion Redeemed", width: "13%" },
+    { field: "promotionDetails", header: "Promotion Details", width: "22%" },
   ];
 
   sortOrder: any = {

@@ -407,7 +407,7 @@
                         optionLabel="codeName"
                         appendTo="body"
                         [placeholder]="
-                          rowData[col['field']]
+                          rowData[col['field']] && rowData[col['field']] != 'null'
                             ? rowData[col['field']]
                             : 'Select'
                         "
@@ -417,7 +417,7 @@
                         [disabled]="
                           rowData['linked'] == 'Y' ||
                           (col['field'] == 'discountAs' &&
-                            rowData['rewardsAs'] != 'Discount')
+                            rowData['rewardsAs'] != 'Discount') || rowData['isActive'] == 'N'
                         "
                       ></p-dropdown>
                     </div>
@@ -443,6 +443,7 @@
                           )
                         "
                         [disabled]="rowData['linked'] == 'Y'"
+                        [disabled]="rowData['isActive'] == 'N'"
                       ></p-inputNumber>
                     </div>
                     <div
@@ -473,6 +474,24 @@
                           class="operation-btns mr-2"
                         ></button>
                       </ng-container>
+                    </div>
+                    <div  *ngIf="col.field == 'isActive'"
+                    style="border: none; text-align: left">
+                    <label class="switch" style="border: none">
+                      <input
+                        #statusInp
+                        [value]="rowData[col['field']]"
+                        type="checkbox"
+                        (click)="confirmStatus($event, rowData)"
+                        [checked]="
+                          rowData[col['field']] == 'Y'
+                            ? true
+                            : false
+                        "
+                        [disabled]="rowData['linked'] == 'Y'"
+                      />
+                      <span class="slider round"></span>
+                    </label>
                     </div>
                   </td>
                 </tr>
@@ -629,6 +648,30 @@
       icon="pi pi-times"
       label="Cancel"
       (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatus"
+  class="status-confirm confirm-popup"
+  #cd3
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd3.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd3.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>
