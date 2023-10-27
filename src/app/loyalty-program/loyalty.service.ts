@@ -210,7 +210,8 @@ export class LoyaltyService {
     operation: any,
     appName: any,
     moduleName: any,
-    formName: any
+    formName: any,
+    reset: any
   ): Observable<any> {
     return this.http.post(
       `/remittance/loyaltyProgramController/updateLoyaltyProgram`,
@@ -221,7 +222,8 @@ export class LoyaltyService {
           .set("operation", operation)
           .set("applications", appName)
           .set("moduleName", moduleName)
-          .set("form", formName),
+          .set("form", formName)
+          .set("reset", reset),
       }
     );
   }

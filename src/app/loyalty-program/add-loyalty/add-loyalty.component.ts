@@ -177,6 +177,8 @@ export class AddLoyaltyComponent implements OnInit {
 
   validPromoCodeLength = false;
 
+  resetParam = false;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -1665,7 +1667,8 @@ export class AddLoyaltyComponent implements OnInit {
             this.mode,
             this.appCtrl.value.name,
             this.moduleCtrl.value.name,
-            this.formName
+            this.formName,
+            this.resetParam ? "yes" : "no"
           );
         } else {
           service = this.loyaltyService.addNewLoyaltyProgram(
@@ -1706,7 +1709,7 @@ export class AddLoyaltyComponent implements OnInit {
                     "Data saved successfully, but there was an issue with files."
                   );
                   this.coreService.showSuccessToast(
-                    "Loyalty program data saved successfully, But some issue in saving program images, Please try again in sometime"
+                    "Loyalty program data saved successfully, But some issue in saving program images, Please try editing the Program"
                   );
                   this.router.navigate([`navbar/loyalty-programs`]);
                 } else {
@@ -1785,6 +1788,11 @@ export class AddLoyaltyComponent implements OnInit {
           this.appliedCriteriaIsDuplicate = null;
           this.programDescription = "";
           this.programType = "";
+          this.resetParam = true;
+
+          this.uploadedfileData = [];
+          this.promoCode = "";
+          this.promoCodeLength = null;
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();
           // this.coreService.setHeaderStickyStyle(true);
@@ -1825,6 +1833,10 @@ export class AddLoyaltyComponent implements OnInit {
           this.appliedCriteriaIsDuplicate = null;
           this.programDescription = "";
           this.programType = "";
+
+          this.uploadedfileData = [];
+          this.promoCode = "";
+          this.promoCodeLength = null;
 
           this.setCriteriaSharedComponent.resetSetCriteria();
           this.setHeaderSidebarBtn();

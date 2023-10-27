@@ -231,7 +231,7 @@
                     [(ngModel)]="promoCodeLength"
                     (onBlur)="onPromoCodeLength($event)"
                     [inputStyle]="{ width: '40px', padding: '0.5rem' }"
-                    [disabled]="mode == 'edit'"
+                    [disabled]="mode == 'edit' && !this.resetParam"
                   >
                   </p-inputNumber>
                   <span
