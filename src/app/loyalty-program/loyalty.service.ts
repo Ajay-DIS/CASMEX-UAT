@@ -12,16 +12,8 @@ export class LoyaltyService {
   moduleName = "Remittance";
 
   // COMMON SERVICES
-  getTaxSettingAppModuleList() {
+  getAppModuleList() {
     return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
-  }
-  getProgramTypeData() {
-    return this.http.get(`/remittance/loyaltyProgramController/getProgramType`);
-  }
-  getPromoCodeData(promoLength: any) {
-    return this.http.get(`/remittance/loyaltyProgramController/getPromocode`, {
-      headers: new HttpHeaders().set("length", promoLength),
-    });
   }
 
   getCriteriaMasterData(
@@ -88,6 +80,15 @@ export class LoyaltyService {
   }
   // COMMON SERVICES END
 
+  getProgramTypeData() {
+    return this.http.get(`/remittance/loyaltyProgramController/getProgramType`);
+  }
+  getPromoCodeData(promoLength: any) {
+    return this.http.get(`/remittance/loyaltyProgramController/getPromocode`, {
+      headers: new HttpHeaders().set("length", promoLength),
+    });
+  }
+
   getLoyaltyProgramData(
     id: string,
     formName: any,
@@ -128,7 +129,7 @@ export class LoyaltyService {
     );
   }
 
-  updateTaxSettingsStatus(data: any) {
+  updateLoyaltyStatus(data: any) {
     return this.http.post(
       `/remittance/loyaltyProgramController/updateLoyaltyProgramStatus`,
       data

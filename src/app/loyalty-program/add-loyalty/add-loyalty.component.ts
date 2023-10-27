@@ -15,7 +15,6 @@ import { CoreService } from "src/app/core.service";
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 import { CriteriaDataService } from "src/app/shared/services/criteria-data.service";
-import { TaxSettingsService } from "src/app/tax-settings/tax-settings.service";
 import { LoyaltyService } from "../loyalty.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
@@ -78,8 +77,6 @@ export class AddLoyaltyComponent implements OnInit {
   appliedCriteriaIsDuplicate: any = null;
   objectKeys = Object.keys;
   isEditMode = false;
-
-  editTaxSettingApiData: any = [];
 
   criteriaMasterData: any = {};
   criteriaDataDetailsJson: any = {};
@@ -156,15 +153,10 @@ export class AddLoyaltyComponent implements OnInit {
   ];
   applyCriteriaFormattedData: any[] = [];
 
-  taxTypeOption: any[] = [];
   rewardsAsOption: any[] = [];
   discountAsOption: any[] = [];
   loyaltyTypeOption: any[] = [];
   programTypeOptions: any[] = [];
-
-  taxMin = 0;
-  taxPerMax = 100;
-  taxAmountMax = 100000;
 
   appliedCriteriaDatajson: any = {};
 
@@ -216,7 +208,7 @@ export class AddLoyaltyComponent implements OnInit {
       );
       this.loyaltyID = params.id;
     }
-    this.loyaltyService.getTaxSettingAppModuleList().subscribe(
+    this.loyaltyService.getAppModuleList().subscribe(
       (res) => {
         if (
           res["status"] &&
@@ -602,7 +594,6 @@ export class AddLoyaltyComponent implements OnInit {
           } else {
             if (res["data"]) {
               this.showContent = true;
-              this.editTaxSettingApiData = JSON.parse(JSON.stringify(res));
 
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
@@ -908,7 +899,7 @@ export class AddLoyaltyComponent implements OnInit {
         (err) => {
           this.showContent = false;
           this.coreService.removeLoadingScreen();
-          console.log("Error in getTaxSettingForEditApi", err);
+          console.log("Error in getLoyaltyForEditApi", err);
           this.coreService.showWarningToast(
             "Something went wrong, Please try again later"
           );
@@ -938,7 +929,6 @@ export class AddLoyaltyComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          console.log("tax", response);
           this.formatMasterData(response.criteriaMasterData);
           const criteriaMasterData = response.criteriaMasterData;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
@@ -1121,7 +1111,7 @@ export class AddLoyaltyComponent implements OnInit {
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
         message: `You can not edit the current criteria, as it is already used in transaction.<br/> Kindly disable the current record and add new.`,
-        key: "taxSettingLinkedWarning",
+        key: "linkedWarning",
         accept: () => {
           this.coreService.displayLoadingScreen();
           setTimeout(() => {
@@ -1520,7 +1510,7 @@ export class AddLoyaltyComponent implements OnInit {
       );
   }
 
-  saveAddNewTax() {
+  saveAddNewLoyalty() {
     console.log(
       "applyCriteriaFormattedData",
       JSON.stringify(this.applyCriteriaFormattedData, null, 2)
@@ -1603,7 +1593,7 @@ export class AddLoyaltyComponent implements OnInit {
       let loyaltyTypeMissing = false;
       let rewardsAsMissing = false;
       let loyaltyValueMissing = false;
-      let invalidPromoCodeLength = false;
+      let discountAsMissing = false;
 
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
@@ -1659,19 +1649,28 @@ export class AddLoyaltyComponent implements OnInit {
         if (!element["loyaltyValue"] && element["loyaltyValue"] != "0") {
           loyaltyValueMissing = true;
         }
+        if (
+          element["rewardsAs"] == "Discount" &&
+          (!element["discountAs"] || element["discountAs"] == "null")
+        ) {
+          discountAsMissing = true;
+        }
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill required fields.");
       } else if (loyaltyTypeMissing) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Select loyalty Type.");
+        this.coreService.showWarningToast("Please Select Loyalty Type.");
       } else if (rewardsAsMissing) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Select Reward As.");
       } else if (loyaltyValueMissing) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Fill loyalty value.");
+      } else if (discountAsMissing) {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Please Select Discount As.");
       } else if (invalidLoyaltyValue) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid loyalty Value.");
@@ -1782,7 +1781,7 @@ export class AddLoyaltyComponent implements OnInit {
           //   },
           //   (err) => {
           //     this.coreService.removeLoadingScreen();
-          //     console.log("error in saveAddNewTax", err);
+          //     console.log("error in saveAddNewLoyalty", err);
           //     this.coreService.showWarningToast(
           //       "Something went wrong, Please try again later"
           //     );
@@ -1836,7 +1835,7 @@ export class AddLoyaltyComponent implements OnInit {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
-        key: "resetTaxDataConfirmation",
+        key: "resetDataConfirmation",
         accept: () => {
           this.coreService.displayLoadingScreen();
           // this.getCriteriaMasterData();
@@ -1866,7 +1865,7 @@ export class AddLoyaltyComponent implements OnInit {
       this.coreService.setSidebarBtnFixedStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear applied changes ?",
-        key: "resetTaxDataConfirmation",
+        key: "resetDataConfirmation",
         accept: () => {
           this.coreService.displayLoadingScreen();
           this.getCriteriaMasterData();
@@ -1884,7 +1883,7 @@ export class AddLoyaltyComponent implements OnInit {
       this.coreService.setHeaderStickyStyle(false);
       this.confirmationService.confirm({
         message: "Are you sure, you want to clear all the fields ?",
-        key: "resetTaxDataConfirmation",
+        key: "resetDataConfirmation",
         accept: () => {
           this.applyCriteriaFormattedData = [];
           this.appliedCriteriaCriteriaMap = null;
@@ -2105,8 +2104,6 @@ export class AddLoyaltyComponent implements OnInit {
 
     this.loyaltyValue = event.value;
   }
-
-  TaxValidation() {}
 
   checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {
     if (operation == "delete") {

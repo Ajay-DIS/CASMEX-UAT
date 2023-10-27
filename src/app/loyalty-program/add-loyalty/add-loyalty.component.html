@@ -48,7 +48,7 @@
                     [disabled]="!applyCriteriaFormattedData?.length"
                     label="Save"
                     class="p-button-raised"
-                    (click)="saveAddNewTax()"
+                    (click)="saveAddNewLoyalty()"
                   ></button>
                 </div>
                 <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 resetbtn">
@@ -407,7 +407,8 @@
                         optionLabel="codeName"
                         appendTo="body"
                         [placeholder]="
-                          rowData[col['field']] && rowData[col['field']] != 'null'
+                          rowData[col['field']] &&
+                          rowData[col['field']] != 'null'
                             ? rowData[col['field']]
                             : 'Select'
                         "
@@ -417,7 +418,8 @@
                         [disabled]="
                           rowData['linked'] == 'Y' ||
                           (col['field'] == 'discountAs' &&
-                            rowData['rewardsAs'] != 'Discount') || rowData['isActive'] == 'N'
+                            rowData['rewardsAs'] != 'Discount') ||
+                          rowData['isActive'] == 'N'
                         "
                       ></p-dropdown>
                     </div>
@@ -475,23 +477,23 @@
                         ></button>
                       </ng-container>
                     </div>
-                    <div  *ngIf="col.field == 'isActive'"
-                    style="border: none; text-align: left">
-                    <label class="switch" style="border: none">
-                      <input
-                        #statusInp
-                        [value]="rowData[col['field']]"
-                        type="checkbox"
-                        (click)="confirmStatus($event, rowData)"
-                        [checked]="
-                          rowData[col['field']] == 'Y'
-                            ? true
-                            : false
-                        "
-                        [disabled]="rowData['linked'] == 'Y'"
-                      />
-                      <span class="slider round"></span>
-                    </label>
+                    <div
+                      *ngIf="col.field == 'isActive'"
+                      style="border: none; text-align: left"
+                    >
+                      <label class="switch" style="border: none">
+                        <input
+                          #statusInp
+                          [value]="rowData[col['field']]"
+                          type="checkbox"
+                          (click)="confirmStatus($event, rowData)"
+                          [checked]="
+                            rowData[col['field']] == 'Y' ? true : false
+                          "
+                          [disabled]="rowData['linked'] == 'Y'"
+                        />
+                        <span class="slider round"></span>
+                      </label>
                     </div>
                   </td>
                 </tr>
@@ -609,7 +611,7 @@
 </div>
 
 <p-confirmDialog
-  key="taxSettingLinkedWarning"
+  key="linkedWarning"
   class="linked-confirm confirm-popup"
   #cd
   icon="pi pi-exclamation-triangle"
@@ -627,7 +629,7 @@
 </p-confirmDialog>
 
 <p-confirmDialog
-  key="resetTaxDataConfirmation"
+  key="resetDataConfirmation"
   class="confirm-popup"
   #cd2
   icon="pi pi-exclamation-triangle"
