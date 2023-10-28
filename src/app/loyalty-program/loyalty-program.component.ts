@@ -131,16 +131,12 @@ export class LoyaltyProgramComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.code };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.code };
-            });
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
             if (localStorage.getItem("applicationName")) {
               let defApplication = this.searchApplicationOptions.filter(
                 (opt) => opt.code == localStorage.getItem("applicationName")

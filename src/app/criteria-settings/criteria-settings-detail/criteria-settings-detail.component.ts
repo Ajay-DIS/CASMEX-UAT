@@ -134,16 +134,12 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             }
           } else {
             if (res["data"]) {
-              this.criteriaApplicationOptions = res["data"][
-                "cmApplicationMaster"
-              ].map((app) => {
-                return { name: app.name, code: app.name };
-              });
-              this.criteriaModuleOptions = res["data"][
-                "cmPrimaryModuleMasterDetails"
-              ].map((app) => {
-                return { name: app.codeName, code: app.codeName };
-              });
+              this.criteriaApplicationOptions = JSON.parse(
+                localStorage.getItem("appAccess")
+              );
+              this.criteriaModuleOptions = JSON.parse(
+                localStorage.getItem("modAccess")
+              );
               this.criteriaFormsOptions = res["data"][
                 "cmCriteriaFormsMaster"
               ].map((app) => {
@@ -159,6 +155,29 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 this.isCloneMode = true;
                 this.setCloneCriteriaData(params.id);
                 this.criteriaId = params.id;
+              } else {
+                let defAppMod = JSON.parse(
+                  localStorage.getItem("defAppModule")
+                );
+                let defApp = null;
+                let defMod = null;
+                if (defAppMod) {
+                  defApp = this.criteriaApplicationOptions.filter(
+                    (opt) => opt.code == defAppMod.applicationName.code
+                  )[0];
+                  defMod = this.criteriaModuleOptions.filter(
+                    (opt) => opt.code == defAppMod.moduleName.code
+                  )[0];
+                }
+
+                if (defApp) {
+                  this.appCtrl.patchValue(defApp);
+                }
+                if (defMod) {
+                  this.moduleCtrl.patchValue(defMod);
+                  this.moduleCtrl.enable();
+                  this.formCtrl.enable();
+                }
               }
             } else if (res["msg"]) {
               this.coreService.showWarningToast(res["msg"]);
@@ -679,15 +698,15 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             });
 
             const appValue = this.criteriaApplicationOptions.find(
-              (value) => value.code === res["applications"]
+              (value) => value.name === res["applications"]
             );
             this.appCtrl.setValue(appValue);
             const formValue = this.criteriaFormsOptions.find(
-              (value) => value.code === res["form"]
+              (value) => value.name === res["form"]
             );
             this.formCtrl.setValue(formValue);
             const moduleValue = this.criteriaModuleOptions.find(
-              (value) => value.code === res["moduleName"]
+              (value) => value.name === res["moduleName"]
             );
             this.moduleCtrl.setValue(moduleValue);
           }

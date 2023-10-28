@@ -64,7 +64,7 @@
       </div>
     </div>
   </div>
-  <div class="ptable" *ngIf="docListingData.length">
+  <div class="ptable" *ngIf="docListingData && docListingData.length">
     <p-table
       #dt
       [columns]="cols"
@@ -251,7 +251,7 @@
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!docListingData.length && showNoDataFound">
+<div class="NorecordFound" *ngIf="!docListingData?.length && showNoDataFound">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>

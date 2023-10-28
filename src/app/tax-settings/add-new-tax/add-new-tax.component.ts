@@ -171,41 +171,56 @@ export class AddNewTaxComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            if (
-              !(
-                this.taxSettingsService.applicationName ||
-                this.taxSettingsService.moduleName
-              )
-            ) {
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
+            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+            let currAppMod = JSON.parse(sessionStorage.getItem("tax"));
+
+            let defApp = null;
+            let defMod = null;
+
+            if (currAppMod) {
+              console.log(currAppMod);
+              defApp = this.searchApplicationOptions.filter(
+                (opt) => opt.code == currAppMod.applicationName.code
+              )[0];
+              defMod = this.searchModuleOptions.filter(
+                (opt) => opt.code == currAppMod.moduleName.code
+              )[0];
+            } else {
+              if (defAppMod) {
+                defApp = this.searchApplicationOptions.filter(
+                  (opt) => opt.code == defAppMod.applicationName.code
+                )[0];
+                defMod = this.searchModuleOptions.filter(
+                  (opt) => opt.code == defAppMod.moduleName.code
+                )[0];
+              }
+            }
+
+            if (defApp) {
+              this.appCtrl.patchValue(defApp);
+            }
+            if (defMod) {
+              this.moduleCtrl.patchValue(defMod);
+            }
+            if (this.appCtrl.value && this.moduleCtrl.value) {
+              this.moduleCtrl.enable();
+              this.searchAppModule();
+              this.appModuleDataPresent = true;
+              if (this.mode != "add") {
+                this.appCtrl.disable();
+                this.moduleCtrl.disable();
+              }
+            } else {
               if (this.mode != "add") {
                 this.router.navigate([`navbar/tax-settings`]);
               } else {
                 this.coreService.removeLoadingScreen();
-              }
-            } else {
-              if (this.mode != "add") {
-                this.appCtrl.setValue({
-                  name: this.taxSettingsService.applicationName,
-                  code: this.taxSettingsService.applicationName,
-                });
-                this.moduleCtrl.setValue({
-                  name: this.taxSettingsService.moduleName,
-                  code: this.taxSettingsService.moduleName,
-                });
-                this.appModuleDataPresent = true;
-                this.appCtrl.disable();
-                this.moduleCtrl.disable();
-                this.searchAppModule();
               }
             }
           } else {
@@ -541,13 +556,13 @@ export class AddNewTaxComponent implements OnInit {
       criteriaMasterData: this.taxSettingsService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name
       ),
       addBankRouteCriteriaData:
         this.taxSettingsService.getAddTaxSettingsCriteriaData(
-          this.appCtrl.value.code,
-          this.moduleCtrl.value.code,
+          this.appCtrl.value.name,
+          this.moduleCtrl.value.name,
           this.formName
         ),
     })
@@ -674,11 +689,11 @@ export class AddNewTaxComponent implements OnInit {
     this.taxSettingsService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.code,
+        this.appCtrl.value.name,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.code
+        this.moduleCtrl.value.name
       )
       .subscribe(
         (res) => {
@@ -730,9 +745,9 @@ export class AddNewTaxComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("taxCode", this.taxID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.code);
+    postDataCriteria.append("applications", this.appCtrl.value.name);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
     this.isApplyCriteriaClicked = true;
     if (this.isTaxSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1021,9 +1036,9 @@ export class AddNewTaxComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.code);
+    templateFormData.append("applications", this.appCtrl.value.name);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.code);
+    templateFormData.append("moduleName", this.moduleCtrl.value.name);
     this.coreService.displayLoadingScreen();
     this.taxSettingsService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1070,8 +1085,8 @@ export class AddNewTaxComponent implements OnInit {
     this.taxSettingsService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code,
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name,
         this.formName
       )
       .subscribe(
@@ -1201,8 +1216,8 @@ export class AddNewTaxComponent implements OnInit {
             service = this.taxSettingsService.updateTaxSetting(
               this.userId,
               data,
-              this.appCtrl.value.code,
-              this.moduleCtrl.value.code,
+              this.appCtrl.value.name,
+              this.moduleCtrl.value.name,
               this.formName
             );
             console.log("::", data);
@@ -1214,8 +1229,8 @@ export class AddNewTaxComponent implements OnInit {
             };
             service = this.taxSettingsService.addNewTax(
               data,
-              this.appCtrl.value.code,
-              this.moduleCtrl.value.code,
+              this.appCtrl.value.name,
+              this.moduleCtrl.value.name,
               this.formName
             );
           }

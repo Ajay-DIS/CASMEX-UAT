@@ -102,17 +102,50 @@ export class TaxListingComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
+            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+            let currAppMod = JSON.parse(sessionStorage.getItem("tax"));
+
+            let defApp = null;
+            let defMod = null;
+
+            if (currAppMod) {
+              console.log(currAppMod);
+              defApp = this.searchApplicationOptions.filter(
+                (opt) => opt.code == currAppMod.applicationName.code
+              )[0];
+              defMod = this.searchModuleOptions.filter(
+                (opt) => opt.code == currAppMod.moduleName.code
+              )[0];
+            } else {
+              if (defAppMod) {
+                defApp = this.searchApplicationOptions.filter(
+                  (opt) => opt.code == defAppMod.applicationName.code
+                )[0];
+                defMod = this.searchModuleOptions.filter(
+                  (opt) => opt.code == defAppMod.moduleName.code
+                )[0];
+              }
+            }
+
+            if (defApp) {
+              this.appCtrl.patchValue(defApp);
+            }
+            if (defMod) {
+              this.moduleCtrl.patchValue(defMod);
+            }
+            if (this.appCtrl.value && this.moduleCtrl.value) {
+              this.searchAppModule();
+            } else {
+              this.coreService.removeLoadingScreen();
+            }
           } else {
+            this.coreService.removeLoadingScreen();
           }
         }
       },
@@ -142,10 +175,15 @@ export class TaxListingComponent implements OnInit {
   }
 
   searchAppModule() {
+    let currAppMod = {
+      applicationName: this.appCtrl.value,
+      moduleName: this.moduleCtrl.value,
+    };
+    sessionStorage.setItem("tax", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.code,
-      this.moduleCtrl.value.code
+      this.appCtrl.value.name,
+      this.moduleCtrl.value.name
     );
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
@@ -252,6 +290,7 @@ export class TaxListingComponent implements OnInit {
           } else {
             this.noDataMsg = taxSettingListingData["msg"];
             this.showNoDataFound = true;
+            this.taxListingData = [];
           }
           return taxSettingListingData;
         })
@@ -291,8 +330,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   viewTaxSetting(data: any) {
-    this.taxSettingsService.applicationName = this.appCtrl.value.code;
-    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
+    this.taxSettingsService.applicationName = this.appCtrl.value.name;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.name;
     this.router.navigate([
       "navbar",
       "tax-settings",
@@ -372,8 +411,8 @@ export class TaxListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("taxCode", data["taxCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.code);
-    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
     formData.append("form", this.formName);
     this.updateTaxCodeStatus(formData, e.target, data);
   }
@@ -392,8 +431,8 @@ export class TaxListingComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.code,
-              this.moduleCtrl.value.code
+              this.appCtrl.value.name,
+              this.moduleCtrl.value.name
             );
             this.coreService.showSuccessToast(message);
           } else {
@@ -411,8 +450,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   cloneTax(data: any) {
-    this.taxSettingsService.applicationName = this.appCtrl.value.code;
-    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
+    this.taxSettingsService.applicationName = this.appCtrl.value.name;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.name;
     this.router.navigate([
       "navbar",
       "tax-settings",

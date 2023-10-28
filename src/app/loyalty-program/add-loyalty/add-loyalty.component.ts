@@ -223,16 +223,12 @@ export class AddLoyaltyComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.code };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.code };
-            });
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
 
             if (localStorage.getItem("applicationName")) {
               let defApplication = this.searchApplicationOptions.filter(
@@ -256,34 +252,6 @@ export class AddLoyaltyComponent implements OnInit {
               this.appModuleDataPresent = true;
               this.searchAppModule();
             }
-
-            // if (
-            //   !(
-            //     this.loyaltyService.applicationName ||
-            //     this.loyaltyService.moduleName
-            //   )
-            // ) {
-            //   if (this.mode != "add") {
-            //     this.router.navigate([`navbar/loyalty-programs`]);
-            //   } else {
-            //     this.coreService.removeLoadingScreen();
-            //   }
-            // } else {
-            //   if (this.mode != "add") {
-            //     this.appCtrl.setValue({
-            //       name: this.loyaltyService.applicationName,
-            //       code: this.loyaltyService.applicationName,
-            //     });
-            //     this.moduleCtrl.setValue({
-            //       name: this.loyaltyService.moduleName,
-            //       code: this.loyaltyService.moduleName,
-            //     });
-            //     this.appModuleDataPresent = true;
-            //     this.appCtrl.disable();
-            //     this.moduleCtrl.disable();
-            //     this.searchAppModule();
-            //   }
-            // }
           } else {
           }
         }
