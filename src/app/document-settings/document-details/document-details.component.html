@@ -96,7 +96,12 @@
               optionLabel="name"
               formControlName="applications"
               (onChange)="onAppValueChange()"
-            ></p-dropdown>
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
+              </div>
+            </ng-template></p-dropdown>
           </div>
           <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
             <label
@@ -112,7 +117,12 @@
               optionLabel="name"
               formControlName="modules"
               (onChange)="searchAppModule()"
-            ></p-dropdown>
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
+              </div>
+            </ng-template></p-dropdown>
           </div>
         </div>
       </div>
@@ -263,7 +273,12 @@
                         "
                         [disabled]="rowData['linked'] == 'Y'"
                         [disabled]="rowData['isActive'] == 'N'"
-                      ></p-dropdown>
+                      ><ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div >{{ options.name}}</div>
+                        </div>
+                      </ng-template>
+                    </p-dropdown>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'checkbox'"

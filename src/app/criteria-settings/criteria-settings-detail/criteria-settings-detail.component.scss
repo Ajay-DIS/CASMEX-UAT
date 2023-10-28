@@ -3,7 +3,7 @@
 }
 .select-form-application .field {
   align-items: center;
-  gap: 15px;
+  // gap: 15px;
 }
 .savebtn {
   padding-left: 10px;
@@ -194,8 +194,21 @@ input::-webkit-inner-spin-button {
   top: 8px;
   margin-left: 2px;
 }
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+}
+:host ::ng-deep .p-element .p-inputwrapper .smartSearch {
+  width: 77% !important;
+}
 /* suresh end*/
 
 .criteria-view-table ::ng-deep .p-datatable .p-datatable-thead > tr > th {
   border-width: 0 0 0 0 !important;
+}
+
+@media screen and (max-width: 1700px) and (min-width:1301px) {
+  .description-text {
+   margin-top: 9px; 
+     margin-left: -15px;
+  }
 }

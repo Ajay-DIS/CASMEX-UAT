@@ -78,7 +78,7 @@ input {
   padding: 0.5rem 1rem;
 }
 .p-dropdown-panel .p-dropdown-items .p-dropdown-item span {
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .p-input-icon-left > i:first-of-type {
@@ -172,7 +172,7 @@ input {
 
 .p-dropdown .p-dropdown-label,
 .p-dropdown .p-dropdown-label.p-placeholder {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .p-dropdown-trigger,
@@ -372,7 +372,7 @@ label,
 .p-inputtext,
 .p-dropdown-label {
   font-weight: 500 !important;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 input.p-inputnumber-input {
@@ -850,7 +850,19 @@ input:focus {
 .NorecordFound img {
   width: 27%;
 }
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 30ch;
+  // border: 1px solid #ccc; /* Optional: Add a border for better visualization */
+}
 
+.truncate-text:hover {
+  white-space: normal;
+  overflow: visible;
+  max-width: none;
+}
 // NO RECORD FOUND IMG STYLE END
 
 // @media screen and (max-width: 1198px) {

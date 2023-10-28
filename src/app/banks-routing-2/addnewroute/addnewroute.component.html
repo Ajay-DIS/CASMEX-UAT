@@ -212,9 +212,7 @@
                     [frozen]="col['frozen']"
                   >
                     {{ col.header }}
-                    <span *ngIf="isMandatoryCol(col.header)" class="red-star"
-                      >*</span
-                    >
+                    <span class="red-star" *ngIf="col.isMandatory">*</span>
                   </th>
                 </tr>
               </ng-template>

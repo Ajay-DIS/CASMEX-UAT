@@ -32,7 +32,12 @@
               placeholder="Select"
               optionLabel="name"
               formControlName="applications"
-            ></p-dropdown>
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
+              </div>
+            </ng-template></p-dropdown>
           </div>
           <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
             <label
@@ -47,7 +52,12 @@
               placeholder="Select"
               optionLabel="name"
               formControlName="modules"
-            ></p-dropdown>
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
+              </div>
+            </ng-template></p-dropdown>
           </div>
           <div class="addnew field col-md-2 col-lg-2 col-sm-4 col-xs-4 md-2">
             <button
