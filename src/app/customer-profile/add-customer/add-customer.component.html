@@ -741,11 +741,10 @@
                       ></p-dropdown>
                       <p-dropdown
                         *ngSwitchCase="'smart-search'"
-                        class="block"
+                        class="block smartSearch"
                         [formControlName]="field.name"
                         [options]="masterData[field.apiKey]"
                         optionLabel="codeName"
-                        [appendTo]="'body'"
                         [filter]="true"
                         filterBy="codeName"
                         placeholder="Type to search"

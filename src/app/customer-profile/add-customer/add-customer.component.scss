@@ -218,9 +218,33 @@ div.btn-grp {
     width: 100% !important;
   }
 }
-@media screen and (max-width: 1420px) and (min-width: 1201px) {
+@media screen and (max-width: 1520px) and (min-width: 1201px) {
   .fieldForm {
     // margin-right: 30px;
     width: 20%;
   }
+  label {
+    font-size: 11px;
+  }
+  .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 10px !important;
+  }
+}
+:host ::ng-deep .p-autocomplete {
+  display: initial !important;
+}
+
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+
+}
+.p-inputtext .p-component .p-placeholder {
+color: lightgray;
+}
+::ng-deep .p-calendar .p-inputtext::placeholder {
+  color: lightgray; /* Replace with the desired color */
+  font-size: 12px;
+}
+::ng-deep .p-dropdown-item{
+  font-size: 11px;
 }
