@@ -26,7 +26,12 @@
                   optionValue="code"
                   [placeholder]="searchField"
                   class="primarydropdown"
-                ></p-dropdown>
+                >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div >{{ options.name}}</div>
+                  </div>
+                </ng-template></p-dropdown>
                 <div class="p-input-icon-right" 
                 (keyup.enter)="searchByEnter($event)">
                 

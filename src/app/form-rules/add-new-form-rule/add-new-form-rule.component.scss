@@ -160,7 +160,7 @@ input.inputError {
   font-size: 14px;
 }
 .select-module-application p-dropdown {
-  width: 100%;
+  width: 77%;
 }
 .select-module-application::ng-deep .p-dropdown {
   width: 90%;
@@ -173,6 +173,12 @@ input.inputError {
 }
 .saveAddbtn {
   padding-left: 10px;
+}
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+}
+:host ::ng-deep .p-element .p-inputwrapper .smartSearch {
+  width: 77% !important;
 }
 @media screen and (max-width: 1400px) and (min-width:1201px) {
   .savebtn {

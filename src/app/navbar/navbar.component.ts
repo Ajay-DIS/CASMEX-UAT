@@ -191,8 +191,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Tax":
+          item["routerLink"] = "/navbar/tax-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
 
         case "Form Rules Settings":
+          item["routerLink"] = "/navbar/form-rules";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Form Rules":
           item["routerLink"] = "/navbar/form-rules";
           item["routerLinkActiveOptions"] = { subset: true };
           break;

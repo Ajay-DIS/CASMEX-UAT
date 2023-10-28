@@ -74,6 +74,7 @@ export class AddnewrouteComponent2 implements OnInit {
     {
       field: "routeToBankName",
       header: "Route To",
+      isMandatory: true,
       fieldType: "dropdown",
       frozen: false,
       info: null,
@@ -81,6 +82,7 @@ export class AddnewrouteComponent2 implements OnInit {
     {
       field: "routeToServiceCategory",
       header: "Service Category",
+      isMandatory: true,
       fieldType: "dropdown",
       frozen: false,
       info: null,
@@ -88,6 +90,7 @@ export class AddnewrouteComponent2 implements OnInit {
     {
       field: "routeToServiceType",
       header: "Service Type",
+      isMandatory: true,
       fieldType: "dropdown",
       frozen: false,
       info: null,

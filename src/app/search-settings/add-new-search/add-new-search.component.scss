@@ -4,7 +4,19 @@
 }
 .select-form-application .field {
   align-items: center;
-  gap: 15px;
+  // gap: 15px;
+}
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+}
+:host ::ng-deep .p-element .p-inputwrapper .smartSearch {
+  width: 77% !important;
+}
+@media screen and (max-width: 1700px) and (min-width:1301px) {
+  .description-text {
+   margin-top: 9px; 
+     margin-left: -12px;
+  }
 }
 @media screen and (max-width: 1400px) and (min-width:1201px) {
   .savebtn {
