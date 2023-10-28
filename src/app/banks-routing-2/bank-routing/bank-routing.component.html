@@ -66,7 +66,7 @@
     </div>
   </div>
 
-  <div class="ptable" *ngIf="bankRoutingData">
+  <div class="ptable" *ngIf="bankRoutingData && bankRoutingData.length">
     <p-table
       #dt
       [columns]="cols"
@@ -257,7 +257,7 @@
     </p-table>
   </div>
 </div>
-<div class="NorecordFound" *ngIf="!bankRoutingData && showNoDataFound">
+<div class="NorecordFound" *ngIf="!bankRoutingData?.length && showNoDataFound">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>

@@ -38,9 +38,26 @@ export class LoginService {
       data.module ? data.module : "Remittance"
     );
 
+    let application = {
+      code: data?.applicationAccess?.cmApplicationMaster?.code,
+      name: data?.applicationAccess?.cmApplicationMaster?.name,
+    };
+    let module = { code: "Remittance", name: "Remittance" };
+
+    localStorage.setItem("appAccess", JSON.stringify([application]));
+    localStorage.setItem(
+      "modAccess",
+      JSON.stringify(
+        data?.applicationAccess?.cmApplicationMaster[
+          "cmPrimaryModuleMaster"
+        ].map((mod) => {
+          return { code: mod.code, name: mod.primaryModuleName };
+        })
+      )
+    );
     let defAppMod = {
-      applicationName: data.application ? data.application : "CASMEX_CORE",
-      moduleName: data.module ? data.module : "Remittance",
+      applicationName: application,
+      moduleName: module,
     };
 
     localStorage.setItem("defAppModule", JSON.stringify(defAppMod));
@@ -52,6 +69,11 @@ export class LoginService {
     localStorage.setItem("userData", JSON.stringify(loggedUser));
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
+
+    sessionStorage.setItem("bankRoute", null),
+      sessionStorage.setItem("tax", null),
+      sessionStorage.setItem("doc", null),
+      sessionStorage.setItem("form", null);
   }
 
   loginUser(data: LoginFormData) {

@@ -10,7 +10,7 @@ export class CoreService {
   breadcrumbsItems = [
     { label: "Home", routerLink: "/navbar" },
     { label: "Settings", routerLink: "/navbar" },
-    { label: "Bank Routing", routerLink: "bank-routing" },
+    { label: "Bank Routing Settings", routerLink: "bank-routing" },
   ];
 
   constructor(

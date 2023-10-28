@@ -162,41 +162,56 @@ export class AddnewrouteComponent2 implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
-            if (
-              !(
-                this.bankRoutingService.applicationName ||
-                this.bankRoutingService.moduleName
-              )
-            ) {
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
+            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+            let currAppMod = JSON.parse(sessionStorage.getItem("bankRoute"));
+
+            let defApp = null;
+            let defMod = null;
+
+            if (currAppMod) {
+              console.log(currAppMod);
+              defApp = this.searchApplicationOptions.filter(
+                (opt) => opt.code == currAppMod.applicationName.code
+              )[0];
+              defMod = this.searchModuleOptions.filter(
+                (opt) => opt.code == currAppMod.moduleName.code
+              )[0];
+            } else {
+              if (defAppMod) {
+                defApp = this.searchApplicationOptions.filter(
+                  (opt) => opt.code == defAppMod.applicationName.code
+                )[0];
+                defMod = this.searchModuleOptions.filter(
+                  (opt) => opt.code == defAppMod.moduleName.code
+                )[0];
+              }
+            }
+
+            if (defApp) {
+              this.appCtrl.patchValue(defApp);
+            }
+            if (defMod) {
+              this.moduleCtrl.patchValue(defMod);
+            }
+            if (this.appCtrl.value && this.moduleCtrl.value) {
+              this.moduleCtrl.enable();
+              this.searchAppModule();
+              this.appModuleDataPresent = true;
+              if (this.mode != "add") {
+                this.appCtrl.disable();
+                this.moduleCtrl.disable();
+              }
+            } else {
               if (this.mode != "add") {
                 this.router.navigate([`navbar/bank-routing`]);
               } else {
                 this.coreService.removeLoadingScreen();
-              }
-            } else {
-              if (this.mode != "add") {
-                this.appCtrl.setValue({
-                  name: this.bankRoutingService.applicationName,
-                  code: this.bankRoutingService.applicationName,
-                });
-                this.moduleCtrl.setValue({
-                  name: this.bankRoutingService.moduleName,
-                  code: this.bankRoutingService.moduleName,
-                });
-                this.appModuleDataPresent = true;
-                this.appCtrl.disable();
-                this.moduleCtrl.disable();
-                this.searchAppModule();
               }
             }
           } else {
@@ -536,13 +551,13 @@ export class AddnewrouteComponent2 implements OnInit {
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name
       ),
       addBankRouteCriteriaData:
         this.bankRoutingService.getAddBankRouteCriteriaData(
-          this.appCtrl.value.code,
-          this.moduleCtrl.value.code,
+          this.appCtrl.value.name,
+          this.moduleCtrl.value.name,
           this.formName
         ),
     })
@@ -669,11 +684,11 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.code,
+        this.appCtrl.value.name,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.code
+        this.moduleCtrl.value.name
       )
       .subscribe(
         (res) => {
@@ -724,9 +739,9 @@ export class AddnewrouteComponent2 implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("routeCode", this.routeID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.code);
+    postDataCriteria.append("applications", this.appCtrl.value.name);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
     this.isApplyCriteriaClicked = true;
     if (this.isBankRoutingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1022,9 +1037,9 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.code);
+    templateFormData.append("applications", this.appCtrl.value.name);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.code);
+    templateFormData.append("moduleName", this.moduleCtrl.value.name);
     this.coreService.displayLoadingScreen();
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1070,8 +1085,8 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code,
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name,
         this.formName
       )
       .subscribe((res) => {
@@ -1318,8 +1333,8 @@ export class AddnewrouteComponent2 implements OnInit {
           service = this.bankRoutingService.updateRoute(
             this.userId,
             data,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
             this.formName
           );
         } else {
@@ -1330,8 +1345,8 @@ export class AddnewrouteComponent2 implements OnInit {
           };
           service = this.bankRoutingService.addNewRoute(
             data,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
             this.formName
           );
         }

@@ -83,7 +83,7 @@
     </div>
   </div>
 
-  <div class="ptable" *ngIf="formRuleData?.length">
+  <div class="ptable" *ngIf="formRuleData && formRuleData?.length">
     <p-table
       #dt
       [columns]="cols"

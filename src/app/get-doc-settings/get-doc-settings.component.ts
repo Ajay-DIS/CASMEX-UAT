@@ -45,7 +45,7 @@ export class GetDocSettingsComponent implements OnInit {
     return this.http
       .get(`remittance/formRulesController/getCriteriaMasterData`, {
         headers: new HttpHeaders()
-          .set("userId", String(this.userData))
+          .set("userId", String(this.userData.userId))
           .set("form", "Document Settings")
           .set("applications", "Casmex Core")
           .set("moduleName", "Remittance"),

@@ -204,16 +204,13 @@ export class AddNewFormRuleComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = res["data"][
-              "cmApplicationMaster"
-            ].map((app) => {
-              return { name: app.name, code: app.name };
-            });
-            this.searchModuleOptions = res["data"][
-              "cmPrimaryModuleMasterDetails"
-            ].map((app) => {
-              return { name: app.codeName, code: app.codeName };
-            });
+            this.searchApplicationOptions = JSON.parse(
+              localStorage.getItem("appAccess")
+            );
+            this.searchModuleOptions = JSON.parse(
+              localStorage.getItem("modAccess")
+            );
+
             this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
               .filter((form) => {
                 return form.criteriaForms.includes("_Form Rules");
@@ -221,37 +218,71 @@ export class AddNewFormRuleComponent implements OnInit {
               .map((form) => {
                 return { name: form.criteriaForms, code: form.criteriaForms };
               });
-            if (
-              !(
-                this.formRuleService.applicationName ||
-                this.formRuleService.moduleName ||
-                this.formRuleService.formName
-              )
-            ) {
-              if (this.mode != "add") {
-                this.router.navigate([`navbar/form-rules`]);
-              } else {
-                this.coreService.removeLoadingScreen();
-              }
+
+            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+            let currAppMod = JSON.parse(sessionStorage.getItem("form"));
+
+            let defApp = null;
+            let defMod = null;
+            let defForm = null;
+
+            if (currAppMod) {
+              console.log(currAppMod);
+              defApp = this.searchApplicationOptions.filter(
+                (opt) => opt.code == currAppMod.applicationName.code
+              )[0];
+              defMod = this.searchModuleOptions.filter(
+                (opt) => opt.code == currAppMod.moduleName.code
+              )[0];
+              defForm = this.searchFormOptions.filter(
+                (opt) => opt.code == currAppMod.formName.code
+              )[0];
             } else {
-              if (this.mode != "add") {
-                this.appCtrl.setValue({
-                  name: this.formRuleService.applicationName,
-                  code: this.formRuleService.applicationName,
-                });
-                this.moduleCtrl.setValue({
-                  name: this.formRuleService.moduleName,
-                  code: this.formRuleService.moduleName,
-                });
-                this.formCtrl.setValue({
-                  name: this.formRuleService.formName,
-                  code: this.formRuleService.formName,
-                });
-                this.appModuleDataPresent = true;
+              if (defAppMod) {
+                defApp = this.searchApplicationOptions.filter(
+                  (opt) => opt.code == defAppMod.applicationName.code
+                )[0];
+                defMod = this.searchModuleOptions.filter(
+                  (opt) => opt.code == defAppMod.moduleName.code
+                )[0];
+              }
+            }
+
+            if (defApp) {
+              this.appCtrl.patchValue(defApp);
+            }
+            if (defMod) {
+              this.moduleCtrl.patchValue(defMod);
+            }
+            if (defForm) {
+              this.formCtrl.patchValue(defForm);
+            }
+
+            if (this.mode != "add") {
+              if (
+                this.appCtrl.value &&
+                this.moduleCtrl.value &&
+                this.formCtrl.value
+              ) {
                 this.appCtrl.disable();
                 this.moduleCtrl.disable();
                 this.formCtrl.disable();
                 this.searchAppModule();
+                this.appModuleDataPresent = true;
+              } else {
+                this.router.navigate([`navbar/form-rules`]);
+              }
+            } else {
+              this.moduleCtrl.enable();
+              this.formCtrl.enable();
+              if (
+                this.appCtrl.value &&
+                this.moduleCtrl.value &&
+                this.formCtrl.value
+              ) {
+                this.searchAppModule();
+              } else {
+                this.coreService.removeLoadingScreen();
               }
             }
           } else {
@@ -880,15 +911,15 @@ export class AddNewFormRuleComponent implements OnInit {
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
         this.userId,
-        this.formCtrl.value.code,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code
+        this.formCtrl.value.name,
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name
       ),
       addFormRuleCriteriaData: this.formRuleService.getAddFormRuleCriteriaData(
         this.userId,
-        this.formCtrl.value.code,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code
+        this.formCtrl.value.name,
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name
       ),
     })
       .pipe(
@@ -1012,12 +1043,12 @@ export class AddNewFormRuleComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .getCorrespondentValuesData(
-        this.formCtrl.value.code,
-        this.appCtrl.value.code,
+        this.formCtrl.value.name,
+        this.appCtrl.value.name,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.code
+        this.moduleCtrl.value.name
       )
       .subscribe(
         (res) => {
@@ -1069,9 +1100,9 @@ export class AddNewFormRuleComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("formRuleCode", this.ruleID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.code);
-    postDataCriteria.append("form", this.formCtrl.value.code);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
+    postDataCriteria.append("applications", this.appCtrl.value.name);
+    postDataCriteria.append("form", this.formCtrl.value.name);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
     this.isApplyCriteriaClicked = true;
     if (this.isFromRulesLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1539,9 +1570,9 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.code);
-    templateFormData.append("form", this.formCtrl.value.code);
-    templateFormData.append("moduleName", this.moduleCtrl.value.code);
+    templateFormData.append("applications", this.appCtrl.value.name);
+    templateFormData.append("form", this.formCtrl.value.name);
+    templateFormData.append("moduleName", this.moduleCtrl.value.name);
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1588,9 +1619,9 @@ export class AddNewFormRuleComponent implements OnInit {
     this.formRuleService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.code,
-        this.moduleCtrl.value.code,
-        this.formCtrl.value.code
+        this.appCtrl.value.name,
+        this.moduleCtrl.value.name,
+        this.formCtrl.value.name
       )
       .subscribe(
         (res) => {
@@ -1737,16 +1768,16 @@ export class AddNewFormRuleComponent implements OnInit {
           service = this.formRuleService.updateFormRule(
             this.userId,
             payloadData,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
-            this.formCtrl.value.code
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
+            this.formCtrl.value.name
           );
         } else {
           service = this.formRuleService.addNewFormRule(
             payloadData,
-            this.appCtrl.value.code,
-            this.moduleCtrl.value.code,
-            this.formCtrl.value.code
+            this.appCtrl.value.name,
+            this.moduleCtrl.value.name,
+            this.formCtrl.value.name
           );
         }
 

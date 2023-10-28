@@ -118,16 +118,12 @@ export class AddNewSearchComponent implements OnInit {
             }
           } else {
             if (res["data"]) {
-              this.searchApplicationOptions = res["data"][
-                "cmApplicationMaster"
-              ].map((app) => {
-                return { name: app.name, code: app.name };
-              });
-              this.searchModuleOptions = res["data"][
-                "cmPrimaryModuleMasterDetails"
-              ].map((app) => {
-                return { name: app.codeName, code: app.codeName };
-              });
+              this.searchApplicationOptions = JSON.parse(
+                localStorage.getItem("appAccess")
+              );
+              this.searchModuleOptions = JSON.parse(
+                localStorage.getItem("modAccess")
+              );
               this.searchFormsOptions = res["data"][
                 "cmSearchSettingFormMasters"
               ].map((app) => {
@@ -151,6 +147,29 @@ export class AddNewSearchComponent implements OnInit {
                     this.router.navigateByUrl(`navbar/search-settings`);
                   }
                 });
+              } else {
+                let defAppMod = JSON.parse(
+                  localStorage.getItem("defAppModule")
+                );
+                let defApp = null;
+                let defMod = null;
+                if (defAppMod) {
+                  defApp = this.searchApplicationOptions.filter(
+                    (opt) => opt.code == defAppMod.applicationName.code
+                  )[0];
+                  defMod = this.searchModuleOptions.filter(
+                    (opt) => opt.code == defAppMod.moduleName.code
+                  )[0];
+                }
+
+                if (defApp) {
+                  this.appCtrl.patchValue(defApp);
+                }
+                if (defMod) {
+                  this.moduleCtrl.patchValue(defMod);
+                  this.moduleCtrl.enable();
+                  this.formCtrl.enable();
+                }
               }
             } else if (res["msg"]) {
               this.coreService.showWarningToast(res["msg"]);
@@ -664,15 +683,15 @@ export class AddNewSearchComponent implements OnInit {
             });
 
             const appValue = this.searchApplicationOptions.find(
-              (value) => value.code === data["applicationName"]
+              (value) => value.name === data["applicationName"]
             );
             this.appCtrl.setValue(appValue);
             const formValue = this.searchFormsOptions.find(
-              (value) => value.code === data["formName"]
+              (value) => value.name === data["formName"]
             );
             this.formCtrl.setValue(formValue);
             const moduleValue = this.searchModuleOptions.find(
-              (value) => value.code === data["moduleName"]
+              (value) => value.name === data["moduleName"]
             );
             this.moduleCtrl.setValue(moduleValue);
           }

@@ -3,6 +3,7 @@ import { GroupServiceService } from "./group-service.service";
 import { ActivatedRoute } from "@angular/router";
 import { CoreService } from "../core.service";
 import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "app-group-settings",
@@ -30,7 +31,8 @@ export class GroupSettingsComponent implements OnInit {
     private groupService: GroupServiceService,
     private route: ActivatedRoute,
     private coreService: CoreService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -114,8 +116,14 @@ export class GroupSettingsComponent implements OnInit {
       });
   }
   getMasterData() {
-    this.groupService
-      .getCriteriaMasterData(this.formName, this.appName, this.moduleName)
+    return this.http
+      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+        headers: new HttpHeaders()
+          .set("userId", String(this.userData.userId))
+          .set("form", "Bank Routings")
+          .set("applications", "Casmex Core")
+          .set("moduleName", "Remittance"),
+      })
       .subscribe((res: any) => {
         console.log("masterdata", res);
         this.masterData = res;
