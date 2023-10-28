@@ -458,6 +458,15 @@ export class CustomerProfileComponent implements OnInit {
   }
   onUserTypeChange(value: any) {
     this.formName = "Customer Profile";
+    console.log("type", value);
+    if (value == "Corporate") {
+      console.log("colums", this.columns);
+      this.columns.forEach((column) => {
+        if (column.field === "fullName") {
+          column.header = "Corporate Name";
+        }
+      });
+    }
     this.type = value;
     this.criteriaMap = "NA";
     this.searchCriteria = [];
