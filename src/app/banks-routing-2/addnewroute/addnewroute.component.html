@@ -234,6 +234,7 @@
                       <p-dropdown
                         [options]="rowData[col.field + 'Option']"
                         optionLabel="codeName"
+                        class="smartSearch"
                         appendTo="body"
                         [placeholder]="
                           rowData[col['field']] && rowData[col['field']] != 'null'
@@ -245,7 +246,12 @@
                         "
                         [disabled]="rowData['linked'] == 'Y'"
                         [disabled]="rowData['isActive'] == 'N'"
-                      ></p-dropdown>
+                      >
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div >{{ options.codeName}}</div>
+                        </div>
+                      </ng-template></p-dropdown>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'text'"

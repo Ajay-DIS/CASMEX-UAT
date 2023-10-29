@@ -144,7 +144,12 @@
                 placeholder="Select"
                 optionValue="code"
                 optionLabel="name"
-              ></p-dropdown>
+              >
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div >{{ options.name}}</div>
+                </div>
+              </ng-template></p-dropdown>
             </div>
           </div>
           <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
@@ -421,7 +426,12 @@
                             rowData['rewardsAs'] != 'Discount') ||
                           rowData['isActive'] == 'N'
                         "
-                      ></p-dropdown>
+                      >
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div >{{ options.codeName}}</div>
+                        </div>
+                      </ng-template></p-dropdown>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"
