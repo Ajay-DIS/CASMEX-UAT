@@ -239,12 +239,17 @@ div.btn-grp {
 
 }
 .p-inputtext .p-component .p-placeholder {
-color: lightgray;
+color: rgb(180, 178, 178) ;
 }
 ::ng-deep .p-calendar .p-inputtext::placeholder {
-  color: lightgray; /* Replace with the desired color */
+  color: rgb(180, 178, 178) ; /* Replace with the desired color */
   font-size: 12px;
 }
 ::ng-deep .p-dropdown-item{
   font-size: 11px;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
+  color:  rgb(180, 178, 178) !important;
 }
