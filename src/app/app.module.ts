@@ -60,7 +60,7 @@ import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.compo
 import { MessageService } from "primeng/api";
 import { AddNewFormRuleComponent } from "./form-rules/add-new-form-rule/add-new-form-rule.component";
 import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-rule-listing.component";
-import { GroupSettingsComponent } from "./group-settings/group-settings.component";
+import { GroupSettingsComponent } from "./get-apis/group-settings/group-settings.component";
 import { CustomerProfileComponent } from "./customer-profile/customer-profile.component";
 import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
 import { PanelModule } from "primeng/panel";
@@ -70,8 +70,8 @@ import { InputMaskModule } from "primeng/inputmask";
 import { FileUploadModule } from "primeng/fileupload";
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
-import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
-import { CustomFormComponent } from "./custom-form/custom-form.component";
+import { CustomFieldsComponent } from "./get-apis/custom-fields/custom-fields.component";
+import { CustomFormComponent } from "./get-apis/custom-form/custom-form.component";
 import { CorporateComponent } from "./customer-profile/corporate/corporate.component";
 import { UserIdleModule } from "angular-user-idle";
 import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
@@ -80,12 +80,12 @@ import { DocumentListingComponent } from "./document-settings/document-listing/d
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
 import { AddCustomerBenefComponent } from "./beneficiary-profile/add-customer-benef/add-customer-benef.component";
 import { AutoCompleteModule } from "primeng/autocomplete";
-import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
+import { GetDocSettingsComponent } from "./get-apis/get-doc-settings/get-doc-settings.component";
 import { DateMaskDirective } from "./date-mask.directive";
 import { TransactionDateModal } from "./shared/modals/transaction-date-modal/transaction-date-modal";
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
-import { LoyaltyDetailsListComponent } from './loyalty-program/loyalty-details-list/loyalty-details-list.component';
+import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {

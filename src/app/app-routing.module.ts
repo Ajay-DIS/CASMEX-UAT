@@ -14,18 +14,18 @@ import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute
 import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
 import { AddNewFormRuleComponent } from "./form-rules/add-new-form-rule/add-new-form-rule.component";
 import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-rule-listing.component";
-import { GroupSettingsComponent } from "./group-settings/group-settings.component";
+import { GroupSettingsComponent } from "./get-apis/group-settings/group-settings.component";
 import { CustomerProfileComponent } from "./customer-profile/customer-profile.component";
 import { AddCustomerComponent } from "./customer-profile/add-customer/add-customer.component";
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
-import { CustomFieldsComponent } from "./custom-fields/custom-fields.component";
-import { CustomFormComponent } from "./custom-form/custom-form.component";
+import { CustomFieldsComponent } from "./get-apis/custom-fields/custom-fields.component";
+import { CustomFormComponent } from "./get-apis/custom-form/custom-form.component";
 import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
 import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
 import { DocumentListingComponent } from "./document-settings/document-listing/document-listing.component";
 import { DocumentDetailsComponent } from "./document-settings/document-details/document-details.component";
-import { GetDocSettingsComponent } from "./get-doc-settings/get-doc-settings.component";
+import { GetDocSettingsComponent } from "./get-apis/get-doc-settings/get-doc-settings.component";
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
@@ -103,25 +103,20 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "authorization-page-setting",
+        path: "get-loyalty-programs",
         component: CustomFormComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          {
-            label: "Application Settings",
-            routerLink: "authorization-page-setting",
-          },
-          { label: "Get Form Rules", routerLink: "" },
+          { label: "Home", routerLink: "../navbar/get-loyalty-programs" },
+          { label: "Get Loyalty Programs", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
       {
-        path: "custom-fields",
+        path: "get-tax-settings",
         component: CustomFieldsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Application Settings", routerLink: "custom-fields" },
-          { label: "Tax Setting", routerLink: "" },
+          { label: "Home", routerLink: "../navbar/get-tax-settings" },
+          { label: "Get Tax Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -129,8 +124,7 @@ const routes: Routes = [
         path: "get-doc-settings",
         component: GetDocSettingsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Application Settings", routerLink: "get-doc-settings" },
+          { label: "Home", routerLink: "../navbar/get-doc-settings" },
           { label: "Get Doc Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -303,12 +297,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "group-settings",
+        path: "get-bank-routings",
         component: GroupSettingsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Application Settings", routerLink: "group-settings" },
-          { label: "Bank Routing Settings", routerLink: "" },
+          { label: "Home", routerLink: "../navbar/get-bank-routings" },
+          { label: "Get Bank Routings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

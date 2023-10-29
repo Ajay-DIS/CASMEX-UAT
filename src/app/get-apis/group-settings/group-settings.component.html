@@ -1,0 +1,66 @@
+<div class="visible-main-section">
+  <div class="details-page-card">
+    <div class="ruleDesc">
+      <p style="position: relative">
+        Criteria Map <span class="description red-star">*</span>
+      </p>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="criteriaMapDes"
+        maxlength="1000"
+        placeholder="Max 1000 characters"
+      />
+
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Apply"
+        class="p-button-raised"
+        (click)="Apply()"
+      ></button>
+    </div>
+    <div
+      *ngIf="tableData && tableData.length"
+      class="table-data"
+      style="margin-top: 10px"
+    >
+      <p-table
+        #dt
+        [value]="tableData"
+        [paginator]="true"
+        [rows]="10"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Route Code</th>
+            <th>Route CodeID</th>
+            <th>Criteria</th>
+            <th>Route To Bank</th>
+            <th>Route To Service Category</th>
+            <th>Route To ServiceType</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>{{ product.RouteCode }}</td>
+            <td>{{ product.RouteCodeID }}</td>
+            <td>{{ product.Criteria }}</td>
+            <td>{{ product.RouteToBank }}</td>
+            <td>{{ product.RouteToServiceCategory }}</td>
+            <td>{{ product.RouteToServiceType }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">{{ responseMessage }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

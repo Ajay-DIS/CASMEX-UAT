@@ -1,0 +1,80 @@
+<div class="visible-main-section">
+  <div class="details-page-card">
+    <div class="ruleDesc">
+      <p style="position: relative">
+        Criteria Map <span class="description red-star">*</span>
+      </p>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="criteriaMapDes"
+        maxlength="1000"
+        placeholder="Max 1000 characters"
+      />
+
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Apply"
+        class="p-button-raised"
+        (click)="Apply()"
+      ></button>
+    </div>
+    <div
+      *ngIf="tableData && tableData.length"
+      class="table-data"
+      style="margin-top: 10px"
+    >
+      <p-table
+        #dt
+        [value]="tableData"
+        [paginator]="true"
+        [rows]="10"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Document</th>
+            <th>Document Id</th>
+            <th>Criteria</th>
+            <th>Document No Type</th>
+            <th>Length (Min/Max)</th>
+            <th>Grace Period Days</th>
+            <th>Is Mandatory</th>
+            <th>Issue Country</th>
+            <th>FrontSide</th>
+            <th>BackSide</th>
+            <th>Is Default</th>
+            <th>Bypass Image</th>
+            <th>Expire Alert Days</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>{{ product.Document }}</td>
+            <td>{{ product.DocumentId }}</td>
+            <td>{{ product.CriteriaMap }}</td>
+            <td>{{ product.DocumentNoType }}</td>
+            <td>{{ product.LengthMinMax }}</td>
+            <td>{{ product.GracePeriodDays }}</td>
+            <td>{{ product.IsMandatory }}</td>
+            <td>{{ product.IssueCountry }}</td>
+            <td>{{ product.FrontSide }}</td>
+            <td>{{ product.BackSide }}</td>
+            <td>{{ product.IsDefault }}</td>
+            <td>{{ product.BypassImage }}</td>
+            <td>{{ product.ExpireAlertDays }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="13">{{ responseMessage }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { CoreService } from "../core.service";
-import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
+import { CoreService } from "../../core.service";
+import { SetCriteriaService } from "../../shared/components/set-criteria/set-criteria.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
@@ -11,15 +11,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 })
 export class GetDocSettingsComponent implements OnInit {
   products: any = [];
-  taxSettingData: any = [];
+  tableData: any = [];
   userData: any = {};
   responseMessage = "";
 
   criteriaMapDes = "";
-
-  appName = "Casmex Core";
-  moduleName = "Remittance";
-  formName = "Tax Settings";
 
   newcriteriaMapCode = "";
   masterData: any = [];
@@ -38,7 +34,6 @@ export class GetDocSettingsComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    // this.getTaxSettingapiData();
     this.getMasterData();
   }
   getMasterData() {
@@ -123,9 +118,9 @@ export class GetDocSettingsComponent implements OnInit {
         console.log("response ", res);
         if (res.TaxSettingData && res.TaxSettingData.length) {
           this.responseMessage = res.msg;
-          this.taxSettingData = res.TaxSettingData;
+          this.tableData = res.TaxSettingData;
         } else {
-          this.taxSettingData = [];
+          this.tableData = [];
           this.responseMessage = res.msg;
           this.coreService.showWarningToast(res.msg);
         }
