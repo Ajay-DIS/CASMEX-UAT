@@ -178,10 +178,6 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/criteria-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Authorization Page Setting":
-          item["routerLink"] = "/navbar/authorization-page-setting";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
         case "Search Settings":
           item["routerLink"] = "/navbar/search-settings";
           item["routerLinkActiveOptions"] = { subset: true };
@@ -206,15 +202,19 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           break;
 
         case "Bank Routing Settings API":
-          item["routerLink"] = "/navbar/group-settings";
+          item["routerLink"] = "/navbar/get-bank-routings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
         case "Tax Settings API":
-          item["routerLink"] = "/navbar/custom-fields";
+          item["routerLink"] = "/navbar/get-tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
         case "Document Settings API":
           item["routerLink"] = "/navbar/get-doc-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Loyalty Programs Manager API":
+          item["routerLink"] = "/navbar/get-loyalty-programs";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
         case "Beneficiary Profile":
@@ -344,9 +344,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       case "API Test":
         iconName = "applicationsettings-icon";
         matchUrls = [
-          "/navbar/group-settings",
-          "/navbar/authorization-page-setting",
-          "/navbar/custom-fields",
+          "/navbar/get-bank-routings",
+          "/navbar/get-loyalty-programs",
+          "/navbar/get-tax-settings",
           "/navbar/get-doc-settings",
         ];
         routeName = "/navbar/criteria-settings";

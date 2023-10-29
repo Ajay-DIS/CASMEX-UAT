@@ -1,0 +1,74 @@
+<div class="visible-main-section">
+  <div class="details-page-card">
+    <div class="ruleDesc">
+      <p style="position: relative">
+        Criteria Map <span class="description red-star">*</span>
+      </p>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="criteriaMapDes"
+        maxlength="1000"
+        placeholder="Max 1000 characters"
+      />
+
+      <button
+        pButton
+        pRipple
+        type="button"
+        label="Apply"
+        class="p-button-raised"
+        (click)="Apply()"
+      ></button>
+    </div>
+    <div
+      *ngIf="tableData && tableData.length"
+      class="table-data"
+      style="margin-top: 10px"
+    >
+      <p-table
+        #dt
+        [value]="tableData"
+        [paginator]="true"
+        [rows]="10"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Program Code</th>
+            <th>Program Code Id</th>
+            <th>Criteria</th>
+            <th>Program Type</th>
+            <th>Program Description</th>
+            <th>Promo Code</th>
+            <th>Promo Code Length</th>
+            <th>Rewards As</th>
+            <th>Loyalty Type</th>
+            <th>Loyalty Value</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+          <tr>
+            <td>{{ product.ProgramCode }}</td>
+            <td>{{ product.ProgramCodeId }}</td>
+            <td>{{ product.Criteria }}</td>
+            <td>{{ product.ProgramType }}</td>
+            <td>{{ product.ProgramDescription }}</td>
+            <td>{{ product.PromoCode }}</td>
+            <td>{{ product.PromoCodeLength }}</td>
+            <td>{{ product["Rewards As"] }}</td>
+            <td>{{ product.LoyaltyType }}</td>
+            <td>{{ product.LoyaltyValue }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10">{{ responseMessage }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

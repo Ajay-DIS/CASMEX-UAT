@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { GroupServiceService } from "./group-service.service";
 import { ActivatedRoute } from "@angular/router";
-import { CoreService } from "../core.service";
-import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
+import { CoreService } from "../../core.service";
+import { SetCriteriaService } from "../../shared/components/set-criteria/set-criteria.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
@@ -12,15 +11,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 })
 export class GroupSettingsComponent implements OnInit {
   products: any = [];
-  routingData: any = [];
+  tableData: any = [];
   userData: any = {};
   responseMessage = "";
 
   criteriaMapDes = "";
-
-  appName = "Casmex Core";
-  moduleName = "Remittance";
-  formName = "Bank Routings";
 
   newcriteriaMapCode = "";
   masterData: any = [];
@@ -28,7 +23,6 @@ export class GroupSettingsComponent implements OnInit {
   criteriaCodeText: any[] = [];
 
   constructor(
-    private groupService: GroupServiceService,
     private route: ActivatedRoute,
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService,
@@ -36,14 +30,26 @@ export class GroupSettingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userData = JSON.parse(localStorage.getItem("userData"));
-    // this.getRoutingapiData();
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
+    this.userData = JSON.parse(localStorage.getItem("userData"));
     this.getMasterData();
   }
-
+  getMasterData() {
+    return this.http
+      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+        headers: new HttpHeaders()
+          .set("userId", String(this.userData.userId))
+          .set("form", "Bank Routings")
+          .set("applications", "Casmex Core")
+          .set("moduleName", "Remittance"),
+      })
+      .subscribe((res: any) => {
+        console.log("masterdata", res);
+        this.masterData = res;
+      });
+  }
   Apply() {
     console.log("criteriaMapDes", this.criteriaMapDes);
     this.criteriaMapCodeArray = this.criteriaMapDes
@@ -81,6 +87,7 @@ export class GroupSettingsComponent implements OnInit {
 
     let newCrtMap = this.criteriaMapDes;
     decodedFormattedCriteriaArr.forEach((crt) => {
+      console.log("crt", crt);
       let copyCrtMap = newCrtMap;
       let nameVal = (Object.values(crt)[0] as string).split("&&&&")[0];
       console.log("keys", Object.keys(crt)[0]);
@@ -96,53 +103,26 @@ export class GroupSettingsComponent implements OnInit {
     });
     console.log("newCrtMap", newCrtMap.split(", ").join(";"));
     this.newcriteriaMapCode = newCrtMap.split(", ").join(";");
-
-    this.groupService
-      .getRoutingData(
-        this.newcriteriaMapCode,
-        this.appName,
-        this.moduleName,
-        this.formName
-      )
-      .subscribe((res: any) => {
-        if (res.RouteData && res.RouteData.length) {
-          this.responseMessage = res.msg;
-          this.routingData = res.RouteData;
-        } else {
-          this.routingData = [];
-          this.responseMessage = res.msg;
-          this.coreService.showWarningToast(res.msg);
-        }
-      });
-  }
-  getMasterData() {
-    return this.http
-      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+    this.coreService.displayLoadingScreen();
+    this.http;
+    this.http
+      .get(`remittance/banksRoutingController/getBankRouting`, {
         headers: new HttpHeaders()
-          .set("userId", String(this.userData.userId))
+          .set("criteriaMap", this.newcriteriaMapCode)
           .set("form", "Bank Routings")
           .set("applications", "Casmex Core")
           .set("moduleName", "Remittance"),
       })
       .subscribe((res: any) => {
-        console.log("masterdata", res);
-        this.masterData = res;
-      });
-  }
-
-  getRoutingapiData(appValue: any, moduleValue: any) {
-    let params = [
-      "Country = IND;Organization = ICICI&&&&from:1::to:2",
-      "Country = IND;Organization = ICICI&&&&LCY Amount = 3000",
-    ];
-    this.groupService
-      .getRoutingData(params, appValue, moduleValue, this.formName)
-      .subscribe((res: any) => {
+        this.coreService.removeLoadingScreen();
         console.log("response ", res);
         if (res.RouteData && res.RouteData.length) {
-          this.routingData = res.RouteData;
-        } else {
           this.responseMessage = res.msg;
+          this.tableData = res.RouteData;
+        } else {
+          this.tableData = [];
+          this.responseMessage = res.msg;
+          this.coreService.showWarningToast(res.msg);
         }
       });
   }

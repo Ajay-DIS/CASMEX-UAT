@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { CustomfieldServiceService } from "./customfield-service.service";
 import { ActivatedRoute } from "@angular/router";
-import { CoreService } from "../core.service";
-import { SetCriteriaService } from "../shared/components/set-criteria/set-criteria.service";
+import { CoreService } from "../../core.service";
+import { SetCriteriaService } from "../../shared/components/set-criteria/set-criteria.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
@@ -12,15 +11,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 })
 export class CustomFieldsComponent implements OnInit {
   products: any = [];
-  taxSettingData: any = [];
+  tableData: any = [];
   userData: any = {};
   responseMessage = "";
 
   criteriaMapDes = "";
-
-  appName = "Casmex Core";
-  moduleName = "Remittance";
-  formName = "Tax Settings";
 
   newcriteriaMapCode = "";
   masterData: any = [];
@@ -28,7 +23,6 @@ export class CustomFieldsComponent implements OnInit {
   criteriaCodeText: any[] = [];
 
   constructor(
-    private customService: CustomfieldServiceService,
     private route: ActivatedRoute,
     private coreService: CoreService,
     private setCriteriaService: SetCriteriaService,
@@ -40,7 +34,6 @@ export class CustomFieldsComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.userData = JSON.parse(localStorage.getItem("userData"));
-    // this.getTaxSettingapiData();
     this.getMasterData();
   }
   getMasterData() {
@@ -111,21 +104,23 @@ export class CustomFieldsComponent implements OnInit {
     console.log("newCrtMap", newCrtMap.split(", ").join(";"));
     this.newcriteriaMapCode = newCrtMap.split(", ").join(";");
     this.coreService.displayLoadingScreen();
-    this.customService
-      .getTaxSettingData(
-        this.newcriteriaMapCode,
-        this.appName,
-        this.moduleName,
-        this.formName
-      )
+    this.http;
+    this.http
+      .get(`remittance/taxSettingCriteriaController/getTaxSetting`, {
+        headers: new HttpHeaders()
+          .set("criteriaMap", this.newcriteriaMapCode)
+          .set("form", "Tax Settings")
+          .set("applications", "Casmex Core")
+          .set("moduleName", "Remittance"),
+      })
       .subscribe((res: any) => {
         this.coreService.removeLoadingScreen();
         console.log("response ", res);
         if (res.TaxSettingData && res.TaxSettingData.length) {
           this.responseMessage = res.msg;
-          this.taxSettingData = res.TaxSettingData;
+          this.tableData = res.TaxSettingData;
         } else {
-          this.taxSettingData = [];
+          this.tableData = [];
           this.responseMessage = res.msg;
           this.coreService.showWarningToast(res.msg);
         }
