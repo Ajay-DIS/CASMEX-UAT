@@ -114,6 +114,9 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   copyKycSection: any = {};
 
+  documentExpiry: any = [];
+  documentExpiryObj: any = [];
+
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
@@ -2071,8 +2074,10 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       });
     });
     if (data["uploadDocuments"]) {
+      this.checkDocumentExpiry(data["uploadDocuments"]);
       this.uploadedKycData = data["uploadDocuments"].map((key) => {
         let docData = {};
+
         docData["id"] = key["id"] ? key["id"] : "";
         docData["operation"] = "null";
         docData["idNumber"] = key["idNumber"] ? key["idNumber"] : "";
@@ -2418,7 +2423,46 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       );
     }
   }
+  checkDocumentExpiry(data: any[]) {
+    const currentDate = new Date();
+    this.documentExpiry = [];
+    this.documentExpiryObj = [];
+    data.forEach((data) => {
+      if (data["idExpiryDate"] !== null) {
+        this.documentExpiryObj.push({
+          documentType: data["documentType"],
+          expiryDate: data["idExpiryDate"],
+        });
+      }
+    });
+    console.log(this.documentExpiryObj);
+    if (this.documentExpiryObj && this.documentExpiryObj.length) {
+      this.documentExpiryObj.forEach((element) => {
+        console.log("expiryDate111", element.expiryDate);
+        const parts = element.expiryDate.split("/");
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
 
+        const expiryDate = new Date(year, month, day);
+
+        if (currentDate > expiryDate) {
+          // ID has expired, give a warning
+          console.log(`${element.documentType} has expired.`);
+          this.documentExpiry.push(element.documentType);
+        }
+      });
+    }
+
+    if (this.documentExpiry.length) {
+      this.coreService.showWarningToast(
+        `${this.documentExpiry.join(", ")} document has expired.`
+      );
+    }
+    console.log("documentExpiry", this.documentExpiry);
+
+    console.log("documentExpiry", this.documentExpiryObj);
+  }
   saveIndividualCustomer(payload: any) {
     this.http
       .post(

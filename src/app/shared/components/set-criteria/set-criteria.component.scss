@@ -61,18 +61,36 @@
 }
 
 .left-dropdowns {
-  width: 80%;
+  width: 100%;
   display: flex;
   align-items: center;
   position: relative;
 }
 
 .right-select {
-  width: 20%;
+  width: 100%;
   display: flex;
   justify-content: flex-end;
 }
-
+@media screen and (max-width: 1300px) and (min-width: 700px) {
+  // .right-select {
+  //   margin-top: 47px;
+  // }
+  // .left-dropdowns {
+  //   display: initial;
+  // }
+  .dropdowns-select-container ::ng-deep .p-dropdown{
+    width: 180px !important;
+  }
+}
+@media screen and (max-width: 910px) and (min-width: 700px) {
+  .right-select {
+    margin-top: 47px;
+  }
+  .left-dropdowns {
+       display: initial;
+    }
+}
 .saveTemplateModal ::ng-deep .p-dialog .p-dialog-header {
   border-top-right-radius: 15px !important;
   border-top-left-radius: 15px !important;
@@ -159,5 +177,5 @@ a:hover {
 }
 
 .smart-search ::ng-deep .p-overlay.p-component {
-  max-width: 250px;
+  width: 100%;
 }

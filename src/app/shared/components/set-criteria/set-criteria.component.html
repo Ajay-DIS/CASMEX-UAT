@@ -57,176 +57,196 @@
     </ng-template>
   </p-dialog>
   <div class="dropdowns-select-container mb-3">
-    <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
-      <p-treeSelect
-        class="mr-3"
-        scrollHeight="300px"
-        [options]="criteriaMapDdlOptions"
-        placeholder="Select Criteria"
-        formControlName="criteria"
-        (onNodeSelect)="onCriteriaSelect($event.node)"
-      >
-        <ng-template let-criteria pTemplate="default">
-          <div
-            [pTooltip]="
-              getTooltip(
-                criteria['isMandatory'],
-                criteria['isDependent'],
-                criteria['dependencyList']
-              )
-            "
-          >
-            {{ criteria.data }}
-          </div>
-        </ng-template>
-      </p-treeSelect>
+    <div class="col-12">
+      <div class="row">
+        <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12">
 
-      <p-dropdown
-        class="mr-3"
-        [options]="criteriaEqualsDdlOptions"
-        optionLabel="name"
-        placeholder="Select Operator"
-        (onChange)="onChange('condition', $event.value)"
-        formControlName="operation"
-      ></p-dropdown>
-
-      <ng-container
-        *ngIf="
-          selectedCriteria?.criteriaType == 'Slab' ||
-          selectedCriteria?.criteriaType == 'SQL' ||
-          selectedCriteria?.criteriaType == 'date'
-        "
-      >
-        <!-- <p-dropdown
-          *ngIf="!hideValuesDropdown"
-          class="mr-3"
-          [options]="correspondentDdlOptions"
-          optionLabel="name"
-          placeholder="Value"
-          (onChange)="onChange('val', $event.value)"
-          formControlName="value"
-        ></p-dropdown> -->
-        <p-dropdown
-          *ngIf="!hideValuesDropdown"
-          class="mr-3 smart-search"
-          [options]="correspondentDdlOptions"
-          optionLabel="name"
-          [filter]="true"
-          filterBy="name"
-          placeholder="Value"
-          formControlName="value"
-          (onChange)="onChange('val', $event.value)"
-        >
-          <ng-template pTemplate="selectedItem">
-            <div
-              class="country-item country-item-value"
-              *ngIf="valueCtrl?.value"
+          <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
+            <p-treeSelect
+              class="mr-2"
+              scrollHeight="300px"
+              [options]="criteriaMapDdlOptions"
+              placeholder="Select Criteria"
+              formControlName="criteria"
+              (onNodeSelect)="onCriteriaSelect($event.node)"
             >
-              <div>
-                {{ valueCtrl.value?.name }}
+              <ng-template let-criteria pTemplate="default">
+                <div
+                  [pTooltip]="
+                    getTooltip(
+                      criteria['isMandatory'],
+                      criteria['isDependent'],
+                      criteria['dependencyList']
+                    )
+                  "
+                >
+                  {{ criteria.data }}
+                </div>
+              </ng-template>
+            </p-treeSelect>
+      
+            <p-dropdown
+              class="mr-2"
+              [options]="criteriaEqualsDdlOptions"
+              optionLabel="name"
+              placeholder="Select Operator"
+              (onChange)="onChange('condition', $event.value)"
+              formControlName="operation"
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
               </div>
-            </div>
-          </ng-template>
-          <ng-template let-item pTemplate="item">
-            <div class="country-item">
-              <div>{{ item.name }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
+            </ng-template></p-dropdown>
+      
+            <ng-container
+              *ngIf="
+                selectedCriteria?.criteriaType == 'Slab' ||
+                selectedCriteria?.criteriaType == 'SQL' ||
+                selectedCriteria?.criteriaType == 'date'
+              "
+            >
+              <!-- <p-dropdown
+                *ngIf="!hideValuesDropdown"
+                class="mr-3"
+                [options]="correspondentDdlOptions"
+                optionLabel="name"
+                placeholder="Value"
+                (onChange)="onChange('val', $event.value)"
+                formControlName="value"
+              ></p-dropdown> -->
+              <p-dropdown
+                *ngIf="!hideValuesDropdown"
+                class="mr-2 smart-search"
+                [options]="correspondentDdlOptions"
+                optionLabel="name"
+                [filter]="true"
+                filterBy="name"
+                placeholder="Value"
+                formControlName="value"
+                (onChange)="onChange('val', $event.value)"
+              >
+                <ng-template pTemplate="selectedItem">
+                  <div
+                    class="country-item country-item-value"
+                    *ngIf="valueCtrl?.value"
+                  >
+                    <div>
+                      {{ valueCtrl.value?.name }}
+                    </div>
+                  </div>
+                </ng-template>
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div >{{ options.name}}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+      
+              <p-inputNumber
+                class="value-input mr-3"
+                *ngIf="hideValuesDropdown && showValueInput"
+                placeholder="Value"
+                pInputNumber
+                formControlName="value"
+                [useGrouping]="false"
+                [min]="0"
+                maxlength="10"
+                maxValue="9999999999"
+                (onInput)="changeValueInput($event)"
+              >
+              </p-inputNumber>
+              <p-calendar
+                *ngIf="hideValuesDropdown && showDateInput"
+                class="block mr-3"
+                placeholder="DD/MM/YYYY"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                formControlName="value"
+                [readonlyInput]="false"
+                [appendTo]="'body'"
+                appDateMask
+              ></p-calendar>
+            </ng-container>
+            <ng-container
+              *ngIf="
+                selectedCriteria?.criteriaType != 'Slab' &&
+                selectedCriteria?.criteriaType != 'SQL' &&
+                selectedCriteria?.criteriaType != 'date'
+              "
+              [ngSwitch]="selectedCriteria?.criteriaType"
+            >
+              <input
+                *ngSwitchCase="'text'"
+                type="text"
+                class="block mr-3"
+                placeholder="Value"
+                pInputText
+                formControlName="value"
+              />
+              <input
+                *ngSwitchCase="'email'"
+                type="text"
+                class="block mr-3"
+                placeholder="Value"
+                pInputText
+                formControlName="value"
+                email
+              />
+              <p-inputNumber
+                *ngSwitchCase="'number'"
+                class="mr-3"
+                placeholder="Value"
+                pInputNumber
+                formControlName="value"
+                [useGrouping]="false"
+                [min]="0"
+                maxlength="10"
+                maxValue="9999999999"
+                (onInput)="changeValueInput($event)"
+              >
+              </p-inputNumber>
+            </ng-container>
+      
+            <button
+              #addCriteriaBtn
+              pButton
+              pRipple
+              style="position: static; left: 645px; font-size: 1.5rem"
+              type="button"
+              label="+"
+              class="p-button-primary"
+              [disabled]="!selectCriteriaForm.valid"
+              (click)="addCriteriaMap()"
+            ></button>
+          </div>
+        </div>
+        <div class="col-md-2 col-lg-2 col-sm-6 col-xs-12">
 
-        <p-inputNumber
-          class="value-input mr-3"
-          *ngIf="hideValuesDropdown && showValueInput"
-          placeholder="Value"
-          pInputNumber
-          formControlName="value"
-          [useGrouping]="false"
-          [min]="0"
-          maxlength="10"
-          maxValue="9999999999"
-          (onInput)="changeValueInput($event)"
-        >
-        </p-inputNumber>
-        <p-calendar
-          *ngIf="hideValuesDropdown && showDateInput"
-          class="block mr-3"
-          placeholder="DD/MM/YYYY"
-          dateFormat="dd/mm/yy"
-          [showIcon]="true"
-          formControlName="value"
-          [readonlyInput]="false"
-          [appendTo]="'body'"
-          appDateMask
-        ></p-calendar>
-      </ng-container>
-      <ng-container
-        *ngIf="
-          selectedCriteria?.criteriaType != 'Slab' &&
-          selectedCriteria?.criteriaType != 'SQL' &&
-          selectedCriteria?.criteriaType != 'date'
-        "
-        [ngSwitch]="selectedCriteria?.criteriaType"
-      >
-        <input
-          *ngSwitchCase="'text'"
-          type="text"
-          class="block mr-3"
-          placeholder="Value"
-          pInputText
-          formControlName="value"
-        />
-        <input
-          *ngSwitchCase="'email'"
-          type="text"
-          class="block mr-3"
-          placeholder="Value"
-          pInputText
-          formControlName="value"
-          email
-        />
-        <p-inputNumber
-          *ngSwitchCase="'number'"
-          class="mr-3"
-          placeholder="Value"
-          pInputNumber
-          formControlName="value"
-          [useGrouping]="false"
-          [min]="0"
-          maxlength="10"
-          maxValue="9999999999"
-          (onInput)="changeValueInput($event)"
-        >
-        </p-inputNumber>
-      </ng-container>
-
-      <button
-        #addCriteriaBtn
-        pButton
-        pRipple
-        style="position: static; left: 645px; font-size: 1.5rem"
-        type="button"
-        label="+"
-        class="p-button-primary"
-        [disabled]="!selectCriteriaForm.valid"
-        (click)="addCriteriaMap()"
-      ></button>
-    </div>
-    <div class="right-select">
-      <p-dropdown
-        #templatesDropdown
-        class="templates-dropdown"
-        [options]="criteriaTemplatesDdlOptions"
-        optionLabel="name"
-        [appendTo]="'body'"
-        [placeholder]="
-          criteriaTemplatesDdlOptions.length
-            ? 'Select Template'
-            : 'No saved templates'
-        "
-        [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData"
-        (onChange)="selectCriteriaTemplate($event.value)"
-        [(ngModel)]="selectedTemplate"
-      ></p-dropdown>
+          <div class="right-select">
+            <p-dropdown
+              #templatesDropdown
+              class="templates-dropdown"
+              [options]="criteriaTemplatesDdlOptions"
+              optionLabel="name"
+              [appendTo]="'body'"
+              [placeholder]="
+                criteriaTemplatesDdlOptions.length
+                  ? 'Select Template'
+                  : 'No saved templates'
+              "
+              [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData"
+              (onChange)="selectCriteriaTemplate($event.value)"
+              [(ngModel)]="selectedTemplate"
+            >
+            <ng-template let-options pTemplate="item">
+              <div class="truncate-text">
+                <div >{{ options.name}}</div>
+              </div>
+            </ng-template></p-dropdown>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
