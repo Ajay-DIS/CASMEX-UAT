@@ -88,9 +88,12 @@
         let-index="rowIndex"
       >
         <tr [pReorderableRow]="index">
-          <ng-container *ngFor="let col of columns">
+          <ng-container *ngFor="let col of columns; let i = index">
             <td>
-              <div style="display: inline-block;">
+              <div
+                style="display: inline-block"
+                [ngStyle]="{ 'white-space': i == 5 ? 'pre-line' : '' }"
+              >
                 {{ rowData[col["field"]] }}
               </div>
               <!-- <a

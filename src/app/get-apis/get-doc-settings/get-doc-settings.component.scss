@@ -18,3 +18,44 @@ button {
 .details-page-card {
   padding: 10px;
 }
+
+.select-module-application {
+  display: flex;
+  gap: 10px;
+}
+.select-module-application .field {
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0;
+}
+
+.select-module-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-module-application p-dropdown {
+  width: 100%;
+}
+.select-module-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  border: none !important;
+}
+
+.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: -5px;
+  margin-left: 2px;
+}
+
+.sample-format {
+  margin-left: 80px;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+  color: grey;
+}
