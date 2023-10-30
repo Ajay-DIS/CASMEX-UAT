@@ -110,7 +110,7 @@ export class CustomerProfileComponent implements OnInit {
       field: "fullName",
       header: "Customer Full Name",
       width: "36%",
-      searchWidth: "180px",
+      searchWidth: "100%",
     },
     // { field: "nationality", header: "Nationality" },
     {
