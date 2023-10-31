@@ -74,7 +74,7 @@
 :host ::ng-deep .p-dropdown .p-dropdown-trigger {
   color: #fff;
 }
-:host ::ng-deep button.p-button .headerbtn{
+:host ::ng-deep button.p-button .headerbtn {
   padding: auto !important;
   height: 33.5px !important;
 }
@@ -110,12 +110,12 @@
   width: 63% !important;
 }
 
-.btnround{
+.btnround {
   border-radius: 50% !important;
   height: 26px !important;
   width: 26px !important;
 }
-.searchInBtn{
+.searchInBtn {
   margin-right: -100px;
 }
 @media screen and (max-width: 660px) {
@@ -144,7 +144,7 @@
   }
 }
 @media screen and (max-width: 1200px) and (min-width: 790px) {
-  .searchInBtn{
+  .searchInBtn {
     margin-right: 0px;
   }
 }
@@ -155,7 +155,7 @@
 //   }
 // }
 @media screen and (max-width: 785px) and (min-width: 768px) {
-  .p-input-icon-right i{
+  .p-input-icon-right i {
     position: absolute;
     top: 25% !important;
   }
@@ -196,10 +196,17 @@
   :host ::ng-deep .primarydropdown .p-dropdown {
     width: 100px;
   }
-  .searchInBtn{
+  .searchInBtn {
     margin-right: 0px;
   }
-} 
+}
 .table-search {
   max-width: unset !important;
+}
+
+.primarydropdown.docId-dropdown ::ng-deep .p-dropdown {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
 }
