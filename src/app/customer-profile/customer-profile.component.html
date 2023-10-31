@@ -1,24 +1,28 @@
 <div class="visible-main-section">
   <div class="pagetitle">
-      <div class="col-12">
-        <div class="row mt-3">
-        <div class="col-md-9 col-lg-10 col-sm-12 col-xs-12 mt-2 flex-align-center">
+    <div class="col-12">
+      <div class="row mt-3">
+        <div
+          class="col-md-9 col-lg-10 col-sm-12 col-xs-12 mt-2 flex-align-center"
+        >
           <div class="row">
-
-                <div class="col-md-9 col-lg-9 col-sm-12 col-xs-12 inline-flex searchInBtn" >
-                  <p-dropdown
-              class="colorInput"
-              [options]="userTypeOptions"
-              [(ngModel)]="customerType"
-              (onChange)="onUserTypeChange($event.value)"
-              optionValue="code"
-              optionLabel="name"
-              class="firstdropdown"
-            ></p-dropdown>
+            <div
+              class="col-md-9 col-lg-9 col-sm-12 col-xs-12 inline-flex searchInBtn"
+            >
+              <p-dropdown
+                class="colorInput"
+                [options]="userTypeOptions"
+                [(ngModel)]="customerType"
+                (onChange)="onUserTypeChange($event.value)"
+                optionValue="code"
+                optionLabel="name"
+                class="firstdropdown"
+                [style]="{ maxWidth: '128px' }"
+              ></p-dropdown>
               <!-- </div>
               <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12"> -->
-                <div class="input-group">
-                  <p-dropdown
+              <div class="input-group">
+                <p-dropdown
                   [options]="searchCriteriaOptions"
                   [(ngModel)]="customerFieldType"
                   (onChange)="onCriteriaChange($event.value)"
@@ -26,93 +30,124 @@
                   optionValue="code"
                   [placeholder]="searchField"
                   class="primarydropdown"
+                  [style]="{ maxWidth: '128px' }"
+                  [panelStyle]="{ maxWidth: '128px' }"
                 >
-                <ng-template let-options pTemplate="item">
-                  <div class="truncate-text">
-                    <div >{{ options.name}}</div>
-                  </div>
-                </ng-template></p-dropdown>
-                <div class="p-input-icon-right" 
-                (keyup.enter)="searchByEnter($event)">
-                
-                <ng-container [ngSwitch]="criteriaType">
-                  <input
-                    *ngSwitchCase="'text'"
-                    class="searchBox"
-                    type="text"
-                    pInputText
-                    [(ngModel)]="currentCriteriaValue"
-                    placeholder="Search"
-                  />
-                
-                  <p-inputNumber
-                    *ngSwitchCase="'number'"
-                    class="block searchBox"
-                    [(ngModel)]="currentCriteriaValue"
-                    mode="decimal"
-                    [useGrouping]="false"
-                    placeholder="Search"
-                  >
-                  </p-inputNumber>
-                  <p-calendar
-                  class="searchBox"
-                    *ngSwitchCase="'date'"
-                    placeholder="DD/MM/YYYY"
-                    dateFormat="dd/mm/yy"
-                    [(ngModel)]="currentCriteriaValue"
-                    [readonlyInput]="false"
-                    [appendTo]="'body'"
-                    appDateMask
-                  ></p-calendar>
-                  <i class="pi pi-search"></i>
-                </ng-container>  
-              </div>
+                  <ng-template let-options pTemplate="item">
+                    <div class="truncate-text">
+                      <div>{{ options.name }}</div>
+                    </div>
+                  </ng-template></p-dropdown
+                >
+                <div
+                  class="p-input-icon-right"
+                  (keyup.enter)="searchByEnter($event)"
+                >
+                  <ng-container [ngSwitch]="criteriaType">
+                    <p-dropdown
+                      *ngSwitchCase="'SQL'"
+                      [options]="docIdOptions"
+                      [(ngModel)]="docIdSelected.code"
+                      (onChange)="onDocIdChange($event)"
+                      optionLabel="name"
+                      optionValue="code"
+                      [placeholder]="'Select'"
+                      class="primarydropdown docId-dropdown"
+                      [style]="{ width: '100%' }"
+                    >
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div
+                            [pTooltip]="options.isPrime ? 'Primary ID' : ''"
+                            [ngStyle]="{
+                              'text-decoration': options.isPrime
+                                ? 'underline'
+                                : '',
+                              'text-underline-offset': options.isPrime
+                                ? '2px'
+                                : '',
+                              'text-decoration-thickness': options.isPrime
+                                ? '2px'
+                                : '',
+                              'text-decoration-color': options.isPrime
+                                ? '#f9b70e'
+                                : ''
+                            }"
+                          >
+                            {{ options.name }}
+                          </div>
+                        </div>
+                      </ng-template></p-dropdown
+                    >
+                    <input
+                      *ngSwitchCase="'text'"
+                      class="searchBox"
+                      type="text"
+                      pInputText
+                      [(ngModel)]="currentCriteriaValue"
+                      placeholder="Search"
+                    />
+
+                    <p-inputNumber
+                      *ngSwitchCase="'number'"
+                      class="block searchBox"
+                      [(ngModel)]="currentCriteriaValue"
+                      mode="decimal"
+                      [useGrouping]="false"
+                      placeholder="Search"
+                    >
+                    </p-inputNumber>
+                    <p-calendar
+                      class="searchBox"
+                      *ngSwitchCase="'date'"
+                      placeholder="DD/MM/YYYY"
+                      dateFormat="dd/mm/yy"
+                      [(ngModel)]="currentCriteriaValue"
+                      [readonlyInput]="false"
+                      [appendTo]="'body'"
+                      appDateMask
+                    ></p-calendar>
+                    <i *ngIf="criteriaType != 'SQL'" class="pi pi-search"></i>
+                  </ng-container>
                 </div>
               </div>
-              <div class="col-md-3 col-lg-3 col-sm-6 col-xs-6 pl-0 ml-0">
-                <button
-            pButton
-            pRipple
-            type="button"
-            (click)="searchCustomerMap(customerType)"
-            label="Search"
-            class="search-btn ml-2 headerbtn"
-            [disabled]="!customerType"
-          ></button>
-          <button
-            pButton
-            pRipple
-            type="button"
-            (click)="clearCriteria()"
-            label="Clear"
-            class="p-button-warning search-btn ml-2 mt-lg-0 headerbtn"
-          ></button>
+            </div>
+            <div class="col-md-3 col-lg-3 col-sm-6 col-xs-6 pl-0 ml-0">
+              <button
+                pButton
+                pRipple
+                type="button"
+                (click)="searchCustomerMap(customerType)"
+                label="Search"
+                class="search-btn ml-2 headerbtn"
+                [disabled]="!customerType"
+              ></button>
+              <button
+                pButton
+                pRipple
+                type="button"
+                (click)="clearCriteria()"
+                label="Clear"
+                class="p-button-warning search-btn ml-2 mt-lg-0 headerbtn"
+              ></button>
               <!-- </div> -->
             </div>
           </div>
-          
-          
-        
         </div>
         <div class="col-md-3 col-lg-2 col-sm-4 col-xs-4 mt-2 headerbtn">
           <button
-          pButton
-          pRipple
-          type="button"
-          label="Add Customer"
-          class="p-button-raised search-btn ml-4"
-          (click)="addNewCustomer()"
-        ></button>
+            pButton
+            pRipple
+            type="button"
+            label="Add Customer"
+            class="p-button-raised search-btn ml-4"
+            (click)="addNewCustomer()"
+          ></button>
         </div>
       </div>
     </div>
-    </div>
-          
-          
-          
-            
-        
-      
+  </div>
+
   <div class="customerCriteria">
     <div class="row" *ngIf="searchCriteria.length">
       <div class="col-10">
@@ -173,7 +208,9 @@
             pResizableColumn
             [style.width]="col.width"
             [pSortableColumn]="col.field"
-            [pSortableColumnDisabled]="col.field == 'addBenificiary' || col.field == 'pastTxns'"
+            [pSortableColumnDisabled]="
+              col.field == 'addBenificiary' || col.field == 'pastTxns'
+            "
           >
             <!-- <div
               style="cursor: pointer"
@@ -191,7 +228,9 @@
             </div> -->
             {{ col.header }}
             <p-sortIcon
-              *ngIf="!(col.field == 'addBenificiary' || col.field == 'pastTxns')"
+              *ngIf="
+                !(col.field == 'addBenificiary' || col.field == 'pastTxns')
+              "
               [field]="col.field"
             ></p-sortIcon>
             <!-- <div
@@ -233,7 +272,7 @@
             <span
               class="p-input-icon-left"
               *ngIf="c < columns.length - 3"
-              [style.width]= "col.searchWidth"
+              [style.width]="col.searchWidth"
             >
               <i class="pi pi-search"></i>
               <input
