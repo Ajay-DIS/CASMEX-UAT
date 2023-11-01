@@ -193,7 +193,7 @@ export class CustomerProfileComponent implements OnInit {
     this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
     // this.getCustomerListData(this.criteriaMap);
-    this.currentCriteriaMapKey = "customerId = ";
+    this.currentCriteriaMapKey = "id = ";
     this.currentCriteriaKey = "Customer ID = ";
   }
 
@@ -388,7 +388,7 @@ export class CustomerProfileComponent implements OnInit {
         for (const prop in e.filters) {
           switch (prop) {
             case "customerCode":
-              filterCrtMap = `customerId = ${e.filters[prop]["value"]}`;
+              filterCrtMap = `id = ${e.filters[prop]["value"]}`;
               break;
             case "fullName":
               if (this.customerType && this.customerType == "Corporate") {
@@ -455,7 +455,7 @@ export class CustomerProfileComponent implements OnInit {
             }
           );
           this.searchCriteriaOptions.unshift(
-            ...[{ name: "Customer ID", code: "customerId" }]
+            ...[{ name: "Customer ID", code: "id" }]
           );
         },
         (err) => {
@@ -480,7 +480,7 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "customerId = ";
+    this.currentCriteriaMapKey = "id = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.showTable = false;
@@ -593,7 +593,7 @@ export class CustomerProfileComponent implements OnInit {
       this.currentCriteriaValue = null;
       // this.customerFieldType = null;
       // this.currentCriteriaKey = "Customer ID = ";
-      // this.currentCriteriaMapKey = "customerId = ";
+      // this.currentCriteriaMapKey = "id = ";
     }
   }
 
@@ -940,7 +940,7 @@ export class CustomerProfileComponent implements OnInit {
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
     this.currentCriteriaKey = "Customer ID = ";
-    this.currentCriteriaMapKey = "customerId = ";
+    this.currentCriteriaMapKey = "id = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.globalSearch = true;

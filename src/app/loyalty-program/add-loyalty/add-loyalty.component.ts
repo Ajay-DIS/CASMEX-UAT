@@ -432,9 +432,9 @@ export class AddLoyaltyComponent implements OnInit {
     console.log(fileData, fileIndex, operation);
     if (operation == "delete") {
       if (fileData?.id) {
-        this.uploadedfileData.splice(fileIndex, 1);
-      } else {
         this.uploadedfileData[fileIndex]["operation"] = "delete";
+      } else {
+        this.uploadedfileData.splice(fileIndex, 1);
       }
     } else if (operation == "download") {
       if (fileData?.id) {
