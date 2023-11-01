@@ -188,6 +188,69 @@ export class GroupSettingsComponent implements OnInit {
           if (res.RouteData && res.RouteData.length) {
             this.responseMessage = res.msg;
             this.tableData = res.RouteData;
+            this.tableData.forEach((tax) => {
+              let beforeSplit = tax.Criteria.split("&&&&")[0];
+              const sections = tax.Criteria.split("&&&&");
+              let amounts = "";
+              let dates = "";
+              let afterSplit = "";
+
+              // Process each section
+              sections.forEach((section) => {
+                if (section.includes("from") && section.includes("to")) {
+                  // Extract the amounts
+                  const amountsArray = section
+                    .split("#")
+                    .map((amountSection) => {
+                      const [from, to] = amountSection
+                        .split("::")
+                        .map((part) => part.split(":")[1]);
+                      return `Between ${from} - ${to}`;
+                    });
+                  amounts = amountsArray.join(" & ");
+                } else if (
+                  section.startsWith("trnStartDate") &&
+                  section.includes("trnEndDate")
+                ) {
+                  // Extract the dates
+                  const dateSections = section.split("#").map((dateSection) => {
+                    const [startDate, endDate] = dateSection
+                      .split("::")
+                      .map((part) => part.split("=")[1]);
+                    return `Between ${startDate} - ${endDate}`;
+                  });
+                  dates = dateSections.join(" & ");
+                }
+              });
+
+              if (amounts.length && dates.length) {
+                afterSplit += `Amount (${amounts}), Date (${dates})`;
+              } else if (amounts.length) {
+                afterSplit += `Amount (${amounts})`;
+              } else if (dates.length) {
+                afterSplit += `Date (${dates})`;
+              }
+
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                tax.Criteria = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    this.masterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  tax.Criteria = tax.Criteria + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  tax.Criteria = afterSplit;
+                }
+              }
+            });
           } else {
             this.tableData = [];
             this.responseMessage = res.msg;

@@ -188,6 +188,69 @@ export class GetDocSettingsComponent implements OnInit {
           if (res.TaxSettingData && res.TaxSettingData.length) {
             this.responseMessage = res.msg;
             this.tableData = res.TaxSettingData;
+            this.tableData.forEach((tax) => {
+              let beforeSplit = tax.CriteriaMap.split("&&&&")[0];
+              const sections = tax.CriteriaMap.split("&&&&");
+              let amounts = "";
+              let dates = "";
+              let afterSplit = "";
+
+              // Process each section
+              sections.forEach((section) => {
+                if (section.includes("from") && section.includes("to")) {
+                  // Extract the amounts
+                  const amountsArray = section
+                    .split("#")
+                    .map((amountSection) => {
+                      const [from, to] = amountSection
+                        .split("::")
+                        .map((part) => part.split(":")[1]);
+                      return `Between ${from} - ${to}`;
+                    });
+                  amounts = amountsArray.join(" & ");
+                } else if (
+                  section.startsWith("trnStartDate") &&
+                  section.includes("trnEndDate")
+                ) {
+                  // Extract the dates
+                  const dateSections = section.split("#").map((dateSection) => {
+                    const [startDate, endDate] = dateSection
+                      .split("::")
+                      .map((part) => part.split("=")[1]);
+                    return `Between ${startDate} - ${endDate}`;
+                  });
+                  dates = dateSections.join(" & ");
+                }
+              });
+
+              if (amounts.length && dates.length) {
+                afterSplit += `Amount (${amounts}), Date (${dates})`;
+              } else if (amounts.length) {
+                afterSplit += `Amount (${amounts})`;
+              } else if (dates.length) {
+                afterSplit += `Date (${dates})`;
+              }
+
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                tax.CriteriaMap = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    this.masterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  tax.CriteriaMap = tax.CriteriaMap + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  tax.CriteriaMap = afterSplit;
+                }
+              }
+            });
           } else {
             this.tableData = [];
             this.responseMessage = res.msg;
