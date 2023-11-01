@@ -213,6 +213,8 @@ export class DocumentListingComponent implements OnInit {
           if (docSettingListingData["data"]) {
             this.docListingApiData = docSettingListingData;
             this.docListingApiData.data.forEach((doc) => {
+              let beforeSplit = doc.criteriaMap.split("&&&&")[0];
+
               const sections = doc.criteriaMap.split("&&&&");
 
               // Initialize variables to store the formatted data
@@ -269,19 +271,24 @@ export class DocumentListingComponent implements OnInit {
               console.log("555", afterSplit);
 
               // console.log("444", formattedCriteria);
-
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: doc.criteriaMap.split("&&&&")[0],
-              });
-              doc.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-              if (afterSplit?.length) {
-                doc.criteriaMap = doc.criteriaMap + ", " + afterSplit;
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                doc.criteriaMap = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  doc.criteriaMap = doc.criteriaMap + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  doc.criteriaMap = afterSplit;
+                }
               }
             });
             this.docListingData = [...this.docListingApiData.data];

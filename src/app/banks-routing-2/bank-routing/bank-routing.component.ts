@@ -289,18 +289,24 @@ export class BankRoutingComponent2 implements OnInit {
               // tax.criteriaMap = output;
               console.log("555", afterSplit);
 
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: beforeSplit,
-              });
-              tax.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-              if (afterSplit?.length) {
-                tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                tax.criteriaMap = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  tax.criteriaMap = afterSplit;
+                }
               }
             });
 
