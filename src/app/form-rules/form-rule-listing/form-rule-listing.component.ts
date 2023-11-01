@@ -230,6 +230,7 @@ export class FormRuleListingComponent implements OnInit {
             if (formRuleListingData["data"]) {
               this.formruleListingApiData = formRuleListingData;
               this.formruleListingApiData.data.forEach((rule) => {
+                let beforeSplit = rule.criteriaMap.split("&&&&")[0];
                 const sections = rule.criteriaMap.split("&&&&");
                 let criteria = {};
                 let amounts = "";
@@ -274,21 +275,26 @@ export class FormRuleListingComponent implements OnInit {
                 }
                 console.log("555", afterSplit);
 
-                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                  criteriaMap: rule.criteriaMap.split("&&&&")[0],
-                });
-                rule.criteriaMap = (
-                  this.setCriteriaService.decodeFormattedCriteria(
-                    criteriaCodeText,
-                    criteriaMasterData,
-                    [""]
-                  ) as []
-                ).join(", ");
-
-                rule.criteriaMap = rule.criteriaMap.split("&&&&")[0];
-
-                if (afterSplit?.length) {
-                  rule.criteriaMap = rule.criteriaMap + ", " + afterSplit;
+                if (beforeSplit.length) {
+                  let criteriaCodeText = this.setCriteriaService.setCriteriaMap(
+                    {
+                      criteriaMap: beforeSplit,
+                    }
+                  );
+                  rule.criteriaMap = (
+                    this.setCriteriaService.decodeFormattedCriteria(
+                      criteriaCodeText,
+                      criteriaMasterData,
+                      [""]
+                    ) as []
+                  ).join(", ");
+                  if (afterSplit?.length) {
+                    rule.criteriaMap = rule.criteriaMap + ", " + afterSplit;
+                  }
+                } else {
+                  if (afterSplit?.length) {
+                    rule.criteriaMap = afterSplit;
+                  }
                 }
               });
               this.formRuleData = [...this.formruleListingApiData.data];

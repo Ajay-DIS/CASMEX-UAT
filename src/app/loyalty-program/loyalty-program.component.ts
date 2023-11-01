@@ -319,19 +319,24 @@ export class LoyaltyProgramComponent implements OnInit {
               } else if (dates.length) {
                 afterSplit += `Date (${dates})`;
               }
-
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: beforeSplit,
-              });
-              data.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-              if (afterSplit?.length) {
-                data.criteriaMap = data.criteriaMap + ", " + afterSplit;
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                data.criteriaMap = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  data.criteriaMap = data.criteriaMap + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  data.criteriaMap = afterSplit;
+                }
               }
             });
             this.loyaltyListData = [...this.loyaltyApiData.data];

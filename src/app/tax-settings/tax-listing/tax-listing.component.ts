@@ -253,19 +253,24 @@ export class TaxListingComponent implements OnInit {
                 afterSplit += `Date (${dates})`;
               }
 
-              let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
-                criteriaMap: beforeSplit,
-              });
-
-              tax.criteriaMap = (
-                this.setCriteriaService.decodeFormattedCriteria(
-                  criteriaCodeText,
-                  criteriaMasterData,
-                  [""]
-                ) as []
-              ).join(", ");
-              if (afterSplit?.length) {
-                tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+              if (beforeSplit.length) {
+                let criteriaCodeText = this.setCriteriaService.setCriteriaMap({
+                  criteriaMap: beforeSplit,
+                });
+                tax.criteriaMap = (
+                  this.setCriteriaService.decodeFormattedCriteria(
+                    criteriaCodeText,
+                    criteriaMasterData,
+                    [""]
+                  ) as []
+                ).join(", ");
+                if (afterSplit?.length) {
+                  tax.criteriaMap = tax.criteriaMap + ", " + afterSplit;
+                }
+              } else {
+                if (afterSplit?.length) {
+                  tax.criteriaMap = afterSplit;
+                }
               }
             });
             this.taxListingData = [...this.taxListingApiData.data];
