@@ -179,7 +179,7 @@
               >
 
               <span
-                *ngIf="i == 3 || i == 1"
+                *ngIf="i == 1"
                 [pTooltip]="
                   rowData[col['field']].length > 30 ? rowData[col['field']] : ''
                 "
@@ -190,6 +190,30 @@
                     ? rowData[col["field"]].substring(0, 30) + ".."
                     : rowData[col["field"]]
                 }}</span
+              >
+              <span
+                *ngIf="i == 3"
+                [pTooltip]="
+                  rowData[col['field']].length > 28 ? rowData[col['field']] : ''
+                "
+                tooltipPosition="bottom"
+                (mouseenter)="rowData['isHovered'] = true"
+                (mouseleave)="rowData['isHovered'] = false"
+              >
+                {{
+                  rowData[col["field"]].length > 28
+                    ? rowData["isHovered"]
+                      ? rowData[col["field"]].substring(0, 20) + ".."
+                      : rowData[col["field"]].substring(0, 28) + ".."
+                    : rowData[col["field"]]
+                }}<a
+                  style="cursor: pointer"
+                  *ngIf="
+                    rowData['isHovered'] && rowData[col['field']].length > 30
+                  "
+                  (click)="copyToClipboard(rowData[col['field']])"
+                  >COPY</a
+                ></span
               >
             </td>
 

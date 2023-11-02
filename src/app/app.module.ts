@@ -86,6 +86,7 @@ import { TransactionDateModal } from "./shared/modals/transaction-date-modal/tra
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
+import { ClipboardModule } from "ngx-clipboard";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -174,6 +175,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     FileUploadModule,
     UserIdleModule.forRoot({ idle: 1680, timeout: 120, ping: 1500 }),
     AutoCompleteModule,
+    ClipboardModule,
   ],
   providers: [
     BnNgIdleService,

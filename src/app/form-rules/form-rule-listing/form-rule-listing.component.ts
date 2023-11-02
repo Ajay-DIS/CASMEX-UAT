@@ -536,4 +536,8 @@ export class FormRuleListingComponent implements OnInit {
   fieldFilterOptions(field: any): [] {
     return this[field];
   }
+
+  copyToClipboard(text: string) {
+    this.coreService.copyToClipboard(text);
+  }
 }

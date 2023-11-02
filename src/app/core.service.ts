@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { ClipboardService } from "ngx-clipboard";
 import { MessageService } from "primeng/api";
 import { BehaviorSubject } from "rxjs";
 
@@ -15,7 +16,8 @@ export class CoreService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private clipboardService: ClipboardService
   ) {}
 
   showSuccessToast(description: any) {
@@ -90,5 +92,9 @@ export class CoreService {
   }
   setSidebarBtnFixedStyle(val: any) {
     this.$sidebarBtnFixed.next(val);
+  }
+
+  copyToClipboard(text: string) {
+    this.clipboardService.copy(text);
   }
 }
