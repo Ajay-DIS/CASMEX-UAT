@@ -239,30 +239,41 @@ export class AddLoyaltyComponent implements OnInit {
     }
     //
 
-    this.loyaltyService.getAppModuleList().subscribe(
-      (res) => {
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          // this.coreService.removeLoadingScreen();
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
+    // set promocodelength to 8 and fetch promocode
+
+    if (this.mode == "add") {
+      this.promoCodeLength = 8;
+      this.onPromoCodeLength({
+        target: {
+          value: 8,
+        },
+      });
+    }
+
+    // this.loyaltyService.getAppModuleList().subscribe(
+    //   (res) => {
+    //     if (
+    //       res["status"] &&
+    //       typeof res["status"] == "string" &&
+    //       (res["status"] == "400" || res["status"] == "500")
+    //     ) {
+    //       // this.coreService.removeLoadingScreen();
+    //       if (res["error"]) {
+    //         this.coreService.showWarningToast(res["error"]);
+    //       } else {
+    //         this.coreService.showWarningToast("Some error in fetching data");
+    //       }
+    //     } else {
+    //       if (!res["msg"]) {
+    //       } else {
+    //       }
+    //     }
+    //   },
+    //   (err) => {
+    //     this.coreService.removeLoadingScreen();
+    //     this.coreService.showWarningToast("Some error in fetching data");
+    //   }
+    // );
     this.loyaltyService.getProgramTypeData().subscribe(
       (res) => {
         if (
