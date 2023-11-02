@@ -211,6 +211,60 @@ export class DocumentDetailsComponent implements OnInit {
       );
       this.documentID = params.id;
     }
+
+    //
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let currAppMod = JSON.parse(sessionStorage.getItem("doc"));
+
+    let defApp = null;
+    let defMod = null;
+
+    if (currAppMod) {
+      console.log(currAppMod);
+      defApp = this.searchApplicationOptions.filter(
+        (opt) => opt.code == currAppMod.applicationName.code
+      )[0];
+      defMod = this.searchModuleOptions.filter(
+        (opt) => opt.code == currAppMod.moduleName.code
+      )[0];
+    } else {
+      if (defAppMod) {
+        defApp = this.searchApplicationOptions.filter(
+          (opt) => opt.code == defAppMod.applicationName.code
+        )[0];
+        defMod = this.searchModuleOptions.filter(
+          (opt) => opt.code == defAppMod.moduleName.code
+        )[0];
+      }
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+    }
+    if (this.appCtrl.value && this.moduleCtrl.value) {
+      this.moduleCtrl.enable();
+      this.searchAppModule();
+      this.appModuleDataPresent = true;
+      if (this.mode != "add") {
+        this.appCtrl.disable();
+        this.moduleCtrl.disable();
+      }
+    } else {
+      if (this.mode != "add") {
+        this.router.navigate([`navbar/document-settings`]);
+      } else {
+        this.coreService.removeLoadingScreen();
+      }
+    }
+    //
+
     this.documentService.getAppModuleList().subscribe(
       (res) => {
         if (
@@ -218,7 +272,7 @@ export class DocumentDetailsComponent implements OnInit {
           typeof res["status"] == "string" &&
           (res["status"] == "400" || res["status"] == "500")
         ) {
-          this.coreService.removeLoadingScreen();
+          // this.coreService.removeLoadingScreen();
           if (res["error"]) {
             this.coreService.showWarningToast(res["error"]);
           } else {
@@ -226,58 +280,6 @@ export class DocumentDetailsComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
-            let currAppMod = JSON.parse(sessionStorage.getItem("doc"));
-
-            let defApp = null;
-            let defMod = null;
-
-            if (currAppMod) {
-              console.log(currAppMod);
-              defApp = this.searchApplicationOptions.filter(
-                (opt) => opt.code == currAppMod.applicationName.code
-              )[0];
-              defMod = this.searchModuleOptions.filter(
-                (opt) => opt.code == currAppMod.moduleName.code
-              )[0];
-            } else {
-              if (defAppMod) {
-                defApp = this.searchApplicationOptions.filter(
-                  (opt) => opt.code == defAppMod.applicationName.code
-                )[0];
-                defMod = this.searchModuleOptions.filter(
-                  (opt) => opt.code == defAppMod.moduleName.code
-                )[0];
-              }
-            }
-
-            if (defApp) {
-              this.appCtrl.patchValue(defApp);
-            }
-            if (defMod) {
-              this.moduleCtrl.patchValue(defMod);
-            }
-            if (this.appCtrl.value && this.moduleCtrl.value) {
-              this.moduleCtrl.enable();
-              this.searchAppModule();
-              this.appModuleDataPresent = true;
-              if (this.mode != "add") {
-                this.appCtrl.disable();
-                this.moduleCtrl.disable();
-              }
-            } else {
-              if (this.mode != "add") {
-                this.router.navigate([`navbar/document-settings`]);
-              } else {
-                this.coreService.removeLoadingScreen();
-              }
-            }
           } else {
           }
         }

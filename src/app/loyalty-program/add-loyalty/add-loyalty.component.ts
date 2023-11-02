@@ -208,6 +208,37 @@ export class AddLoyaltyComponent implements OnInit {
       );
       this.loyaltyID = params.id;
     }
+
+    //
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+
+    if (localStorage.getItem("applicationName")) {
+      let defApplication = this.searchApplicationOptions.filter(
+        (opt) => opt.code == localStorage.getItem("applicationName")
+      )[0];
+      if (defApplication) {
+        this.appCtrl.patchValue(defApplication);
+      }
+    }
+    if (localStorage.getItem("moduleName")) {
+      let defModule = this.searchModuleOptions.filter(
+        (opt) => opt.code == "Loyalty Programs"
+      )[0];
+      if (defModule) {
+        this.moduleCtrl.patchValue(defModule);
+        this.moduleCtrl.enable();
+      }
+    }
+
+    if (this.appCtrl.value && this.moduleCtrl.value) {
+      this.appModuleDataPresent = true;
+      this.searchAppModule();
+    }
+    //
+
     this.loyaltyService.getAppModuleList().subscribe(
       (res) => {
         if (
@@ -215,7 +246,7 @@ export class AddLoyaltyComponent implements OnInit {
           typeof res["status"] == "string" &&
           (res["status"] == "400" || res["status"] == "500")
         ) {
-          this.coreService.removeLoadingScreen();
+          // this.coreService.removeLoadingScreen();
           if (res["error"]) {
             this.coreService.showWarningToast(res["error"]);
           } else {
@@ -223,35 +254,6 @@ export class AddLoyaltyComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-
-            if (localStorage.getItem("applicationName")) {
-              let defApplication = this.searchApplicationOptions.filter(
-                (opt) => opt.code == localStorage.getItem("applicationName")
-              )[0];
-              if (defApplication) {
-                this.appCtrl.patchValue(defApplication);
-              }
-            }
-            if (localStorage.getItem("moduleName")) {
-              let defModule = this.searchModuleOptions.filter(
-                (opt) => opt.code == "Loyalty Programs"
-              )[0];
-              if (defModule) {
-                this.moduleCtrl.patchValue(defModule);
-                this.moduleCtrl.enable();
-              }
-            }
-
-            if (this.appCtrl.value && this.moduleCtrl.value) {
-              this.appModuleDataPresent = true;
-              this.searchAppModule();
-            }
           } else {
           }
         }
