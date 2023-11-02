@@ -106,9 +106,52 @@ export class BankRoutingComponent2 implements OnInit {
 
     this.setSelectAppModule();
 
+    //
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let currAppMod = JSON.parse(sessionStorage.getItem("bankRoute"));
+
+    let defApp = null;
+    let defMod = null;
+
+    if (currAppMod) {
+      console.log(currAppMod);
+      defApp = this.searchApplicationOptions.filter(
+        (opt) => opt.code == currAppMod.applicationName.code
+      )[0];
+      defMod = this.searchModuleOptions.filter(
+        (opt) => opt.code == currAppMod.moduleName.code
+      )[0];
+    } else {
+      if (defAppMod) {
+        defApp = this.searchApplicationOptions.filter(
+          (opt) => opt.code == defAppMod.applicationName.code
+        )[0];
+        defMod = this.searchModuleOptions.filter(
+          (opt) => opt.code == defAppMod.moduleName.code
+        )[0];
+      }
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+    }
+    if (this.appCtrl.value && this.moduleCtrl.value) {
+      this.searchAppModule();
+    } else {
+      this.coreService.removeLoadingScreen();
+    }
+    //
+
     this.bankRoutingService.getBanksRoutingAppModuleList().subscribe(
       (res) => {
-        this.coreService.removeLoadingScreen();
+        // this.coreService.removeLoadingScreen();
         if (
           res["status"] &&
           typeof res["status"] == "string" &&
@@ -121,50 +164,8 @@ export class BankRoutingComponent2 implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
-            let currAppMod = JSON.parse(sessionStorage.getItem("bankRoute"));
-
-            let defApp = null;
-            let defMod = null;
-
-            if (currAppMod) {
-              console.log(currAppMod);
-              defApp = this.searchApplicationOptions.filter(
-                (opt) => opt.code == currAppMod.applicationName.code
-              )[0];
-              defMod = this.searchModuleOptions.filter(
-                (opt) => opt.code == currAppMod.moduleName.code
-              )[0];
-            } else {
-              if (defAppMod) {
-                defApp = this.searchApplicationOptions.filter(
-                  (opt) => opt.code == defAppMod.applicationName.code
-                )[0];
-                defMod = this.searchModuleOptions.filter(
-                  (opt) => opt.code == defAppMod.moduleName.code
-                )[0];
-              }
-            }
-
-            if (defApp) {
-              this.appCtrl.patchValue(defApp);
-            }
-            if (defMod) {
-              this.moduleCtrl.patchValue(defMod);
-            }
-            if (this.appCtrl.value && this.moduleCtrl.value) {
-              this.searchAppModule();
-            } else {
-              this.coreService.removeLoadingScreen();
-            }
           } else {
-            this.coreService.removeLoadingScreen();
+            // this.coreService.removeLoadingScreen();
           }
         }
       },

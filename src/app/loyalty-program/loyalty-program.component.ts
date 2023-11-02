@@ -115,6 +115,36 @@ export class LoyaltyProgramComponent implements OnInit {
 
     this.setSelectAppModule();
 
+    //
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+    if (localStorage.getItem("applicationName")) {
+      let defApplication = this.searchApplicationOptions.filter(
+        (opt) => opt.code == localStorage.getItem("applicationName")
+      )[0];
+      console.log(defApplication);
+      if (defApplication) {
+        this.appCtrl.patchValue(defApplication);
+      }
+    }
+    if (localStorage.getItem("moduleName")) {
+      let defModule = this.searchModuleOptions.filter(
+        (opt) => opt.code == "Loyalty Programs"
+      )[0];
+      if (defModule) {
+        this.moduleCtrl.patchValue(defModule);
+      }
+    }
+
+    if (this.appCtrl.value && this.moduleCtrl.value) {
+      this.searchAppModule();
+    } else {
+      this.coreService.removeLoadingScreen();
+    }
+    //
+
     this.loyaltyService.getAppModuleList().subscribe(
       (res) => {
         if (
@@ -128,38 +158,9 @@ export class LoyaltyProgramComponent implements OnInit {
             this.coreService.showWarningToast("Some error in fetching data");
           }
 
-          this.coreService.removeLoadingScreen();
+          // this.coreService.removeLoadingScreen();
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-            if (localStorage.getItem("applicationName")) {
-              let defApplication = this.searchApplicationOptions.filter(
-                (opt) => opt.code == localStorage.getItem("applicationName")
-              )[0];
-              console.log(defApplication);
-              if (defApplication) {
-                this.appCtrl.patchValue(defApplication);
-              }
-            }
-            if (localStorage.getItem("moduleName")) {
-              let defModule = this.searchModuleOptions.filter(
-                (opt) => opt.code == "Loyalty Programs"
-              )[0];
-              if (defModule) {
-                this.moduleCtrl.patchValue(defModule);
-              }
-            }
-
-            if (this.appCtrl.value && this.moduleCtrl.value) {
-              this.searchAppModule();
-            } else {
-              this.coreService.removeLoadingScreen();
-            }
           } else {
             this.coreService.removeLoadingScreen();
           }
