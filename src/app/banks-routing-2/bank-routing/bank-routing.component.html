@@ -190,12 +190,23 @@
                   rowData[col['field']].length > 80 ? rowData[col['field']] : ''
                 "
                 tooltipPosition="bottom"
+                (mouseenter)="rowData['isHovered'] = true"
+                (mouseleave)="rowData['isHovered'] = false"
               >
                 {{
                   rowData[col["field"]].length > 80
-                    ? rowData[col["field"]].substring(0, 80) + ".."
+                    ? rowData["isHovered"]
+                      ? rowData[col["field"]].substring(0, 75) + ".."
+                      : rowData[col["field"]].substring(0, 80) + ".."
                     : rowData[col["field"]]
-                }}</span
+                }}<a
+                  style="cursor: pointer"
+                  *ngIf="
+                    rowData['isHovered'] && rowData[col['field']].length > 80
+                  "
+                  (click)="copyToClipboard(rowData[col['field']])"
+                  >COPY</a
+                ></span
               >
             </td>
 

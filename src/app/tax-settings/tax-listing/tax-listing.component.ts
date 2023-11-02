@@ -495,4 +495,8 @@ export class TaxListingComponent implements OnInit {
   fieldFilterOptions(field: any): [] {
     return this[field];
   }
+
+  copyToClipboard(text: string) {
+    this.coreService.copyToClipboard(text);
+  }
 }

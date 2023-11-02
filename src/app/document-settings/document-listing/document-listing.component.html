@@ -33,11 +33,12 @@
               optionLabel="name"
               formControlName="applications"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
           <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
             <label
@@ -53,11 +54,12 @@
               optionLabel="name"
               formControlName="modules"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
           <div class="addnew field col-md-2 col-lg-2 col-sm-4 col-xs-4 md-2">
             <button
@@ -197,12 +199,23 @@
                   rowData[col['field']].length > 80 ? rowData[col['field']] : ''
                 "
                 tooltipPosition="bottom"
+                (mouseenter)="rowData['isHovered'] = true"
+                (mouseleave)="rowData['isHovered'] = false"
               >
                 {{
                   rowData[col["field"]].length > 80
-                    ? rowData[col["field"]].substring(0, 80) + ".."
+                    ? rowData["isHovered"]
+                      ? rowData[col["field"]].substring(0, 75) + ".."
+                      : rowData[col["field"]].substring(0, 80) + ".."
                     : rowData[col["field"]]
-                }}</span
+                }}<a
+                  style="cursor: pointer"
+                  *ngIf="
+                    rowData['isHovered'] && rowData[col['field']].length > 80
+                  "
+                  (click)="copyToClipboard(rowData[col['field']])"
+                  >COPY</a
+                ></span
               >
             </td>
 
