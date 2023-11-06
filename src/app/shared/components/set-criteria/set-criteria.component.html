@@ -60,7 +60,6 @@
     <div class="col-12">
       <div class="row">
         <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12">
-
           <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
             <p-treeSelect
               class="mr-2"
@@ -84,7 +83,7 @@
                 </div>
               </ng-template>
             </p-treeSelect>
-      
+
             <p-dropdown
               class="mr-2"
               [options]="criteriaEqualsDdlOptions"
@@ -93,12 +92,13 @@
               (onChange)="onChange('condition', $event.value)"
               formControlName="operation"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
-      
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
+
             <ng-container
               *ngIf="
                 selectedCriteria?.criteriaType == 'Slab' ||
@@ -125,6 +125,7 @@
                 placeholder="Value"
                 formControlName="value"
                 (onChange)="onChange('val', $event.value)"
+                optionDisabled="isDivider"
               >
                 <ng-template pTemplate="selectedItem">
                   <div
@@ -137,12 +138,19 @@
                   </div>
                 </ng-template>
                 <ng-template let-options pTemplate="item">
-                  <div class="truncate-text">
-                    <div >{{ options.name}}</div>
+                  <div *ngIf="options.name == 'divider'" style="border-top: 2px solid lightgray">
                   </div>
+                  <ng-container *ngIf="options.name != 'divider'">
+                    <div *ngIf="options.name != 'Any'" class="truncate-text">
+                      <div>{{ options.name }}</div>
+                    </div>
+                    <div *ngIf="options.name == 'Any'" class="truncate-text any-value">
+                      <div>{{ options.name }}</div>
+                    </div>
+                  </ng-container>
                 </ng-template>
               </p-dropdown>
-      
+
               <p-inputNumber
                 class="value-input mr-3"
                 *ngIf="hideValuesDropdown && showValueInput"
@@ -207,7 +215,7 @@
               >
               </p-inputNumber>
             </ng-container>
-      
+
             <button
               #addCriteriaBtn
               pButton
@@ -222,7 +230,6 @@
           </div>
         </div>
         <div class="col-md-2 col-lg-2 col-sm-6 col-xs-12">
-
           <div class="right-select">
             <p-dropdown
               #templatesDropdown
@@ -239,11 +246,12 @@
               (onChange)="selectCriteriaTemplate($event.value)"
               [(ngModel)]="selectedTemplate"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
         </div>
       </div>

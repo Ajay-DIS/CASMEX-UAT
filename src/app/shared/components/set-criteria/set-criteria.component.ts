@@ -3,9 +3,11 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
   Renderer2,
+  SimpleChanges,
   ViewChild,
 } from "@angular/core";
 import {
@@ -27,7 +29,7 @@ import { TransactionDateModal } from "../../modals/transaction-date-modal/transa
   templateUrl: "./set-criteria.component.html",
   styleUrls: ["./set-criteria.component.scss"],
 })
-export class SetCriteriaComponent implements OnInit {
+export class SetCriteriaComponent implements OnInit, OnChanges {
   @Input("criteriaMasterData") criteriaMasterData: any;
   @Input("cmCriteriaDataDetails") cmCriteriaDataDetails: any;
   @Input("criteriaDataDetailsJson") criteriaDataDetailsJson: any = {};
@@ -158,6 +160,23 @@ export class SetCriteriaComponent implements OnInit {
         }
       });
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.correspondentDdlOptions) {
+      if (
+        changes.correspondentDdlOptions.currentValue.filter(
+          (opt) => opt.name == "Any"
+        ).length
+      ) {
+        changes.correspondentDdlOptions.currentValue.splice(1, 0, {
+          code: "divider",
+          name: "divider",
+          isDivider: true
+        });
+      }
+      console.log(this.correspondentDdlOptions);
+    }
   }
 
   setSelectAppForm1() {

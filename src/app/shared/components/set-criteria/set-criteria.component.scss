@@ -79,7 +79,7 @@
   // .left-dropdowns {
   //   display: initial;
   // }
-  .dropdowns-select-container ::ng-deep .p-dropdown{
+  .dropdowns-select-container ::ng-deep .p-dropdown {
     width: 180px !important;
   }
 }
@@ -88,8 +88,8 @@
     margin-top: 47px;
   }
   .left-dropdowns {
-       display: initial;
-    }
+    display: initial;
+  }
 }
 .saveTemplateModal ::ng-deep .p-dialog .p-dialog-header {
   border-top-right-radius: 15px !important;
@@ -178,4 +178,8 @@ a:hover {
 
 .smart-search ::ng-deep .p-overlay.p-component {
   width: 100%;
+}
+
+.smart-search .any-value {
+  font-size: 13px;
 }
