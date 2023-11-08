@@ -116,6 +116,10 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   copyKycSection: any = {};
 
+  countryDialCode: any = "+91";
+
+  countryChange$: Subscription = null;
+
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
@@ -422,6 +426,28 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         .valueChanges.subscribe((val) => this.kycDocChange(val));
     }
     this.coreService.removeLoadingScreen();
+    if (this.corporateForm.get("Contact Details")?.get("contactCountry")) {
+      this.countryChange$ = this.corporateForm
+        .get("Contact Details")
+        ?.get("contactCountry")
+        .valueChanges.subscribe((value) => {
+          if (value && value.code) {
+            if ("countryDialCode" in this.masterData) {
+              let filterCode = this.masterData["countryDialCode"].filter(
+                (dialCode: any) => dialCode.code == value.code
+              );
+              console.log(filterCode);
+              if (filterCode && filterCode.length) {
+                this.countryDialCode = filterCode[0]?.countryDialCode?.length
+                  ? filterCode[0].countryDialCode
+                  : "+91";
+              } else {
+                this.countryDialCode = "+91";
+              }
+            }
+          }
+        });
+    }
   }
 
   kycDocChange(value: any) {
@@ -2854,5 +2880,9 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.kycDocType$.unsubscribe();
+
+    if (this.countryChange$) {
+      this.countryChange$.unsubscribe();
+    }
   }
 }

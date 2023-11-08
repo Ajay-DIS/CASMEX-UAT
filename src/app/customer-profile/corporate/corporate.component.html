@@ -628,14 +628,39 @@
                   (completeMethod)="searchEmployer($event)"
                 ></p-autoComplete>
               </div>
-              <input
-                *ngSwitchCase="'number'"
-                type="text"
-                class="block"
-                pInputText
-                pattern="[0-9\s]{0,20}"
-                [formControlName]="field.name"
-              />
+              <ng-container *ngSwitchCase="'number'">
+                <ng-container
+                  *ngIf="
+                    field.name == 'contactMobileNumber' ||
+                    field.name == 'contactPhoneNumber'
+                  "
+                >
+                  <div class="phone-Inp">
+                    <input
+                      type="text"
+                      pInputText
+                      [formControlName]="field.name"
+                    />
+                    <span>{{ countryDialCode }}</span>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    !(
+                      field.name == 'contactMobileNumber' ||
+                      field.name == 'contactPhoneNumber'
+                    )
+                  "
+                >
+                  <input
+                    type="text"
+                    class="block"
+                    pInputText
+                    pattern="[0-9\s]{0,20}"
+                    [formControlName]="field.name"
+                  />
+                </ng-container>
+              </ng-container>
               <div class="currency-Inp" *ngSwitchCase="'currency'">
                 <input type="text" pInputText [formControlName]="field.name" />
                 <span>AED</span>

@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChange,
@@ -15,6 +16,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
+import { Subscription } from "rxjs";
 import { CoreService } from "src/app/core.service";
 
 @Component({
@@ -22,7 +24,7 @@ import { CoreService } from "src/app/core.service";
   templateUrl: "./add-customer-benef.component.html",
   styleUrls: ["./add-customer-benef.component.scss"],
 })
-export class AddCustomerBenefComponent implements OnInit {
+export class AddCustomerBenefComponent implements OnInit, OnDestroy {
   @Input("formData") formData: any;
   @Input("beneData") beneData: any;
   @Input("masterData") masterData: any;
@@ -48,6 +50,10 @@ export class AddCustomerBenefComponent implements OnInit {
   formDataOrg = {};
   beneDataOrg = {};
   masterDataOrg = {};
+
+  countryDialCode: any = "+91";
+
+  countryChange$: Subscription = null;
 
   constructor(
     private coreService: CoreService,
@@ -193,6 +199,28 @@ export class AddCustomerBenefComponent implements OnInit {
     });
 
     this.coreService.removeLoadingScreen();
+    if (this.individualForm.get("Contact Details")?.get("contactCountry")) {
+      this.countryChange$ = this.individualForm
+        .get("Contact Details")
+        ?.get("contactCountry")
+        .valueChanges.subscribe((value) => {
+          if (value && value.code) {
+            if ("countryDialCode" in this.masterData) {
+              let filterCode = this.masterData["countryDialCode"].filter(
+                (dialCode: any) => dialCode.code == value.code
+              );
+              console.log(filterCode);
+              if (filterCode && filterCode.length) {
+                this.countryDialCode = filterCode[0]?.countryDialCode?.length
+                  ? filterCode[0].countryDialCode
+                  : "+91";
+              } else {
+                this.countryDialCode = "+91";
+              }
+            }
+          }
+        });
+    }
   }
 
   validMinDate(fieldName: string) {
@@ -329,4 +357,10 @@ export class AddCustomerBenefComponent implements OnInit {
     // this.saveBeneficiaryCustomer()
   }
   // payloadData["status"] = "Active";
+
+  ngOnDestroy(): void {
+    if (this.countryChange$) {
+      this.countryChange$.unsubscribe();
+    }
+  }
 }

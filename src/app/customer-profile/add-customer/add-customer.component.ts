@@ -1,5 +1,11 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+} from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -8,7 +14,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
-import { Subscription, zip } from "rxjs";
+import { Observable, Subscription, zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "../customer-profile.service";
 
@@ -116,6 +122,10 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   documentExpiry: any = [];
   documentExpiryObj: any = [];
+
+  countryDialCode: any = "+91";
+
+  countryChange$: Subscription = null;
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
@@ -431,6 +441,28 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         .valueChanges.subscribe((val) => this.kycDocChange(val));
     }
     this.coreService.removeLoadingScreen();
+    if (this.individualForm.get("Contact Details")?.get("contactCountry")) {
+      this.countryChange$ = this.individualForm
+        .get("Contact Details")
+        ?.get("contactCountry")
+        .valueChanges.subscribe((value) => {
+          if (value && value.code) {
+            if ("countryDialCode" in this.masterData) {
+              let filterCode = this.masterData["countryDialCode"].filter(
+                (dialCode: any) => dialCode.code == value.code
+              );
+              console.log(filterCode);
+              if (filterCode && filterCode.length) {
+                this.countryDialCode = filterCode[0]?.countryDialCode?.length
+                  ? filterCode[0].countryDialCode
+                  : "+91";
+              } else {
+                this.countryDialCode = "+91";
+              }
+            }
+          }
+        });
+    }
   }
 
   kycDocChange(value: any) {
@@ -2896,6 +2928,9 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.kycDocType$.unsubscribe();
+    if (this.countryChange$) {
+      this.countryChange$.unsubscribe();
+    }
   }
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
