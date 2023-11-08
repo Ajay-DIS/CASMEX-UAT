@@ -8,7 +8,14 @@
 :host ::ng-deep .p-calendar {
   width: 100%;
 }
-
+.NorecordFound img {
+  width: 15%;
+  // padding-bottom: 80px;
+  padding-top: 160px;
+}
+.NorecordFound p {
+  padding-bottom: 120px;
+}
 :host ::ng-deep .p-inputtext:enabled:hover {
   border-color: #2455cf;
 }

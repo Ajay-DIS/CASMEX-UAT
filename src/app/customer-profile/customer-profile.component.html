@@ -141,7 +141,7 @@
             type="button"
             label="Add Customer"
             class="p-button-raised search-btn ml-4"
-            (click)="addNewCustomer()"
+            (click)="addNewCustomer(customerType == 'Corporate' ? 'COR' : 'IND')"
           ></button>
         </div>
       </div>
@@ -502,11 +502,11 @@
 </div>
 <div class="NorecordFound" *ngIf="!showTable && globalSearch">
   <div class="row">
-    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    <div class="col-12"><img src="assets/searchCriteria.PNG" /></div>
   </div>
   <div class="row">
     <div class="col-12">
-      <p>No records found. Please try again with different criteria.</p>
+      <p>Select search criteria to find a customer details.</p>
     </div>
   </div>
 </div>
