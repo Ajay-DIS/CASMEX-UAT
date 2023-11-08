@@ -1,61 +1,61 @@
 :host ::ng-deep .p-dropdown {
-    width: 100%;
-  }
-  :host ::ng-deep .p-inputtext {
-    width: 100%;
-  }
-  .btnRight {
-    text-align: right;
-  }
-  
-  // --------------- //
-  
-  .required {
-    color: red;
-  }
-  
-  label {
-    font-size: 12px;
-  }
-  
-  .custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    min-width: 120px;
-  }
-  
-  .custom-form ::ng-deep .p-panel.p-component {
-    margin-bottom: 15px;
-  }
-  .custom-form ::ng-deep .p-panel .p-panel-header {
-    // padding: 0.75rem 1.5rem 0 1rem;
-    border-bottom: none;
-    border-bottom-left-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
-  .custom-form ::ng-deep .p-panel.p-component .p-panel-header {
-    background: #fff;
-  }
-  
-  .custom-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
-    font-weight: 500;
-    color: var(--primary-color);
-  }
-  .custom-form ::ng-deep .p-panel.p-component .p-panel-content {
-    padding: 0px 1.5rem 1rem 1.5rem;
-  }
-  
-  .custom-form
-    ::ng-deep
-    p-panel.no-visible
-    .p-panel.p-component
-    .p-panel-content {
-    padding: 0.75rem 1.5rem 1rem 1rem;
-  }
-  
-  small.p-error {
-    font-size: 10px;
-  }
-  
-  div.checkbox {
+  width: 100%;
+}
+:host ::ng-deep .p-inputtext {
+  width: 100%;
+}
+.btnRight {
+  text-align: right;
+}
+
+// --------------- //
+
+.required {
+  color: red;
+}
+
+label {
+  font-size: 12px;
+}
+
+.custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  min-width: 120px;
+}
+
+.custom-form ::ng-deep .p-panel.p-component {
+  margin-bottom: 15px;
+}
+.custom-form ::ng-deep .p-panel .p-panel-header {
+  // padding: 0.75rem 1.5rem 0 1rem;
+  border-bottom: none;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.custom-form ::ng-deep .p-panel.p-component .p-panel-header {
+  background: #fff;
+}
+
+.custom-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+.custom-form ::ng-deep .p-panel.p-component .p-panel-content {
+  padding: 0px 1.5rem 1rem 1.5rem;
+}
+
+.custom-form
+  ::ng-deep
+  p-panel.no-visible
+  .p-panel.p-component
+  .p-panel-content {
+  padding: 0.75rem 1.5rem 1rem 1rem;
+}
+
+small.p-error {
+  font-size: 10px;
+}
+
+div.checkbox {
   display: flex;
   justify-content: space-evenly;
   flex-direction: row-reverse;
@@ -71,170 +71,181 @@ div.newLineField {
   gap: 10px;
   margin: 10px 0;
 }
-  
-  div.btn-grp {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+
+div.btn-grp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-nav {
+  background: transparent;
+  border-bottom: 1px solid gainsboro;
+  margin-bottom: 20px;
+}
+:host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
+  color: #000;
+  font-weight: 500;
+  background: transparent;
+  padding: 1.25rem 1.25rem 0.75rem 1rem;
+  border: none;
+}
+:host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  border-bottom: 5px solid var(--primary-color);
+  color: var(--primary-color);
+}
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  background: transparent;
+  padding: 0;
+}
+
+:host ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only {
+  width: 2.5rem;
+}
+
+// fileupload
+.file-upload {
+  width: 100%;
+}
+
+.file-upload .file-upload-select {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  background: #f4f6fa;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  height: 37px;
+}
+.file-upload .file-upload-select .file-select-button {
+  background: #55c78a;
+  position: absolute;
+  right: 0;
+  top: 0px;
+  padding: 7px 12px;
+  color: #ffffff;
+}
+.file-upload .file-upload-select .file-select-name {
+  text-align: center;
+  font-size: 12px;
+  width: 128px;
+}
+.file-upload .file-upload-select .file-select-name input {
+  width: 100%;
+  border: none;
+  background: transparent;
+}
+.file-upload .file-upload-select:hover .file-select-button {
+  transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+}
+.file-upload .file-upload-select input[type="file"] {
+  display: none;
+}
+// fileupload end
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.view-link {
+  cursor: pointer;
+  color: var(--primary-color) !important;
+  text-decoration: underline;
+}
+
+.file-name {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.remove-file-btn {
+  position: absolute;
+  right: 5px;
+}
+
+.currency-Inp {
+  position: relative;
+}
+.currency-Inp input {
+  width: 100%;
+  padding-right: 40px;
+}
+.currency-Inp span {
+  font-size: 0.8rem;
+  position: absolute;
+  right: 5%;
+  top: 8px;
+}
+.phone-Inp {
+  position: relative;
+}
+.phone-Inp input {
+  width: 100%;
+  padding-left: 45px;
+}
+.phone-Inp span {
+  font-size: 0.8rem;
+  position: absolute;
+  left: 5%;
+  top: 8.5px;
+}
+@media screen and (max-width: 576px) {
+  .block {
+    width: 100% !important;
   }
-  
-  :host ::ng-deep .p-tabview .p-tabview-nav {
-    background: transparent;
-    border-bottom: 1px solid gainsboro;
-    margin-bottom: 20px;
+  .p-dropdown {
+    width: 100% !important;
   }
-  :host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
-    color: #000;
-    font-weight: 500;
-    background: transparent;
-    padding: 1.25rem 1.25rem 0.75rem 1rem;
-    border: none;
-  }
-  :host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
-    background: transparent;
-    border: none;
-    border-bottom: 5px solid var(--primary-color);
-    color: var(--primary-color);
-  }
-  :host ::ng-deep .p-tabview .p-tabview-panels {
-    background: transparent;
-    padding: 0;
-  }
-  
-  :host ::ng-deep .p-calendar {
-    width: 100%;
-  }
-  
-  :host ::ng-deep .p-button.p-button-icon-only {
-    width: 2.5rem;
-  }
-  
-  // fileupload
   .file-upload {
-    width: 100%;
+    width: 100% !important;
   }
-  
-  .file-upload .file-upload-select {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    text-align: left;
-    background: #f4f6fa;
-    overflow: hidden;
-    position: relative;
-    border-radius: 6px;
-    padding: 0.5rem 0.75rem;
-    height: 37px;
+}
+@media screen and (max-width: 1520px) and (min-width: 1201px) {
+  .fieldForm {
+    // margin-right: 30px;
+    width: 20%;
   }
-  .file-upload .file-upload-select .file-select-button {
-    background: #55c78a;
-    position: absolute;
-    right: 0;
-    top: 0px;
-    padding: 7px 12px;
-    color: #ffffff;
+  label {
+    font-size: 11px;
   }
-  .file-upload .file-upload-select .file-select-name {
-    text-align: center;
-    font-size: 12px;
-    width: 128px;
+  .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 10px !important;
   }
-  .file-upload .file-upload-select .file-select-name input {
-    width: 100%;
-    border: none;
-    background: transparent;
-  }
-  .file-upload .file-upload-select:hover .file-select-button {
-    transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -webkit-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-  }
-  .file-upload .file-upload-select input[type="file"] {
-    display: none;
-  }
-  // fileupload end
-  
-  .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
-    text-align: center;
-  }
-  
-  .view-link {
-    cursor: pointer;
-    color: var(--primary-color) !important;
-    text-decoration: underline;
-  }
-  
-  .file-name {
-    display: inline-block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 90px;
-  }
-  
-  .remove-file-btn {
-    position: absolute;
-    right: 5px;
-  }
-  
-  .currency-Inp {
-    position: relative;
-  }
-  .currency-Inp input {
-    width: 100%;
-    padding-right: 40px;
-  }
-  .currency-Inp span {
-    font-size: 0.8rem;
-    position: absolute;
-    right: 5%;
-    top: 8px;
-  }
-  @media screen and (max-width: 576px) {
-    .block{
-      width: 100% !important
-    }
-    .p-dropdown {
-      width: 100% !important
-    }
-    .file-upload {
-      width: 100% !important
-    }
-  }
-  @media screen and (max-width: 1520px) and (min-width: 1201px) {
-    .fieldForm {
-      // margin-right: 30px;
-      width: 20%;
-    }
-    label {
-      font-size: 11px;
-    }
-    .p-dropdown .p-dropdown-label.p-placeholder {
-      font-size: 10px !important;
-    }
-  }
-  :host ::ng-deep .p-autocomplete {
-    display: initial !important;
-  }
-  
-  .smartSearch ::ng-deep .p-overlay.p-component {
-    width: 100%;
-  
-  }
-  .p-inputtext .p-component .p-placeholder {
-    color: rgb(180, 178, 178) ;
-    }
-    ::ng-deep .p-calendar .p-inputtext::placeholder {
-      color: rgb(180, 178, 178) ; /* Replace with the desired color */
-      font-size: 12px;
-    }
-    ::ng-deep .p-dropdown-item{
-      font-size: 11px;
-    }
-    
-    :host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
-      font-size: 12px;
-      color:  rgb(180, 178, 178) !important;
-    }
-  
+}
+:host ::ng-deep .p-autocomplete {
+  display: initial !important;
+}
+
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+}
+.p-inputtext .p-component .p-placeholder {
+  color: rgb(180, 178, 178);
+}
+::ng-deep .p-calendar .p-inputtext::placeholder {
+  color: rgb(180, 178, 178); /* Replace with the desired color */
+  font-size: 12px;
+}
+::ng-deep .p-dropdown-item {
+  font-size: 11px;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
+  color: rgb(180, 178, 178) !important;
+}

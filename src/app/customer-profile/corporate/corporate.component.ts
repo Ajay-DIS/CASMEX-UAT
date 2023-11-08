@@ -116,6 +116,10 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   copyKycSection: any = {};
 
+  countryDialCode: any = "+91";
+
+  countryChange$: Subscription = null;
+
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
@@ -175,6 +179,49 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           this.coreService.removeLoadingScreen();
         }
       );
+  }
+
+  validMinDate(fieldName: string) {
+    if (
+      fieldName == "idExpiryDate" ||
+      fieldName == "visaExpiryDate" ||
+      fieldName == "licenseExpiryDate" ||
+      fieldName == "representativeIdExpiryDate" ||
+      fieldName == "representativeVisaExpiryDate" ||
+      fieldName == "representativeAuthorizationLetterExpiryDate"
+    ) {
+      return new Date();
+    } else {
+      return this.pastYear;
+    }
+  }
+  validMaxDate(fieldName: string) {
+    if (
+      fieldName == "idIssueDate" ||
+      fieldName == "dateOfEstablishment" ||
+      fieldName == "representativeIdIssueDate"
+    ) {
+      return new Date();
+    } else if (
+      fieldName == "dateOfBirth" ||
+      fieldName == "representativeDateOfBirth" ||
+      fieldName == "dateOfBirthPersonalDetails"
+    ) {
+      return this.dobMaxDate;
+    } else {
+      return this.futureYear;
+    }
+  }
+  validDefDate(fieldName: string) {
+    if (
+      fieldName == "dateOfBirth" ||
+      fieldName == "representativeDateOfBirth" ||
+      fieldName == "dateOfBirthPersonalDetails"
+    ) {
+      return this.dobMaxDate;
+    } else {
+      return new Date();
+    }
   }
 
   getDocSettingData() {
@@ -306,19 +353,19 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                 secData["fieldType"] == "date"
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
-                    : this.pastYear
+                    : this.validMinDate(secData["fieldName"])
                   : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.futureYear
+                    : this.validMaxDate(secData["fieldName"])
                   : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : new Date()
+                    : this.validDefDate(secData["fieldName"])
                   : new Date(),
             };
             return fieldData;
@@ -329,7 +376,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
     });
 
     this.formSections = allFormSections;
-
+    console.log(this.formSections);
     this.formSections.forEach((section) => {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
@@ -379,6 +426,28 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         .valueChanges.subscribe((val) => this.kycDocChange(val));
     }
     this.coreService.removeLoadingScreen();
+    if (this.corporateForm.get("Contact Details")?.get("contactCountry")) {
+      this.countryChange$ = this.corporateForm
+        .get("Contact Details")
+        ?.get("contactCountry")
+        .valueChanges.subscribe((value) => {
+          if (value && value.code) {
+            if ("countryDialCode" in this.masterData) {
+              let filterCode = this.masterData["countryDialCode"].filter(
+                (dialCode: any) => dialCode.code == value.code
+              );
+              console.log(filterCode);
+              if (filterCode && filterCode.length) {
+                this.countryDialCode = filterCode[0]?.countryDialCode?.length
+                  ? filterCode[0].countryDialCode
+                  : "+91";
+              } else {
+                this.countryDialCode = "+91";
+              }
+            }
+          }
+        });
+    }
   }
 
   kycDocChange(value: any) {
@@ -1643,9 +1712,101 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
     return fileUrl.substring(n + 1);
   }
 
-  onSubmit(): void {
-    this.submitted = true;
+  checkKYCDoc() {
+    if (
+      (this.uploadedKycDoc && Object.keys(this.uploadedKycDoc).length != 0) ||
+      this.corporateForm.get("KYC Doc Upload")?.dirty
+    ) {
+      this.coreService.setHeaderStickyStyle(false);
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.confirmationService.confirm({
+        message:
+          `<img src="../../../assets/warning.svg"><br/><br/>` +
+          "Some KYC Details are not added yet, Do you want to discard it ?",
+        key: "kycDocCorWarning",
+        accept: () => {
+          this.setHeaderSidebarBtn();
+          this.confirmationService.close;
+          setTimeout(() => {
+            this.checkBenDoc();
+          }, 1500);
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      this.checkBenDoc();
+    }
+  }
+  checkBenDoc() {
+    console.log("ben call");
+    if (
+      (this.uploadedBeneficialDoc &&
+        Object.keys(this.uploadedBeneficialDoc).length != 0) ||
+      this.corporateForm.get("Beneficial Owner Details")?.dirty
+    ) {
+      this.coreService.setHeaderStickyStyle(false);
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.confirmationService.confirm({
+        message:
+          `<img src="../../../assets/warning.svg"><br/><br/>` +
+          "Some Beneficial Owner Details are not added yet, Do you want to discard it ?",
+        key: "benDocCorWarning",
+        accept: () => {
+          this.setHeaderSidebarBtn();
+          this.confirmationService.close;
+          setTimeout(() => {
+            this.checkRepresDoc();
+          }, 1500);
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      console.log("checkrep");
+      this.checkRepresDoc();
+    }
+  }
+  checkRepresDoc() {
+    console.log(
+      "rep call",
+      this.uploadedRepresentativeDoc,
+      this.corporateForm.get("Representative Details")
+    );
+    if (
+      (this.uploadedRepresentativeDoc &&
+        Object.keys(this.uploadedRepresentativeDoc).length != 0) ||
+      this.corporateForm.get("Representative Details")?.dirty
+    ) {
+      console.log("if condition");
+      this.coreService.setHeaderStickyStyle(false);
+      this.coreService.setSidebarBtnFixedStyle(false);
+      this.confirmationService.confirm({
+        message:
+          `<img src="../../../assets/warning.svg"><br/><br/>` +
+          "Some Representative Details are not added yet, Do you want to discard it ?",
+        key: "repDocCorWarning",
+        accept: () => {
+          this.setHeaderSidebarBtn();
+          this.confirmationService.close;
+          this.saveCorCustomer();
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn();
+        },
+      });
+    } else {
+      console.log("saving");
+      this.saveCorCustomer();
+    }
+  }
 
+  saveCorCustomer() {
     if (this.corporateForm.invalid) {
       this.coreService.showWarningToast("Please fill the Mandatory fields");
       return;
@@ -2031,6 +2192,12 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       }
       console.log(JSON.stringify(payloadData, null, 2));
     }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+
+    this.checkKYCDoc();
   }
 
   setCustomerFormData(data: any) {
@@ -2721,6 +2888,9 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
+     if (this.countryChange$) {
+      this.countryChange$.unsubscribe();
+    }
     if (this.kycDocType$) {
       this.kycDocType$.unsubscribe();
     }

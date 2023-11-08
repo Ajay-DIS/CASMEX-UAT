@@ -1,196 +1,226 @@
 <form
-            *ngIf="apiData && objectKeys(apiData).length"
-            class="custom-form"
-            [formGroup]="individualForm"
+  *ngIf="apiData && objectKeys(apiData).length"
+  class="custom-form"
+  [formGroup]="individualForm"
+>
+  <ng-container *ngFor="let section of formSections">
+    <p-panel
+      [header]="section.formName"
+      [toggleable]="true"
+      [formGroup]="individualForm.controls[section.formName]"
+      *ngIf="section.isVisible"
+    >
+      <div class="row">
+        <ng-container *ngFor="let field of section.fields">
+          <div
+            *ngIf="field.visible"
+            [ngClass]="{
+              'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': !(
+                field?.newLineField == 'Y'
+              ),
+              checkbox: field.fieldType == 'checkbox',
+              newLineField: field?.newLineField == 'Y'
+            }"
           >
-            <ng-container *ngFor="let section of formSections">
-              <p-panel
-                [header]="section.formName"
-                [toggleable]="true"
-                [formGroup]="individualForm.controls[section.formName]"
-                *ngIf="section.isVisible"
+            <label
+              [attr.title]="
+                field.fieldLabel.length > 27 ? field.fieldLabel : ''
+              "
+              >{{
+                field.fieldLabel.length > 27
+                  ? field.fieldLabel.substring(0, 27) + ".."
+                  : field.fieldLabel
+              }}</label
+            ><span *ngIf="field.required" class="required">*</span>
+            <ng-container [ngSwitch]="field.fieldType">
+              <input
+                *ngSwitchCase="'text'"
+                type="text"
+                class="block"
+                pInputText
+                [formControlName]="field.name"
+              />
+              <ng-container *ngSwitchCase="'number'">
+                <ng-container
+                  *ngIf="
+                    field.name == 'contactMobileNumber' ||
+                    field.name == 'contactPhoneNumber'
+                  "
+                >
+                  <div class="phone-Inp">
+                    <input
+                      type="text"
+                      pInputText
+                      [formControlName]="field.name"
+                    />
+                    <span>{{ countryDialCode }}</span>
+                  </div>
+                </ng-container>
+                <ng-container
+                  *ngIf="
+                    !(
+                      field.name == 'contactMobileNumber' ||
+                      field.name == 'contactPhoneNumber'
+                    )
+                  "
+                >
+                  <input
+                    type="text"
+                    class="block"
+                    pInputText
+                    pattern="[0-9\s]{0,20}"
+                    [formControlName]="field.name"
+                  />
+                </ng-container>
+              </ng-container>
+              <div class="currency-Inp" *ngSwitchCase="'currency'">
+                <input type="text" pInputText [formControlName]="field.name" />
+                <span>AED</span>
+              </div>
+              <p-calendar
+                *ngSwitchCase="'date'"
+                class="block"
+                placeholder="DD/MM/YYYY"
+                dateFormat="dd/mm/yy"
+                [showIcon]="true"
+                [formControlName]="field.name"
+                [minDate]="field.minDate"
+                [maxDate]="field.maxDate"
+                [defaultDate]="field.defaultDate"
+                [readonlyInput]="false"
+                [appendTo]="'body'"
+                appDateMask
+              ></p-calendar>
+              <p-checkbox
+                *ngSwitchCase="'checkbox'"
+                [formControlName]="field.name"
+                [binary]="true"
+                (onChange)="sameAddress($event, field.name)"
+              ></p-checkbox>
+              <p-dropdown
+                *ngSwitchCase="'select'"
+                class="block"
+                [options]="masterDataOrg[field.apiKey]"
+                [formControlName]="field.name"
+                placeholder="&nbsp;"
+                optionLabel="codeName"
               >
-                <div class="row">
-                  <ng-container *ngFor="let field of section.fields">
-                    <div
-                      *ngIf="field.visible"
-                      [ngClass]="{
-                        'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': !(field?.newLineField == 'Y'),
-                      checkbox: field.fieldType == 'checkbox',
-                      newLineField: field?.newLineField == 'Y'
-                      }"
-                    >
-                    <label [attr.title]="field.fieldLabel.length > 27 ? field.fieldLabel : ''" >{{ field.fieldLabel.length > 27 ? field.fieldLabel.substring(0, 27) + '..' : field.fieldLabel }}</label
-                      ><span *ngIf="field.required" class="required">*</span>
-                      <ng-container [ngSwitch]="field.fieldType">
-                        <input
-                          *ngSwitchCase="'text'"
-                          type="text"
-                          class="block"
-                          pInputText
-                          [formControlName]="field.name"
-                        />
-                        <input
-                          *ngSwitchCase="'number'"
-                          type="text"
-                          class="block"
-                          pInputText
-                          [formControlName]="field.name"
-                        />
-                        <div class="currency-Inp" *ngSwitchCase="'currency'">
-                          <input
-                            type="text"
-                            pInputText
-                            [formControlName]="field.name"
-                          />
-                          <span>AED</span>
-                        </div>
-                        <p-calendar
-                          *ngSwitchCase="'date'"
-                          class="block"
-                          placeholder="DD/MM/YYYY"
-                          dateFormat="dd/mm/yy"
-                          [showIcon]="true"
-                          [formControlName]="field.name"
-                          [minDate]="field.minDate"
-                          [maxDate]="field.maxDate"
-                          [defaultDate]="field.defaultDate"
-                          [readonlyInput]="false"
-                          [appendTo]="'body'"
-                          appDateMask
-                        ></p-calendar>
-                        <p-checkbox
-                          *ngSwitchCase="'checkbox'"
-                          [formControlName]="field.name"
-                          [binary]="true"
-                          (onChange)="sameAddress($event, field.name)"
-                        ></p-checkbox>
-                        <p-dropdown
-                          *ngSwitchCase="'select'"
-                          class="block"
-                          [options]="masterDataOrg[field.apiKey]"
-                          [formControlName]="field.name"
-                          placeholder="&nbsp;"
-                          optionLabel="codeName"
-                        >
-                        <ng-template let-options pTemplate="item">
-                          <div class="truncate-text">
-                            <div >{{ options.codeName}}</div>
-                          </div>
-                        </ng-template></p-dropdown>
-                        <p-dropdown
-                          *ngSwitchCase="'smart-search'"
-                          class="block smartSearch"
-                          [formControlName]="field.name"
-                          [options]="masterDataOrg[field.apiKey]"
-                          optionLabel="codeName"
-                          [filter]="true"
-                          filterBy="codeName"
-                          placeholder="Type to search"
-                        >
-                          <ng-template pTemplate="selectedItem">
-                            <div
-                              class="country-item country-item-value"
-                              *ngIf="field"
-                            >
-                              <div>
-                                {{
-                                  individualForm.controls[section.formName][
-                                    "controls"
-                                  ][field.name].value.codeName
-                                }}
-                              </div>
-                            </div>
-                          </ng-template>
-                          <ng-template let-options pTemplate="item">
-                            <div class="truncate-text">
-                              <div >{{ options.codeName}}</div>
-                            </div>
-                          </ng-template>
-                        </p-dropdown>
-                        <select
-                          *ngSwitchCase="'multiselect'"
-                          multiple
-                          [formControlName]="field.name"
-                        >
-                          <option
-                            *ngFor="let option of field.options"
-                            [value]="option.value"
-                          >
-                            {{ option.label }}
-                          </option>
-                        </select>
-                      </ng-container>
-                      <small
-                        *ngIf="
-                          submitted &&
-                          individualForm.controls[section.formName]['controls'][
-                            field.name
-                          ].errors?.required
-                        "
-                        class="p-error block"
-                        >{{ field.fieldLabel }} is required.</small
-                      >
-                      <small
-                        *ngIf="
-                          submitted &&
-                          individualForm.controls[section.formName]['controls'][
-                            field.name
-                          ].errors?.minlength
-                        "
-                        class="p-error block"
-                        >{{ field.fieldLabel }} must be
-                        {{ field.minLength }} characters long.</small
-                      >
-                      <small
-                        *ngIf="
-                          submitted &&
-                          individualForm.controls[section.formName]['controls'][
-                            field.name
-                          ].errors?.pattern
-                        "
-                        class="p-error block"
-                        >Improper {{ field.fieldLabel }} format.</small
-                      >
-                      <small
-                        *ngIf="
-                          submitted &&
-                          individualForm.controls[section.formName]['controls'][
-                            field.name
-                          ].errors?.maxlength
-                        "
-                        class="p-error block"
-                        >{{ field.fieldLabel }} must not exceed
-                        {{ field.maxLength }} characters.</small
-                      >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.codeName }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
+              <p-dropdown
+                *ngSwitchCase="'smart-search'"
+                class="block smartSearch"
+                [formControlName]="field.name"
+                [options]="masterDataOrg[field.apiKey]"
+                optionLabel="codeName"
+                [filter]="true"
+                filterBy="codeName"
+                placeholder="Type to search"
+              >
+                <ng-template pTemplate="selectedItem">
+                  <div class="country-item country-item-value" *ngIf="field">
+                    <div>
+                      {{
+                        individualForm.controls[section.formName]["controls"][
+                          field.name
+                        ].value.codeName
+                      }}
                     </div>
-                  </ng-container>
-                </div>
-              </p-panel>
-              <p-panel
-                *ngIf="!section.isVisible"
-                [header]="section.formName"
-                class="no-visible"
+                  </div>
+                </ng-template>
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.codeName }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <select
+                *ngSwitchCase="'multiselect'"
+                multiple
+                [formControlName]="field.name"
               >
-                No Visible fields available.
-              </p-panel>
+                <option
+                  *ngFor="let option of field.options"
+                  [value]="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
             </ng-container>
-            <div class="form-group btn-grp buttons-section">
-              <button
-                pButton
-                pRipple
-                type="button"
-                label="Save"
-                class="p-button-raised"
-                (click)="onSubmit()"
-              ></button>
-              <button
-                pButton
-                pRipple
-                type="button"
-                label="Reset"
-                class="p-button-warning"
-                (click)="onReset()"
-              ></button>
-            </div>
-          </form>
+            <small
+              *ngIf="
+                submitted &&
+                individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].errors?.required
+              "
+              class="p-error block"
+              >{{ field.fieldLabel }} is required.</small
+            >
+            <small
+              *ngIf="
+                submitted &&
+                individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].errors?.minlength
+              "
+              class="p-error block"
+              >{{ field.fieldLabel }} must be {{ field.minLength }} characters
+              long.</small
+            >
+            <small
+              *ngIf="
+                submitted &&
+                individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].errors?.pattern
+              "
+              class="p-error block"
+              >Improper {{ field.fieldLabel }} format.</small
+            >
+            <small
+              *ngIf="
+                submitted &&
+                individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].errors?.maxlength
+              "
+              class="p-error block"
+              >{{ field.fieldLabel }} must not exceed
+              {{ field.maxLength }} characters.</small
+            >
+          </div>
+        </ng-container>
+      </div>
+    </p-panel>
+    <p-panel
+      *ngIf="!section.isVisible"
+      [header]="section.formName"
+      class="no-visible"
+    >
+      No Visible fields available.
+    </p-panel>
+  </ng-container>
+  <div class="form-group btn-grp buttons-section">
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Save"
+      class="p-button-raised"
+      (click)="onSubmit()"
+    ></button>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Reset"
+      class="p-button-warning"
+      (click)="onReset()"
+    ></button>
+  </div>
+</form>
