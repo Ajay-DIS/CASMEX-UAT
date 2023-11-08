@@ -302,7 +302,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (this.individualForm.invalid) {
-      this.coreService.showWarningToast("Some fields are invalid");
+      this.coreService.showWarningToast("Please fill the Mandatory fields");
       return;
     }
 

@@ -741,6 +741,15 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   fileUploadChange(e: any, section: any, field: any, docId: any) {
+    if (
+      !(
+        e.target.files[0]?.type == "image/jpeg" ||
+        e.target.files[0]?.type == "image/png" ||
+        e.target.files[0]?.type == "image/svg+xml"
+      )
+    ) {
+      this.coreService.showWarningToast("Valid formats are JPEG, PNG, SVG.");
+    }
     if (e.target.files[0]) {
       this.coreService.displayLoadingScreen();
       setTimeout(() => {
@@ -1799,7 +1808,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   saveCorCustomer() {
     if (this.corporateForm.invalid) {
-      this.coreService.showWarningToast("Some fields are invalid");
+      this.coreService.showWarningToast("Please fill the Mandatory fields");
       return;
     }
 
@@ -2879,10 +2888,11 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.kycDocType$.unsubscribe();
-
-    if (this.countryChange$) {
+     if (this.countryChange$) {
       this.countryChange$.unsubscribe();
+    }
+    if (this.kycDocType$) {
+      this.kycDocType$.unsubscribe();
     }
   }
 }

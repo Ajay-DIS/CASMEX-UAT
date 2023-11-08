@@ -138,11 +138,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
 
     const params = this.activatedRoute.snapshot.params;
-    if (params && params.id) {
-      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
-        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
-      );
-      this.custId = params.id;
+    if (params && params.type) {
       this.custType = params.type;
       if (this.custType == "COR") {
         this.activeTabIndex = 1;
@@ -150,7 +146,19 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         this.activeTabIndex = 0;
       }
     }
-    console.log(this.custId, this.custType);
+    if (params && params.id) {
+      this.mode = this.activatedRoute.snapshot.routeConfig.path.substring(
+        this.activatedRoute.snapshot.routeConfig.path.lastIndexOf("/") + 1
+      );
+      this.custId = params.id;
+    }
+    console.log(
+      this.custId,
+      this.custType,
+      this.mode,
+      params,
+      this.activeTabIndex
+    );
 
     this.getDocSettingData();
     if (this.custType == "IND") {
@@ -756,6 +764,15 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   }
 
   fileUploadChange(e: any, section: any, field: any, docId: any) {
+    if (
+      !(
+        e.target.files[0]?.type == "image/jpeg" ||
+        e.target.files[0]?.type == "image/png" ||
+        e.target.files[0]?.type == "image/svg+xml"
+      )
+    ) {
+      this.coreService.showWarningToast("Valid formats are JPEG, PNG, SVG.");
+    }
     if (e.target.files[0]) {
       this.coreService.displayLoadingScreen();
       setTimeout(() => {
@@ -1803,7 +1820,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   saveIndCustomer() {
     if (this.individualForm.invalid) {
-      this.coreService.showWarningToast("Some fields are invalid");
+      this.coreService.showWarningToast("Please fill the Mandatory fields");
       return;
     }
 
@@ -2927,9 +2944,11 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.kycDocType$.unsubscribe();
     if (this.countryChange$) {
       this.countryChange$.unsubscribe();
+    }
+    if (this.kycDocType$) {
+      this.kycDocType$.unsubscribe();
     }
   }
 
