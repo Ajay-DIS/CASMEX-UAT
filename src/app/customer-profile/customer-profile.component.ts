@@ -46,7 +46,7 @@ export class CustomerProfileComponent implements OnInit {
 
   noDataMsg: string = "Form Rule Data Not Available";
 
-  showTable = true;
+  showTable = false;
 
   objectKeys = Object.keys;
   @ViewChild("cd") cd: ConfirmDialog;
@@ -56,7 +56,7 @@ export class CustomerProfileComponent implements OnInit {
   formName = null;
   applicationName = "Casmex Core";
   moduleName = "Remittance";
-  pageNumber = 0;
+  pageNumber = 1;
   pageSize = 10;
   totalPages = 5;
   totalRecords = 0;
@@ -178,7 +178,7 @@ export class CustomerProfileComponent implements OnInit {
 
   // totalRecords = 55;
   customerTableLoading = false;
-  globalSearch = false;
+  globalSearch = true;
 
   docIdOptions: any[] = [];
   docIdSelected: any = {};
@@ -444,7 +444,7 @@ export class CustomerProfileComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          // this.coreService.removeLoadingScreen();
+          this.coreService.removeLoadingScreen();
           this.searchCriteriaApiData = res["data"];
           this.searchCriteriaOptions = this.searchCriteriaApiData.map(
             (data) => {
@@ -459,7 +459,7 @@ export class CustomerProfileComponent implements OnInit {
           );
         },
         (err) => {
-          // this.coreService.removeLoadingScreen();
+          this.coreService.removeLoadingScreen();
           this.coreService.showWarningToast("Error in fething data");
         }
       );
@@ -485,7 +485,7 @@ export class CustomerProfileComponent implements OnInit {
     this.getApiDataForsearchCriteria();
     this.showTable = false;
     this.globalSearch = true;
-    this.getCustomerListData(this.criteriaMap);
+    // this.getCustomerListData(this.criteriaMap);
     this.customerFieldType = null;
     this.criteriaType = "text";
   }
@@ -526,7 +526,9 @@ export class CustomerProfileComponent implements OnInit {
         : "NA";
     this.globalSearch = true;
     this.showTable = false;
-    this.getCustomerListData(this.criteriaMap);
+    if (this.searchCriteria.length) {
+      this.getCustomerListData(this.criteriaMap);
+    }
   }
   searchCustomerMap(type: any) {
     console.log("currentkey", this.currentCriteriaMapKey);
@@ -665,8 +667,13 @@ export class CustomerProfileComponent implements OnInit {
       }
     );
   }
-  addNewCustomer() {
-    this.router.navigate(["navbar", "customer-profile", "addnewcustomer"]);
+  addNewCustomer(type: any) {
+    this.router.navigate([
+      "navbar",
+      "customer-profile",
+      "addnewcustomer",
+      type,
+    ]);
   }
   addNewBeneficiary(rowData: any, type: any) {
     this.router.navigate([
@@ -825,9 +832,10 @@ export class CustomerProfileComponent implements OnInit {
     service.subscribe(
       (res) => {
         if (res["status"] == "200") {
-          sliderElm.checked = sliderElm!.checked;
+          sliderElm.checked = !sliderElm.checked;
           this.searchCustomerMap(this.customerType);
           this.coreService.showSuccessToast(res["data"]);
+          this.coreService.removeLoadingScreen();
         } else {
           this.coreService.removeLoadingScreen();
           this.coreService.showWarningToast(res["msg"]);

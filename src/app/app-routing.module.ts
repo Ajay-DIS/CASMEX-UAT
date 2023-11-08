@@ -318,7 +318,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "customer-profile/addnewcustomer",
+        path: "customer-profile/addnewcustomer/:type",
         component: AddCustomerComponent,
         data: [
           { label: "Home", routerLink: "../navbar/customer-profile" },
