@@ -37,6 +37,7 @@ export class AddCustomerBenefComponent implements OnInit {
   today = new Date();
   pastYear = new Date("01/01/1950");
   futureYear = new Date("01/01/2050");
+  dobMaxDate = new Date(this.today.setFullYear(this.today.getFullYear() - 18));
 
   individualForm: FormGroup;
   formSections: any[] = [];
@@ -129,19 +130,19 @@ export class AddCustomerBenefComponent implements OnInit {
                 secData["fieldType"] == "date"
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
-                    : this.pastYear
+                    : this.validMinDate(secData["fieldName"])
                   : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.futureYear
+                    : this.validMaxDate(secData["fieldName"])
                   : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : new Date()
+                    : this.validDefDate(secData["fieldName"])
                   : new Date(),
             };
             return fieldData;
@@ -192,6 +193,26 @@ export class AddCustomerBenefComponent implements OnInit {
     });
 
     this.coreService.removeLoadingScreen();
+  }
+
+  validMinDate(fieldName: string) {
+    return this.pastYear;
+  }
+  validMaxDate(fieldName: string) {
+    if (fieldName == "dateOfEstablishment") {
+      return new Date();
+    } else if (fieldName == "dateOfBirth") {
+      return this.dobMaxDate;
+    } else {
+      return this.futureYear;
+    }
+  }
+  validDefDate(fieldName: string) {
+    if (fieldName == "dateOfBirth") {
+      return this.dobMaxDate;
+    } else {
+      return new Date();
+    }
   }
 
   setBenefEditFormData(data: any) {

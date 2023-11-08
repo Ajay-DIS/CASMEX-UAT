@@ -666,7 +666,15 @@
                       newLineField: field?.newLineField == 'Y'
                     }"
                   >
-                    <label [attr.title]="field.fieldLabel.length > 27 ? field.fieldLabel : ''" >{{ field.fieldLabel.length > 27 ? field.fieldLabel.substring(0, 27) + '..' : field.fieldLabel }}</label
+                    <label
+                      [attr.title]="
+                        field.fieldLabel.length > 27 ? field.fieldLabel : ''
+                      "
+                      >{{
+                        field.fieldLabel.length > 27
+                          ? field.fieldLabel.substring(0, 27) + ".."
+                          : field.fieldLabel
+                      }}</label
                     ><span
                       *ngIf="field.required || field.docFieldMandate"
                       class="required"
@@ -739,11 +747,12 @@
                         optionLabel="codeName"
                         [appendTo]="'body'"
                       >
-                      <ng-template let-options pTemplate="item">
-                        <div class="truncate-text">
-                          <div >{{ options.codeName}}</div>
-                        </div>
-                      </ng-template></p-dropdown>
+                        <ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div>{{ options.codeName }}</div>
+                          </div>
+                        </ng-template></p-dropdown
+                      >
                       <p-dropdown
                         *ngSwitchCase="'smart-search'"
                         class="block smartSearch"
@@ -770,7 +779,7 @@
                         </ng-template>
                         <ng-template let-options pTemplate="item">
                           <div class="truncate-text">
-                            <div >{{ options.codeName}}</div>
+                            <div>{{ options.codeName }}</div>
                           </div>
                         </ng-template>
                       </p-dropdown>
@@ -1066,6 +1075,78 @@
       icon="pi pi-times"
       label="No"
       (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="kycDocWarning"
+  class="confirm-popup"
+  #cd1
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd1.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd1.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="benDocWarning"
+  class="confirm-popup"
+  #cd2
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="repDocWarning"
+  class="confirm-popup"
+  #cd3
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd3.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd3.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>

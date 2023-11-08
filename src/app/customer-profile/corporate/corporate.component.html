@@ -989,6 +989,78 @@
     ></button>
   </p-footer>
 </p-confirmDialog>
+<p-confirmDialog
+  key="kycDocCorWarning"
+  class="confirm-popup"
+  #cd1
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd1.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd1.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="benDocCorWarning"
+  class="confirm-popup"
+  #cd2
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="repDocCorWarning"
+  class="confirm-popup"
+  #cd3
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd3.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
 <div>
   <p-dialog
     [(visible)]="clickforview"
