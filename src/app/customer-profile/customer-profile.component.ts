@@ -790,9 +790,10 @@ export class CustomerProfileComponent implements OnInit {
     service.subscribe(
       (res) => {
         if (res["status"] == "200") {
-          sliderElm.checked = sliderElm!.checked;
+          sliderElm.checked = !sliderElm.checked;
           this.searchCustomerMap(this.customerType);
           this.coreService.showSuccessToast(res["data"]);
+          this.coreService.removeLoadingScreen();
         } else {
           this.coreService.removeLoadingScreen();
           this.coreService.showWarningToast(res["msg"]);

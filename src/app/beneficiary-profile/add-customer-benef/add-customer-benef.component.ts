@@ -16,8 +16,9 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
-import { Subscription } from "rxjs";
+import { Observable, Subscription } from "rxjs";
 import { CoreService } from "src/app/core.service";
+import { CustomerProfileService } from "src/app/customer-profile/customer-profile.service";
 
 @Component({
   selector: "app-add-customer-benef",
@@ -28,10 +29,14 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
   @Input("formData") formData: any;
   @Input("beneData") beneData: any;
   @Input("masterData") masterData: any;
+  @Input("mode") mode: any;
 
   @Output() postData = new EventEmitter<any>();
 
   // masterData : any =[];
+
+  deactivated: boolean = false;
+  disabledFields: any = {};
 
   custId = null;
   userId = null;
@@ -50,6 +55,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
   formDataOrg = {};
   beneDataOrg = {};
   masterDataOrg = {};
+  modeVal = "add";
 
   countryDialCode: any = "+91";
 
@@ -61,7 +67,8 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private http: HttpClient
+    private http: HttpClient,
+    private customerService: CustomerProfileService
   ) {}
 
   ngOnInit(): void {
@@ -80,11 +87,17 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       this.masterDataOrg = e.masterData.currentValue;
       console.log("masterData", e.masterData);
     }
+    if (e.mode && e.mode.currentValue) {
+      this.modeVal = e.mode.currentValue;
+      console.log("mode", this.modeVal);
+    }
 
     if (e.beneData && e.beneData.currentValue) {
       this.beneDataOrg = JSON.parse(JSON.stringify(e.beneData.currentValue));
+      console.log("status", this.beneDataOrg);
       if (Object.keys(this.formDataOrg).length) {
         this.setBenefEditFormData(e.beneData.currentValue);
+        this.onInactiveStatus();
       }
     }
   }
@@ -160,10 +173,14 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
     this.formSections = allFormSections;
     console.log(this.formSections);
+    this.disabledFields = {};
     this.formSections.forEach((section) => {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
+        if (!field.enable) {
+          this.disabledFields[section.formName] = field.name;
+        }
         if (field.visible) {
           haveVisibleFields = true;
         }
@@ -296,6 +313,124 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
         }
       });
     });
+  }
+  onInactiveStatus() {
+    if (this.beneDataOrg["status"] == "Inactive") {
+      this.disableFormControls();
+      this.deactivated = true;
+    }
+  }
+  disableFormControls() {
+    Object.keys(this.individualForm.controls).forEach((controlName) => {
+      this.individualForm.get(controlName).disable();
+    });
+  }
+  enableFormControls() {
+    console.log("disfields", this.disabledFields);
+    Object.keys(this.individualForm.controls).forEach((controlName) => {
+      console.log("control", controlName);
+      this.individualForm.get(controlName).enable();
+    });
+    if (Object.keys(this.disabledFields).length) {
+      Object.keys(this.disabledFields).forEach((section) => {
+        console.log(section);
+        console.log(this.disabledFields[section]);
+        console.log(
+          this.individualForm.get(section).get(this.disabledFields[section])
+        );
+        this.individualForm
+          .get(section)
+          .get(this.disabledFields[section])
+          .disable();
+      });
+    }
+  }
+
+  onActive(data: any) {
+    this.confirmStatus();
+  }
+  confirmStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Beneficiary Record: ${this.beneDataOrg["id"]}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatusBenef",
+      accept: () => {
+        this.updateStatus(
+          reqStatus,
+          this.beneDataOrg,
+          this.beneDataOrg["customerType"]
+        );
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
+  }
+  updateStatus(reqStatus: any, data: any, cusType: any) {
+    this.coreService.displayLoadingScreen();
+    this.updateCustomerStatus(data["id"], reqStatus, cusType);
+  }
+
+  updateCustomerStatus(cusId: any, status: any, cusType: any) {
+    let service: Observable<any>;
+    console.log(this.userId, status, cusId.toString(), cusType);
+    service = this.customerService.updateBeneficiaryStatusApi(
+      this.userId,
+      status,
+      cusId.toString(),
+      cusType
+    );
+    service.subscribe(
+      (res) => {
+        if (res["status"] == "200") {
+          this.coreService.showSuccessToast(res["data"]);
+          this.coreService.removeLoadingScreen();
+          this.deactivated = !this.deactivated;
+          if (this.deactivated) {
+            this.disableFormControls();
+          } else {
+            this.enableFormControls();
+          }
+        } else {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(res["msg"]);
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   onSubmit(): void {

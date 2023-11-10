@@ -33,6 +33,8 @@ export class AddBeneficiaryComponent implements OnInit {
   beneData: any;
   masterData: any;
 
+  disabledFields: any = {};
+
   userId = null;
   today = new Date();
   pastYear = new Date("01/01/1950");
@@ -204,6 +206,10 @@ export class AddBeneficiaryComponent implements OnInit {
             console.log();
             this.customerId = res["responseData"]["customerId"];
             this.status = res["responseData"]["status"];
+            // if (res["responseData"]["status"] == "Inactive") {
+            //   this.disableFormControls();
+            //   // this.deactivated = true;
+            // }
           }
         },
         (err) => {

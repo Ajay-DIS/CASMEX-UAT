@@ -32,8 +32,9 @@
             <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
               <tr>
                 <td
+                [ngClass]="{ 'disabled': deactivated}"
                   class="file-name view-link"
-                  (click)="selectRowForEdit(product, rowIndex)"
+                  (click)="!deactivated && selectRowForEdit(product, rowIndex)"
                 >
                   {{ product.documentType }}
                 </td>
@@ -223,12 +224,9 @@
             <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
               <tr>
                 <td
-                  style="
-                    cursor: pointer;
-                    color: blue;
-                    text-decoration: underline;
-                  "
-                  (click)="selectRowForEditBeneficial(product, rowIndex)"
+                [ngClass]="{ 'disabled': deactivated}"
+                class="file-name view-link"
+                  (click)="!deactivated && selectRowForEditBeneficial(product, rowIndex)"
                 >
                   {{ product.ownershipType }}
                 </td>
@@ -331,8 +329,9 @@
             <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
               <tr>
                 <td
+                [ngClass]="{ 'disabled': deactivated}"
                   class="file-name view-link"
-                  (click)="selectRowForEditRepresentative(product, rowIndex)"
+                  (click)="!deactivated && selectRowForEditRepresentative(product, rowIndex)"
                 >
                   {{ product.representativeFirstName }}
                 </td>
@@ -796,7 +795,7 @@
                     type="file"
                     name="file-upload-input"
                     id="file-upload-input"
-                    accept=".svg, .png, .jpeg"
+                    accept=".pdf, .png, .jpg"
                     [disabled]="
                       corporateForm
                         .get(section.formName)
@@ -978,6 +977,15 @@
       class="p-button-warning"
       (click)="onReset()"
     ></button>
+    <button
+    *ngIf="mode == 'edit'"
+      pButton
+      pRipple
+      type="button"
+      label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+      class="p-button-raised"
+      (click)="onActive(data)"
+    ></button>
   </div>
 </form>
 <div class="NorecordFound" *ngIf="noDataMsg">
@@ -1084,6 +1092,30 @@
       icon="pi pi-times"
       label="No"
       (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatusCor"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>
