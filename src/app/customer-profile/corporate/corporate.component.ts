@@ -192,7 +192,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       fieldName == "representativeVisaExpiryDate" ||
       fieldName == "representativeAuthorizationLetterExpiryDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     } else {
       return this.pastYear;
     }
@@ -203,7 +203,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       fieldName == "dateOfEstablishment" ||
       fieldName == "representativeIdIssueDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
     } else if (
       fieldName == "dateOfBirth" ||
       fieldName == "representativeDateOfBirth" ||
