@@ -123,9 +123,11 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
-        this.coreService.showWarningToast("Unsaved change has been reset");
         this.submitted = false;
         if (this.corporateForm) {
+          if (this.corporateForm?.dirty) {
+            this.coreService.showWarningToast("Unsaved change has been reset");
+          }
           this.corporateForm.reset();
         }
       }
@@ -1186,9 +1188,13 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
             !this.corporateForm.get("KYC Doc Upload")?.get(field.fieldName)
               ?.value
           ) {
-            this.coreService.showWarningToast(
-              "Fill required KYC document details"
-            );
+            if (field?.name == "hereByConfirm") {
+              this.coreService.showWarningToast("Please Verify the Id Details");
+            } else {
+              this.coreService.showWarningToast(
+                "Fill required KYC document details"
+              );
+            }
             kycMandatePassed = false;
           }
         });
@@ -2888,7 +2894,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-     if (this.countryChange$) {
+    if (this.countryChange$) {
       this.countryChange$.unsubscribe();
     }
     if (this.kycDocType$) {
