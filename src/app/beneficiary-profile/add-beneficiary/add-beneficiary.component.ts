@@ -103,7 +103,7 @@ export class AddBeneficiaryComponent implements OnInit {
     this.activeTabIndex = event.index;
     if (this.activeTabIndex != this.previousTabIndex) {
       this.previousTabIndex = this.activeTabIndex;
-      this.coreService.showWarningToast("Unsaved change has been reset");
+      // this.coreService.showWarningToast("Unsaved change has been reset");
       if (this.individualForm) {
         this.individualForm.reset();
       }

@@ -131,9 +131,11 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
-        this.coreService.showWarningToast("Unsaved change has been reset");
         this.submitted = false;
         if (this.corporateForm) {
+          if (this.corporateForm?.dirty) {
+            this.coreService.showWarningToast("Unsaved change has been reset");
+          }
           this.corporateForm.reset();
         }
       }
@@ -198,7 +200,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       fieldName == "representativeVisaExpiryDate" ||
       fieldName == "representativeAuthorizationLetterExpiryDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     } else {
       return this.pastYear;
     }
@@ -209,7 +211,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       fieldName == "dateOfEstablishment" ||
       fieldName == "representativeIdIssueDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
     } else if (
       fieldName == "dateOfBirth" ||
       fieldName == "representativeDateOfBirth" ||
@@ -1199,9 +1201,13 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
             !this.corporateForm.get("KYC Doc Upload")?.get(field.fieldName)
               ?.value
           ) {
-            this.coreService.showWarningToast(
-              "Fill required KYC document details"
-            );
+            if (field?.name == "hereByConfirm") {
+              this.coreService.showWarningToast("Please Verify the Id Details");
+            } else {
+              this.coreService.showWarningToast(
+                "Fill required KYC document details"
+              );
+            }
             kycMandatePassed = false;
           }
         });

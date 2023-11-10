@@ -208,7 +208,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       fieldName == "representativeVisaExpiryDate" ||
       fieldName == "representativeAuthorizationLetterExpiryDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
     } else {
       return this.pastYear;
     }
@@ -219,7 +219,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       fieldName == "dateOfEstablishment" ||
       fieldName == "representativeIdIssueDate"
     ) {
-      return new Date();
+      return new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
     } else if (
       fieldName == "dateOfBirth" ||
       fieldName == "representativeDateOfBirth" ||
@@ -315,8 +315,10 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   handleChange(event: any) {
     this.activeTabIndex = event.index;
     if (this.activeTabIndex != 0) {
-      this.coreService.showWarningToast("Unsaved change has been reset");
       if (this.individualForm) {
+        if (this.individualForm?.dirty) {
+          this.coreService.showWarningToast("Unsaved change has been reset");
+        }
         this.individualForm.reset();
       }
     }
@@ -1211,9 +1213,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
             !this.individualForm.get("KYC Doc Upload")?.get(field.fieldName)
               ?.value
           ) {
-            this.coreService.showWarningToast(
-              "Fill required KYC document details"
-            );
+            if (field?.name == "hereByConfirm") {
+              this.coreService.showWarningToast("Please Verify the Id Details");
+            } else {
+              this.coreService.showWarningToast(
+                "Fill required KYC document details"
+              );
+            }
             kycMandatePassed = false;
           }
         });
