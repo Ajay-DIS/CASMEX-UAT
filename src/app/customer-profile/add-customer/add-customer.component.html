@@ -51,12 +51,11 @@
                       let-rowIndex="rowIndex"
                     >
                       <tr>
-                        <td
-                          class="file-name view-link"
-                          (click)="selectRowForEdit(product, rowIndex)"
-                        >
-                          {{ product.documentType }}
-                        </td>
+                        <td [ngClass]="{ 'disabled': deactivated}"
+                        class="file-name view-link"
+                        (click)="!deactivated && selectRowForEdit(product, rowIndex)">
+                      {{ product.documentType }}
+                    </td>
                         <td>{{ product.idNumber }}</td>
                         <td>{{ product.idIssueDate }}</td>
                         <td>{{ product.idExpiryDate }}</td>
@@ -263,13 +262,14 @@
                     >
                       <tr>
                         <td
+                        [ngClass]="{ 'disabled': deactivated}"
                           style="
                             cursor: pointer;
                             color: blue;
                             text-decoration: underline;
                           "
                           (click)="
-                            selectRowForEditBeneficial(product, rowIndex)
+                          !deactivated && selectRowForEditBeneficial(product, rowIndex)
                           "
                         >
                           {{ product.ownershipType }}
@@ -389,9 +389,10 @@
                     >
                       <tr>
                         <td
+                        [ngClass]="{ 'disabled': deactivated}"
                           class="file-name view-link"
                           (click)="
-                            selectRowForEditRepresentative(product, rowIndex)
+                          !deactivated && selectRowForEditRepresentative(product, rowIndex)
                           "
                         >
                           {{ product.representativeFirstName }}
@@ -877,7 +878,7 @@
                             type="file"
                             name="file-upload-input"
                             id="file-upload-input"
-                            accept=".svg, .png, .jpeg"
+                            accept=".pdf, .png, .jpg"
                             [disabled]="
                               individualForm
                                 .get(section.formName)
@@ -1056,6 +1057,7 @@
               label="Save"
               class="p-button-raised"
               (click)="onSubmit()"
+              [disabled]="deactivated"
             ></button>
             <button
               pButton
@@ -1064,6 +1066,16 @@
               label="Reset"
               class="p-button-warning"
               (click)="onReset()"
+              [disabled]="deactivated"
+            ></button>
+            <button
+            *ngIf="mode == 'edit'"
+              pButton
+              pRipple
+              type="button"
+              label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+              class="p-button-raised"
+              (click)="onActive(data)"
             ></button>
           </div>
         </form>
@@ -1173,6 +1185,30 @@
       icon="pi pi-times"
       label="No"
       (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatus"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>

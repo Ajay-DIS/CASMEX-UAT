@@ -75,6 +75,11 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   masterData: any = {};
 
+  deactivated: boolean = false;
+  disabledFields: any = {};
+
+  onActiveData: any[] = [];
+
   kycData = [];
   // prettier-ignore
 
@@ -399,10 +404,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
     this.formSections = allFormSections;
     console.log(this.formSections);
+    this.disabledFields = {};
     this.formSections.forEach((section) => {
       let haveVisibleFields = false;
       const sectionGroup = new UntypedFormGroup({});
       section.fields.forEach((field) => {
+        if (!field.enable) {
+          this.disabledFields[section.formName] = field.name;
+        }
         if (field.visible) {
           haveVisibleFields = true;
         }
@@ -764,35 +773,37 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   }
 
   fileUploadChange(e: any, section: any, field: any, docId: any) {
+    console.log(e.target.files[0]);
     if (
       !(
         e.target.files[0]?.type == "image/jpeg" ||
         e.target.files[0]?.type == "image/png" ||
-        e.target.files[0]?.type == "image/svg+xml"
+        e.target.files[0]?.type == "application/pdf"
       )
     ) {
-      this.coreService.showWarningToast("Valid formats are JPEG, PNG, SVG.");
-    }
-    if (e.target.files[0]) {
-      this.coreService.displayLoadingScreen();
-      setTimeout(() => {
-        this.individualForm
-          ?.get(section)
-          ?.get(field)
-          .patchValue(e.target.files[0].name);
+      this.coreService.showWarningToast("Valid formats are JPG, PNG, PDF.");
+    } else {
+      if (e.target.files[0]) {
+        this.coreService.displayLoadingScreen();
+        setTimeout(() => {
+          this.individualForm
+            ?.get(section)
+            ?.get(field)
+            .patchValue(e.target.files[0].name);
 
-        if (section == "KYC Doc Upload") {
-          this.uploadedKycDoc[field] = e.target.files[0];
-        }
-        if (section == "Beneficial Owner Details") {
-          this.uploadedBeneficialDoc[field] = e.target.files[0];
-        }
-        if (section == "Representative Details") {
-          this.uploadedRepresentativeDoc[field] = e.target.files[0];
-        }
+          if (section == "KYC Doc Upload") {
+            this.uploadedKycDoc[field] = e.target.files[0];
+          }
+          if (section == "Beneficial Owner Details") {
+            this.uploadedBeneficialDoc[field] = e.target.files[0];
+          }
+          if (section == "Representative Details") {
+            this.uploadedRepresentativeDoc[field] = e.target.files[0];
+          }
 
-        this.coreService.removeLoadingScreen();
-      }, 1500);
+          this.coreService.removeLoadingScreen();
+        }, 1500);
+      }
     }
   }
 
@@ -2265,7 +2276,9 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       });
     });
     if (data["uploadDocuments"]) {
-      this.checkDocumentExpiry(data["uploadDocuments"]);
+      if (this.deactivated == false) {
+        this.checkDocumentExpiry(data["uploadDocuments"]);
+      }
       this.uploadedKycData = data["uploadDocuments"].map((key) => {
         let docData = {};
 
@@ -2732,6 +2745,32 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.router.navigate(["navbar", "customer-profile"]);
   }
 
+  disableFormControls() {
+    Object.keys(this.individualForm.controls).forEach((controlName) => {
+      this.individualForm.get(controlName).disable();
+    });
+  }
+  enableFormControls() {
+    console.log("disfields", this.disabledFields);
+    Object.keys(this.individualForm.controls).forEach((controlName) => {
+      console.log("control", controlName);
+      this.individualForm.get(controlName).enable();
+    });
+    if (Object.keys(this.disabledFields).length) {
+      Object.keys(this.disabledFields).forEach((section) => {
+        console.log(section);
+        console.log(this.disabledFields[section]);
+        console.log(
+          this.individualForm.get(section).get(this.disabledFields[section])
+        );
+        this.individualForm
+          .get(section)
+          .get(this.disabledFields[section])
+          .disable();
+      });
+    }
+  }
+
   getIndividualCustomer(custId: any) {
     this.http
       .get(
@@ -2747,6 +2786,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
             this.setCustomerFormData(res["data"]);
+            this.onActiveData = res["data"];
+            console.log("data", res["data"]);
+            console.log("data1", this.onActiveData);
+            if (res["data"]["status"] == "Inactive") {
+              this.disableFormControls();
+              this.deactivated = true;
+            }
           }
         },
         (err) => {
@@ -2903,7 +2949,81 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       );
     }
   }
+  onActive(data: any) {
+    this.confirmStatus();
+  }
+  confirmStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Customer Record: ${this.onActiveData["id"]}?`;
 
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatus",
+      accept: () => {
+        this.updateStatus(
+          reqStatus,
+          this.onActiveData,
+          this.onActiveData["customerType"]
+        );
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  updateStatus(reqStatus: any, data: any, cusType: any) {
+    this.coreService.displayLoadingScreen();
+    this.updateCustomerStatus(data["id"], reqStatus, cusType);
+  }
+
+  updateCustomerStatus(cusId: any, status: any, cusType: any) {
+    let service: Observable<any>;
+    console.log(this.userId, status, cusId.toString(), cusType);
+    service = this.customerService.updateCustomerCorporateStatus(
+      this.userId,
+      status,
+      cusId.toString(),
+      cusType
+    );
+    service.subscribe(
+      (res) => {
+        if (res["status"] == "200") {
+          this.coreService.showSuccessToast(res["data"]);
+          this.coreService.removeLoadingScreen();
+          this.deactivated = !this.deactivated;
+          if (this.deactivated) {
+            this.disableFormControls();
+          } else {
+            this.enableFormControls();
+          }
+        } else {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(res["msg"]);
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
+  }
   closeDialog() {
     this.setHeaderSidebarBtn();
     this.checked = false;

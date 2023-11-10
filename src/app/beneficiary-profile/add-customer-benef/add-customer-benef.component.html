@@ -207,20 +207,55 @@
   </ng-container>
   <div class="form-group btn-grp buttons-section">
     <button
-      pButton
-      pRipple
-      type="button"
-      label="Save"
-      class="p-button-raised"
-      (click)="onSubmit()"
-    ></button>
-    <button
-      pButton
-      pRipple
-      type="button"
-      label="Reset"
-      class="p-button-warning"
-      (click)="onReset()"
-    ></button>
+    pButton
+    pRipple
+    type="button"
+    label="Save"
+    class="p-button-raised"
+    (click)="onSubmit()"
+    [disabled]="deactivated"
+  ></button>
+  <button
+    pButton
+    pRipple
+    type="button"
+    label="Reset"
+    class="p-button-warning"
+    (click)="onReset()"
+    [disabled]="deactivated"
+  ></button>
+  <button
+  *ngIf="modeVal == 'edit'"
+    pButton
+    pRipple
+    type="button"
+    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+    class="p-button-raised"
+    (click)="onActive(data)"
+  ></button>
   </div>
 </form>
+<p-confirmDialog
+  key="activeDeactiveStatusBenef"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
