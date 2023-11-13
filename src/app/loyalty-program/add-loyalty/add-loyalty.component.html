@@ -40,33 +40,35 @@
           <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
             <div class="row">
               <div class="buttons-section">
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    [disabled]="!applyCriteriaFormattedData?.length || deactivated"
-                    label="Save"
-                    class="p-button-raised"
-                    (click)="saveAddNewLoyalty()"
-                  ></button>
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Reset"
-                    class="p-button-warning"
-                    (click)="reset()"
-                    [disabled]="deactivated"
-                  ></button>
-                  <button
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  [disabled]="
+                    !applyCriteriaFormattedData?.length || deactivated
+                  "
+                  label="Save"
+                  class="p-button-raised"
+                  (click)="saveAddNewLoyalty()"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Reset"
+                  class="p-button-warning"
+                  (click)="reset()"
+                  [disabled]="deactivated"
+                ></button>
+                <button
                   *ngIf="mode == 'edit'"
-                    pButton
-                    pRipple
-                    type="button"
-                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
-                    class="p-button-raised"
-                    (click)="onActive()"
-                  ></button>
+                  pButton
+                  pRipple
+                  type="button"
+                  label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                  class="p-button-raised"
+                  (click)="onActive()"
+                ></button>
               </div>
             </div>
           </div>
@@ -152,11 +154,12 @@
                 optionLabel="name"
                 [disabled]="deactivated"
               >
-              <ng-template let-options pTemplate="item">
-                <div class="truncate-text">
-                  <div >{{ options.name}}</div>
-                </div>
-              </ng-template></p-dropdown>
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.name }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
             </div>
           </div>
           <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
@@ -198,7 +201,9 @@
                   </div>
                 </div>
                 <div class="fileUploadLabel" *ngIf="getUploadedImgData?.length">
-                  <span (click)="showUploadedFilesModal()"
+                  <span
+                    [ngClass]="{ disabled: deactivated }"
+                    (click)="!deactivated && showUploadedFilesModal()"
                     >Uploaded Images</span
                   >
                 </div>
@@ -245,7 +250,9 @@
                     [(ngModel)]="promoCodeLength"
                     (onBlur)="onPromoCodeLength($event)"
                     [inputStyle]="{ width: '40px', padding: '0.5rem' }"
-                    [disabled]="mode == 'edit' && !this.resetParam || deactivated"
+                    [disabled]="
+                      (mode == 'edit' && !this.resetParam) || deactivated
+                    "
                   >
                   </p-inputNumber>
                   <span
@@ -346,7 +353,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
-      [deactivated]="deactivated" 
+      [deactivated]="deactivated"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -435,14 +442,16 @@
                           rowData['linked'] == 'Y' ||
                           (col['field'] == 'discountAs' &&
                             rowData['rewardsAs'] != 'Discount') ||
-                          rowData['isActive'] == 'N' || deactivated
+                          rowData['isActive'] == 'N' ||
+                          deactivated
                         "
                       >
-                      <ng-template let-options pTemplate="item">
-                        <div class="truncate-text">
-                          <div >{{ options.codeName}}</div>
-                        </div>
-                      </ng-template></p-dropdown>
+                        <ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div>{{ options.codeName }}</div>
+                          </div>
+                        </ng-template></p-dropdown
+                      >
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"
@@ -465,8 +474,12 @@
                             valInp
                           )
                         "
-                        [disabled]="rowData['linked'] == 'Y' || deactivated || rowData['isActive'] == 'N'"
-                    ></p-inputNumber>
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          deactivated ||
+                          rowData['isActive'] == 'N'
+                        "
+                      ></p-inputNumber>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'text'"
@@ -513,8 +526,10 @@
                           "
                           [disabled]="rowData['linked'] == 'Y' || deactivated"
                         />
-                        <span class="slider round" 
-                        [ngClass]="{ 'disabled': deactivated}"></span>
+                        <span
+                          class="slider round"
+                          [ngClass]="{ disabled: deactivated }"
+                        ></span>
                       </label>
                     </div>
                   </td>
