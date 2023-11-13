@@ -40,18 +40,15 @@
           <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
             <div class="row">
               <div class="buttons-section">
-                <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 saveAddbtn">
                   <button
                     pButton
                     pRipple
                     type="button"
-                    [disabled]="!applyCriteriaFormattedData?.length"
+                    [disabled]="!applyCriteriaFormattedData?.length || deactivated"
                     label="Save"
                     class="p-button-raised"
                     (click)="saveAddNewLoyalty()"
                   ></button>
-                </div>
-                <div class="col-md-2 col-lg-2 col-sm-3 col-xs-3 resetbtn">
                   <button
                     pButton
                     pRipple
@@ -59,8 +56,17 @@
                     label="Reset"
                     class="p-button-warning"
                     (click)="reset()"
+                    [disabled]="deactivated"
                   ></button>
-                </div>
+                  <button
+                  *ngIf="mode == 'edit'"
+                    pButton
+                    pRipple
+                    type="button"
+                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                    class="p-button-raised"
+                    (click)="onActive()"
+                  ></button>
               </div>
             </div>
           </div>
@@ -144,6 +150,7 @@
                 placeholder="Select"
                 optionValue="code"
                 optionLabel="name"
+                [disabled]="deactivated"
               >
               <ng-template let-options pTemplate="item">
                 <div class="truncate-text">
@@ -166,6 +173,7 @@
                     [(ngModel)]="programDescription"
                     maxlength="100"
                     placeholder="Max 100 characters"
+                    [disabled]="deactivated"
                   />
                 </div>
               </div>
@@ -177,6 +185,7 @@
                       type="button"
                       icon="pi pi-upload"
                       class="operation-btns mr-2"
+                      [disabled]="deactivated"
                     ></button>
                     <input
                       #inpFile
@@ -236,7 +245,7 @@
                     [(ngModel)]="promoCodeLength"
                     (onBlur)="onPromoCodeLength($event)"
                     [inputStyle]="{ width: '40px', padding: '0.5rem' }"
-                    [disabled]="mode == 'edit' && !this.resetParam"
+                    [disabled]="mode == 'edit' && !this.resetParam || deactivated"
                   >
                   </p-inputNumber>
                   <span
@@ -261,6 +270,7 @@
                     icon="pi pi-copy"
                     class="operation-btns mr-2 btnround"
                     (click)="copyInputMessage(userinput)"
+                    [disabled]="deactivated"
                   ></button>
                 </div>
               </div>
@@ -336,6 +346,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
+      [deactivated]="deactivated" 
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -424,7 +435,7 @@
                           rowData['linked'] == 'Y' ||
                           (col['field'] == 'discountAs' &&
                             rowData['rewardsAs'] != 'Discount') ||
-                          rowData['isActive'] == 'N'
+                          rowData['isActive'] == 'N' || deactivated
                         "
                       >
                       <ng-template let-options pTemplate="item">
@@ -454,9 +465,8 @@
                             valInp
                           )
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
-                        [disabled]="rowData['isActive'] == 'N'"
-                      ></p-inputNumber>
+                        [disabled]="rowData['linked'] == 'Y' || deactivated || rowData['isActive'] == 'N'"
+                    ></p-inputNumber>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'text'"
@@ -484,6 +494,7 @@
                             checkOperation(btn, rowIndex, rowData, col['field'])
                           "
                           class="operation-btns mr-2"
+                          [disabled]="deactivated"
                         ></button>
                       </ng-container>
                     </div>
@@ -500,9 +511,10 @@
                           [checked]="
                             rowData[col['field']] == 'Y' ? true : false
                           "
-                          [disabled]="rowData['linked'] == 'Y'"
+                          [disabled]="rowData['linked'] == 'Y' || deactivated"
                         />
-                        <span class="slider round"></span>
+                        <span class="slider round" 
+                        [ngClass]="{ 'disabled': deactivated}"></span>
                       </label>
                     </div>
                   </td>
@@ -684,6 +696,30 @@
       icon="pi pi-times"
       label="No"
       (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatusLoyalty"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>

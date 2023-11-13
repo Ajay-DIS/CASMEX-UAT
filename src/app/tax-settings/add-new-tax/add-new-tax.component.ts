@@ -36,6 +36,8 @@ export class AddNewTaxComponent implements OnInit {
   taxCode = "No Data";
   taxDescription = "";
 
+  deactivated: boolean = false;
+
   isTaxSettingLinked: boolean = false;
 
   appliedCriteriaCriteriaMap: any = null;
@@ -307,6 +309,9 @@ export class AddNewTaxComponent implements OnInit {
             if (res["data"]) {
               this.showContent = true;
               this.editTaxSettingApiData = JSON.parse(JSON.stringify(res));
+              if (res["data"][0]["status"] == "Inactive") {
+                this.deactivated = true;
+              }
 
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
@@ -550,6 +555,80 @@ export class AddNewTaxComponent implements OnInit {
           );
         }
       );
+  }
+
+  onActive(data: any) {
+    this.confirmTaxEditStatus();
+  }
+  confirmTaxEditStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Tax Record: ${this.taxCode}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatusTax",
+      accept: () => {
+        this.updateStatus(reqStatus);
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  updateStatus(reqStatus: any) {
+    this.coreService.displayLoadingScreen();
+
+    const formData = new FormData();
+    formData.append("userId", this.userId);
+    formData.append("taxCode", this.taxCode);
+    formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("form", this.formName);
+    this.updateTaxCodeStatus(formData);
+  }
+
+  updateTaxCodeStatus(formData: any) {
+    this.taxSettingsService.updateTaxSettingsStatus(formData).subscribe(
+      (res) => {
+        let message = "";
+        if (res["error"] == "true") {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast(message);
+        } else {
+          if (res["msg"]) {
+            message = res["msg"];
+            this.deactivated = !this.deactivated;
+            this.coreService.showSuccessToast(message);
+          } else {
+            this.coreService.removeLoadingScreen();
+            message = "Error in fetching data, Please try again later";
+            this.coreService.showWarningToast(message);
+          }
+        }
+      },
+      (err) => {
+        console.log(err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   getCriteriaMasterData() {

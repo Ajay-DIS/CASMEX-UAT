@@ -46,6 +46,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   @Input("criteriaText") criteriaText: any = [];
   @Input("criteriaCodeText") criteriaCodeText: any = [];
   @Input("inactiveData") inactiveData: boolean = false;
+  @Input("deactivated") deactivated: boolean = false;
 
   @Output() getCorrespondentValues = new EventEmitter<{
     fieldName: any;
@@ -115,8 +116,6 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   @ViewChild("addCriteriaBtn") addCriteriaBtn: ElementRef;
 
   ngOnInit(): void {
-    this.setSelectAppForm1();
-
     if (Object.keys(this.cmCriteriaSlabType).length) {
       this.slabTypeCM = this.cmCriteriaSlabType;
     }
@@ -163,6 +162,9 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (!this.selectCriteriaForm) {
+      this.setSelectAppForm1();
+    }
     if (changes.correspondentDdlOptions) {
       if (
         changes.correspondentDdlOptions.currentValue.filter(
@@ -172,10 +174,19 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         changes.correspondentDdlOptions.currentValue.splice(1, 0, {
           code: "divider",
           name: "divider",
-          isDivider: true
+          isDivider: true,
         });
       }
       console.log(this.correspondentDdlOptions);
+    }
+    if (changes.deactivated) {
+      if (changes.deactivated.currentValue) {
+        this.criteriaCtrl?.disable();
+        this.operationCtrl?.disable();
+      } else {
+        this.criteriaCtrl?.enable();
+        this.operationCtrl?.enable();
+      }
     }
   }
 

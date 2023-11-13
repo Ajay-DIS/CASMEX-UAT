@@ -38,6 +38,8 @@ export class AddnewrouteComponent2 implements OnInit {
   routeCode: any = "No Data";
   routeDescription: any = "";
 
+  deactivated: boolean = false;
+
   isBankRoutingLinked: boolean = false;
 
   appliedCriteriaCriteriaMap: any = null;
@@ -297,7 +299,9 @@ export class AddnewrouteComponent2 implements OnInit {
             if (res["data"]) {
               this.showContent = true;
               this.editBankRouteApiData = JSON.parse(JSON.stringify(res));
-
+              if (res["data"][0]["status"] == "Inactive") {
+                this.deactivated = true;
+              }
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
 
@@ -545,6 +549,92 @@ export class AddnewrouteComponent2 implements OnInit {
           );
         }
       );
+  }
+
+  onActive(data: any) {
+    this.confirmBankEditStatus();
+  }
+  confirmBankEditStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Bank Route Record: ${this.routeCode}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatusBank",
+      accept: () => {
+        this.updateStatus(reqStatus);
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  updateStatus(reqStatus: any) {
+    this.coreService.displayLoadingScreen();
+
+    const formData = new FormData();
+    formData.append("userId", this.userId);
+    formData.append("routeCode", this.routeCode);
+    formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("form", this.formName);
+    this.updateBankRouteStatus(formData);
+  }
+
+  updateBankRouteStatus(formData: any) {
+    this.bankRoutingService.updateBankRouteStatus(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          let message = "";
+          if (res["error"] == "true") {
+            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast(message);
+          } else {
+            if (res["msg"]) {
+              message = res["msg"];
+              this.deactivated = !this.deactivated;
+              this.coreService.showSuccessToast(message);
+            } else {
+              this.coreService.removeLoadingScreen();
+              message = "Error in fetching data, Please try again later";
+              this.coreService.showWarningToast(message);
+            }
+          }
+        }
+      },
+      (err) => {
+        console.log("Error in updateBankRouteStatus", err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   getCriteriaMasterData() {

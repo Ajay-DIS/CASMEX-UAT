@@ -107,3 +107,7 @@ input.inputError {
 .appliedCriteriaSelect ::ng-deep .p-dropdown {
   background: #f4f6fa !important;
 }
+.disabled {
+  cursor: not-allowed !important;
+  color: #999 !important; 
+}

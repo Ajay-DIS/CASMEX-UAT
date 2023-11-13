@@ -11,7 +11,8 @@
     </p>
     <div class="openCriteria">
       <p class="clickcriteria">
-        <a (click)="saveCriteriaTemplateLink()"
+        <a [ngClass]="{ 'disabled': deactivated}"
+        (click)="!deactivated && saveCriteriaTemplateLink()"
           >Click to save this Criteria as a template</a
         >
       </p>
@@ -224,7 +225,7 @@
               type="button"
               label="+"
               class="p-button-primary"
-              [disabled]="!selectCriteriaForm.valid"
+              [disabled]="!selectCriteriaForm.valid || deactivated"
               (click)="addCriteriaMap()"
             ></button>
           </div>
@@ -242,7 +243,7 @@
                   ? 'Select Template'
                   : 'No saved templates'
               "
-              [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData"
+              [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData || deactivated"
               (onChange)="selectCriteriaTemplate($event.value)"
               [(ngModel)]="selectedTemplate"
             >
@@ -260,7 +261,8 @@
   <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
     <span
       *ngFor="let criteria of criteriaText; let i = index"
-      (click)="openRangeModal(criteria)"
+      [ngClass]="{ 'disabled': deactivated}"
+      (click)="!deactivated && openRangeModal(criteria)"
       class="criteria-span"
       [ngStyle]="{
         backgroundColor: criteria?.includes('!=')
@@ -269,13 +271,14 @@
       }"
     >
       {{ isRangeCrt(criteria) ? "" : criteria
-      }}<a style="cursor: pointer" *ngIf="isRangeCrt(criteria)">{{
+      }}<a [ngClass]="{ 'disabled': deactivated}" style="cursor: pointer" *ngIf="isRangeCrt(criteria)">{{
         criteria
       }}</a>
       <span
         role="button"
         style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
-        (click)="ondeletecriteria(i, criteria)"
+        [ngClass]="{ 'disabled': deactivated}"
+        (click)="!deactivated && ondeletecriteria(i, criteria)"
       >
         <svg
           style="margin-bottom: 4px"
@@ -303,7 +306,7 @@
       type="button"
       label="Apply Criteria"
       class="p-button-raised"
-      [disabled]="!criteriaText?.length"
+      [disabled]="!criteriaText?.length || deactivated"
       (click)="applyCriteria()"
     ></button>
   </div>

@@ -40,6 +40,8 @@ export class AddLoyaltyComponent implements OnInit {
   mode = "add";
   formName = "Loyalty Programs Manager";
 
+  deactivated: boolean = false;
+
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
@@ -579,6 +581,10 @@ export class AddLoyaltyComponent implements OnInit {
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
 
+              if (res["data"][0]["status"] == "Inactive") {
+                this.deactivated = true;
+              }
+
               this.criteriaText =
                 this.setCriteriaService.decodeFormattedCriteria(
                   this.criteriaCodeText,
@@ -886,6 +892,92 @@ export class AddLoyaltyComponent implements OnInit {
           );
         }
       );
+  }
+
+  onActive(data: any) {
+    this.confirmLoyaltyEditStatus();
+  }
+  confirmLoyaltyEditStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Loyalty Record: ${this.programCode}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatusLoyalty",
+      accept: () => {
+        this.updateStatus(reqStatus);
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  updateStatus(reqStatus: any) {
+    this.coreService.displayLoadingScreen();
+
+    const formData = new FormData();
+    formData.append("userId", this.userId);
+    formData.append("programCode", this.programCode);
+    formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("form", this.formName);
+    this.updateLoyaltyStatus(formData);
+  }
+
+  updateLoyaltyStatus(formData: any) {
+    this.loyaltyService.updateLoyaltyStatus(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          let message = "";
+          if (res["error"] == "true") {
+            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast(message);
+          } else {
+            if (res["msg"]) {
+              message = res["msg"];
+              this.deactivated = !this.deactivated;
+              this.coreService.showSuccessToast(message);
+            } else {
+              this.coreService.removeLoadingScreen();
+              message = "Error in fetching data, Please try again later";
+              this.coreService.showWarningToast(message);
+            }
+          }
+        }
+      },
+      (err) => {
+        console.log("Error in updateBankRouteStatus", err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   getCriteriaMasterData() {
