@@ -140,3 +140,7 @@ span.error-message {
   font-size: 10px;
   color: red;
 }
+.disabled {
+  cursor: not-allowed !important;
+  color: #999 !important; 
+}

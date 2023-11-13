@@ -183,3 +183,7 @@ a:hover {
 .smart-search .any-value {
   font-size: 13px;
 }
+.disabled {
+  cursor: not-allowed !important;
+  color: #999 !important; 
+}

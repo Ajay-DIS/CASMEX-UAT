@@ -43,7 +43,7 @@
                 <button
                   pButton
                   pRipple
-                  [disabled]="!applyCriteriaFormattedData?.length"
+                  [disabled]="!applyCriteriaFormattedData?.length || deactivated"
                   type="button"
                   label="Save"
                   class="p-button-raised"
@@ -53,7 +53,7 @@
                   pButton
                   pRipple
                   type="button"
-                  [disabled]="!applyCriteriaFormattedData.length"
+                  [disabled]="!applyCriteriaFormattedData.length || deactivated"
                   label="Save & Add New"
                   class="p-button-raised"
                   (click)="saveAddNewTax('saveAndAddNew')"
@@ -65,7 +65,17 @@
                   label="Reset"
                   class="p-button-warning"
                   (click)="reset()"
+                  [disabled]="deactivated"
                 ></button>
+                <button
+            *ngIf="mode == 'edit'"
+              pButton
+              pRipple
+              type="button"
+              label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+              class="p-button-raised"
+              (click)="onActive()"
+            ></button>
               </div>
             </div>
           </div>
@@ -150,6 +160,7 @@
                 [(ngModel)]="taxDescription"
                 maxlength="100"
                 placeholder="Max 100 characters"
+                [disabled]="deactivated"
               />
             </div>
           </div>
@@ -174,6 +185,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
+      [deactivated] = "deactivated"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -255,8 +267,8 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
-                        [disabled]="rowData['isActive'] == 'N'"
+                        [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
+                        
                       ><ng-template let-options pTemplate="item">
                         <div class="truncate-text">
                           <div >{{ options.codeName}}</div>
@@ -285,8 +297,7 @@
                             valInp
                           )
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
-                        [disabled]="rowData['isActive'] == 'N'"
+                        [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
                       ></p-inputNumber>
                     </div>
                     <div
@@ -315,10 +326,11 @@
                             checkOperation(btn, rowIndex, rowData, col['field'])
                           "
                           class="operation-btns mr-2"
+                          [disabled]="deactivated"
                         ></button>
                       </ng-container>
                     </div>
-                    <div  *ngIf="col.field == 'isActive'"
+                    <div  *ngIf="col.field == 'isActive'" 
                     style="border: none; text-align: left">
                     <label class="switch" style="border: none">
                       <input
@@ -331,9 +343,9 @@
                             ? true
                             : false
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
+                        [disabled]="rowData['linked'] == 'Y' || deactivated"
                       />
-                      <span class="slider round"></span>
+                      <span class="slider round" [ngClass]="{ 'disabled': deactivated}"></span>
                     </label>
                     </div>
                   </td>
@@ -434,6 +446,30 @@
       icon="pi pi-times"
       label="No"
       (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatusTax"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>

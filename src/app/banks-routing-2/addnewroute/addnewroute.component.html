@@ -46,7 +46,7 @@
           pRipple
           type="button"
           [disabled]="
-            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length
+            !applyCriteriaFormattedData || !applyCriteriaFormattedData.length || deactivated
           "
           label="Save"
           class="p-button-raised"
@@ -60,15 +60,25 @@
           label="Save & Add New"
           class="p-button-raised"
           (click)="saveAddNewRoute('saveAndAddNew')"
+          [disabled]="deactivated"
         ></button>
         <button
           pButton
           pRipple
           type="button"
-          [disabled]="!applyCriteriaFormattedData.length"
+          [disabled]="!applyCriteriaFormattedData.length || deactivated"
           label="Reset"
           class="p-button-warning"
           (click)="reset()"
+        ></button>
+        <button
+        *ngIf="mode == 'edit'"
+          pButton
+          pRipple
+          type="button"
+          label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+          class="p-button-raised"
+          (click)="onActive()"
         ></button>
       </div>
     </div>
@@ -138,6 +148,7 @@
           [(ngModel)]="routeDescription"
           maxlength="100"
           placeholder="Max 100 characters"
+          [disabled]="deactivated"
         />
       </div>
     </div>
@@ -162,6 +173,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
+      [deactivated] = "deactivated"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -244,9 +256,7 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
-                        [disabled]="rowData['isActive'] == 'N'"
-                      >
+                        [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated">
                       <ng-template let-options pTemplate="item">
                         <div class="truncate-text">
                           <div >{{ options.codeName}}</div>
@@ -277,9 +287,9 @@
                             ? true
                             : false
                         "
-                        [disabled]="rowData['linked'] == 'Y'"
+                        [disabled]="rowData['linked'] == 'Y' || deactivated"
                       />
-                      <span class="slider round"></span>
+                      <span class="slider round" [ngClass]="{ 'disabled': deactivated}"></span>
                     </label>
                     </div>
                   </td>
@@ -379,6 +389,30 @@
       icon="pi pi-times"
       label="No"
       (click)="cd3.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatusBank"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>
