@@ -586,6 +586,27 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                     .patchValue(f.defaultValue);
                   if (f.defaultValue) {
                     this.byPassKycImg();
+                  } else {
+                    this.copyKycSection["fields"].forEach((field) => {
+                      switch (field.fieldName) {
+                        case "uploadFrontSideFile":
+                          kycSection["fields"].forEach((f) => {
+                            if (f.fieldName == "uploadFrontSideFile") {
+                              f.docFieldMandate = field.docFieldMandate;
+                            }
+                          });
+                          break;
+                        case "uploadBackSideFile":
+                          kycSection["fields"].forEach((f) => {
+                            if (f.fieldName == "uploadBackSideFile") {
+                              f.docFieldMandate = field.docFieldMandate;
+                            }
+                          });
+                          break;
+                        default:
+                          break;
+                      }
+                    });
                   }
                 } else {
                   this.byPassKycImg();
@@ -1391,8 +1412,6 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
-    this.uploadedBeneficialDoc = {};
-    this.uploadedRepresentativeDoc = {};
   }
   addBeneficial() {
     let beneficialData = this.individualForm
@@ -1401,8 +1420,10 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
     if (
       this.uploadedBeneficialData.length &&
-      this.uploadedBeneficialData.filter((data) => {
-        return data.documentType == beneficialData.documentType?.codeName;
+      this.uploadedBeneficialData.filter((data, i) => {
+        if (!(this.editIndexBeneficial == i)) {
+          return data.documentType == beneficialData.documentType?.codeName;
+        }
       })?.length
     ) {
       this.coreService.showWarningToast("This Document type is already added");
@@ -1516,6 +1537,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       this.uploadedBeneficialData[index] = beneficialDataObj;
     }
     this.individualForm.get("Beneficial Owner Details").reset();
+    this.uploadedBeneficialDoc = {};
     this.editIndexBeneficial = -1;
     this.editApiIdBeneficial = "";
   }
@@ -1526,11 +1548,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
     if (
       this.uploadedRepresentativeData.length &&
-      this.uploadedRepresentativeData.filter((data) => {
-        return (
-          data.representativeDocumentType ==
-          representativeData.representativeDocumentType?.codeName
-        );
+      this.uploadedRepresentativeData.filter((data, i) => {
+        if (!(this.editIndexRepresentative == i)) {
+          return (
+            data.representativeDocumentType ==
+            representativeData.representativeDocumentType?.codeName
+          );
+        }
       })?.length
     ) {
       this.coreService.showWarningToast("This Document type is already added");
@@ -1732,6 +1756,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
     this.individualForm.get("Representative Details").reset();
+    this.uploadedRepresentativeDoc = {};
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";
   }
