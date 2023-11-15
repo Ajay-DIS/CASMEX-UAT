@@ -1420,8 +1420,6 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
-    this.uploadedBeneficialDoc = {};
-    this.uploadedRepresentativeDoc = {};
   }
   addBeneficial() {
     let beneficialData = this.corporateForm
@@ -1430,8 +1428,10 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
     if (
       this.uploadedBeneficialData.length &&
-      this.uploadedBeneficialData.filter((data) => {
-        return data.documentType == beneficialData.documentType?.codeName;
+      this.uploadedBeneficialData.filter((data, i) => {
+        if (!(this.editIndexBeneficial == i)) {
+          return data.documentType == beneficialData.documentType?.codeName;
+        }
       })?.length
     ) {
       this.coreService.showWarningToast("This Document type is already added");
@@ -1545,6 +1545,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedBeneficialData[index] = beneficialDataObj;
     }
     this.corporateForm.get("Beneficial Owner Details").reset();
+    this.uploadedBeneficialDoc = {};
     this.editIndexBeneficial = -1;
     this.editApiIdBeneficial = "";
   }
@@ -1555,11 +1556,13 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
     if (
       this.uploadedRepresentativeData.length &&
-      this.uploadedRepresentativeData.filter((data) => {
-        return (
-          data.representativeDocumentType ==
-          representativeData.representativeDocumentType?.codeName
-        );
+      this.uploadedRepresentativeData.filter((data, i) => {
+        if (!(this.editIndexRepresentative == i)) {
+          return (
+            data.representativeDocumentType ==
+            representativeData.representativeDocumentType?.codeName
+          );
+        }
       })?.length
     ) {
       this.coreService.showWarningToast("This Document type is already added");
@@ -1761,6 +1764,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
     this.corporateForm.get("Representative Details").reset();
+    this.uploadedRepresentativeDoc = {};
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";
   }

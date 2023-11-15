@@ -51,11 +51,15 @@
                       let-rowIndex="rowIndex"
                     >
                       <tr>
-                        <td [ngClass]="{ 'disabled': deactivated}"
-                        class="file-name view-link"
-                        (click)="!deactivated && selectRowForEdit(product, rowIndex)">
-                      {{ product.documentType }}
-                    </td>
+                        <td
+                          [ngClass]="{ disabled: deactivated }"
+                          class="file-name view-link"
+                          (click)="
+                            !deactivated && selectRowForEdit(product, rowIndex)
+                          "
+                        >
+                          {{ product.documentType }}
+                        </td>
                         <td>{{ product.idNumber }}</td>
                         <td>{{ product.idIssueDate }}</td>
                         <td>{{ product.idExpiryDate }}</td>
@@ -262,14 +266,15 @@
                     >
                       <tr>
                         <td
-                        [ngClass]="{ 'disabled': deactivated}"
+                          [ngClass]="{ disabled: deactivated }"
                           style="
                             cursor: pointer;
                             color: blue;
                             text-decoration: underline;
                           "
                           (click)="
-                          !deactivated && selectRowForEditBeneficial(product, rowIndex)
+                            !deactivated &&
+                              selectRowForEditBeneficial(product, rowIndex)
                           "
                         >
                           {{ product.ownershipType }}
@@ -389,10 +394,11 @@
                     >
                       <tr>
                         <td
-                        [ngClass]="{ 'disabled': deactivated}"
+                          [ngClass]="{ disabled: deactivated }"
                           class="file-name view-link"
                           (click)="
-                          !deactivated && selectRowForEditRepresentative(product, rowIndex)
+                            !deactivated &&
+                              selectRowForEditRepresentative(product, rowIndex)
                           "
                         >
                           {{ product.representativeFirstName }}
@@ -861,6 +867,7 @@
                           </div>
                           <input
                             #inpFile
+                            onclick="this.value=null;"
                             (change)="
                               fileUploadChange(
                                 $event,
@@ -1069,7 +1076,7 @@
               [disabled]="deactivated"
             ></button>
             <button
-            *ngIf="mode == 'edit'"
+              *ngIf="mode == 'edit'"
               pButton
               pRipple
               type="button"
