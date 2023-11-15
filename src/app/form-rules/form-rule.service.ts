@@ -11,6 +11,16 @@ export class FormRuleService {
   moduleName: any = null;
   formName: any = null;
 
+  private statusDataForEditForm: any = undefined;
+
+  setData(data: any) {
+    this.statusDataForEditForm = data;
+  }
+
+  getData(): any {
+    return this.statusDataForEditForm;
+  }
+
   getRuleCodeData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(`/remittance/formRulesController/getFormRuleList`, {
       headers: new HttpHeaders()

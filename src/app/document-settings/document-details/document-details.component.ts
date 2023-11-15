@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from "@angular/core";
 import {
   UntypedFormBuilder,
   UntypedFormControl,
@@ -35,6 +35,7 @@ export class DocumentDetailsComponent implements OnInit {
   documentCode = "No Data";
   documentDesc = "";
 
+  statusData: any = [];
   deactivated: boolean = false;
 
   criteriaMasterData: any = {};
@@ -195,7 +196,8 @@ export class DocumentDetailsComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private documentService: DocumentSettingsService,
     private criteriaDataService: CriteriaDataService,
-    private setCriteriaService: SetCriteriaService
+    private setCriteriaService: SetCriteriaService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -291,6 +293,12 @@ export class DocumentDetailsComponent implements OnInit {
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
+
+    this.statusData = this.documentService.getData();
+    console.log("status", this.statusData);
+    if (this.statusData["status"] == "Inactive") {
+      this.deactivated = true;
+    }
   }
 
   applyCriteria(postDataCriteria: FormData) {
@@ -356,10 +364,6 @@ export class DocumentDetailsComponent implements OnInit {
           if (res["data"]) {
             this.showContent = true;
             this.editDocResponse = JSON.parse(JSON.stringify(res));
-
-            if (res["data"][0]["status"] == "Inactive") {
-              this.deactivated = true;
-            }
 
             this.documentCode = res["documentSettingsCode"];
             if (res["documentSettingsDesc"]) {
@@ -997,15 +1001,25 @@ export class DocumentDetailsComponent implements OnInit {
     this.getAllTemplates();
   }
 
-  checkBoxUpdate(e: any, field: any, rowIndex: any) {
+  checkBoxUpdate(e: any, field: any, rowIndex: any, rowData: any) {
+    console.log(e, field, rowData);
+
     if (field == "isDefault") {
-      console.log(e);
       if (e == true) {
         this.applyCriteriaFormattedData.forEach((data, i) => {
           if (i != rowIndex) {
             data[field] = false;
           }
         });
+      }
+    } else if (field == "bypassImage") {
+      if (e.returnValue) {
+        rowData["frontSide"] = false;
+        rowData["backSide"] = false;
+        this.cdr.detectChanges();
+      } else {
+        rowData["frontSide"] = true;
+        rowData["backSide"] = true;
       }
     }
   }

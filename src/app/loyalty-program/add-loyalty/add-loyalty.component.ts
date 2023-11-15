@@ -41,6 +41,7 @@ export class AddLoyaltyComponent implements OnInit {
   formName = "Loyalty Programs Manager";
 
   deactivated: boolean = false;
+  statusData: any = [];
 
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
@@ -305,6 +306,12 @@ export class AddLoyaltyComponent implements OnInit {
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
+
+    this.statusData = this.loyaltyService.getData();
+    console.log("status", this.statusData);
+    if (this.statusData["status"] == "Inactive") {
+      this.deactivated = true;
+    }
   }
   onPromoCodeLength(e) {
     console.log("promocode", e.target.value);
@@ -580,10 +587,6 @@ export class AddLoyaltyComponent implements OnInit {
 
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
-
-              if (res["data"][0]["status"] == "Inactive") {
-                this.deactivated = true;
-              }
 
               this.criteriaText =
                 this.setCriteriaService.decodeFormattedCriteria(

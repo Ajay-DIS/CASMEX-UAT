@@ -420,6 +420,7 @@ export class LoyaltyProgramComponent implements OnInit {
       data.programCode,
       "edit",
     ]);
+    this.loyaltyService.setData(data);
   }
 
   showUploadedFilesModal() {

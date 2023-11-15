@@ -95,6 +95,16 @@ export class BankRoutingComponent2 implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+
+    const translationKey = "Home.Settings";
+
+    // Update translation
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -378,6 +388,7 @@ export class BankRoutingComponent2 implements OnInit {
       data.routeCode,
       "edit",
     ]);
+    this.bankRoutingService.setData(data);
   }
 
   cloneRoute(data: any) {

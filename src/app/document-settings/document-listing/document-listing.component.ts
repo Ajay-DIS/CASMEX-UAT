@@ -77,6 +77,14 @@ export class DocumentListingComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+
+    const translationKey = "Home.Settings";
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -367,6 +375,7 @@ export class DocumentListingComponent implements OnInit {
       data.documentCode,
       "edit",
     ]);
+    this.documentService.setData(data);
   }
 
   isLinked(id: any) {

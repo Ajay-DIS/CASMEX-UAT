@@ -386,6 +386,7 @@ export class FormRuleListingComponent implements OnInit {
       data.formRuleCode,
       "edit",
     ]);
+    this.formRuleService.setData(data);
   }
 
   isLinked(id: any) {

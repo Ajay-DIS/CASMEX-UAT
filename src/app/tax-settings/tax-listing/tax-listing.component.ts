@@ -76,6 +76,16 @@ export class TaxListingComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+
+    const translationKey = "Home.Settings";
+
+    // Update translation
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -346,6 +356,7 @@ export class TaxListingComponent implements OnInit {
       data.taxCode,
       "edit",
     ]);
+    this.taxSettingsService.setData(data);
   }
 
   isLinked(id: any) {

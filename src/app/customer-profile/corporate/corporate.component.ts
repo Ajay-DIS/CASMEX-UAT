@@ -755,34 +755,73 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   fileUploadChange(e: any, section: any, field: any, docId: any) {
-    if (
-      !(
-        e.target.files[0]?.type == "image/jpeg" ||
-        e.target.files[0]?.type == "image/png" ||
-        e.target.files[0]?.type == "application/pdf"
-      )
-    ) {
-      this.coreService.showWarningToast("Valid formats are JPG, PNG, PDF.");
-    } else {
-      if (e.target.files[0]) {
-        this.coreService.displayLoadingScreen();
-        setTimeout(() => {
-          this.corporateForm
-            ?.get(section)
-            ?.get(field)
-            .patchValue(e.target.files[0].name);
+    if (field == "authorizationLetterUploadFile") {
+      if (
+        !(
+          e.target.files[0]?.type == "image/jpeg" ||
+          e.target.files[0]?.type == "image/png" ||
+          e.target.files[0]?.type == "application/pdf" ||
+          e.target.files[0]?.type ==
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+      ) {
+        this.coreService.showWarningToast(
+          "Valid formats are JPG, PNG, PDF, DOC."
+        );
+      } else {
+        if (e.target.files[0]) {
+          this.coreService.displayLoadingScreen();
+          setTimeout(() => {
+            this.corporateForm
+              ?.get(section)
+              ?.get(field)
+              .patchValue(e.target.files[0].name);
 
-          if (section == "KYC Doc Upload") {
-            this.uploadedKycDoc[field] = e.target.files[0];
-          }
-          if (section == "Beneficial Owner Details") {
-            this.uploadedBeneficialDoc[field] = e.target.files[0];
-          }
-          if (section == "Representative Details") {
-            this.uploadedRepresentativeDoc[field] = e.target.files[0];
-          }
-          this.coreService.removeLoadingScreen();
-        }, 1500);
+            if (section == "KYC Doc Upload") {
+              this.uploadedKycDoc[field] = e.target.files[0];
+            }
+            if (section == "Beneficial Owner Details") {
+              this.uploadedBeneficialDoc[field] = e.target.files[0];
+            }
+            if (section == "Representative Details") {
+              this.uploadedRepresentativeDoc[field] = e.target.files[0];
+            }
+
+            this.coreService.removeLoadingScreen();
+          }, 1500);
+        }
+      }
+    } else {
+      if (
+        !(
+          e.target.files[0]?.type == "image/jpeg" ||
+          e.target.files[0]?.type == "image/png" ||
+          e.target.files[0]?.type == "application/pdf"
+        )
+      ) {
+        this.coreService.showWarningToast("Valid formats are JPG, PNG, PDF.");
+      } else {
+        if (e.target.files[0]) {
+          this.coreService.displayLoadingScreen();
+          setTimeout(() => {
+            this.corporateForm
+              ?.get(section)
+              ?.get(field)
+              .patchValue(e.target.files[0].name);
+
+            if (section == "KYC Doc Upload") {
+              this.uploadedKycDoc[field] = e.target.files[0];
+            }
+            if (section == "Beneficial Owner Details") {
+              this.uploadedBeneficialDoc[field] = e.target.files[0];
+            }
+            if (section == "Representative Details") {
+              this.uploadedRepresentativeDoc[field] = e.target.files[0];
+            }
+
+            this.coreService.removeLoadingScreen();
+          }, 1500);
+        }
       }
     }
   }

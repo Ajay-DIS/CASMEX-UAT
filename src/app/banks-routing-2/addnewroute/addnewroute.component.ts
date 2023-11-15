@@ -39,6 +39,7 @@ export class AddnewrouteComponent2 implements OnInit {
   routeDescription: any = "";
 
   deactivated: boolean = false;
+  statusData: any = [];
 
   isBankRoutingLinked: boolean = false;
 
@@ -229,6 +230,12 @@ export class AddnewrouteComponent2 implements OnInit {
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
+
+    this.statusData = this.bankRoutingService.getData();
+    console.log("status", this.statusData);
+    if (this.statusData["status"] == "Inactive") {
+      this.deactivated = true;
+    }
   }
 
   setSelectAppModule() {
@@ -299,9 +306,6 @@ export class AddnewrouteComponent2 implements OnInit {
             if (res["data"]) {
               this.showContent = true;
               this.editBankRouteApiData = JSON.parse(JSON.stringify(res));
-              if (res["data"][0]["status"] == "Inactive") {
-                this.deactivated = true;
-              }
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);
 

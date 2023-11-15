@@ -795,7 +795,7 @@
                     type="file"
                     name="file-upload-input"
                     id="file-upload-input"
-                    accept=".pdf, .png, .jpg"
+                    [accept]="field.name === 'authorizationLetterUploadFile' ? '.pdf, .png, .jpg,.docx' :'.pdf, .png, .jpg'"
                     [disabled]="
                       corporateForm
                         .get(section.formName)

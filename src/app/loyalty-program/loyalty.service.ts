@@ -11,6 +11,16 @@ export class LoyaltyService {
   applicationName = "Casmex Core";
   moduleName = "Remittance";
 
+  private statusDataForEditForm: any = undefined;
+
+  setData(data: any) {
+    this.statusDataForEditForm = data;
+  }
+
+  getData(): any {
+    return this.statusDataForEditForm;
+  }
+
   // COMMON SERVICES
   getAppModuleList() {
     return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);

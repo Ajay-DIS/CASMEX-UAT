@@ -185,6 +185,14 @@ export class CustomerProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+
+    const translationKey = "Home.Customer";
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
@@ -526,6 +534,7 @@ export class CustomerProfileComponent implements OnInit {
         : "NA";
     this.globalSearch = true;
     this.showTable = false;
+    this.showNoDataFound = false;
     if (this.searchCriteria.length) {
       this.getCustomerListData(this.criteriaMap);
     }
@@ -632,7 +641,12 @@ export class CustomerProfileComponent implements OnInit {
             this.coreService.showWarningToast(res["error"]);
             this.customerData = [];
           } else {
-            this.showTable = true;
+            if (!res.data?.CmCorporateCustomerDetails.length) {
+              this.showTable = false;
+              this.showNoDataFound = true;
+            } else {
+              this.showTable = true;
+            }
             this.customerData = res.data?.CmCorporateCustomerDetails;
             this.totalPages = res.data?.TotalPages;
             this.totalRecords = res.data?.TotalCount;
