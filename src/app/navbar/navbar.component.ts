@@ -15,6 +15,7 @@ import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
 import { BnNgIdleService } from "bn-ng-idle";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-navbar",
@@ -27,6 +28,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   @ViewChild("logo") logoImg: ElementRef;
 
   primaryColor = "var(--primary-color)";
+
+  pageTitle = "";
+  private subscription: Subscription;
 
   breadcrumbsItems: MenuItem[] = [
     { label: "Home", routerLink: "/navbar" },
@@ -63,7 +67,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     { label: "Arabic", value: "ar" },
     { label: "Germany ", value: "de" },
   ];
-  selectedLanguage: string;
+  selectedLanguage = "en";
   currRoute: any;
 
   isStickyHeader = false;
@@ -76,11 +80,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {
-    translate.addLangs(["en", "ar", "de"]);
-    translate.setDefaultLang("en");
-
-    const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|ar|de/) ? browserLang : "en");
+    this.subscription = this.coreService.pageTitle$.subscribe((title) => {
+      this.pageTitle = title;
+    });
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -91,12 +93,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.selectedLanguage = this.translate.currentLang;
+    this.switchLanguage(this.selectedLanguage);
     this.selectTheme({ name: "Blue", color: "#4759e4" });
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       this.breadcrumbsItems = menu;
     });
-
     this.coreService.userActionsObs.subscribe((opt) => {
       this.userActions = opt;
     });
@@ -126,8 +127,15 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
     });
   }
-  switchLanguage(lang: string) {
-    this.translate.use(lang);
+  switchLanguage(language: string) {
+    this.coreService.setLanguage(language);
+
+    // Example: Update the dynamic header based on the selected language
+    this.coreService
+      .translate("Home.Settings")
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
   }
   setSidebarMenu() {
     if (!!localStorage.getItem("menuItems")) {
@@ -414,5 +422,9 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       }
     });
     this.menuItems = arr;
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

@@ -37,6 +37,7 @@ export class AddNewTaxComponent implements OnInit {
   taxDescription = "";
 
   deactivated: boolean = false;
+  statusData: any = [];
 
   isTaxSettingLinked: boolean = false;
 
@@ -238,6 +239,11 @@ export class AddNewTaxComponent implements OnInit {
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
+    this.statusData = this.taxSettingsService.getData();
+    console.log("status", this.statusData);
+    if (this.statusData["status"] == "Inactive") {
+      this.deactivated = true;
+    }
   }
   setSelectAppModule() {
     this.selectAppModule = this.fb.group({
@@ -309,9 +315,6 @@ export class AddNewTaxComponent implements OnInit {
             if (res["data"]) {
               this.showContent = true;
               this.editTaxSettingApiData = JSON.parse(JSON.stringify(res));
-              if (res["data"][0]["status"] == "Inactive") {
-                this.deactivated = true;
-              }
 
               this.criteriaCodeText =
                 this.setCriteriaService.setCriteriaMap(res);

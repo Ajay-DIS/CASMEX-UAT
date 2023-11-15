@@ -1,5 +1,6 @@
 import { DOCUMENT } from "@angular/common";
 import { Inject, Injectable } from "@angular/core";
+import { TranslateService } from "@ngx-translate/core";
 import { ClipboardService } from "ngx-clipboard";
 import { MessageService } from "primeng/api";
 import { BehaviorSubject } from "rxjs";
@@ -17,7 +18,8 @@ export class CoreService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private messageService: MessageService,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    private translateService: TranslateService
   ) {}
 
   showSuccessToast(description: any) {
@@ -96,5 +98,24 @@ export class CoreService {
 
   copyToClipboard(text: string) {
     this.clipboardService.copy(text);
+  }
+
+  private pageTitleSubject = new BehaviorSubject<string>("");
+  pageTitle$ = this.pageTitleSubject.asObservable();
+
+  setPageTitle(title: string) {
+    this.pageTitleSubject.next(title);
+  }
+
+  translate(key: string): Promise<string> {
+    return this.translateService.get(key).toPromise();
+  }
+
+  setLanguage(language: string) {
+    this.translateService.use(language);
+  }
+
+  onLangChange() {
+    return this.translateService.onLangChange;
   }
 }

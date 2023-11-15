@@ -36,6 +36,9 @@ export class AddNewFormRuleComponent implements OnInit {
   formRuleCode = "No Data";
   ruleDescription = "";
 
+  statusData: any = [];
+  deactivated: boolean = false;
+
   isFromRulesLinked: boolean = false;
 
   appliedCriteriaDataOrg: any = [];
@@ -295,6 +298,11 @@ export class AddNewFormRuleComponent implements OnInit {
         this.coreService.showWarningToast("Some error in fetching data");
       }
     );
+    this.statusData = this.formRuleService.getData();
+    console.log("status", this.statusData);
+    if (this.statusData["status"] == "Inactive") {
+      this.deactivated = true;
+    }
   }
 
   setSelectAppModule() {
@@ -888,6 +896,92 @@ export class AddNewFormRuleComponent implements OnInit {
           console.log("Error in getTaxSettingForEditApi", err);
         }
       );
+  }
+
+  onActive(data: any) {
+    this.confirmFormEditStatus();
+  }
+  confirmFormEditStatus() {
+    let type = "";
+    let reqStatus = "";
+    if (this.deactivated == true) {
+      reqStatus = "Active";
+      type = "activate";
+    } else {
+      reqStatus = "Inactive";
+      type = "deactivate";
+    }
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.coreService.setHeaderStickyStyle(false);
+    let completeMsg = "";
+    completeMsg =
+      `<img src="../../../assets/warning.svg"><br/><br/>` +
+      `Do you wish to ` +
+      type +
+      ` the Form Rule Record: ${this.formRuleCode}?`;
+
+    this.confirmationService.confirm({
+      message: completeMsg,
+      key: "activeDeactiveStatusForm",
+      accept: () => {
+        this.updateStatus(reqStatus);
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  updateStatus(reqStatus: any) {
+    this.coreService.displayLoadingScreen();
+
+    const formData = new FormData();
+    formData.append("userId", this.userId);
+    formData.append("formRuleCode", this.formRuleCode);
+    formData.append("status", reqStatus);
+    formData.append("applications", this.appCtrl.value.name);
+    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("form", this.formCtrl.value.name);
+    this.updateFormStatus(formData);
+  }
+
+  updateFormStatus(formData: any) {
+    this.formRuleService.updateFormRuleStatus(formData).subscribe(
+      (res) => {
+        if (
+          res["status"] &&
+          typeof res["status"] == "string" &&
+          (res["status"] == "400" || res["status"] == "500")
+        ) {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+          } else {
+            this.coreService.showWarningToast("Some error in fetching data");
+          }
+        } else {
+          let message = "";
+          if (res["error"] == "true") {
+            this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast(message);
+          } else {
+            if (res["msg"]) {
+              message = res["msg"];
+              this.deactivated = !this.deactivated;
+              this.coreService.showSuccessToast(message);
+            } else {
+              this.coreService.removeLoadingScreen();
+              message = "Error in fetching data, Please try again later";
+              this.coreService.showWarningToast(message);
+            }
+          }
+        }
+      },
+      (err) => {
+        console.log("Error in updateBankRouteStatus", err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 
   onNodeSelect(event) {

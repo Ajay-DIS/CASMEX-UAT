@@ -111,3 +111,8 @@ input.inputError {
   cursor: not-allowed !important;
   color: #999 !important; 
 }
+.appliedCriteriaDataTable input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary-color);
+}

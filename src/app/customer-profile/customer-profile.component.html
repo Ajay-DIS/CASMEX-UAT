@@ -500,6 +500,16 @@
     </p-table>
   </div>
 </div>
+<div class="NorecordFound" *ngIf="!customerData?.length && showNoDataFound">
+  <div class="row">
+    <div class="col-12"><img src="assets/NoRecord.PNG" /></div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p>"No Record Found.Please try again with different criteria"</p>
+    </div>
+  </div>
+</div>
 <div class="NorecordFound" *ngIf="!showTable && globalSearch">
   <div class="row">
     <div class="col-12"><img src="assets/searchCriteria.PNG" /></div>

@@ -295,14 +295,24 @@
                       *ngIf="col['fieldType'] == 'checkbox'"
                       style="text-align: center"
                     >
-                      <p-checkbox
+                      <!-- <p-checkbox
                         [(ngModel)]="rowData[col.field]"
                         [binary]="true"
                         [disabled]="rowData['linked'] == 'Y' || deactivated || rowData['isActive'] == 'N'"
                        (ngModelChange)="
-                          checkBoxUpdate($event, col.field, rowIndex)
+                          checkBoxUpdate($event, col.field, rowIndex,rowData)
                         "
-                      ></p-checkbox>
+                      ></p-checkbox> -->
+                      <input
+                      type="checkbox"
+                      [(ngModel)]="rowData[col.field]"
+                      (change)="checkBoxUpdate($event, col.field, rowIndex,rowData)"
+                      [disabled]="
+                        rowData['linked'] == 'Y' || deactivated || rowData['isActive'] == 'N' || (col.field == 'frontSide' ||
+                            col.field == 'backSide') &&
+                          rowData['bypassImage']
+                      "
+                    />
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"

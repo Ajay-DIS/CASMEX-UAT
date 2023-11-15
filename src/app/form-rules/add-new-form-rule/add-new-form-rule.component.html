@@ -45,7 +45,7 @@
                     pRipple
                     [disabled]="
                       !applyCriteriaFormattedData ||
-                      !applyCriteriaFormattedData.length
+                      !applyCriteriaFormattedData.length || deactivated
                     "
                     type="button"
                     label="Save"
@@ -58,7 +58,7 @@
                     type="button"
                     [disabled]="
                       !applyCriteriaFormattedData ||
-                      !applyCriteriaFormattedData.length
+                      !applyCriteriaFormattedData.length || deactivated
                     "
                     label="Save & Add New"
                     class="p-button-raised"
@@ -71,6 +71,16 @@
                     label="Reset"
                     class="p-button-warning"
                     (click)="reset()"
+                    [disabled]="deactivated"
+                  ></button>
+                  <button
+                  *ngIf="mode == 'edit'"
+                    pButton
+                    pRipple
+                    type="button"
+                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                    class="p-button-raised"
+                    (click)="onActive()"
                   ></button>
               </div>
             </div>
@@ -175,6 +185,7 @@
           [(ngModel)]="ruleDescription"
           maxlength="100"
           placeholder="Max 100 characters"
+          [disabled]="deactivated"
         />
       </div>
     </div>
@@ -196,6 +207,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
+      [deactivated]="deactivated"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -258,6 +270,7 @@
                       <input
                         type="text"
                         class="p-inputtext table-search"
+                        [disabled]="deactivated"
                         placeholder="Search"
                         (input)="
                           treeTable.filter(
@@ -343,7 +356,7 @@
                         [disabled]="
                           (col.field == 'isVisibile' ||
                             col.field == 'isEnable') &&
-                          rowData['isMandatory']
+                          rowData['isMandatory'] || deactivated
                         "
                       />
                       <input
@@ -362,7 +375,7 @@
                             defValueInp
                           )
                         "
-                        [disabled]="rowData['fieldType'] == 'date'"
+                        [disabled]="rowData['fieldType'] == 'date' || deactivated"
                         [pTooltip]="
                           col.type == 'input' &&
                           col.field == 'validLength' &&
@@ -394,7 +407,7 @@
                             columns[i - 1].field
                           )
                         "
-                        [disabled]="rowData['isValidLength'] == false"
+                        [disabled]="rowData['isValidLength'] == false || deactivated"
                       />
                     </ng-container>
                   </td>
@@ -460,6 +473,30 @@
       icon="pi pi-times"
       label="Cancel"
       (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+<p-confirmDialog
+  key="activeDeactiveStatusForm"
+  class="status-confirm confirm-popup"
+  #cd4
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd4.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd4.reject()"
     ></button>
   </p-footer>
 </p-confirmDialog>

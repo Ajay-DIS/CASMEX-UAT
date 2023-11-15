@@ -76,6 +76,14 @@ export class CriteriaListingComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+
+    const translationKey = "Home.Application Settings";
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
+
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
