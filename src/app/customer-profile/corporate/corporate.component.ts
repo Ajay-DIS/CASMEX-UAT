@@ -566,6 +566,27 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                     .patchValue(f.defaultValue);
                   if (f.defaultValue) {
                     this.byPassKycImg();
+                  } else {
+                    this.copyKycSection["fields"].forEach((field) => {
+                      switch (field.fieldName) {
+                        case "uploadFrontSideFile":
+                          kycSection["fields"].forEach((f) => {
+                            if (f.fieldName == "uploadFrontSideFile") {
+                              f.docFieldMandate = field.docFieldMandate;
+                            }
+                          });
+                          break;
+                        case "uploadBackSideFile":
+                          kycSection["fields"].forEach((f) => {
+                            if (f.fieldName == "uploadBackSideFile") {
+                              f.docFieldMandate = field.docFieldMandate;
+                            }
+                          });
+                          break;
+                        default:
+                          break;
+                      }
+                    });
                   }
                 } else {
                   this.byPassKycImg();
