@@ -217,3 +217,7 @@
   border-top-right-radius: 6px !important;
   border-bottom-right-radius: 6px !important;
 }
+.disabled {
+  cursor: not-allowed !important;
+  color: #999 !important; 
+}

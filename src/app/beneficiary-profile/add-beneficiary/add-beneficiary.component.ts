@@ -8,6 +8,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
+import { delay } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 
 @Component({
@@ -145,11 +146,9 @@ export class AddBeneficiaryComponent implements OnInit {
             // this.setFormByData(res);
             this.formData = res;
             this.getBeneficiaryMasterData();
-            setTimeout(() => {
-              if (this.mode == "edit") {
-                this.getBeneficiaryData(this.custId);
-              }
-            }, 500);
+            if (this.mode == "edit") {
+              this.getBeneficiaryData(this.custId);
+            }
             console.log("API called", this.formData);
           }
         },
@@ -195,6 +194,9 @@ export class AddBeneficiaryComponent implements OnInit {
         {
           headers: new HttpHeaders().set("userId", this.userId),
         }
+      )
+      .pipe(
+        delay(2000) // Adjust the delay time in milliseconds
       )
       .subscribe(
         (res) => {
@@ -374,27 +376,6 @@ export class AddBeneficiaryComponent implements OnInit {
       );
   }
 
-  onReset(): void {
-    this.coreService.setHeaderStickyStyle(false);
-    this.coreService.setSidebarBtnFixedStyle(false);
-    this.confirmationService.confirm({
-      message:
-        `<img src="../../../assets/warning.svg"><br/><br/>` +
-        "Resetting will result in the removal of all data. Are you sure you want to proceed ?",
-      key: "resetINDWarning",
-      accept: () => {
-        this.submitted = false;
-        if (this.individualForm) {
-          this.individualForm.reset();
-        }
-        this.setHeaderSidebarBtn();
-      },
-      reject: () => {
-        this.confirmationService.close;
-        this.setHeaderSidebarBtn();
-      },
-    });
-  }
   setHeaderSidebarBtn() {
     this.coreService.displayLoadingScreen();
     setTimeout(() => {
