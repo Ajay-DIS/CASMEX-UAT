@@ -22,6 +22,7 @@ export class CustomerProfileComponent implements OnInit {
   showidNumberOptions: boolean = false;
   // showtotalBenificiaryOptions: boolean = false;
   showstatusOptions: boolean = false;
+  deactivated: boolean = false;
 
   customerCode = [];
   fullName = [];
@@ -837,6 +838,7 @@ export class CustomerProfileComponent implements OnInit {
     ruleData: any,
     cusType: any
   ) {
+    console.log("ruleData", ruleData);
     let service: Observable<any>;
     service = this.customerService.updateCustomerCorporateStatus(
       this.userData["userId"],
@@ -850,6 +852,11 @@ export class CustomerProfileComponent implements OnInit {
           sliderElm.checked = !sliderElm.checked;
           this.searchCustomerMap(this.customerType);
           this.coreService.showSuccessToast(res["data"]);
+          if (!sliderElm.checked) {
+            ruleData.status = "Inactive";
+          } else {
+            ruleData.status = "Active";
+          }
           this.coreService.removeLoadingScreen();
         } else {
           this.coreService.removeLoadingScreen();
@@ -900,6 +907,7 @@ export class CustomerProfileComponent implements OnInit {
     ]);
   }
   beneficiaryListData(expanded, rowData: any, customerType) {
+    console.log("status", rowData);
     if (expanded == false) {
       this.http
         .get(

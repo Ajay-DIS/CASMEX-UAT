@@ -236,6 +236,31 @@
   </div>
 </form>
 <p-confirmDialog
+    key="resetBenfWarning"
+    class="confirm-popup"
+    #cd
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  
+<p-confirmDialog
   key="activeDeactiveStatusBenef"
   class="status-confirm confirm-popup"
   #cd4

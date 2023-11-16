@@ -346,6 +346,7 @@
                       customerType == 'Individual' ? 'IND' : 'COR'
                     )
                   "
+                  [disabled]="rowData.status == 'Inactive'"
                 ></button>
               </span>
             </td>
@@ -426,7 +427,8 @@
                           fontSize: '11px',
                           cursor: 'pointer'
                         }"
-                        (click)="editbeneficiary(order, rowData)"
+                        [ngClass]="{ disabled: rowData.status == 'Inactive'}"
+                        (click)="editbeneficiary(order, rowData)" 
                         >{{ order.fullName }}</a
                       >
                     </td>
@@ -444,6 +446,7 @@
                           type="button"
                           icon="pi pi-eye"
                           class="operation-btns mr-2"
+                          [disabled]="rowData && rowData.status == 'Inactive'"
                         ></button>
                       </span>
                     </td>
@@ -465,8 +468,9 @@
                               : false
                           "
                           type="checkbox"
+                          [disabled]="rowData && rowData.status == 'Inactive'"
                         />
-                        <span class="slider round"></span>
+                        <span class="slider round" [ngClass]="{ 'disabled': rowData && rowData.status == 'Inactive'}"></span>
                       </label>
                     </td>
                   </tr>

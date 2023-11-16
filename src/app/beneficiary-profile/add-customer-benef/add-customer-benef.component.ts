@@ -101,7 +101,6 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       }
     }
   }
-
   setFormByData(data: any) {
     this.apiData = data;
     this.individualForm = this.formBuilder.group({});
@@ -262,6 +261,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
   setBenefEditFormData(data: any) {
     console.log("dataedit", data);
+    console.log("dataeditMaster", this.masterDataOrg);
     this.apiData = data;
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
@@ -386,16 +386,6 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     });
   }
 
-  setHeaderSidebarBtn() {
-    this.coreService.displayLoadingScreen();
-    setTimeout(() => {
-      this.coreService.setHeaderStickyStyle(true);
-      this.coreService.setSidebarBtnFixedStyle(true);
-    }, 500);
-    setTimeout(() => {
-      this.coreService.removeLoadingScreen();
-    }, 1000);
-  }
   updateStatus(reqStatus: any, data: any, cusType: any) {
     this.coreService.displayLoadingScreen();
     this.updateCustomerStatus(data["id"], reqStatus, cusType);
@@ -492,7 +482,37 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     // this.saveBeneficiaryCustomer()
   }
   // payloadData["status"] = "Active";
-
+  onReset(): void {
+    this.coreService.setHeaderStickyStyle(false);
+    this.coreService.setSidebarBtnFixedStyle(false);
+    this.confirmationService.confirm({
+      message:
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        "Resetting will result in the removal of all data. Are you sure you want to proceed ?",
+      key: "resetBenfWarning",
+      accept: () => {
+        this.submitted = false;
+        if (this.individualForm) {
+          this.individualForm.reset();
+        }
+        this.setHeaderSidebarBtn();
+      },
+      reject: () => {
+        this.confirmationService.close;
+        this.setHeaderSidebarBtn();
+      },
+    });
+  }
+  setHeaderSidebarBtn() {
+    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.setHeaderStickyStyle(true);
+      this.coreService.setSidebarBtnFixedStyle(true);
+    }, 500);
+    setTimeout(() => {
+      this.coreService.removeLoadingScreen();
+    }, 1000);
+  }
   ngOnDestroy(): void {
     if (this.countryChange$) {
       this.countryChange$.unsubscribe();
