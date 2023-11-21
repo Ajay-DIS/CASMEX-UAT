@@ -1002,10 +1002,10 @@ export class DocumentDetailsComponent implements OnInit {
   }
 
   checkBoxUpdate(e: any, field: any, rowIndex: any, rowData: any) {
-    console.log(e, field, rowData);
+    console.log(e.returnValue, field, rowData);
 
     if (field == "isDefault") {
-      if (e == true) {
+      if (e.returnValue == true) {
         this.applyCriteriaFormattedData.forEach((data, i) => {
           if (i != rowIndex) {
             data[field] = false;
