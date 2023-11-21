@@ -1457,11 +1457,19 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedBeneficialData.length &&
       this.uploadedBeneficialData.filter((data, i) => {
         if (!(this.editIndexBeneficial == i)) {
-          return data.documentType == beneficialData.documentType?.codeName;
+          if (data.documentType == beneficialData.documentType?.codeName) {
+            if (data.ownershipType == beneficialData.ownershipType?.codeName) {
+              return true;
+            } else {
+              return false;
+            }
+          }
         }
       })?.length
     ) {
-      this.coreService.showWarningToast("This Document type is already added");
+      this.coreService.showWarningToast(
+        "This Document type is already added for similar ownership type"
+      );
       return;
     }
 
@@ -1585,14 +1593,25 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedRepresentativeData.length &&
       this.uploadedRepresentativeData.filter((data, i) => {
         if (!(this.editIndexRepresentative == i)) {
-          return (
+          if (
             data.representativeDocumentType ==
             representativeData.representativeDocumentType?.codeName
-          );
+          ) {
+            if (
+              data.representativeIdNumber ==
+              representativeData.representativeIdNumber
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          }
         }
       })?.length
     ) {
-      this.coreService.showWarningToast("This Document type is already added");
+      this.coreService.showWarningToast(
+        "This Document ID & type is already added"
+      );
       return;
     }
 

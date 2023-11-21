@@ -244,7 +244,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
   }
   validMaxDate(fieldName: string) {
     if (fieldName == "dateOfEstablishment") {
-      return new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+      return new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
     } else if (fieldName == "dateOfBirth") {
       return this.dobMaxDate;
     } else {
