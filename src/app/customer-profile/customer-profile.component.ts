@@ -20,7 +20,7 @@ export class CustomerProfileComponent implements OnInit {
   showmobileNumberOptions: boolean = false;
   showidTypeOptions: boolean = false;
   showidNumberOptions: boolean = false;
-  // showtotalBenificiaryOptions: boolean = false;
+  showbeneficiaryCountOptions: boolean = false;
   showstatusOptions: boolean = false;
   deactivated: boolean = false;
 
@@ -30,7 +30,7 @@ export class CustomerProfileComponent implements OnInit {
   mobileNumber = [];
   idType = [];
   idNumber = [];
-  totalBenificiary = [];
+  beneficiaryCount = [];
   status = [];
 
   userData: any = {};
@@ -40,7 +40,7 @@ export class CustomerProfileComponent implements OnInit {
   selectedFiltermobileNumber: any[] = [];
   selectedFilteridType: any[] = [];
   selectedFilteridNumber: any[] = [];
-  // selectedFiltertotalBenificiary: any[] = [];
+  selectedFilterbeneficiaryCount: any[] = [];
   selectedFilterstatus: any[] = [];
 
   loading: boolean = true;
@@ -128,7 +128,7 @@ export class CustomerProfileComponent implements OnInit {
       searchWidth: "120px",
     },
     {
-      field: "beneficialCount",
+      field: "beneficiaryCount",
       header: "Total Benf",
       width: "7%",
       searchWidth: "85px",
@@ -157,7 +157,7 @@ export class CustomerProfileComponent implements OnInit {
     mobileNumber: 0,
     idType: 0,
     idNumber: 0,
-    beneficialCount: 0,
+    beneficiaryCount: 0,
     status: 0,
   };
   copySortOrder: any = {
@@ -167,7 +167,7 @@ export class CustomerProfileComponent implements OnInit {
     mobileNumber: 0,
     idType: 0,
     idNumber: 0,
-    beneficialCount: 0,
+    beneficiaryCount: 0,
     status: 0,
   };
 
@@ -175,7 +175,7 @@ export class CustomerProfileComponent implements OnInit {
 
   primaryId = "NA";
 
-  searchField = "Customer ID";
+  searchField = "Customer Code";
 
   // totalRecords = 55;
   customerTableLoading = false;
@@ -203,7 +203,7 @@ export class CustomerProfileComponent implements OnInit {
     this.getApiDataForsearchCriteria();
     // this.getCustomerListData(this.criteriaMap);
     this.currentCriteriaMapKey = "id = ";
-    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaKey = "Customer Code = ";
   }
 
   getDocSettingData() {
@@ -297,7 +297,7 @@ export class CustomerProfileComponent implements OnInit {
   //       case "customerCode":
   //       case "mobileNumber":
   //       case "idNumber":
-  //       case "beneficialCount":
+  //       case "beneficiaryCount":
   //         (this.customerData as Array<any>)?.sort((a, b) => {
   //           if (this.sortOrder[field] >= 0) {
   //             return b[field] - a[field];
@@ -377,7 +377,7 @@ export class CustomerProfileComponent implements OnInit {
           case "idNumber":
             this.sortBy = "idNumber";
             break;
-          case "beneficialCount":
+          case "beneficiaryCount":
             this.sortBy = "beneficiaryCount";
             break;
           case "status":
@@ -417,6 +417,9 @@ export class CustomerProfileComponent implements OnInit {
               break;
             case "idNumber":
               filterCrtMap = `idNumber = ${e.filters[prop]["value"]}`;
+              break;
+            case "beneficiaryCount":
+              filterCrtMap = `beneficiaryCount = ${e.filters[prop]["value"]}`;
               break;
 
             default:
@@ -464,7 +467,7 @@ export class CustomerProfileComponent implements OnInit {
             }
           );
           this.searchCriteriaOptions.unshift(
-            ...[{ name: "Customer ID", code: "id" }]
+            ...[{ name: "Customer Code", code: "id" }]
           );
         },
         (err) => {
@@ -483,12 +486,18 @@ export class CustomerProfileComponent implements OnInit {
           column.header = "Corporate Name";
         }
       });
+    } else {
+      this.columns.forEach((column) => {
+        if (column.field === "fullName") {
+          column.header = "Customer Full Name";
+        }
+      });
     }
     this.type = value;
     this.criteriaMap = "NA";
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
-    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaKey = "Customer Code = ";
     this.currentCriteriaMapKey = "id = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
@@ -604,7 +613,7 @@ export class CustomerProfileComponent implements OnInit {
       this.getCustomerListData(this.criteriaMap);
       this.currentCriteriaValue = null;
       // this.customerFieldType = null;
-      // this.currentCriteriaKey = "Customer ID = ";
+      // this.currentCriteriaKey = "Customer Code = ";
       // this.currentCriteriaMapKey = "id = ";
     }
   }
@@ -924,9 +933,27 @@ export class CustomerProfileComponent implements OnInit {
               this.noDataMsg = res["msg"];
               this.coreService.removeLoadingScreen();
             } else {
+              let inputData = {};
+              inputData = res;
+              inputData["data"]?.forEach((obj) => {
+                const decodedDetails = {
+                  "Benf Bank": obj.bankName || "",
+                  "Benf Branch": obj.bankBranch || "",
+                  "Benf A/C number": obj.bankAccountNumber || "",
+                };
+
+                // Create a formatted string
+                const newFormattedDetails = Object.keys(decodedDetails)
+                  .map((key) => `${key}: ${decodedDetails[key]}`)
+                  .join("  ");
+                obj.serviceDetails = newFormattedDetails;
+                // this.decodeServiceDetails(obj);
+                console.log("benefdecode", obj.serviceDetails);
+              });
+              console.log("benefdecode", inputData);
               this.customerData.forEach((element) => {
                 if (element["customerCode"] == rowData.customerCode) {
-                  element["orders"] = res["data"];
+                  element["orders"] = inputData["data"];
                 }
               });
             }
@@ -941,7 +968,6 @@ export class CustomerProfileComponent implements OnInit {
         );
     }
   }
-
   toggleFilterVisibility(field) {
     this[`show${field}Options`] = !this[`show${field}Options`];
   }
@@ -970,13 +996,12 @@ export class CustomerProfileComponent implements OnInit {
     this.criteriaMap = "NA";
     this.searchCriteria = [];
     this.currentCriteriaValue = null;
-    this.currentCriteriaKey = "Customer ID = ";
+    this.currentCriteriaKey = "Customer Code = ";
     this.currentCriteriaMapKey = "id = ";
     this.searchCriteriaMap = [];
     this.getApiDataForsearchCriteria();
     this.globalSearch = true;
     this.showTable = false;
-    this.getCustomerListData(this.criteriaMap);
     this.customerFieldType = null;
     this.criteriaType = "text";
   }

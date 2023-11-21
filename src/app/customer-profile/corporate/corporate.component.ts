@@ -131,6 +131,12 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
+        this.router.navigate([
+          "navbar",
+          "customer-profile",
+          "addnewcustomer",
+          "IND",
+        ]);
         this.submitted = false;
         if (this.corporateForm) {
           if (this.corporateForm?.dirty) {
@@ -2040,6 +2046,14 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                 if (file != "") {
                   formData.append(`uploadDocuments[${i}].${key}`, file);
                 }
+              } else if (key == "imageByPassed") {
+                let imageByPassedClick = this.uploadedKycData[i][key]
+                  ? this.uploadedKycData[i][key]
+                  : false;
+                formData.append(
+                  `uploadDocuments[${i}].${key}`,
+                  imageByPassedClick
+                );
               } else {
                 if (
                   !(

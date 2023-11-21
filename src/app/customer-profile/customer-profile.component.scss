@@ -5,6 +5,9 @@
 :host ::ng-deep .p-dropdown {
   font-size: 14px;
 }
+:host ::ng-deep .p-datatable-resizable-table > .p-datatable-tbody > tr > td {
+  white-space: pre-line;
+}
 :host ::ng-deep .p-calendar {
   width: 100%;
 }

@@ -200,6 +200,7 @@
       [rowHover]="true"
       [loading]="customerTableLoading"
       [rowsPerPageOptions]="[10, 20, 50, 100]"
+      rowExpandMode="single"
     >
       <ng-template pTemplate="header" let-columns>
         <tr>
@@ -403,15 +404,15 @@
               >
                 <ng-template pTemplate="header">
                   <tr>
-                    <th pSortableColumn="id">Benef Code</th>
-                    <th pSortableColumn="fullName">Benef Name</th>
+                    <th pSortableColumn="id">Benf Code</th>
+                    <th pSortableColumn="fullName">Benf. Name</th>
                     <th pSortableColumn="contactMobileNumber">Mobile No</th>
                     <th pSortableColumn="documentIdNumber">ID No</th>
                     <th pSortableColumn="contactCountry">Country</th>
                     <th pSortableColumn="serviceCurrency">Currency</th>
                     <th pSortableColumn="serviceCategory">Service Category</th>
                     <th pSortableColumn="bankAccountType">Service Type</th>
-                    <th pSortableColumn="bankBranch">Service Details</th>
+                    <th pSortableColumn="serviceDetails">Service Details</th>
                     <th>PastTxns</th>
                     <th>Status</th>
                   </tr>
@@ -428,7 +429,7 @@
                           cursor: 'pointer'
                         }"
                         [ngClass]="{ disabled: rowData.status == 'Inactive'}"
-                        (click)="editbeneficiary(order, rowData)" 
+                        (click)="!(rowData.status == 'Inactive') && editbeneficiary(order, rowData)" 
                         >{{ order.fullName }}</a
                       >
                     </td>
@@ -437,8 +438,12 @@
                     <td>{{ order.contactCountry }}</td>
                     <td>{{ order.serviceCurrency }}</td>
                     <td>{{ order.serviceCategory }}</td>
-                    <td>{{ order.bankAccountType }}</td>
-                    <td>{{ order.bankBranch }}</td>
+                    <td>NA</td>
+                    <td>
+                      <div *ngFor="let detail of order.serviceDetails.split('  ')">
+                        {{ detail }}<br>
+                      </div>
+                    </td>
                     <td>
                       <span class="image-text">
                         <button

@@ -35,7 +35,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     private confirmationService: ConfirmationService,
     private customerService: CustomerProfileService
   ) {}
-  @Input("activeIndex") activeTabIndex: any;
+  @Input("activeIndex") activeTabIndex: any = -1;
 
   // --------------------AJAY STSARTSSSSSSSSSSSSSS
 
@@ -143,12 +143,15 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     this.userId = JSON.parse(localStorage.getItem("userData"))["userId"];
 
     const params = this.activatedRoute.snapshot.params;
+    console.log(params);
     if (params && params.type) {
       this.custType = params.type;
       if (this.custType == "COR") {
         this.activeTabIndex = 1;
       } else {
         this.activeTabIndex = 0;
+        this.getDocSettingData();
+        this.getformRuleData();
       }
     }
     if (params && params.id) {
@@ -164,39 +167,6 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       params,
       this.activeTabIndex
     );
-
-    this.getDocSettingData();
-    if (this.custType == "IND") {
-      this.http
-        .get(`/remittance/formRulesController/getFormRules`, {
-          headers: new HttpHeaders()
-            .set("criteriaMap", "Country = IN;Customer Type = IND")
-            .set("form", "Customer Profile_Form Rules")
-            .set("moduleName", "Remittance")
-            .set("applications", "Casmex Core"),
-        })
-        .subscribe(
-          (res) => {
-            this.showForm = true;
-            if (res["msg"]) {
-              this.noDataMsg = res["msg"];
-              this.apiData = {};
-              this.coreService.removeLoadingScreen();
-            } else {
-              this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
-              this.setFormByData(res);
-              this.getCustomerMasterData();
-            }
-          },
-          (err) => {
-            this.coreService.showWarningToast(
-              "Some error while fetching data, Try again in sometime"
-            );
-            this.noDataMsg = true;
-            this.coreService.removeLoadingScreen();
-          }
-        );
-    }
   }
 
   validMinDate(fieldName: string) {
@@ -241,7 +211,39 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       return new Date();
     }
   }
-
+  getformRuleData() {
+    // if (this.custType == "IND") {
+    this.http
+      .get(`/remittance/formRulesController/getFormRules`, {
+        headers: new HttpHeaders()
+          .set("criteriaMap", "Country = IN;Customer Type = IND")
+          .set("form", "Customer Profile_Form Rules")
+          .set("moduleName", "Remittance")
+          .set("applications", "Casmex Core"),
+      })
+      .subscribe(
+        (res) => {
+          this.showForm = true;
+          if (res["msg"]) {
+            this.noDataMsg = res["msg"];
+            this.apiData = {};
+            this.coreService.removeLoadingScreen();
+          } else {
+            this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
+            this.setFormByData(res);
+            this.getCustomerMasterData();
+          }
+        },
+        (err) => {
+          this.coreService.showWarningToast(
+            "Some error while fetching data, Try again in sometime"
+          );
+          this.noDataMsg = true;
+          this.coreService.removeLoadingScreen();
+        }
+      );
+    // }
+  }
   getDocSettingData() {
     this.http
       .get(`remittance/documentSettingsController/getDocumentSetting`, {
@@ -313,14 +315,25 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   }
 
   handleChange(event: any) {
+    console.log(event);
     this.activeTabIndex = event.index;
     if (this.activeTabIndex != 0) {
+      this.router.navigate([
+        "navbar",
+        "customer-profile",
+        "addnewcustomer",
+        "COR",
+      ]);
       if (this.individualForm) {
         if (this.individualForm?.dirty) {
           this.coreService.showWarningToast("Unsaved change has been reset");
         }
         this.individualForm.reset();
       }
+    } else {
+      this.coreService.displayLoadingScreen();
+      this.getDocSettingData();
+      this.getformRuleData();
     }
   }
 
@@ -2050,6 +2063,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                 if (file != "") {
                   formData.append(`uploadDocuments[${i}].${key}`, file);
                 }
+              } else if (key == "imageByPassed") {
+                let imageByPassedClick = this.uploadedKycData[i][key]
+                  ? this.uploadedKycData[i][key]
+                  : false;
+                formData.append(
+                  `uploadDocuments[${i}].${key}`,
+                  imageByPassedClick
+                );
               } else {
                 if (
                   !(
