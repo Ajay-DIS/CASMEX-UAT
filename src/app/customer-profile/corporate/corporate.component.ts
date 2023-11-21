@@ -2047,12 +2047,13 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                   formData.append(`uploadDocuments[${i}].${key}`, file);
                 }
               } else if (key == "imageByPassed") {
-                let imageByPassedClick = this.uploadedKycData[i][key]
-                  ? this.uploadedKycData[i][key]
-                  : false;
+                console.log("scsc", this.uploadedKycData[i][key]);
                 formData.append(
                   `uploadDocuments[${i}].${key}`,
-                  imageByPassedClick
+                  this.uploadedKycData[i][key] &&
+                    this.uploadedKycData[i][key] != "null"
+                    ? this.uploadedKycData[i][key]
+                    : false
                 );
               } else {
                 if (
@@ -2188,6 +2189,14 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                   if (file != "") {
                     formData.append(`uploadDocuments[${i}].${key}`, file);
                   }
+                } else if (key == "imageByPassed") {
+                  console.log(this.uploadedKycData[i][key]);
+                  formData.append(
+                    `uploadDocuments[${i}].${key}`,
+                    this.uploadedKycData[i][key] == true
+                      ? this.uploadedKycData[i][key]
+                      : false
+                  );
                 } else {
                   formData.append(
                     `uploadDocuments[${i}].${key}`,
