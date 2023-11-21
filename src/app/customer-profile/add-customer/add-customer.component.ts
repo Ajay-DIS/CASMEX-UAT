@@ -288,7 +288,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       })
       .subscribe((res) => {
         this.filteredEmployer = [];
-        res["data"].forEach((ele) => {
+        res["data"]?.forEach((ele) => {
           this.filteredEmployer.push(ele);
         });
       });
@@ -2044,6 +2044,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         }
 
         if (this.uploadedKycData.length) {
+          console.log(this.uploadedKycData);
           for (let i = 0; i < this.uploadedKycData.length; i++) {
             for (let key in this.uploadedKycData[i]) {
               if (key == "idIssueDate" || key == "idExpiryDate") {
@@ -2064,12 +2065,12 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                   formData.append(`uploadDocuments[${i}].${key}`, file);
                 }
               } else if (key == "imageByPassed") {
-                let imageByPassedClick = this.uploadedKycData[i][key]
-                  ? this.uploadedKycData[i][key]
-                  : false;
+                console.log(this.uploadedKycData[i][key]);
                 formData.append(
                   `uploadDocuments[${i}].${key}`,
-                  imageByPassedClick
+                  this.uploadedKycData[i][key] == true
+                    ? this.uploadedKycData[i][key]
+                    : false
                 );
               } else {
                 if (
@@ -2205,6 +2206,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                   if (file != "") {
                     formData.append(`uploadDocuments[${i}].${key}`, file);
                   }
+                } else if (key == "imageByPassed") {
+                  console.log(this.uploadedKycData[i][key]);
+                  formData.append(
+                    `uploadDocuments[${i}].${key}`,
+                    this.uploadedKycData[i][key] == true
+                      ? this.uploadedKycData[i][key]
+                      : false
+                  );
                 } else {
                   formData.append(
                     `uploadDocuments[${i}].${key}`,
