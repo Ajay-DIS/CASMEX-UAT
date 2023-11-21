@@ -121,7 +121,9 @@ export class AddBeneficiaryComponent implements OnInit {
   }
 
   getFormRulesFields(custType: any) {
-    this.coreService.displayLoadingScreen();
+    setTimeout(() => {
+      this.coreService.displayLoadingScreen();
+    }, 1000);
     this.http
       .get(`/remittance/formRulesController/getFormRules`, {
         headers: new HttpHeaders()
