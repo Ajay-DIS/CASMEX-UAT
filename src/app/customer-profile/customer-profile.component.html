@@ -44,7 +44,16 @@
                   (keyup.enter)="searchByEnter($event)"
                 >
                   <ng-container [ngSwitch]="criteriaType">
-                    <p-dropdown
+                    <input
+                    *ngSwitchCase="'SQL'"
+                    class="searchBox"
+                    type="text"
+                    pInputText
+                    [(ngModel)]="currentCriteriaValue"
+                    placeholder="Search"
+                    [readonly]="true"
+                  />
+                    <!-- <p-dropdown
                       *ngSwitchCase="'SQL'"
                       [options]="docIdOptions"
                       [(ngModel)]="docIdSelected.code"
@@ -78,7 +87,7 @@
                           </div>
                         </div>
                       </ng-template></p-dropdown
-                    >
+                    > -->
                     <input
                       *ngSwitchCase="'text'"
                       class="searchBox"
