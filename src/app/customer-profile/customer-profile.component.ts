@@ -235,9 +235,20 @@ export class CustomerProfileComponent implements OnInit {
               };
               this.docIdOptions.push(docId);
               if (isPrime) {
-                this.docIdSelected = docId;
-                this.currentCriteria = `ID Type = ${docId.name}`;
-                this.currentCriteriaMapKey = `documentType = ${docId.name}`;
+                if (this.criteriaType == "SQL") {
+                  this.currentCriteriaValue = `${docId.name}`;
+                  this.currentCriteria = `ID Type = ${docId.name}`;
+                  this.currentCriteriaMapKey = `documentType = ${docId.name}`;
+                  console.log(
+                    "currentCriteriaValue",
+                    this.currentCriteriaValue
+                  );
+                  console.log("currentCriteria", this.currentCriteria);
+                  console.log(
+                    "currentCriteriaMapKey",
+                    this.currentCriteriaMapKey
+                  );
+                }
               }
             });
           }
@@ -528,9 +539,12 @@ export class CustomerProfileComponent implements OnInit {
           return opt.fieldName == value;
         })[0].criteriaType
       : "text";
-    if (this.criteriaType == "SQL") {
-      this.getDocSettingData();
-    }
+    this.getDocSettingData();
+    setTimeout(() => {
+      if (this.criteriaType == "SQL") {
+        this.searchCustomerMap(this.customerType);
+      }
+    }, 1000);
   }
   ondeletecriteria(i: any, criteria: any) {
     this.searchCriteria.splice(i, 1);
@@ -547,12 +561,15 @@ export class CustomerProfileComponent implements OnInit {
     this.showNoDataFound = false;
     if (this.searchCriteria.length) {
       this.getCustomerListData(this.criteriaMap);
+    } else if (this.criteriaType == "SQL") {
+      this.customerFieldType = null;
     }
   }
   searchCustomerMap(type: any) {
     console.log("currentkey", this.currentCriteriaMapKey);
     console.log("search", this.searchCriteriaMap);
     console.log("criteriaType", this.criteriaType);
+    console.log("criteriaType", this.currentCriteriaValue);
     if (
       this.searchCriteriaMap.filter((crt) => {
         return (
@@ -564,19 +581,12 @@ export class CustomerProfileComponent implements OnInit {
         "This search criteria is already exists, delete it first."
       );
     } else {
-      if (
-        this.currentCriteriaValue == null ||
-        this.currentCriteriaValue == ""
-      ) {
-        if (this.criteriaType == "SQL") {
-          if (this.currentCriteria && this.currentCriteria.length > 0) {
-            this.searchCriteria.push(this.currentCriteria);
-            this.searchCriteriaMap.push(this.currentCriteriaMapKey);
-            this.criteriaMap = this.searchCriteriaMap.join(";");
-          } else {
-            this.coreService.showWarningToast("Please select value");
-            return;
-          }
+      if (this.criteriaType == "SQL") {
+        if (this.currentCriteria && this.currentCriteria.length > 0) {
+          this.searchCriteria.push(this.currentCriteria);
+          this.searchCriteriaMap.push(this.currentCriteriaMapKey);
+          this.criteriaMap = this.searchCriteriaMap.join(";");
+          console.log("criteriaMapSQL", this.criteriaMap);
         } else {
           this.coreService.showWarningToast("Please enter the search value");
           return;
@@ -611,7 +621,9 @@ export class CustomerProfileComponent implements OnInit {
       this.globalSearch = true;
       this.showTable = false;
       this.getCustomerListData(this.criteriaMap);
-      this.currentCriteriaValue = null;
+      if (!(this.criteriaType == "SQL")) {
+        this.currentCriteriaValue = null;
+      }
       // this.customerFieldType = null;
       // this.currentCriteriaKey = "Customer Code = ";
       // this.currentCriteriaMapKey = "id = ";
