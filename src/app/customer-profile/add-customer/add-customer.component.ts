@@ -120,6 +120,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   ];
 
   kycDocType$: Subscription;
+  kycDocId$: Subscription;
 
   mandatoryKycDocs: any[] = [];
 
@@ -384,7 +385,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                 secData["validLength"]?.length > 0 &&
                 secData["validLength"] != "null"
                   ? +secData["validLength"].split("-")[1]
-                  : 100,
+                  : false,
               regex:
                 secData["regex"] &&
                 secData["regex"] != "null" &&
@@ -471,6 +472,10 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         .get("KYC Doc Upload")
         .get("documentType")
         .valueChanges.subscribe((val) => this.kycDocChange(val));
+      this.kycDocId$ = this.individualForm
+        .get("KYC Doc Upload")
+        .get("idNumber")
+        .valueChanges.subscribe((val) => this.kycIdChange(val));
     }
     this.coreService.removeLoadingScreen();
     if (this.individualForm.get("Contact Details")?.get("contactCountry")) {
@@ -497,7 +502,39 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     }
   }
 
+  kycIdChange(value: any) {
+    const idCtrl = this.individualForm.get("KYC Doc Upload").get("idNumber");
+    const docTypeCtrl = this.individualForm
+      .get("KYC Doc Upload")
+      .get("documentType");
+    if (value && docTypeCtrl.value) {
+      let kycSection = this.formSections.filter(
+        (section) => section.formName == "KYC Doc Upload"
+      )[0];
+      kycSection["fields"].forEach((f) => {
+        if (f.fieldName == "idNumber") {
+          if (f.minLength && value.length < f.minLength) {
+            console.log("MINERORORORORORO");
+            idCtrl.setErrors({ minlength: true });
+          } else if (f.maxLength && value.length > f.maxLength) {
+            idCtrl.setErrors({ maxlength: true });
+          } else {
+            console.log("NOOERORORORORORO");
+          }
+        }
+      });
+    }
+  }
+
   kycDocChange(value: any) {
+    const idCtrl = this.individualForm.get("KYC Doc Upload").get("idNumber");
+    if (idCtrl && idCtrl.value && value) {
+      let temp = idCtrl.value;
+      idCtrl.patchValue("");
+      setTimeout(() => {
+        idCtrl.patchValue(temp);
+      }, 200);
+    }
     if (
       value &&
       this.documentSettingData.length &&
@@ -535,20 +572,23 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
               docMinMaxLength.length &&
               docMinMaxLength != "NA"
             ) {
-              if (field.minLength != 0 && !field.minLength) {
+              if (field.minLength !== "0" && !field.minLength) {
                 kycSection["fields"].forEach((f) => {
                   if (f.fieldName == "idNumber") {
                     f.minLength = +docMinMaxLength.split("/")[0];
+                    this.submitted = true;
                   }
                 });
               }
-              if (field.maxLength != 0 && !field.maxLength) {
+              if (field.maxLength !== "0" && !field.maxLength) {
                 kycSection["fields"].forEach((f) => {
                   if (f.fieldName == "idNumber") {
                     f.maxLength = +docMinMaxLength.split("/")[1];
+                    this.submitted = true;
                   }
                 });
               }
+              console.log(kycSection);
             }
             break;
 
@@ -929,10 +969,12 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           (opt) => opt.codeName == row.documentType
         )[0]
       );
-    this.individualForm
-      .get("KYC Doc Upload")
-      .get("idNumber")
-      ?.patchValue(row.idNumber);
+    setTimeout(() => {
+      this.individualForm
+        .get("KYC Doc Upload")
+        .get("idNumber")
+        ?.patchValue(row.idNumber);
+    }, 250);
     this.individualForm
       .get("KYC Doc Upload")
       .get("idIssueDate")
@@ -1365,6 +1407,56 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     }
   }
   addKyc() {
+    console.log(this.individualForm.get("KYC Doc Upload"));
+    const invalid = {};
+    const controls = (this.individualForm.get("KYC Doc Upload") as FormGroup)
+      .controls;
+    for (const name in controls) {
+      if (controls[name].invalid) {
+        console.log(controls[name]);
+        if (
+          controls[name].errors &&
+          Object.keys(controls[name].errors)?.length
+        ) {
+          invalid[name] = Object.keys(controls[name].errors)[0];
+        }
+        controls[name].markAsDirty();
+      }
+    }
+    if (invalid && Object.keys(invalid).length) {
+      let fieldLab = this.formSections
+        .filter((section) => section.formName == "KYC Doc Upload")[0]
+        ["fields"].filter(
+          (field) => field.name == Object.keys(invalid)[0]
+        )[0]?.fieldLabel;
+      let err = null;
+      switch (invalid[Object.keys(invalid)[0]]) {
+        case "maxlength":
+          err = "exceeds the maximum character limit";
+          break;
+        case "minlength":
+          err = "is less than the minimum character limit";
+          break;
+
+        default:
+          break;
+      }
+      if (err) {
+        if (fieldLab) {
+          this.coreService.showWarningToast(`${fieldLab} ${err}`);
+          console.log(`${fieldLab} ${err}`);
+        } else {
+          this.coreService.showWarningToast(
+            `${Object.keys(invalid)[0]} ${err}`
+          );
+        }
+      } else {
+        this.coreService.showWarningToast(
+          "Some KYC details are Invalid, Please check"
+        );
+      }
+      return;
+    }
     let kycData = this.individualForm.get("KYC Doc Upload").getRawValue();
     if (
       this.uploadedKycData.length &&
@@ -3188,6 +3280,9 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     }
     if (this.kycDocType$) {
       this.kycDocType$.unsubscribe();
+    }
+    if (this.kycDocId$) {
+      this.kycDocId$.unsubscribe();
     }
   }
 
