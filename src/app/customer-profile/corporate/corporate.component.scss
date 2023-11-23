@@ -146,7 +146,10 @@ div.btn-grp {
   -o-transition: all 0.2s ease-in-out;
 }
 .file-upload .file-upload-select input[type="file"] {
-  display: none;
+  // display: none;
+  opacity: 0;
+  position: absolute;
+  right: 100%;
 }
 // fileupload end
 
