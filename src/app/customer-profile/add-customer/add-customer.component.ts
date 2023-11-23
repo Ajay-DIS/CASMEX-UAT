@@ -2,9 +2,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
+  ViewChild,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -17,6 +19,7 @@ import { ConfirmationService } from "primeng/api";
 import { Observable, Subscription, zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "../customer-profile.service";
+import { Calendar } from "primeng/calendar";
 
 @Component({
   selector: "app-add-customer",
@@ -36,6 +39,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     private customerService: CustomerProfileService
   ) {}
   @Input("activeIndex") activeTabIndex: any = -1;
+  @ViewChild("calendar") calendar: Calendar;
 
   // --------------------AJAY STSARTSSSSSSSSSSSSSS
 
@@ -168,6 +172,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       params,
       this.activeTabIndex
     );
+  }
+
+  handleDateSelect(calendar: Calendar) {
+    setTimeout(() => {
+      if (calendar.inputfieldViewChild.nativeElement) {
+        calendar.inputfieldViewChild.nativeElement.focus();
+      }
+    }, 0);
   }
 
   setUploadBtnStyle(set: boolean, btn: any) {

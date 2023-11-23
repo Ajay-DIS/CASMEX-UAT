@@ -690,7 +690,9 @@
                 [defaultDate]="field.defaultDate"
                 [readonlyInput]="false"
                 [appendTo]="'body'"
+                (onSelect)="handleDateSelect(calendar)"
                 appDateMask
+                #calendar
               ></p-calendar>
               <p-checkbox
                 *ngSwitchCase="'checkbox'"
@@ -764,6 +766,7 @@
                 "
               >
                 <div
+                #inpSelect
                   class="file-upload-select"
                   [style.pointerEvents]="
                     corporateForm
@@ -794,6 +797,8 @@
                   <input
                     #inpFile
                     onclick="this.value=null;"
+                    (focus)="setUploadBtnStyle(true, inpSelect)"
+                    (blur)="setUploadBtnStyle(false, inpSelect)"
                     (change)="
                       fileUploadChange(
                         $event,

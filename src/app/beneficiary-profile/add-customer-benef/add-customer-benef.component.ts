@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   SimpleChange,
+  ViewChild,
 } from "@angular/core";
 import {
   FormBuilder,
@@ -16,6 +17,7 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
+import { Calendar } from "primeng/calendar";
 import { Observable, Subscription } from "rxjs";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "src/app/customer-profile/customer-profile.service";
@@ -26,6 +28,7 @@ import { CustomerProfileService } from "src/app/customer-profile/customer-profil
   styleUrls: ["./add-customer-benef.component.scss"],
 })
 export class AddCustomerBenefComponent implements OnInit, OnDestroy {
+  @ViewChild("calendar") calendar: Calendar;
   @Input("formData") formData: any;
   @Input("beneData") beneData: any;
   @Input("masterData") masterData: any;
@@ -101,6 +104,15 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  handleDateSelect(calendar: Calendar) {
+    setTimeout(() => {
+      if (calendar.inputfieldViewChild.nativeElement) {
+        calendar.inputfieldViewChild.nativeElement.focus();
+      }
+    }, 0);
+  }
+
   setFormByData(data: any) {
     this.apiData = data;
     this.individualForm = this.formBuilder.group({});

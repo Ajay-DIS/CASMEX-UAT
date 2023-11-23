@@ -1,5 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Component, Input, OnChanges, OnDestroy, OnInit } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -16,6 +23,7 @@ import { ConfirmationService } from "primeng/api";
 import { Observable, Subscription, zip } from "rxjs";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "../customer-profile.service";
+import { Calendar } from "primeng/calendar";
 
 @Component({
   selector: "app-corporate",
@@ -35,6 +43,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   ) {}
 
   @Input("activeIndex") activeTabIndex: any;
+  @ViewChild("calendar") calendar: Calendar;
 
   userId = null;
   today = new Date();
@@ -196,6 +205,23 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           this.coreService.removeLoadingScreen();
         }
       );
+  }
+
+  handleDateSelect(calendar: Calendar) {
+    setTimeout(() => {
+      if (calendar.inputfieldViewChild.nativeElement) {
+        calendar.inputfieldViewChild.nativeElement.focus();
+      }
+    }, 0);
+  }
+  setUploadBtnStyle(set: boolean, btn: any) {
+    if (set) {
+      if (btn) {
+        btn.style.border = "1px solid #4759e4";
+      }
+    } else {
+      btn.style.border = "none";
+    }
   }
 
   validMinDate(fieldName: string) {

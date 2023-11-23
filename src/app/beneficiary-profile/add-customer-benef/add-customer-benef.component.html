@@ -89,7 +89,9 @@
                 [defaultDate]="field.defaultDate"
                 [readonlyInput]="false"
                 [appendTo]="'body'"
-                appDateMask
+                (onSelect)="handleDateSelect(calendar)"
+  appDateMask
+  #calendar
               ></p-calendar>
               <p-checkbox
                 *ngSwitchCase="'checkbox'"
