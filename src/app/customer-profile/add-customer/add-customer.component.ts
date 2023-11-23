@@ -170,6 +170,16 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     );
   }
 
+  setUploadBtnStyle(set: boolean, btn: any) {
+    if (set) {
+      if (btn) {
+        btn.style.border = "1px solid #4759e4";
+      }
+    } else {
+      btn.style.border = "none";
+    }
+  }
+
   validMinDate(fieldName: string) {
     if (
       fieldName == "idExpiryDate" ||
