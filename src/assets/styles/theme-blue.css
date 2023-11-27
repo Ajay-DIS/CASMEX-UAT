@@ -1791,7 +1791,7 @@ p-togglebutton.ng-dirty.ng-invalid > .p-togglebutton.p-button {
 .p-treeselect:not(.p-disabled).p-focus {
   outline: 0 none;
   outline-offset: 0;
-  box-shadow: 0 0 0 0.2rem #f0f2fe;
+  /* box-shadow: 0 0 0 0.2rem #f0f2fe; */
   border-color: #2455cf;
 }
 .p-treeselect .p-treeselect-label {

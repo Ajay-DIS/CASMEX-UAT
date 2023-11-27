@@ -187,3 +187,6 @@ a:hover {
   cursor: not-allowed !important;
   color: #999 !important; 
 }
+.treefocus ::ng-deep .p-treeselect:not(.p-disabled).p-focus {
+  border: 1px solid var(--primary-color);
+}

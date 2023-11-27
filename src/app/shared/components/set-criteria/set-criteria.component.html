@@ -12,6 +12,8 @@
     <div class="openCriteria">
       <p class="clickcriteria">
         <a [ngClass]="{ 'disabled': deactivated}"
+        tabindex="0"
+        (keyup.Space)= "saveCriteriaTemplateLink()"
         (click)="!deactivated && saveCriteriaTemplateLink()"
           >Click to save this Criteria as a template</a
         >
@@ -63,7 +65,7 @@
         <div class="col-md-10 col-lg-10 col-sm-12 col-xs-12">
           <div [formGroup]="selectCriteriaForm" class="left-dropdowns">
             <p-treeSelect
-              class="mr-2"
+              class="mr-2 treefocus"
               scrollHeight="300px"
               [options]="criteriaMapDdlOptions"
               placeholder="Select Criteria"
@@ -282,6 +284,8 @@
       >
         <svg
           style="margin-bottom: 4px"
+          tabindex="0"
+          (keyup.Space)= "ondeletecriteria(i, criteria)"
           xmlns="http://www.w3.org/2000/svg"
           width="12.6"
           height="12.6"
