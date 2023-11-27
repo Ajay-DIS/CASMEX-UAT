@@ -271,6 +271,45 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     }
   }
 
+  sameAddress(event: any, fieldName: any) {
+    if (fieldName == "permanentAddressSameAsAbove") {
+      let address;
+      if (event.checked) {
+        address = {
+          permanentCountry: this.individualForm
+            .get("Contact Details")
+            ?.get("contactCountry")?.value,
+          permanentHouseBuildingNumber: this.individualForm
+            .get("Contact Details")
+            ?.get("contactHouseBuildingNumber")?.value,
+          permanentBlockNumber: this.individualForm
+            .get("Contact Details")
+            ?.get("contactBlockNumber")?.value,
+          permanentStreetName: this.individualForm
+            .get("Contact Details")
+            ?.get("contactStreetName")?.value,
+          permanentCity: this.individualForm
+            .get("Contact Details")
+            ?.get("contactCity")?.value,
+          permanentPinZipCode: this.individualForm
+            .get("Contact Details")
+            ?.get("contactPinZipCode")?.value,
+        };
+      } else {
+        address = {
+          permanentCountry: "",
+          permanentHouseBuildingNumber: "",
+          permanentBlockNumber: "",
+          permanentStreetName: "",
+          permanentCity: "",
+          permanentPinZipCode: "",
+        };
+      }
+
+      this.individualForm.get("Contact Details").patchValue(address);
+    }
+  }
+
   setBenefEditFormData(data: any) {
     console.log("dataedit", data);
     console.log("dataeditMaster", this.masterDataOrg);
