@@ -20,7 +20,7 @@
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
         <div class="row">
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4" tabindex="1">
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12"
               for="application"
@@ -35,7 +35,7 @@
               formControlName="applications"
             ></p-dropdown>
           </div>
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4" tabindex="2">
             <label
               class="detail-page-section-heading small col-sm-3 col-xs-12"
               for="module"
@@ -50,7 +50,7 @@
               formControlName="modules"
             ></p-dropdown>
           </div>
-          <div class="addnew field col-md-2 col-lg-2 col-sm-4 col-xs-4 md-2">
+          <div class="addnew field col-md-2 col-lg-2 col-sm-4 col-xs-4 md-2" tabindex="3">
             <button
               pButton
               pRipple
@@ -168,6 +168,8 @@
                 }"
                 [pTooltip]="'Active Transactions Exist.'"
                 [tooltipDisabled]="!isLinked(rowData[col['field']])"
+                tabindex="0"
+                (keyup.Space)= "viewBankRouting(rowData)()"
                 (click)="viewBankRouting(rowData)"
                 >{{ rowData[col["field"]] }}</a
               >
@@ -217,7 +219,8 @@
               <label
                 *ngIf="objectKeys(rowData).length != 1"
                 class="switch"
-                style="border: none"
+                tabindex="0"
+                (keyup.Space)= "statusInp.click()"
               >
                 <input
                   #statusInp

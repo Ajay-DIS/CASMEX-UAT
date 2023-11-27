@@ -233,7 +233,7 @@ export class AddnewrouteComponent2 implements OnInit {
 
     this.statusData = this.bankRoutingService.getData();
     console.log("status", this.statusData);
-    if (this.statusData["status"] == "Inactive") {
+    if (this.statusData && this.statusData["status"] == "Inactive") {
       this.deactivated = true;
     }
   }

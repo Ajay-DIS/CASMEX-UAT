@@ -177,6 +177,8 @@
                 }"
                 [pTooltip]="'Active Transactions Exist.'"
                 [tooltipDisabled]="!isLinked(rowData[col['field']])"
+                tabindex="0"
+                (keyup.Space)= "viewTaxSetting(rowData)"
                 (click)="viewTaxSetting(rowData)"
                 >{{ rowData[col["field"]] }}</a
               >
@@ -223,7 +225,8 @@
               *ngIf="col.field == 'status'"
               style="border: none; text-align: center"
             >
-              <label class="switch" style="border: none">
+              <label class="switch" tabindex="0"
+              (keyup.Space)= "statusInp.click()">
                 <input
                   #statusInp
                   [value]="rowData[col['field']]"
