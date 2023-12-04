@@ -1,0 +1,43 @@
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+:host ::ng-deep .p-datatable-resizable-table > .p-datatable-tbody > tr > td {
+  white-space: initial;
+}
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.app-form-search {
+  background: white;
+  border-radius: 6px;
+}
+
+.select-module-application {
+  display: flex;
+  gap: 10px;
+}
+.select-module-application .field {
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0;
+}
+@media screen and (max-width: 575px){
+  .small {
+     padding-right: 25px !important;
+   }
+ }
+.select-module-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-module-application p-dropdown {
+  width: 100%;
+}
+.select-module-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  // border: none !important;
+}
