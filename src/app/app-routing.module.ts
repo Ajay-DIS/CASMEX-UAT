@@ -29,6 +29,8 @@ import { GetDocSettingsComponent } from "./get-apis/get-doc-settings/get-doc-set
 import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.component";
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
+import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-listing.component";
+import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-details.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -250,6 +252,49 @@ const routes: Routes = [
           { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "tax-settings" },
           { label: "Clone Tax", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "charge-settings",
+        component: ChargeListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/charge-settings" },
+          { label: "Charge Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "charge-settings/add-charge",
+        component: ChargeDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/charge-settings" },
+          { label: "Charge Settings", routerLink: "charge-settings" },
+          { label: "Add New Charge", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "charge-settings/add-charge/:id/edit",
+        component: ChargeDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/charge-settings" },
+          { label: "Charge Settings", routerLink: "charge-settings" },
+          { label: "Edit Charge", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "charge-settings/add-charge/:id/clone",
+        component: AddNewTaxComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/charge-settings" },
+          { label: "Charge Settings", routerLink: "charge-settings" },
+          { label: "Clone Charge", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

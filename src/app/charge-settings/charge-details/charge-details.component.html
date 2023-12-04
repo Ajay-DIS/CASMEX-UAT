@@ -1,0 +1,475 @@
+<div class="visible-main-section">
+    <div class="details-page-card">
+      <div class="d-flex mx-3" style="justify-content: space-between">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
+              <p class="description-text">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="41"
+                  height="35"
+                  viewBox="0 0 41 41"
+                >
+                  <g
+                    id="Group_2248"
+                    data-name="Group 2248"
+                    transform="translate(-341 -138)"
+                  >
+                    <circle
+                      id="Ellipse_130"
+                      data-name="Ellipse 130"
+                      cx="20.5"
+                      cy="20.5"
+                      r="20.5"
+                      transform="translate(341 138)"
+                      [attr.fill]="primaryColor"
+                    />
+                    <path
+                      id="_52_Note_Basic_Description"
+                      data-name="52  Note, Basic, Description"
+                      d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+                      transform="translate(348.213 145.945)"
+                      fill="#fff"
+                    />
+                  </g>
+                </svg>
+                Enables users to configure charge related settings.
+              </p>
+            </div>
+            <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+              <div class="row">
+                <div class="buttons-section">
+                  <button
+                    pButton
+                    pRipple
+                    [disabled]="!applyCriteriaFormattedData?.length || deactivated"
+                    type="button"
+                    label="Save"
+                    class="p-button-raised"
+                    (click)="saveAddNewCharge('save')"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    [disabled]="!applyCriteriaFormattedData.length || deactivated"
+                    label="Save & Add New"
+                    class="p-button-raised"
+                    (click)="saveAddNewCharge('saveAndAddNew')"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Reset"
+                    class="p-button-warning"
+                    (click)="reset()"
+                    [disabled]="deactivated"
+                  ></button>
+                  <button
+              *ngIf="mode == 'edit'"
+                pButton
+                pRipple
+                type="button"
+                label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                class="p-button-raised"
+                (click)="onActive()"
+              ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div [formGroup]="selectAppModule" class="select-module-application m-2">
+        <div class="col-12">
+          <div class="row">
+            <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+              <label
+                class="detail-page-section-heading col-sm-3 col-xs-12"
+                for="application"
+                >Application</label
+              >
+              <p-dropdown
+                name="application"
+                inputId="application"
+                [options]="searchApplicationOptions"
+                placeholder="Select"
+                optionLabel="name"
+                formControlName="applications"
+                (onChange)="onAppValueChange()"
+              >
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div >{{ options.name}}</div>
+                </div>
+              </ng-template></p-dropdown>
+            </div>
+            <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
+              <label
+                class="detail-page-section-heading col-sm-3 col-xs-12 small"
+                for="module"
+                >Module</label
+              >
+              <p-dropdown
+                name="module"
+                inputId="module"
+                [options]="searchModuleOptions"
+                placeholder="Select"
+                optionLabel="name"
+                formControlName="modules"
+                (onChange)="searchAppModule()"
+              >
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div >{{ options.name}}</div>
+                </div>
+              </ng-template></p-dropdown>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="appModuleDataPresent && showContent"
+        class="d-flex m-3 tax-code-desc-section"
+      >
+        <div class="col-12">
+          <div class="row">
+            <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12">
+              <div
+                class="taxCode"
+                [pTooltip]="
+                  this.mode == 'add'
+                    ? 'Charge Code is automatically generated, It may get changed in saving process.'
+                    : ''
+                "
+              >
+                <p>Charge Code</p>
+                <input type="text" pInputText [(ngModel)]="chargeCode" disabled />
+              </div>
+            </div>
+            <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
+              <div class="taxDesc">
+                <p style="position: relative">
+                  charge Description <span class="description red-star">*</span>
+                </p>
+                <input
+                  type="text"
+                  pInputText
+                  [(ngModel)]="chargeDescription"
+                  maxlength="100"
+                  placeholder="Max 100 characters"
+                  [disabled]="deactivated"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-set-criteria
+        *ngIf="appModuleDataPresent && showContent"
+        #setCriteriaSharedComponent
+        [criteriaMasterData]="criteriaMasterData"
+        [cmCriteriaDataDetails]="cmCriteriaDataDetails"
+        [criteriaDataDetailsJson]="criteriaDataDetailsJson"
+        [cmCriteriaSlabType]="cmCriteriaSlabType"
+        [independantCriteriaArr]="independantCriteriaArr"
+        [cmCriteriaMandatory]="cmCriteriaMandatory"
+        [cmCriteriaDependency]="cmCriteriaDependency"
+        [criteriaMapDdlOptions]="criteriaMapDdlOptions"
+        [correspondentDdlOptions]="correspondentDdlOptions"
+        [criteriaEqualsDdlOptions]="criteriaEqualsDdlOptions"
+        [criteriaTemplatesDdlOptions]="criteriaTemplatesDdlOptions"
+        [savingCriteriaTemplateError]="savingCriteriaTemplateError"
+        [criteriaText]="criteriaText"
+        [criteriaCodeText]="criteriaCodeText"
+        [inactiveData]="inactiveData"
+        [deactivated] = "deactivated"
+        (postDataCriteria)="applyCriteria($event)"
+        (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
+        (getCorrespondentValues)="
+          getCorrespondentValues(
+            $event.fieldName,
+            $event.displayName,
+            $event.criteriaCodeText
+          )
+        "
+      ></app-set-criteria>
+    </div>
+    <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
+      <div class="details-page-card-content mt-1">
+        <div class="criteria-bar">
+          <p class="setCriteria detail-page-section-heading">
+            Applicable Charges
+            <img
+              height="15px"
+              src="../assets/Icon-info.svg"
+              alt=""
+              pTooltip="On selected criteria charges below taxes will be applied."
+            />
+          </p>
+        </div>
+        <div class="mt-1 addnewroute-table">
+          <div class="ptable">
+            <p-card class="p-col-12" *ngIf="!applyCriteriaResponse">
+              {{ "noDataMsg" }}
+            </p-card>
+            <div class="appliedCriteriaDataTable">
+              <p-table
+                #dt
+                [value]="applyCriteriaFormattedData"
+                [rowHover]="true"
+                [scrollable]="true"
+                scrollHeight="315px"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th
+                      *ngFor="let col of applyCriteriaDataTableColumns"
+                      style="min-width: 120px;"
+                      [ngStyle]="{'width': col.field == 'isActive' ? '120px' : ''  }"
+                      alignFrozen="right"
+                      pFrozenColumn
+                      [frozen]="col['frozen']"
+                    >
+                      {{ col.header }}
+                      <span *ngIf="isMandatoryCol(col.header)" class="red-star"
+                        >*</span
+                      >
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                  <tr>
+                    <td
+                      *ngFor="
+                        let col of applyCriteriaDataTableColumns;
+                        index as i
+                      "
+                      alignFrozen="right"
+                      pFrozenColumn
+                      [frozen]="col['frozen']"
+                    >
+                      <div
+                        *ngIf="col['fieldType'] == 'dropdown'"
+                        class="appliedCriteriaSelect"
+                      >
+                        <p-dropdown
+                          [options]="rowData[col.field + 'Option']"
+                          optionLabel="codeName"
+                          appendTo="body"
+                          [placeholder]="
+                            rowData[col['field']] && rowData[col['field']] != 'null'
+                              ? rowData[col['field']] 
+                              : 'Select'
+                          "
+                          (onChange)="
+                            selectedColumn(col['field'], $event.value, rowIndex)
+                          "
+                          [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
+                          
+                        ><ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div >{{ options.codeName}}</div>
+                          </div>
+                        </ng-template>
+                      </p-dropdown>
+                      </div>
+                      <div
+                        *ngIf="col['fieldType'] == 'input'"
+                        [pTooltip]="col['info'] ? col['info'] : ''"
+                        class="appliedCriteriaInput"
+                      >
+                        <p-inputNumber
+                          #valInp
+                          [min]="0"
+                          [(ngModel)]="rowData[col['field']]"
+                          [useGrouping]="false"
+                          mode="decimal"
+                          [maxFractionDigits]="1"
+                          (onInput)="
+                            changeValueInput(
+                              applyCriteriaDataTableColumns[i - 1]['field'],
+                              col['field'],
+                              $event,
+                              rowIndex,
+                              valInp
+                            )
+                          "
+                          [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
+                        ></p-inputNumber>
+                      </div>
+                      <div
+                        *ngIf="col['fieldType'] == 'text'"
+                        [pTooltip]="col['info'] ? col['info'] : ''"
+                      >
+                        <input
+                          [(ngModel)]="rowData[col.field]"
+                          type="text"
+                          pInputText
+                          [disabled]="true"
+                        />
+                      </div>
+                      <div
+                        *ngIf="col['fieldType'] == 'button'"
+                        class="appliedCriteriaButton"
+                      >
+                        <ng-container
+                          *ngFor="let btn of rowData[col['field']]?.split(',')"
+                        >
+                          <button
+                            pButton
+                            type="button"
+                            [icon]="'pi pi-' + (btn == 'delete' ? 'trash' : btn)"
+                            (click)="
+                              checkOperation(btn, rowIndex, rowData, col['field'])
+                            "
+                            class="operation-btns mr-2"
+                            [disabled]="deactivated"
+                          ></button>
+                        </ng-container>
+                      </div>
+                      <div  *ngIf="col.field == 'isActive'" 
+                      style="border: none; text-align: left">
+                      <label class="switch" style="border: none">
+                        <input
+                          #statusInp
+                          [value]="rowData[col['field']]"
+                          type="checkbox"
+                          (click)="confirmStatus($event, rowData)"
+                          [checked]="
+                            rowData[col['field']] == 'Y'
+                              ? true
+                              : false
+                          "
+                          [disabled]="rowData['linked'] == 'Y' || deactivated"
+                        />
+                        <span class="slider round" [ngClass]="{ 'disabled': deactivated}"></span>
+                      </label>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+  
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td [attr.colspan]="applyCriteriaDataTableColumns.length">
+                      No Data found.
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="NorecordFound"
+    *ngIf="
+      !showContent && appModuleDataPresent && !applyCriteriaFormattedData.length
+    "
+  >
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>No Record Found.</p>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    key="chargeSettingLinkedWarning"
+    class="linked-confirm confirm-popup"
+    #cd
+    icon="pi pi-exclamation-triangle"
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Ok"
+        (click)="cd.accept()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  
+  <p-confirmDialog
+    key="resetChargeDataConfirmation"
+    class="confirm-popup"
+    #cd2
+    icon="pi pi-exclamation-triangle"
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd2.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="Cancel"
+        (click)="cd2.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  
+  <p-confirmDialog
+    key="activeDeactiveStatus"
+    class="status-confirm confirm-popup"
+    #cd3
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd3.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd3.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  <p-confirmDialog
+    key="activeDeactiveStatusCharge"
+    class="status-confirm confirm-popup"
+    #cd4
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd4.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd4.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
