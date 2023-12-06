@@ -90,8 +90,8 @@
                 [readonlyInput]="false"
                 [appendTo]="'body'"
                 (onSelect)="handleDateSelect(calendar)"
-  appDateMask
-  #calendar
+                appDateMask
+                #calendar
               ></p-calendar>
               <p-checkbox
                 *ngSwitchCase="'checkbox'"
@@ -165,7 +165,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 individualForm.controls[section.formName]['controls'][
                   field.name
                 ].errors?.minlength
@@ -176,7 +178,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 individualForm.controls[section.formName]['controls'][
                   field.name
                 ].errors?.pattern
@@ -186,7 +190,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 individualForm.controls[section.formName]['controls'][
                   field.name
                 ].errors?.maxlength
@@ -209,59 +215,59 @@
   </ng-container>
   <div class="form-group btn-grp buttons-section">
     <button
-    pButton
-    pRipple
-    type="button"
-    label="Save"
-    class="p-button-raised"
-    (click)="onSubmit()"
-    [disabled]="deactivated"
-  ></button>
-  <button
-    pButton
-    pRipple
-    type="button"
-    label="Reset"
-    class="p-button-warning"
-    (click)="onReset()"
-    [disabled]="deactivated"
-  ></button>
-  <button
-  *ngIf="modeVal == 'edit'"
-    pButton
-    pRipple
-    type="button"
-    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
-    class="p-button-raised"
-    (click)="onActive(data)"
-  ></button>
+      pButton
+      pRipple
+      type="button"
+      label="Save"
+      class="p-button-raised"
+      (click)="onSubmit()"
+      [disabled]="deactivated"
+    ></button>
+    <button
+      pButton
+      pRipple
+      type="button"
+      label="Reset"
+      class="p-button-warning"
+      (click)="onReset()"
+      [disabled]="deactivated"
+    ></button>
+    <button
+      *ngIf="modeVal == 'edit'"
+      pButton
+      pRipple
+      type="button"
+      label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+      class="p-button-raised"
+      (click)="onActive(data)"
+    ></button>
   </div>
 </form>
 <p-confirmDialog
-    key="resetBenfWarning"
-    class="confirm-popup"
-    #cd
-    [closable]="false"
-  >
-    <p-footer>
-      <button
-        type="button"
-        pButton
-        icon="pi pi-check"
-        label="Yes"
-        (click)="cd.accept()"
-      ></button>
-  
-      <button
-        type="button"
-        pButton
-        icon="pi pi-times"
-        label="No"
-        (click)="cd.reject()"
-      ></button>
-    </p-footer>
-  </p-confirmDialog>
-  
+  key="resetBenfWarning"
+  class="confirm-popup"
+  #cd
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+
 <p-confirmDialog
   key="activeDeactiveStatusBenef"
   class="status-confirm confirm-popup"
