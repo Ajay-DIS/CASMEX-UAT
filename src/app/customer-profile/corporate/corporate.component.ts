@@ -133,6 +133,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   mandatoryKycDocs: any[] = [];
 
   copyKycSection: any = {};
+  copyFormSection: any = [];
 
   countryDialCode: any = "+91";
 
@@ -462,6 +463,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.corporateForm.addControl(section.formName, sectionGroup);
     });
     this.disableInputsFile();
+    this.copyFormSection = JSON.parse(JSON.stringify(this.formSections));
     if (this.corporateForm.get("KYC Doc Upload")) {
       this.copyKycSection = JSON.parse(
         JSON.stringify(this.formSections)
@@ -854,12 +856,15 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           e.target.files[0]?.type == "image/png" ||
           e.target.files[0]?.type == "application/pdf" ||
           e.target.files[0]?.type ==
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          e.target.files[0]?.type == "application/msword"
         )
       ) {
         this.coreService.showWarningToast(
-          "Valid formats are JPG, PNG, PDF, DOC."
+          "Valid formats are .jpg, .png, .pdf, .doc, .docx."
         );
+      } else if (e.target.files[0]?.size > 2097152) {
+        this.coreService.showWarningToast("Please upload file less than 2MB.");
       } else {
         if (e.target.files[0]) {
           this.coreService.displayLoadingScreen();
@@ -892,6 +897,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         )
       ) {
         this.coreService.showWarningToast("Valid formats are JPG, PNG, PDF.");
+      } else if (e.target.files[0]?.size > 2097152) {
+        this.coreService.showWarningToast("Please upload file less than 2MB.");
       } else {
         if (e.target.files[0]) {
           this.coreService.displayLoadingScreen();
@@ -1561,6 +1568,19 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedKycData[index] = kycDataObj;
     }
     this.corporateForm.get("KYC Doc Upload").reset();
+
+    this.copyFormSection
+      .filter((section) => section.formName == "KYC Doc Upload")[0]
+      ["fields"].forEach((field) => {
+        this.corporateForm
+          .get("KYC Doc Upload")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
@@ -1697,6 +1717,18 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedBeneficialData[index] = beneficialDataObj;
     }
     this.corporateForm.get("Beneficial Owner Details").reset();
+    this.copyFormSection
+      .filter((section) => section.formName == "Beneficial Owner Details")[0]
+      ["fields"].forEach((field) => {
+        this.corporateForm
+          .get("Beneficial Owner Details")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
     this.uploadedBeneficialDoc = {};
     this.editIndexBeneficial = -1;
     this.editApiIdBeneficial = "";
@@ -1927,6 +1959,18 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
     this.corporateForm.get("Representative Details").reset();
+    this.copyFormSection
+      .filter((section) => section.formName == "Representative Details")[0]
+      ["fields"].forEach((field) => {
+        this.corporateForm
+          .get("Representative Details")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
     this.uploadedRepresentativeDoc = {};
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";

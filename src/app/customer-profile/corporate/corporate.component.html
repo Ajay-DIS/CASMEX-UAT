@@ -766,7 +766,7 @@
                 "
               >
                 <div
-                #inpSelect
+                  #inpSelect
                   class="file-upload-select"
                   [style.pointerEvents]="
                     corporateForm
@@ -816,7 +816,11 @@
                     type="file"
                     name="file-upload-input"
                     id="file-upload-input"
-                    [accept]="field.name === 'authorizationLetterUploadFile' ? '.pdf, .png, .jpg,.docx' :'.pdf, .png, .jpg'"
+                    [accept]="
+                      field.name === 'authorizationLetterUploadFile'
+                        ? '.pdf, .png, .jpg, .docx, .doc'
+                        : '.pdf, .png, .jpg'
+                    "
                     [disabled]="
                       corporateForm
                         .get(section.formName)
@@ -864,7 +868,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !corporateForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 corporateForm.controls[section.formName]['controls'][field.name]
                   .errors?.minlength
               "
@@ -874,7 +880,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !corporateForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 corporateForm.controls[section.formName]['controls'][field.name]
                   .errors?.pattern
               "
@@ -883,7 +891,9 @@
             >
             <small
               *ngIf="
-                submitted &&
+                !corporateForm.controls[section.formName]['controls'][
+                  field.name
+                ].pristine &&
                 corporateForm.controls[section.formName]['controls'][field.name]
                   .errors?.maxlength
               "

@@ -45,14 +45,14 @@
                 >
                   <ng-container [ngSwitch]="criteriaType">
                     <input
-                    *ngSwitchCase="'SQL'"
-                    class="searchBox"
-                    type="text"
-                    pInputText
-                    [(ngModel)]="currentCriteriaValue"
-                    placeholder="Search"
-                    [readonly]="true"
-                  />
+                      *ngSwitchCase="'SQL'"
+                      class="searchBox"
+                      type="text"
+                      pInputText
+                      [(ngModel)]="currentCriteriaValue"
+                      placeholder="Search"
+                      [readonly]="true"
+                    />
                     <!-- <p-dropdown
                       *ngSwitchCase="'SQL'"
                       [options]="docIdOptions"
@@ -150,7 +150,9 @@
             type="button"
             label="Add Customer"
             class="p-button-raised search-btn ml-4"
-            (click)="addNewCustomer(customerType == 'Corporate' ? 'COR' : 'IND')"
+            (click)="
+              addNewCustomer(customerType == 'Corporate' ? 'COR' : 'IND')
+            "
           ></button>
         </div>
       </div>
@@ -208,7 +210,7 @@
       columnResizeMode="fit"
       [rowHover]="true"
       [loading]="customerTableLoading"
-      [rowsPerPageOptions]="[10, 20, 50, 100]"
+      [rowsPerPageOptions]="totalRecords <= 10 ? null : [10, 20, 50, 100]"
       rowExpandMode="single"
     >
       <ng-template pTemplate="header" let-columns>
@@ -437,8 +439,11 @@
                           fontSize: '11px',
                           cursor: 'pointer'
                         }"
-                        [ngClass]="{ disabled: rowData.status == 'Inactive'}"
-                        (click)="!(rowData.status == 'Inactive') && editbeneficiary(order, rowData)" 
+                        [ngClass]="{ disabled: rowData.status == 'Inactive' }"
+                        (click)="
+                          !(rowData.status == 'Inactive') &&
+                            editbeneficiary(order, rowData)
+                        "
                         >{{ order.fullName }}</a
                       >
                     </td>
@@ -449,8 +454,10 @@
                     <td>{{ order.serviceCategory }}</td>
                     <td>NA</td>
                     <td>
-                      <div *ngFor="let detail of order.serviceDetails.split('  ')">
-                        {{ detail }}<br>
+                      <div
+                        *ngFor="let detail of order.serviceDetails.split('  ')"
+                      >
+                        {{ detail }}<br />
                       </div>
                     </td>
                     <td>
@@ -484,7 +491,12 @@
                           type="checkbox"
                           [disabled]="rowData && rowData.status == 'Inactive'"
                         />
-                        <span class="slider round" [ngClass]="{ 'disabled': rowData && rowData.status == 'Inactive'}"></span>
+                        <span
+                          class="slider round"
+                          [ngClass]="{
+                            disabled: rowData && rowData.status == 'Inactive'
+                          }"
+                        ></span>
                       </label>
                     </td>
                   </tr>

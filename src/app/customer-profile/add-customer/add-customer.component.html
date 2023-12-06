@@ -863,9 +863,9 @@
                           (click)="inpFile.click()"
                         >
                           <div class="file-select-name">
-                            <input type="text" [formControlName]="field.name"  />
+                            <input type="text" [formControlName]="field.name" />
                           </div>
-                          <div class="file-select-button" >
+                          <div class="file-select-button">
                             <i class="pi pi-upload"></i>
                           </div>
                           <input
@@ -892,7 +892,7 @@
                             id="file-upload-input"
                             [accept]="
                               field.name === 'authorizationLetterUploadFile'
-                                ? '.pdf, .png, .jpg,.docx'
+                                ? '.pdf, .png, .jpg, .docx, .doc'
                                 : '.pdf, .png, .jpg'
                             "
                             [disabled]="
@@ -940,7 +940,9 @@
                     >
                     <small
                       *ngIf="
-                        submitted &&
+                        !individualForm.controls[section.formName]['controls'][
+                          field.name
+                        ].pristine &&
                         individualForm.controls[section.formName]['controls'][
                           field.name
                         ].errors?.minlength
@@ -951,7 +953,9 @@
                     >
                     <small
                       *ngIf="
-                        submitted &&
+                        !individualForm.controls[section.formName]['controls'][
+                          field.name
+                        ].pristine &&
                         individualForm.controls[section.formName]['controls'][
                           field.name
                         ].errors?.pattern
@@ -961,7 +965,9 @@
                     >
                     <small
                       *ngIf="
-                        submitted &&
+                        !individualForm.controls[section.formName]['controls'][
+                          field.name
+                        ].pristine &&
                         individualForm.controls[section.formName]['controls'][
                           field.name
                         ].errors?.maxlength

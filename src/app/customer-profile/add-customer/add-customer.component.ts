@@ -129,6 +129,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   mandatoryKycDocs: any[] = [];
 
   copyKycSection: any = {};
+  copyFormSection: any = [];
 
   documentExpiry: any = [];
   documentExpiryObj: any = [];
@@ -483,8 +484,9 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       section["isVisible"] = haveVisibleFields ? true : false;
       this.individualForm.addControl(section.formName, sectionGroup);
     });
-
+    console.log(this.individualForm);
     this.disableInputsFile();
+    this.copyFormSection = JSON.parse(JSON.stringify(this.formSections));
     if (this.individualForm.get("KYC Doc Upload")) {
       this.copyKycSection = JSON.parse(
         JSON.stringify(this.formSections)
@@ -598,7 +600,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                 kycSection["fields"].forEach((f) => {
                   if (f.fieldName == "idNumber") {
                     f.minLength = +docMinMaxLength.split("/")[0];
-                    this.submitted = true;
+                    // this.submitted = true;
                   }
                 });
               }
@@ -606,7 +608,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
                 kycSection["fields"].forEach((f) => {
                   if (f.fieldName == "idNumber") {
                     f.maxLength = +docMinMaxLength.split("/")[1];
-                    this.submitted = true;
+                    // this.submitted = true;
                   }
                 });
               }
@@ -880,12 +882,15 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           e.target.files[0]?.type == "image/png" ||
           e.target.files[0]?.type == "application/pdf" ||
           e.target.files[0]?.type ==
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
+          e.target.files[0]?.type == "application/msword"
         )
       ) {
         this.coreService.showWarningToast(
-          "Valid formats are JPG, PNG, PDF, DOC."
+          "Valid formats are .jpg, .png, .pdf, .doc, .docx."
         );
+      } else if (e.target.files[0]?.size > 2097152) {
+        this.coreService.showWarningToast("Please upload file less than 2MB.");
       } else {
         if (e.target.files[0]) {
           this.coreService.displayLoadingScreen();
@@ -918,6 +923,8 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         )
       ) {
         this.coreService.showWarningToast("Valid formats are JPG, PNG, PDF.");
+      } else if (e.target.files[0]?.size > 2097152) {
+        this.coreService.showWarningToast("Please upload file less than 2MB.");
       } else {
         if (e.target.files[0]) {
           this.coreService.displayLoadingScreen();
@@ -1575,6 +1582,20 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       this.uploadedKycData[index] = kycDataObj;
     }
     this.individualForm.get("KYC Doc Upload").reset();
+
+    this.copyFormSection
+      .filter((section) => section.formName == "KYC Doc Upload")[0]
+      ["fields"].forEach((field) => {
+        this.individualForm
+          .get("KYC Doc Upload")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
+
     this.editIndexKyc = -1;
     this.editApiIdKyc = "";
     this.uploadedKycDoc = {};
@@ -1711,6 +1732,19 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       this.uploadedBeneficialData[index] = beneficialDataObj;
     }
     this.individualForm.get("Beneficial Owner Details").reset();
+
+    this.copyFormSection
+      .filter((section) => section.formName == "Beneficial Owner Details")[0]
+      ["fields"].forEach((field) => {
+        this.individualForm
+          .get("Beneficial Owner Details")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
     this.uploadedBeneficialDoc = {};
     this.editIndexBeneficial = -1;
     this.editApiIdBeneficial = "";
@@ -1940,7 +1974,21 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       }
       this.uploadedRepresentativeData[index] = representativeDataObj;
     }
+
     this.individualForm.get("Representative Details").reset();
+    this.copyFormSection
+      .filter((section) => section.formName == "Representative Details")[0]
+      ["fields"].forEach((field) => {
+        this.individualForm
+          .get("Representative Details")
+          ?.get(field.name)
+          .patchValue(
+            field.defaultValue?.length > 0 && field.defaultValue != "null"
+              ? field.defaultValue
+              : ""
+          );
+      });
+
     this.uploadedRepresentativeDoc = {};
     this.editIndexRepresentative = -1;
     this.editApiIdRepresentative = "";
