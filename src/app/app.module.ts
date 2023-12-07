@@ -89,6 +89,7 @@ import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-l
 import { ClipboardModule } from "ngx-clipboard";
 import { ChargeDetailsComponent } from './charge-settings/charge-details/charge-details.component';
 import { ChargeListingComponent } from './charge-settings/charge-listing/charge-listing.component';
+import { MasterListingComponent } from './master/master-listing/master-listing.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -134,6 +135,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoyaltyDetailsListComponent,
     ChargeDetailsComponent,
     ChargeListingComponent,
+    MasterListingComponent,
   ],
   imports: [
     BrowserModule,

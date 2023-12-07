@@ -31,6 +31,7 @@ import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.c
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
 import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-listing.component";
 import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-details.component";
+import { MasterListingComponent } from "./master/master-listing/master-listing.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -388,6 +389,31 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "master",
+        component: MasterListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/master" },
+          {
+            label: "Master",
+            routerLink: "../navbar/master",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      // {
+      //   path: "master/addnew/:type",
+      //   component: AddCustomerComponent,
+      //   data: [
+      //     { label: "Home", routerLink: "../navbar/master" },
+      //     {
+      //       label: "Master",
+      //       routerLink: "../navbar/master",
+      //     },
+      //     { label: "Add Master", routerLink: "" },
+      //   ],
+      //   canActivate: [AuthGuard],
+      // },
       {
         path: "beneficiary-profile",
         component: CustomerProfileComponent,
