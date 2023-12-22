@@ -59,7 +59,7 @@
       </div>
     </div>
   
-    <div class="ptable" *ngIf="showTable || !globalSearch">
+    <div class="ptable" *ngIf="showTable">
         <p-table
           #dt
           [columns]="cols"
@@ -82,12 +82,14 @@
                 [style.width]="col.width"
               >
                 {{ col.header }}
-               
+                <p-sortIcon
+                [field]="col.field"
+              ></p-sortIcon>
               </th>
             </tr>
             <tr class="search-row">
               <th *ngFor="let col of cols" [style.width]="col.width">
-                <span style="width: 80%;" class="p-input-icon-left">
+                <span style="width: 80%;" class="p-input-icon-left" *ngIf="col.field != 'status'">
                   <i class="pi pi-search"></i>
                   <input
                     type="text"
@@ -107,13 +109,18 @@
           >
             <tr [pReorderableRow]="index">
               <ng-container *ngFor="let col of columns; let i = index">
-                <td *ngIf="col.field != 'status'" (click)="openClickForEdit(rowData)" style="cursor: pointer;">
+                <td *ngIf="col.field != 'status'" >
                   <div
-                    style="display: inline-block;cursor: pointer;"
+                    style="display: inline-block;" *ngIf="!(i == 0)"
                   >
                     {{ rowData[col["field"]] }}
                   </div>
-                 
+                 <div *ngIf="i == 0">
+                  <a
+                  style="text-decoration: underline !important;cursor: pointer;color: var(--primary-color)"
+                  (click)="openClickForEdit(rowData)"
+                  >{{ rowData[col["field"]] }}</a
+                ></div>
                 </td>
                 <td
               *ngIf="col.field == 'status'"
@@ -140,7 +147,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td [attr.colspan]="cols.length">No Data found.</td>
+              <td [attr.colspan]="cols.length">No Data Found.</td>
             </tr>
           </ng-template>
           <ng-template pTemplate="paginatorleft" let-state>
@@ -156,13 +163,13 @@
       </div>
     
   </div>
-  <div class="NorecordFound" *ngIf="!showTable && globalSearch">
+  <div class="NorecordFound" *ngIf="!showTable">
     <div class="row">
       <div class="col-12"><img src="assets/searchCriteria.PNG" /></div>
     </div>
     <div class="row">
       <div class="col-12">
-        <p>Select search criteria to find a customer details.</p>
+        <p>Select master to view the details.</p>
       </div>
     </div>
   </div>
@@ -206,20 +213,22 @@
             <div
               class="taxCode"
             >
-              <p>{{ masterType === 'Charge Master' ? 'Charge Code' : 'Tax Code' }}</p>
+              <p>{{ HeaderCode }}</p>
               <input type="text" pInputText [(ngModel)]="masterCode" disabled style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;" />
             </div>
           </div>
           <div class="col-md-6 col-lg-6">
             <div class="taxCode">
               <p style="position: relative;">
-                {{ masterType === 'Charge Master' ? 'Charge Name' : 'Tax Name' }} <span class="description red-star">*</span>
+                {{ HeaderName }} <span class="description red-star">*</span>
               </p>
               <input
                 type="text"
                 pInputText
+                maxlength="50"
+                placeholder="Max 50 characters"
                 [(ngModel)]="masterName"
-                maxlength="100"
+                maxlength="50"
                 style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;"
               />
             </div>
@@ -227,7 +236,7 @@
         </div>
       </ng-template>
       <ng-template pTemplate="footer">
-        <div class="row ml-8" Master-addnew-section style="margin-top: -7px;">
+        <div class="row addnewbtnSection" Master-addnew-section >
             <button
             pButton
             pRipple
@@ -272,21 +281,22 @@
             <div
               class="taxCode"
             >
-              <p>{{ masterType === 'Charge Master' ? 'Charge Code' : 'Tax Code' }}</p>
+              <p>{{ HeaderCode }}</p>
               <input type="text" pInputText [(ngModel)]="masterCode" disabled style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;" />
             </div>
           </div>
           <div class="col-md-6 col-lg-6">
             <div class="taxCode">
               <p style="position: relative;">
-                {{ masterType === 'Charge Master' ? 'Charge Name' : 'Tax Name' }} <span class="description red-star">*</span>
+                {{ HeaderName }} <span class="description red-star">*</span>
               </p>
               <input
                 type="text"
                 pInputText
+                maxlength="50"
+                placeholder="Max 50 characters"
                 [disabled]="disableCodeName"
                 [(ngModel)]="masterName"
-                maxlength="100"
                 style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;"
               />
             </div>
@@ -294,7 +304,7 @@
         </div>
       </ng-template>
       <ng-template pTemplate="footer">
-        <div class="row" Master-addnew-section style="margin-top: -7px;margin-left: 153px;">
+        <div class="row btnsection" Master-addnew-section>
             <button
             pButton
             pRipple
@@ -303,6 +313,7 @@
             class="p-button-warning search-btn "
             (click)="editDisableModel()"
             style="padding: 6px 16px;"
+            [disabled]="deactivated"
           ></button>
           <button
             pButton
@@ -310,6 +321,7 @@
             type="button"
             label="Save"
             class="p-button-raised search-btn "
+            disabled
             (click)="updateMaster()"
             style="padding: 6px 16px;"
           ></button>

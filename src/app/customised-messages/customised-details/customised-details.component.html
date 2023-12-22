@@ -1,0 +1,305 @@
+<div class="visible-main-section">
+    <div class="details-page-card">
+      <div class="d-flex mx-3" style="justify-content: space-between">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-md-7 col-lg-7 col-sm-12 col-xs-12">
+              <p class="description-text">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="41"
+                  height="35"
+                  viewBox="0 0 41 41"
+                >
+                  <g
+                    id="Group_2248"
+                    data-name="Group 2248"
+                    transform="translate(-341 -138)"
+                  >
+                    <circle
+                      id="Ellipse_130"
+                      data-name="Ellipse 130"
+                      cx="20.5"
+                      cy="20.5"
+                      r="20.5"
+                      transform="translate(341 138)"
+                      [attr.fill]="primaryColor"
+                    />
+                    <path
+                      id="_52_Note_Basic_Description"
+                      data-name="52  Note, Basic, Description"
+                      d="M17.054,9.537H9.52a.753.753,0,0,1-.753-.753V5.016a.753.753,0,0,1,.753-.753h.851a3.014,3.014,0,0,1,5.831,0h.851a.753.753,0,0,1,.753.753V8.783A.753.753,0,0,1,17.054,9.537ZM10.274,8.03H16.3V5.77h-.753a.753.753,0,0,1-.753-.753,1.507,1.507,0,0,0-3.014,0,.753.753,0,0,1-.753.753h-.753Zm11.3,12.808V7.277a2.26,2.26,0,0,0-2.26-2.26h-.753V6.523h.753a.753.753,0,0,1,.753.753V20.837a.753.753,0,0,1-.753.753H7.26a.753.753,0,0,1-.753-.753V7.277a.753.753,0,0,1,.753-.753h.753V5.016H7.26A2.26,2.26,0,0,0,5,7.277V20.837A2.26,2.26,0,0,0,7.26,23.1H19.314A2.26,2.26,0,0,0,21.574,20.837ZM17.808,11.8H8.767V13.3h9.041Zm0,3.014H8.767v1.507h9.041Zm0,3.014H8.767v1.507h9.041Z"
+                      transform="translate(348.213 145.945)"
+                      fill="#fff"
+                    />
+                  </g>
+                </svg>
+                Enables users to configure Customised Messages related settings.
+              </p>
+            </div>
+            <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
+              <div class="row">
+                <div class="buttons-section">
+                    <button
+                    pButton
+                    pRipple
+                    *ngIf="mode == 'edit'"
+                    type="button"
+                    label="Edit"
+                    class="p-button-warning search-btn "
+                    (click)="editDisableModel()"
+                    style="padding: 6px 16px;"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Save"
+                    class="p-button-raised"
+                    (click)="saveAddNewMessage()"
+                    [disabled]="deactivated"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    *ngIf="mode == 'add'"
+                    type="button"
+                    label="Save & Add New"
+                    class="p-button-raised"
+                    (click)="saveAddNewMessage()"
+                    [disabled]="deactivated"
+                  ></button>
+                  <button
+                    pButton
+                    pRipple
+                    type="button"
+                    label="Reset"
+                    class="p-button-warning"
+                    (click)="reset()"
+                    [disabled]="deactivated"
+                  ></button>
+                  <button
+                    *ngIf="mode == 'edit'"
+                    pButton
+                    pRipple
+                    type="button"
+                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                    class="p-button-raised"
+                    (click)="onActive()"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div
+    class="d-flex m-3 tax-code-desc-section"
+  >
+    <div class="col-12">
+      <div class="row d-flex">
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="taxCode">
+              <p style="position: relative">
+                  Message Type <span class="description red-star">*</span>
+              </p>
+              <p-dropdown
+                name="application"
+                inputId="application"
+                [options]="messageTypeOptions"
+                [(ngModel)]="messageType"
+                placeholder="Select"
+                optionValue="code"
+                optionLabel="name"
+                [disabled]="deactivated"
+              >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.name }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
+            </div>
+          </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+          <div
+            class="messageCode"
+            [pTooltip]="
+              this.mode == 'add'
+                ? 'Message Code is automatically generated, It may get changed in saving process.'
+                : ''
+            "
+          >
+            <p style="position: relative">
+              Message Code 
+            </p>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="messageCode"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+    <div
+    class="d-flex m-3 tax-code-desc-section"
+  >
+    <div class="col-12">
+      <div class="row d-flex mt-4">
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="taxCode">
+              <p style="position: relative">
+                  Message Language 
+              </p>
+              <p-dropdown
+                name="application"
+                inputId="application"
+                [options]="messageLanguageOptions"
+                [(ngModel)]="messageLanguage"
+                placeholder="Select"
+                optionValue="code"
+                optionLabel="name"
+                [disabled]="deactivated"
+              >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.name }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
+            </div>
+          </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+          <div
+            class="messageCode"
+          >
+            <p style="position: relative">
+              Message Header 
+            </p>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="messageHeader"
+            />
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+          <div
+            class="messageCode"
+          >
+            <p style="position: relative">
+              Message Description
+            </p>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="messageDescription"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div
+    class="d-flex m-3  tax-code-desc-section" *ngFor="let row of messageRows; let i = index"
+  >
+    <div class="col-12">
+      <div class="row d-flex pt-2" >
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="taxCode">
+              <p style="position: relative">
+                  Message Language 
+              </p>
+              <p-dropdown
+                name="application"
+                inputId="application"
+                [options]="messageLanguageOptions"
+                [(ngModel)]="row.messageLanguage"
+                placeholder="Select"
+                optionValue="code"
+                optionLabel="name"
+                [disabled]="deactivated"
+              >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.name }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
+            </div>
+          </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+          <div
+            class="messageCode"
+          >
+            <p style="position: relative">
+              Message Header 
+            </p>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="row.messageHeader"
+            />
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+          <div
+            class="messageCode"
+          >
+            <p style="position: relative">
+              Message Description
+            </p>
+            <input
+              type="text"
+              pInputText
+              [(ngModel)]="row.messageDescription"
+            />
+          </div>
+        </div>
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <button
+            #addCriteriaBtn
+            pButton
+            pRipple
+            style=" margin-top: 27px;font-size: 1.75rem;height: 33px;"
+            type="button"
+            label="-"
+            class="p-button-primary"
+            (click)="deleteMsg(i)"
+            
+          ></button>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div
+    class="d-flex m-3 tax-code-desc-section"
+  >
+    <div class="col-12">
+      <div class="row d-flex mt-2">
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12 d-flex">
+            
+            <button
+            #addCriteriaBtn
+            pButton
+            pRipple
+            style="margin-left: 30px;font-size: 1.5rem;height: 33px;"
+            type="button"
+            label="+"
+            class="p-button-primary"
+            (click)="addMsg()"
+            
+          ></button>
+          <p style="margin-top: 7px;padding-left: 10px;">
+            Add More Language
+          </p>
+          </div>
+        
+      </div>
+    </div>
+    </div>
+  </div>  
+      </div>
