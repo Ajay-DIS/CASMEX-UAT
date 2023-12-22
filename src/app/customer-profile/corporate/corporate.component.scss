@@ -171,27 +171,13 @@ div.btn-grp {
   max-width: 90px;
 }
 
-.currency-Inp {
-  position: relative;
-}
-.currency-Inp input {
-  width: 100%;
-  padding-right: 40px;
-}
-.currency-Inp span {
+span.suffix-Inp {
   font-size: 0.8rem;
   position: absolute;
   right: 5%;
-  top: 8px;
+  top: 8.5px;
 }
-.phone-Inp {
-  position: relative;
-}
-.phone-Inp input {
-  width: 100%;
-  padding-left: 45px;
-}
-.phone-Inp span {
+span.prefix-Inp {
   font-size: 0.8rem;
   position: absolute;
   left: 5%;
@@ -259,5 +245,5 @@ div.btn-grp {
 }
 .disabled {
   cursor: not-allowed;
-  color: #999; 
+  color: #999;
 }

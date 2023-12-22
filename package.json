@@ -25,6 +25,8 @@
     "angular-user-idle": "^3.0.1",
     "bn-ng-idle": "^2.0.5",
     "inputmask": "^5.0.8",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "ngx-clipboard": "^14.0.1",
     "primeflex": "^3.3.0",
     "primeicons": "^6.0.1",

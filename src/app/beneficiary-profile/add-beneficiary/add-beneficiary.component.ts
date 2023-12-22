@@ -125,13 +125,11 @@ export class AddBeneficiaryComponent implements OnInit {
       this.coreService.displayLoadingScreen();
     }, 1000);
     this.http
-      .get(`/remittance/formRulesController/getFormRules`, {
+      .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
           .set(
             "criteriaMap",
-            `Country = IND;Form = Customer Profile;Customer Type = ${
-              custType == "IND" ? "IND" : "COR"
-            }`
+            `Country = IN;Customer Type = ${custType == "IND" ? "IND" : "IND"}`
           )
           .set("form", "Customer Profile Beneficiary_Form Rules")
           .set("moduleName", "Remittance")

@@ -32,7 +32,7 @@ export class FormRuleListingComponent implements OnInit {
 
   cols: any[] = [
     { field: "formRuleCode", header: "Rule Code", width: "10%" },
-    { field: "formRuleDesc", header: "Rule Description", width: "20%" },
+    { field: "formRuleDescription", header: "Rule Description", width: "20%" },
     { field: "criteriaMap", header: "Criteria", width: "55%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Operations", width: "8%" },

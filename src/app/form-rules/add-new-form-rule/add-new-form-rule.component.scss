@@ -97,6 +97,11 @@
   width: 100%;
 }
 
+.appliedCriteriaDataTable input.default-Value-input {
+  padding: 0 0.5rem;
+  font-size: 12px !important;
+}
+
 .appliedCriteriaDataTable input[type="checkbox"] {
   width: 18px;
   height: 18px;
@@ -180,7 +185,7 @@ input.inputError {
 :host ::ng-deep .p-element .p-inputwrapper .smartSearch {
   width: 77% !important;
 }
-@media screen and (max-width: 1400px) and (min-width:1201px) {
+@media screen and (max-width: 1400px) and (min-width: 1201px) {
   .savebtn {
     padding-left: 0px !important;
     // padding-right: 20px !important;
@@ -198,7 +203,7 @@ input.inputError {
     padding-left: 0px !important;
   }
 }
-@media screen and (max-width: 1199px) and (min-width:768px) {
+@media screen and (max-width: 1199px) and (min-width: 768px) {
   .savebtn {
     padding-left: 0px !important;
     padding-right: 20px !important;
@@ -207,17 +212,113 @@ input.inputError {
   .saveAddbtn {
     width: 50%;
     padding-left: 0px !important;
-    margin-left: 27px ;
+    margin-left: 27px;
   }
-  .resetbtn{
+  .resetbtn {
     margin-left: 0px;
   }
 }
-@media screen and (max-width: 575px){
+@media screen and (max-width: 575px) {
   .small {
-     padding-right: 25px !important;
-   }
+    padding-right: 25px !important;
+  }
   .smallForm {
-     padding-right: 39px !important;
-   }
- }
+    padding-right: 39px !important;
+  }
+}
+
+input.editable-input:disabled {
+  cursor: not-allowed;
+}
+
+span.not-applicable-value {
+  display: block;
+  cursor: not-allowed;
+  text-align: center;
+}
+
+.appliedCriteriaDataTable ::ng-deep .p-component.p-dropdown .p-dropdown-filter,
+.appliedCriteriaDataTable ::ng-deep .p-multiselect .p-multiselect-label,
+.appliedCriteriaDataTable ::ng-deep .p-dropdown .p-dropdown-label {
+  padding: 0.25rem 0.5rem;
+}
+.appliedCriteriaDataTable ::ng-deep .p-component.p-multiselect,
+.appliedCriteriaDataTable ::ng-deep .p-component.p-dropdown {
+  width: 187px;
+  font-size: 12px !important;
+}
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-component.p-dropdown
+  .p-dropdown-items-wrapper
+  .p-scroller {
+  max-height: 70px !important;
+}
+.appliedCriteriaDataTable ::ng-deep .p-component.p-dropdown .p-dropdown-header,
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-component.p-dropdown
+  .p-dropdown-items
+  .p-dropdown-empty-message,
+.appliedCriteriaDataTable ::ng-deep .p-component.p-dropdown .p-dropdown-item {
+  padding: 0.5rem;
+}
+
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-component.p-dropdown
+  .p-dropdown-items
+  .p-dropdown-empty-message {
+  font-size: 12px;
+}
+
+.appliedCriteriaDataTable ::ng-deep .p-component.p-dropdown .p-dropdown-items {
+  padding: 0;
+}
+.appliedCriteriaDataTable ::ng-deep .p-chips .p-chips-multiple-container {
+  height: 27.47px;
+  padding: 0.2rem 0.5rem;
+  max-height: 27.47px;
+  overflow: auto;
+  gap: 0.2rem;
+  width: 100%;
+}
+.appliedCriteriaDataTable ::ng-deep .p-chips.p-component {
+  width: 100%;
+}
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-input-token {
+  padding: 0;
+}
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-token {
+  padding: 0 0.2rem;
+  max-width: 100px;
+}
+.appliedCriteriaDataTable
+  ::ng-deep
+  .p-chips
+  .p-chips-multiple-container
+  .p-chips-input-token
+  input {
+  font-size: 12px !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+.appliedCriteriaDataTable .info-span {
+  margin-left: 3px;
+  color: var(--primary-color);
+}

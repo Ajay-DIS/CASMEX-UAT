@@ -68,6 +68,8 @@ import { TabViewModule } from "primeng/tabview";
 import { CalendarModule } from "primeng/calendar";
 import { InputMaskModule } from "primeng/inputmask";
 import { FileUploadModule } from "primeng/fileupload";
+import { ChipsModule } from "primeng/chips";
+
 import { SearchListingComponent } from "./search-settings/search-listing/search-listing.component";
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./get-apis/custom-fields/custom-fields.component";
@@ -87,8 +89,8 @@ import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.compo
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
 import { ClipboardModule } from "ngx-clipboard";
-import { ChargeDetailsComponent } from './charge-settings/charge-details/charge-details.component';
-import { ChargeListingComponent } from './charge-settings/charge-listing/charge-listing.component';
+import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-details.component";
+import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-listing.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -180,6 +182,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     UserIdleModule.forRoot({ idle: 1680, timeout: 120, ping: 1500 }),
     AutoCompleteModule,
     ClipboardModule,
+    ChipsModule,
   ],
   providers: [
     BnNgIdleService,
