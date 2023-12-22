@@ -32,6 +32,8 @@ import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-l
 import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-listing.component";
 import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-details.component";
 import { MasterListingComponent } from "./master/master-listing/master-listing.component";
+import { CustomisedListingComponent } from "./customised-messages/customised-listing/customised-listing.component";
+import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -300,6 +302,38 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: "customised-messages",
+        component: CustomisedListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/customised-messages" },
+          { label: "Customised Messages", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "customised-messages/add-messages",
+        component: CustomisedDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/customised-messages" },
+          { label: "Customised Messages", routerLink: "customised-messages" },
+          { label: "Add New Message", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "customised-messages/add-charge/:id/edit",
+        component: CustomisedDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/customised-messages" },
+          { label: "Customised Messages", routerLink: "customised-messages" },
+          { label: "Edit Message", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
         path: "form-rules",
         component: FormRuleListingComponent,
         data: [
@@ -401,19 +435,7 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
-      // {
-      //   path: "master/addnew/:type",
-      //   component: AddCustomerComponent,
-      //   data: [
-      //     { label: "Home", routerLink: "../navbar/master" },
-      //     {
-      //       label: "Master",
-      //       routerLink: "../navbar/master",
-      //     },
-      //     { label: "Add Master", routerLink: "" },
-      //   ],
-      //   canActivate: [AuthGuard],
-      // },
+
       {
         path: "beneficiary-profile",
         component: CustomerProfileComponent,

@@ -1,8 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CoreService } from "src/app/core.service";
 import { MasterServiceService } from "../master-service.service";
 import { ConfirmationService } from "primeng/api";
+import { MultiSelect } from "primeng/multiselect";
+import { Table } from "primeng/table";
 
 @Component({
   selector: "app-master-listing",
@@ -10,6 +12,7 @@ import { ConfirmationService } from "primeng/api";
   styleUrls: ["./master-listing.component.scss"],
 })
 export class MasterListingComponent implements OnInit {
+  @ViewChild("dt") dt: Table;
   masterListData: any = [];
 
   criteriaMap = "NA";
@@ -18,6 +21,17 @@ export class MasterListingComponent implements OnInit {
   masterCode = "";
   masterName = "";
   formName = "";
+  HeaderName = "";
+  HeaderCode = "";
+
+  selectedFiltercode: any[] = [];
+  selectedFiltercodeName: any[] = [];
+
+  showcodeOptions: boolean = false;
+  showcodeNameOptions: boolean = false;
+
+  code = [];
+  codeName = [];
 
   userData: any = {};
 
@@ -57,23 +71,33 @@ export class MasterListingComponent implements OnInit {
     },
     { field: "status", header: "Status", width: "20%" },
   ];
+  colDocument: any[] = [
+    { field: "code", header: "Document Code", width: "30%" },
+    {
+      field: "codeName",
+      header: "Document Name",
+      width: "50%",
+    },
+    { field: "status", header: "Status", width: "20%" },
+  ];
 
   userTypeOptions = [
     { name: "Taxes", code: "Tax Master" },
     { name: "Charges", code: "Charge Master" },
+    { name: "Documents", code: "Document Master" },
   ];
 
   customerTableLoading = false;
-  globalSearch = true;
   showTable = false;
   addnewHide = false;
   disableCodeName = true;
   showAddnewModal = false;
   showViewModal = false;
+  deactivated = false;
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
-
+    window.scrollTo(0, 0);
     const translationKey = "Master";
 
     // Update translation
@@ -93,18 +117,34 @@ export class MasterListingComponent implements OnInit {
 
   searchMaster() {
     this.coreService.displayLoadingScreen();
+
     console.log("type", this.masterType);
     if (this.masterType == "Tax Master") {
-      this.formName = "Tax";
+      this.formName = "TaxMaster";
       this.cols = this.colTax;
       this.getMasterListData(this.formName);
+      this.HeaderCode = "Tax Code";
+      this.HeaderName = "Tax Name";
     } else if (this.masterType == "Charge Master") {
-      this.formName = "Charge";
+      this.formName = "ChargeMaster";
       this.cols = this.colCharge;
       this.getMasterListData(this.formName);
+      this.HeaderCode = "Charge Code";
+      this.HeaderName = "Charge Name";
+    } else if (this.masterType == "Document Master") {
+      this.formName = "DocumentMaster";
+      this.cols = this.colDocument;
+      this.getMasterListData(this.formName);
+      this.HeaderCode = "Document Code";
+      this.HeaderName = "Document Name";
     }
   }
   getMasterListData(formName) {
+    this.masterListData = [];
+    console.log(this.dt);
+    if (this.dt) {
+      this.dt.filter("", "codeName", "contains");
+    }
     this.masterService.getMasterlistData(formName).subscribe(
       (res) => {
         this.coreService.removeLoadingScreen();
@@ -127,7 +167,6 @@ export class MasterListingComponent implements OnInit {
             this.masterListData = res["masterData"];
             console.log("res", this.masterListData);
             this.showTable = true;
-            this.globalSearch = false;
             this.addnewHide = true;
           }
         }
@@ -140,7 +179,6 @@ export class MasterListingComponent implements OnInit {
   }
   clearMaster() {
     this.showTable = false;
-    this.globalSearch = true;
     this.addnewHide = false;
     this.masterListData = [];
     this.masterType = "";
@@ -169,6 +207,7 @@ export class MasterListingComponent implements OnInit {
             // this.coreService.removeLoadingScreen();
             console.log(res);
             this.masterCode = res["data"].code;
+            this.masterName = "";
             console.log("res", this.masterCode);
             this.showAddnewModal = true;
             this.coreService.setSidebarBtnFixedStyle(false);
@@ -186,7 +225,7 @@ export class MasterListingComponent implements OnInit {
   saveAddNewMaster(action: any) {
     this.coreService.displayLoadingScreen();
     console.log(action);
-    if (this.masterName == "") {
+    if (!this.masterName.replace(/\s/g, "").length) {
       this.coreService.showWarningToast("Please fill the required fields");
       this.coreService.removeLoadingScreen();
     } else {
@@ -194,7 +233,7 @@ export class MasterListingComponent implements OnInit {
         {
           id: "0",
           code: this.masterCode,
-          codeName: this.masterName,
+          codeName: this.masterName.trim(),
           status: "A",
         },
       ];
@@ -228,6 +267,9 @@ export class MasterListingComponent implements OnInit {
                   this.getAddNewMaster(this.formName);
                   this.masterName = "";
                 }
+              } else if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+                this.coreService.removeLoadingScreen();
               }
             }
           },
@@ -249,6 +291,12 @@ export class MasterListingComponent implements OnInit {
   openClickForEdit(rowdata: any) {
     this.coreService.displayLoadingScreen();
     console.log(rowdata);
+    if (rowdata.status == "D" || rowdata.status == "Inactive") {
+      this.deactivated = true;
+    } else {
+      this.deactivated = false;
+    }
+    this.disableCodeName = true;
     this.masterId = rowdata.id;
     this.getMasterForEdit(rowdata, this.formName);
   }
@@ -409,6 +457,26 @@ export class MasterListingComponent implements OnInit {
           this.setHeaderSidebarBtn(false);
         },
       });
+    } else if (this.masterType == "Document Master") {
+      let completeMsg = "";
+      completeMsg =
+        `<img src="../../../assets/warning.svg"><br/><br/>` +
+        `Do you wish to ` +
+        type +
+        ` the Document Record: ${data["code"]}?`;
+
+      this.confirmationService.confirm({
+        message: completeMsg,
+        key: "activeDeactiveStatus",
+        accept: () => {
+          this.updateStatus(e, reqStatus, data, this.formName);
+          this.setHeaderSidebarBtn(true);
+        },
+        reject: () => {
+          this.confirmationService.close;
+          this.setHeaderSidebarBtn(false);
+        },
+      });
     }
   }
 
@@ -454,5 +522,29 @@ export class MasterListingComponent implements OnInit {
           this.coreService.removeLoadingScreen();
         }
       );
+  }
+
+  toggleFilterVisibility(field) {
+    this[`show${field}Options`] = !this[`show${field}Options`];
+  }
+
+  hideFilterVisibility(field) {
+    this[`show${field}Options`] = false;
+  }
+
+  getSelectedFilterArr(field: any) {
+    return this[`selectedFilter${field}`];
+  }
+
+  setSelectedFilter(ms: MultiSelect, field: any) {
+    this[`selectedFilter${field}`] = ms.value;
+  }
+
+  fieldFilterVisible(field: any) {
+    return this[`show${field}Options`];
+  }
+
+  fieldFilterOptions(field: any): [] {
+    return this[field];
   }
 }
