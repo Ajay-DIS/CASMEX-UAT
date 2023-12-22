@@ -51,8 +51,6 @@ export class AddBeneficiaryComponent implements OnInit {
   formSections: any[] = [];
   apiData: any = [];
 
-  noDataMsg = null;
-
   Options = [
     { name: "first", code: "NY" },
     { name: "second", code: "RM" },
@@ -123,13 +121,15 @@ export class AddBeneficiaryComponent implements OnInit {
   getFormRulesFields(custType: any) {
     setTimeout(() => {
       this.coreService.displayLoadingScreen();
-    }, 1000);
+    }, 200);
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
           .set(
             "criteriaMap",
-            `Country = IN;Customer Type = ${custType == "IND" ? "IND" : "IND"}`
+            `Licence Country = Any;Nationality = Any;Customer Type = ${
+              custType == "IND" ? "IND" : "COR"
+            }`
           )
           .set("form", "Customer Profile Beneficiary_Form Rules")
           .set("moduleName", "Remittance")
@@ -139,9 +139,9 @@ export class AddBeneficiaryComponent implements OnInit {
         (res) => {
           this.showForm = true;
           if (res["msg"]) {
-            this.noDataMsg = res["msg"];
             this.apiData = {};
             this.coreService.removeLoadingScreen();
+            this.coreService.showWarningToast(res["msg"]);
           } else {
             // this.setFormByData(res);
             this.formData = res;
@@ -156,7 +156,6 @@ export class AddBeneficiaryComponent implements OnInit {
           this.coreService.showWarningToast(
             "Some error while fetching data, Try again in sometime"
           );
-          this.noDataMsg = true;
           this.coreService.removeLoadingScreen();
         }
       );

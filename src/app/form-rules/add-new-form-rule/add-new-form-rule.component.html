@@ -534,8 +534,7 @@
                           </ng-container>
                           <ng-container
                             *ngSwitchCase="
-                              rowData['fieldType'] == 'select' ||
-                              rowData['fieldType'] == 'smart-search'
+                              rowData['fieldType'] == 'dropdownSingle'
                             "
                           >
                             <p-dropdown
@@ -679,8 +678,8 @@
                       >
                         <ng-container
                           *ngSwitchCase="
-                            rowData['fieldType'] == 'select' ||
-                            rowData['fieldType'] == 'smart-search'
+                            rowData['fieldType'] == 'dropdownSingle' ||
+                            rowData['fieldType'] == 'dropdownMulti'
                           "
                         >
                           <p-multiSelect

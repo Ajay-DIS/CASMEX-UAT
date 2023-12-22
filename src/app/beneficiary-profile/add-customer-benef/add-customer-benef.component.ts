@@ -496,8 +496,8 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       section.fields.forEach((field) => {
         if (field["fieldName"] in data) {
           if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
+            field.fieldType == "dropdownSingle" ||
+            field.fieldType == "dropdownMulti"
           ) {
             let filterData = this.masterDataOrg[field["fieldName"]]?.filter(
               (msField) => {
@@ -668,7 +668,10 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
-        if (field.fieldType == "select" || field.fieldType == "smart-search") {
+        if (
+          field.fieldType == "dropdownSingle" ||
+          field.fieldType == "dropdownMulti"
+        ) {
           let value = payloadData[field["fieldName"]]
             ? payloadData[field["fieldName"]]["codeName"]
             : "";

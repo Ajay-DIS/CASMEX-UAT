@@ -445,8 +445,14 @@ p-paginator .p-paginator-bottom {
 .p-multiselect-panel
   .p-multiselect-header
   .p-multiselect-filter-container
-  .p-inputtext {
+  .p-inputtext,
+.p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container .p-inputtext {
   padding: 0.25rem 0.5rem;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-empty-message,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-empty-message {
+  font-size: 12px;
 }
 
 .p-multiselect-panel .p-multiselect-header,
@@ -487,16 +493,25 @@ p-paginator .p-paginator-bottom {
 .formRule-dropdown.p-multiselect-panel
   .p-multiselect-items
   .p-multiselect-item
-  span {
+  span,
+.formFields-dropdown.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item
+  span,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items .p-dropdown-item span {
   font-size: 12px;
 }
 
-.formRule-dropdown.p-multiselect-panel .p-multiselect-items {
+.formRule-dropdown.p-multiselect-panel .p-multiselect-items,
+.formFields-dropdown.p-multiselect-panel .p-multiselect-items,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items {
   padding: 0;
 }
-.formRule-dropdown.p-multiselect-panel
+.formRule-dropdown.p-multiselect-panel .p-multiselect-items-wrapper .p-scroller,
+.formFields-dropdown.p-multiselect-panel
   .p-multiselect-items-wrapper
-  .p-scroller {
+  .p-scroller,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items-wrapper .p-scroller {
   max-height: 105px !important;
 }
 

@@ -498,7 +498,7 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   getFieldTypeName(fieldType: any) {
-    if (fieldType == "select" || fieldType == "smart-search") {
+    if (fieldType == "dropdownSingle" || fieldType == "dropdownMulti") {
       return "Dropdown";
     } else {
       return fieldType;

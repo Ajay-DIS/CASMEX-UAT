@@ -71,8 +71,6 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   uploadedFiles: any[] = [];
 
-  noDataMsg = null;
-
   Options = [
     { name: "first", code: "NY" },
     { name: "second", code: "RM" },
@@ -180,8 +178,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
-          .set("criteriaMap", "Country = IN;Customer Type = IND")
-          .set("form", "Customer Profile Beneficiary_Form Rules")
+          .set("criteriaMap", "Country = Any;Customer Type = COR")
+          .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
       })
@@ -189,10 +187,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         (res) => {
           this.showForm = true;
           if (res["msg"]) {
-            this.noDataMsg = true;
-            this.coreService.showWarningToast(
-              res["msg"]
-            );
+            this.coreService.showWarningToast(res["msg"]);
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
@@ -205,7 +200,6 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           this.coreService.showWarningToast(
             "No form data found for selected criteria."
           );
-          this.noDataMsg = true;
           this.coreService.removeLoadingScreen();
         }
       );
@@ -509,17 +503,17 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                     : this.validDefDate(secData["fieldId"])
                   : new Date(),
               blockMessageCode:
-              secData["blockMessageCode"] && secData["blockMessageCode"].length
+                secData["blockMessageCode"] &&
+                secData["blockMessageCode"].length
                   ? JSON.parse(secData["blockMessageCode"])
                   : false,
               warningMessageCode:
-              secData["warningMessageCode"] && secData["warningMessageCode"].length
+                secData["warningMessageCode"] &&
+                secData["warningMessageCode"].length
                   ? JSON.parse(secData["warningMessageCode"])
                   : false,
-              block:
-              secData["block"] == "True" ? true : false,
-              warning:
-              secData["warning"] == "True" ? true : false,
+              block: secData["block"] == "True" ? true : false,
+              warning: secData["warning"] == "True" ? true : false,
             };
             return fData;
           })
@@ -2338,8 +2332,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         ) {
           section.fields.forEach((field) => {
             if (
-              field.fieldType == "select" ||
-              field.fieldType == "smart-search"
+              field.fieldType == "dropdownSingle" ||
+              field.fieldType == "dropdownMulti"
             ) {
               let value = payloadData[field["fieldName"]]
                 ? payloadData[field["fieldName"]]["codeName"]
@@ -2681,8 +2675,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       section.fields.forEach((field) => {
         if (field["fieldName"] in data) {
           if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
+            field.fieldType == "dropdownSingle" ||
+            field.fieldType == "dropdownMulti"
           ) {
             let filterData = this.masterData[field["fieldName"]]?.filter(
               (msField) => {

@@ -193,7 +193,10 @@ export class CriteriaDataService {
         formatVal = (value as string).split("::")[0];
         stringType = false;
         selectType =
-          (value as string).split("::")[1] == "select" ? true : false;
+          (value as string).split("::")[1] == "dropdownSingle" ||
+          (value as string).split("::")[1] == "dropdownMulti"
+            ? true
+            : false;
         inputType = (value as string).split("::")[1] == "input" ? true : false;
         buttonType =
           (value as string).split("::")[1] == "button" ? true : false;

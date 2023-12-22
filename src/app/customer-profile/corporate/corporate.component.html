@@ -1,5 +1,5 @@
 <form
-  *ngIf="objectKeys(apiData).length"
+  *ngIf="apiData && objectKeys(apiData).length"
   class="custom-form"
   [formGroup]="corporateForm"
 >
@@ -753,7 +753,7 @@
               ></p-checkbox>
 
               <p-dropdown
-                *ngSwitchCase="'select'"
+                *ngSwitchCase="'dropdownSingle'"
                 class="block"
                 [options]="
                   field.setOptions && field.setOptions.length
@@ -761,9 +761,14 @@
                     : masterData[field.apiKey]
                 "
                 [formControlName]="field.name"
-                [appendTo]="'body'"
-                placeholder="&nbsp;"
+                placeholder="Type to search"
                 optionLabel="codeName"
+                [appendTo]="'body'"
+                [filter]="true"
+                filterBy="codeName"
+                [virtualScroll]="true"
+                [virtualScrollItemSize]="35"
+                panelStyleClass="formFields-dropdown"
               >
                 <ng-template let-options pTemplate="item">
                   <div class="truncate-text">
@@ -1090,7 +1095,7 @@
     ></button>
   </div>
 </form>
-<div class="NorecordFound" *ngIf="noDataMsg">
+<div class="NorecordFound" *ngIf="!(apiData && objectKeys(apiData).length)">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>

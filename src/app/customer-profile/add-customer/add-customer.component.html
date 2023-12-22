@@ -9,7 +9,7 @@
         [disabled]="mode == 'edit' && custType == 'COR'"
       >
         <form
-          *ngIf="objectKeys(apiData).length"
+          *ngIf="apiData && objectKeys(apiData).length"
           class="custom-form"
           [formGroup]="individualForm"
         >
@@ -832,7 +832,7 @@
                         (onChange)="sameAddress($event, field.name)"
                       ></p-checkbox>
                       <!-- <p-autoComplete
-                        *ngSwitchCase="'select'"
+                        *ngSwitchCase="'dropdownSingle'"
                         class="block"
                         [showEmptyMessage]="true"
                         [suggestions]="filteredCountries"
@@ -842,7 +842,7 @@
                         [forceSelection]="true"
                       ></p-autoComplete> -->
                       <p-dropdown
-                        *ngSwitchCase="'select'"
+                        *ngSwitchCase="'dropdownSingle'"
                         class="block"
                         [options]="
                           field.setOptions && field.setOptions.length
@@ -850,9 +850,14 @@
                             : masterData[field.apiKey]
                         "
                         [formControlName]="field.name"
-                        placeholder="&nbsp;"
+                        placeholder="Type to search"
                         optionLabel="codeName"
                         [appendTo]="'body'"
+                        [filter]="true"
+                        filterBy="codeName"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="35"
+                        panelStyleClass="formFields-dropdown"
                       >
                         <ng-template let-options pTemplate="item">
                           <div class="truncate-text">
@@ -1191,16 +1196,16 @@
             ></button>
           </div>
         </form>
-        <div class="NorecordFound" *ngIf="noDataMsg">
-  <div class="row">
-    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <p>No Data Found.</p>
-    </div>
-  </div>
-</div>
+        <div class="NorecordFound" *ngIf="!(apiData && objectKeys(apiData).length)">
+          <div class="row">
+            <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>No Data Found.</p>
+            </div>
+          </div>
+        </div>
       </p-tabPanel>
       <p-tabPanel
         header="Corporate"
