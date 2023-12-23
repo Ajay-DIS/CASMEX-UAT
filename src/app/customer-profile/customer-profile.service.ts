@@ -114,4 +114,22 @@ export class CustomerProfileService {
       }
     );
   }
+
+  getCausingCriteriaFields(
+    id: string,
+    appName: any,
+    moduleName: any,
+    formName: any
+  ) {
+    return this.http.get(
+      `/remittance/commonUtilController/getLoyaltyProgramCriteriaFields`,
+      {
+        headers: new HttpHeaders()
+          .set("userId", id)
+          .set("applications", appName)
+          .set("moduleName", moduleName)
+          .set("form", formName),
+      }
+    );
+  }
 }

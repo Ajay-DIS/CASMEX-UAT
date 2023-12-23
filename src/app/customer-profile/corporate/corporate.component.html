@@ -33,7 +33,7 @@
               <tr>
                 <td
                   [ngClass]="{ disabled: deactivated }"
-                  class="file-name view-link"
+                  class="view-link"
                   (click)="!deactivated && selectRowForEdit(product, rowIndex)"
                 >
                   {{ product.documentType }}
@@ -225,7 +225,7 @@
               <tr>
                 <td
                   [ngClass]="{ disabled: deactivated }"
-                  class="file-name view-link"
+                  class="view-link"
                   (click)="
                     !deactivated &&
                       selectRowForEditBeneficial(product, rowIndex)
@@ -333,7 +333,7 @@
               <tr>
                 <td
                   [ngClass]="{ disabled: deactivated }"
-                  class="file-name view-link"
+                  class="view-link"
                   (click)="
                     !deactivated &&
                       selectRowForEditRepresentative(product, rowIndex)

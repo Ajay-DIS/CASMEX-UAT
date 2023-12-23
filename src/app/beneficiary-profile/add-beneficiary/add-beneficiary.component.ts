@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
 import { delay } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
+import { CustomerProfileService } from "src/app/customer-profile/customer-profile.service";
 
 @Component({
   selector: "app-add-beneficiary",
@@ -24,7 +25,8 @@ export class AddBeneficiaryComponent implements OnInit {
     private http: HttpClient,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private customerService: CustomerProfileService
   ) {}
 
   activeTabIndex: any = "0";
@@ -67,6 +69,14 @@ export class AddBeneficiaryComponent implements OnInit {
 
   CustomerData: any = null;
 
+  moduleName = "Remittance";
+  formName = "Customer Profile Beneficiary_Form Rules";
+  applicationName =
+    JSON.parse(localStorage.getItem("appAccess"))[0]["name"] || "Casmex Core";
+  licenseCountry = localStorage.getItem("licenseCountry");
+
+  causingCriteriaFieldsArr = [];
+
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
     this.activatedRoute.data.subscribe((data) => {
@@ -94,7 +104,42 @@ export class AddBeneficiaryComponent implements OnInit {
     }
     console.log(this.custId, this.custType);
 
-    this.getFormRulesFields(this.custType);
+    this.getCausingCriteriaFields(
+      this.userId,
+      this.applicationName,
+      this.moduleName,
+      this.formName
+    );
+  }
+
+  getCausingCriteriaFields(
+    userId: any,
+    appName: any,
+    modName: any,
+    formName: any
+  ) {
+    this.getBeneficiaryMasterData();
+    this.customerService
+      .getCausingCriteriaFields(userId, appName, modName, formName)
+      .subscribe((res) => {
+        if (res["Criteria FieldNames"]) {
+          console.log(":::", Object.values(res["Criteria FieldNames"]));
+          Object.values(res["Criteria FieldNames"]).forEach((crtField) => {
+            if (crtField == "licenceCountry") {
+              this.causingCriteriaFieldsArr.push(
+                `licenceCountry = ${this.licenseCountry}`
+              );
+            } else if (crtField == "Customer Type") {
+              this.causingCriteriaFieldsArr.push(
+                `Customer Type = ${this.custType}`
+              );
+            } else {
+              this.causingCriteriaFieldsArr.push(`${crtField} = Any`);
+            }
+          });
+          this.getFormRulesFields();
+        }
+      });
   }
 
   handleChange(event: any) {
@@ -106,30 +151,37 @@ export class AddBeneficiaryComponent implements OnInit {
       if (this.individualForm) {
         this.individualForm.reset();
       }
+      this.coreService.displayLoadingScreen();
       if (this.activeTabIndex == "0") {
-        console.log("IND cal");
-        this.getFormRulesFields("IND");
+        console.log(":::", "IND cal");
         this.custType = "IND";
+        this.getFormRulesFields();
       } else {
-        this.getFormRulesFields("COR");
+        console.log(":::", "COR cal");
         this.custType = "COR";
-        console.log("COR cal");
+        this.getFormRulesFields();
       }
     }
   }
 
-  getFormRulesFields(custType: any) {
-    setTimeout(() => {
-      this.coreService.displayLoadingScreen();
-    }, 200);
+  getFormRulesFields() {
+    let custTypeCrtIndex = this.causingCriteriaFieldsArr.findIndex((element) =>
+      element.includes("Customer Type")
+    );
+    if (this.causingCriteriaFieldsArr.length && custTypeCrtIndex) {
+      this.causingCriteriaFieldsArr.splice(
+        custTypeCrtIndex,
+        1,
+        `Customer Type = ${this.custType}`
+      );
+    }
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
           .set(
             "criteriaMap",
-            `Licence Country = Any;Nationality = Any;Customer Type = ${
-              custType == "IND" ? "IND" : "COR"
-            }`
+            `${this.causingCriteriaFieldsArr.join(";")}
+            `
           )
           .set("form", "Customer Profile Beneficiary_Form Rules")
           .set("moduleName", "Remittance")
@@ -145,16 +197,17 @@ export class AddBeneficiaryComponent implements OnInit {
           } else {
             // this.setFormByData(res);
             this.formData = res;
-            this.getBeneficiaryMasterData();
             if (this.mode == "edit") {
               this.getBeneficiaryData(this.custId);
+            } else {
+              this.coreService.removeLoadingScreen();
             }
             console.log("API called", this.formData);
           }
         },
         (err) => {
           this.coreService.showWarningToast(
-            "Some error while fetching data, Try again in sometime"
+            "Some error while fetchinggg data, Try again in sometime"
           );
           this.coreService.removeLoadingScreen();
         }
@@ -171,7 +224,6 @@ export class AddBeneficiaryComponent implements OnInit {
       )
       .subscribe(
         (res) => {
-          this.coreService.removeLoadingScreen();
           if (res["status"] == "200") {
             this.masterData = res["data"];
             console.log("masterdatatype", this.masterData);
@@ -181,7 +233,6 @@ export class AddBeneficiaryComponent implements OnInit {
           this.coreService.showWarningToast(
             "Some error while fetching data, Try again in sometime"
           );
-          this.coreService.removeLoadingScreen();
         }
       );
   }

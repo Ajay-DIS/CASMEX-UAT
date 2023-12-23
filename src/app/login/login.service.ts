@@ -70,6 +70,9 @@ export class LoginService {
     localStorage.setItem("token", token);
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
 
+    // setting licenseCountry in localstorage
+    localStorage.setItem("licenseCountry", "Any");
+
     sessionStorage.setItem("bankRoute", null),
       sessionStorage.setItem("tax", null),
       sessionStorage.setItem("doc", null),

@@ -84,6 +84,7 @@ export class AppComponent implements OnInit, AfterContentChecked {
     this.authService.showSessionConfirm.next({ status: false });
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
+    localStorage.removeItem("licenseCountry");
     this.coreService.showSuccessToast("Logged Out Successfully.");
     this.router.navigate(["login"]);
   }

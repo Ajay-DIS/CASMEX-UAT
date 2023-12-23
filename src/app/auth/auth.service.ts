@@ -45,6 +45,7 @@ export class AuthService {
     this.showSessionConfirm.next({ status: false });
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
+    localStorage.removeItem("licenseCountry");
     this.coreService.showWarningToast(
       "Your session has timed out. Please log in again to continue."
     );

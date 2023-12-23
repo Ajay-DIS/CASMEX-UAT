@@ -53,7 +53,7 @@
                       <tr>
                         <td
                           [ngClass]="{ disabled: deactivated }"
-                          class="file-name view-link"
+                          class="view-link"
                           (click)="
                             !deactivated && selectRowForEdit(product, rowIndex)
                           "
@@ -395,7 +395,7 @@
                       <tr>
                         <td
                           [ngClass]="{ disabled: deactivated }"
-                          class="file-name view-link"
+                          class="view-link"
                           (click)="
                             !deactivated &&
                               selectRowForEditRepresentative(product, rowIndex)
@@ -1196,7 +1196,10 @@
             ></button>
           </div>
         </form>
-        <div class="NorecordFound" *ngIf="!(apiData && objectKeys(apiData).length)">
+        <div
+          class="NorecordFound"
+          *ngIf="!(apiData && objectKeys(apiData).length)"
+        >
           <div class="row">
             <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
           </div>

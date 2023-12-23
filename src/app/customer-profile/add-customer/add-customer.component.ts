@@ -138,6 +138,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
+  moduleName = "Remittance";
+  formName = "Customer Profile_Form Rules";
+  applicationName =
+    JSON.parse(localStorage.getItem("appAccess"))[0]["name"] || "Casmex Core";
+  licenseCountry = localStorage.getItem("licenseCountry");
+
+  causingCriteriaFieldsArr = [];
+
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -155,7 +163,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       } else {
         this.activeTabIndex = 0;
         this.getDocSettingData();
-        this.getformRuleData();
+
+        this.getCausingCriteriaFields(
+          this.userId,
+          this.applicationName,
+          this.moduleName,
+          this.formName
+        );
       }
     }
     if (params && params.id) {
@@ -164,13 +178,34 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       );
       this.custId = params.id;
     }
-    console.log(
-      this.custId,
-      this.custType,
-      this.mode,
-      params,
-      this.activeTabIndex
-    );
+  }
+
+  getCausingCriteriaFields(
+    userId: any,
+    appName: any,
+    modName: any,
+    formName: any
+  ) {
+    this.getCustomerMasterData();
+    this.customerService
+      .getCausingCriteriaFields(userId, appName, modName, formName)
+      .subscribe((res) => {
+        if (res["Criteria FieldNames"]) {
+          console.log(":::", Object.values(res["Criteria FieldNames"]));
+          Object.values(res["Criteria FieldNames"]).forEach((crtField) => {
+            if (crtField == "licenceCountry") {
+              this.causingCriteriaFieldsArr.push(
+                `licenceCountry = ${this.licenseCountry}`
+              );
+            } else if (crtField == "Customer Type") {
+              this.causingCriteriaFieldsArr.push(`Customer Type = IND`);
+            } else {
+              this.causingCriteriaFieldsArr.push(`${crtField} = Any`);
+            }
+          });
+          this.getformRuleData(this.causingCriteriaFieldsArr.join(";"));
+        }
+      });
   }
 
   handleDateSelect(calendar: Calendar) {
@@ -257,12 +292,8 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log(
-      this.individualForm.get(fieldData.formName)?.get(fieldData.name)
-    );
   }
   checkValidValuesDate(e: any, fieldData: any) {
-    console.log(typeof e, e);
     if (fieldData.validValues && fieldData.validValues.length) {
       let match = true;
       if (e) {
@@ -285,17 +316,15 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log(
-      this.individualForm.get(fieldData.formName)?.get(fieldData.name)
-    );
   }
 
-  getformRuleData() {
+  getformRuleData(createdCriteria: any) {
+    console.log(this.causingCriteriaFieldsArr);
     // if (this.custType == "IND") {
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
-          .set("criteriaMap", "Country = Any;Customer Type = IND")
+          .set("criteriaMap", createdCriteria)
           .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
@@ -310,7 +339,6 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
           } else {
             this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
             this.setFormByData(res);
-            this.getCustomerMasterData();
           }
         },
         (err) => {
@@ -411,7 +439,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     } else {
       this.coreService.displayLoadingScreen();
       this.getDocSettingData();
-      this.getformRuleData();
+      this.getformRuleData(this.causingCriteriaFieldsArr.join(";"));
     }
   }
 
