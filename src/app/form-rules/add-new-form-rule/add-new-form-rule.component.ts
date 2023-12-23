@@ -294,6 +294,8 @@ export class AddNewFormRuleComponent implements OnInit {
 
   formFieldsMaster = {};
 
+  fieldDisplayData = {};
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -560,7 +562,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   reqData.critMap,
                   this.criteriaMasterData,
-                  ["LCY Amount"]
+                  this.fieldDisplayData
                 );
               console.log("criteriaText", this.criteriaText);
               this.applyCriteriaDataTableColumns = [];
@@ -1220,7 +1222,10 @@ export class AddNewFormRuleComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addFormRuleCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
@@ -1452,7 +1457,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 let crtfields = this.setCriteriaService.decodeFormattedCriteria(
                   reqData.critMap,
                   this.criteriaMasterData,
-                  ["LCY Amount"]
+                  this.fieldDisplayData
                 );
 
                 this.applyCriteriaDataTableColumns = [];

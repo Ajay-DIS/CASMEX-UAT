@@ -14,6 +14,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-form-rule-listing",
   templateUrl: "./form-rule-listing.component.html",
@@ -65,6 +67,8 @@ export class FormRuleListingComponent implements OnInit {
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
   searchFormOptions: any[] = [];
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
@@ -223,7 +227,10 @@ export class FormRuleListingComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           const formRuleListingData = response.formRuleListingData;
 
           if (Object.keys(criteriaMasterData).length) {
@@ -285,7 +292,7 @@ export class FormRuleListingComponent implements OnInit {
                     this.setCriteriaService.decodeFormattedCriteria(
                       criteriaCodeText,
                       criteriaMasterData,
-                      [""]
+                      this.fieldDisplayData
                     ) as []
                   ).join(", ");
                   if (afterSplit?.length) {
@@ -323,7 +330,7 @@ export class FormRuleListingComponent implements OnInit {
                     this.setCriteriaService.decodeFormattedCriteria(
                       criteriaCodeText,
                       criteriaMasterData,
-                      [""]
+                      this.fieldDisplayData
                     ) as []
                   ).join(", ");
                   return { label: code, value: code };
@@ -332,11 +339,13 @@ export class FormRuleListingComponent implements OnInit {
               this.status = this.formruleListingApiData.status.map((code) => {
                 return { label: code, value: code };
               });
+            } else {
+              if (formRuleListingData["msg"]) {
+                this.coreService.showWarningToast(formRuleListingData["msg"]);
+              }
+              this.showNoDataFound = true;
+              this.formRuleData = [];
             }
-          } else {
-            this.noDataMsg = formRuleListingData["msg"];
-            this.showNoDataFound = true;
-            this.formRuleData = [];
           }
           return formRuleListingData;
         })

@@ -15,6 +15,8 @@ import { map, take } from "rxjs/operators";
 import { MultiSelect } from "primeng/multiselect";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-loyalty-program",
   templateUrl: "./loyalty-program.component.html",
@@ -90,6 +92,8 @@ export class LoyaltyProgramComponent implements OnInit {
   ];
 
   showFilesModal: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
@@ -227,7 +231,10 @@ export class LoyaltyProgramComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           const loyaltyListingData = response.loyaltyListingData;
 
           if (loyaltyListingData["data"]) {
@@ -328,7 +335,7 @@ export class LoyaltyProgramComponent implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     criteriaMasterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {

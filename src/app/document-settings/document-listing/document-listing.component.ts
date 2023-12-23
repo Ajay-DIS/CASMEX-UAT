@@ -14,6 +14,8 @@ import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { MultiSelect } from "primeng/multiselect";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-document-listing",
   templateUrl: "./document-listing.component.html",
@@ -63,6 +65,8 @@ export class DocumentListingComponent implements OnInit {
   linkeddocumentCode: any = [];
 
   apiData = {};
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
@@ -216,7 +220,10 @@ export class DocumentListingComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           const docSettingListingData = response.docSettingListingData;
 
           if (docSettingListingData["data"]) {
@@ -288,7 +295,7 @@ export class DocumentListingComponent implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     criteriaMasterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {
@@ -324,7 +331,9 @@ export class DocumentListingComponent implements OnInit {
               return { label: code, value: code };
             });
           } else {
-            this.noDataMsg = docSettingListingData["msg"];
+            if (docSettingListingData["msg"]) {
+              this.coreService.showWarningToast(docSettingListingData["msg"]);
+            }
             this.showNoDataFound = true;
             this.docListingData = [];
           }

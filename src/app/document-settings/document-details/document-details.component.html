@@ -40,19 +40,20 @@
           <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
             <div class="row">
               <div class="buttons-section">
-                  <button
-                    pButton
-                    pRipple
-                    [disabled]="
-                      !applyCriteriaFormattedData ||
-                      !applyCriteriaFormattedData.length || deactivated
-                    "
-                    type="button"
-                    label="Save"
-                    class="p-button-raised"
-                    (click)="saveAddNewDocument('save')"
-                  ></button>
-                  <!-- <button
+                <button
+                  pButton
+                  pRipple
+                  [disabled]="
+                    !applyCriteriaFormattedData ||
+                    !applyCriteriaFormattedData.length ||
+                    deactivated
+                  "
+                  type="button"
+                  label="Save"
+                  class="p-button-raised"
+                  (click)="saveAddNewDocument('save')"
+                ></button>
+                <!-- <button
           pButton
           pRipple
           type="button"
@@ -64,25 +65,25 @@
           class="p-button-raised"
           (click)="saveAddNewDocument('saveAndAddNew')"
         ></button> -->
-                
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Reset"
-                    class="p-button-warning"
-                    (click)="reset()"
-                    [disabled]="deactivated"
-                  ></button>
-                  <button
+
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Reset"
+                  class="p-button-warning"
+                  (click)="reset()"
+                  [disabled]="deactivated"
+                ></button>
+                <button
                   *ngIf="mode == 'edit'"
-                    pButton
-                    pRipple
-                    type="button"
-                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
-                    class="p-button-raised"
-                    (click)="onActive()"
-                  ></button>
+                  pButton
+                  pRipple
+                  type="button"
+                  label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                  class="p-button-raised"
+                  (click)="onActive()"
+                ></button>
               </div>
             </div>
           </div>
@@ -107,11 +108,12 @@
               formControlName="applications"
               (onChange)="onAppValueChange()"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
           <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4">
             <label
@@ -128,11 +130,12 @@
               formControlName="modules"
               (onChange)="searchAppModule()"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
         </div>
       </div>
@@ -183,6 +186,7 @@
       *ngIf="appModuleDataPresent && showContent"
       #setCriteriaSharedComponent
       [criteriaMasterData]="criteriaMasterData"
+      [fieldDisplayData]="fieldDisplayData"
       [cmCriteriaDataDetails]="cmCriteriaDataDetails"
       [criteriaDataDetailsJson]="criteriaDataDetailsJson"
       [cmCriteriaSlabType]="cmCriteriaSlabType"
@@ -197,7 +201,7 @@
       [criteriaText]="criteriaText"
       [criteriaCodeText]="criteriaCodeText"
       [inactiveData]="inactiveData"
-      [deactivated] = "deactivated"
+      [deactivated]="deactivated"
       (postDataCriteria)="applyCriteria($event)"
       (saveCriteriaAsTemplate)="saveCriteriaAsTemplate($event)"
       (getCorrespondentValues)="
@@ -276,20 +280,25 @@
                         optionLabel="name"
                         appendTo="body"
                         [placeholder]="
-                          rowData[col['field']] && rowData[col['field']] != 'null'
+                          rowData[col['field']] &&
+                          rowData[col['field']] != 'null'
                             ? rowData[col['field']]
                             : 'Select'
                         "
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
-                      ><ng-template let-options pTemplate="item">
-                        <div class="truncate-text">
-                          <div >{{ options.name}}</div>
-                        </div>
-                      </ng-template>
-                    </p-dropdown>
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          rowData['isActive'] == 'N' ||
+                          deactivated
+                        "
+                        ><ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div>{{ options.name }}</div>
+                          </div>
+                        </ng-template>
+                      </p-dropdown>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'checkbox'"
@@ -304,15 +313,20 @@
                         "
                       ></p-checkbox> -->
                       <input
-                      type="checkbox"
-                      [(ngModel)]="rowData[col.field]"
-                      (change)="checkBoxUpdate($event, col.field, rowIndex,rowData)"
-                      [disabled]="
-                        rowData['linked'] == 'Y' || deactivated || rowData['isActive'] == 'N' || (col.field == 'frontSide' ||
+                        type="checkbox"
+                        [(ngModel)]="rowData[col.field]"
+                        (change)="
+                          checkBoxUpdate($event, col.field, rowIndex, rowData)
+                        "
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          deactivated ||
+                          rowData['isActive'] == 'N' ||
+                          ((col.field == 'frontSide' ||
                             col.field == 'backSide') &&
-                          rowData['bypassImage']
-                      "
-                    />
+                            rowData['bypassImage'])
+                        "
+                      />
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"
@@ -326,7 +340,11 @@
                         (ngModelChange)="
                           formatValidation($event, col.field, inp, rowIndex)
                         "
-                        [disabled]="rowData['linked'] == 'Y' || rowData['isActive'] == 'N' || deactivated"
+                        [disabled]="
+                          rowData['linked'] == 'Y' ||
+                          rowData['isActive'] == 'N' ||
+                          deactivated
+                        "
                       />
                     </div>
                     <div
@@ -359,23 +377,26 @@
                         ></button>
                       </ng-container>
                     </div>
-                    <div  *ngIf="col.field == 'isActive'"
-                    style="border: none; text-align: left">
-                    <label class="switch" style="border: none">
-                      <input
-                        #statusInp
-                        [value]="rowData[col['field']]"
-                        type="checkbox"
-                        (click)="confirmStatus($event, rowData)"
-                        [checked]="
-                          rowData[col['field']] == 'Y'
-                            ? true
-                            : false
-                        "
-                        [disabled]="rowData['linked'] == 'Y' || deactivated"
-                      />
-                      <span class="slider round" [ngClass]="{ 'disabled': deactivated}"></span>
-                    </label>
+                    <div
+                      *ngIf="col.field == 'isActive'"
+                      style="border: none; text-align: left"
+                    >
+                      <label class="switch" style="border: none">
+                        <input
+                          #statusInp
+                          [value]="rowData[col['field']]"
+                          type="checkbox"
+                          (click)="confirmStatus($event, rowData)"
+                          [checked]="
+                            rowData[col['field']] == 'Y' ? true : false
+                          "
+                          [disabled]="rowData['linked'] == 'Y' || deactivated"
+                        />
+                        <span
+                          class="slider round"
+                          [ngClass]="{ disabled: deactivated }"
+                        ></span>
+                      </label>
                     </div>
                   </td>
                 </tr>

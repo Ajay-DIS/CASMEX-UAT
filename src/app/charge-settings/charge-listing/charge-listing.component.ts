@@ -14,6 +14,8 @@ import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { MultiSelect } from "primeng/multiselect";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-charge-listing",
   templateUrl: "./charge-listing.component.html",
@@ -62,6 +64,8 @@ export class ChargeListingComponent implements OnInit {
   noDataMsg: string = "Charge Setting Data Not Available";
 
   linkedChargeCode: any = [];
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
@@ -217,7 +221,10 @@ export class ChargeListingComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           const chargeSettingListingData = response.chargeSettingListingData;
 
           if (chargeSettingListingData["data"]) {
@@ -273,7 +280,7 @@ export class ChargeListingComponent implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     criteriaMasterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {
@@ -309,7 +316,11 @@ export class ChargeListingComponent implements OnInit {
               return { label: code, value: code };
             });
           } else {
-            this.noDataMsg = chargeSettingListingData["msg"];
+            if (chargeSettingListingData["msg"]) {
+              this.coreService.showWarningToast(
+                chargeSettingListingData["msg"]
+              );
+            }
             this.showNoDataFound = true;
             this.chargeListingData = [];
           }

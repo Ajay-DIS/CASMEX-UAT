@@ -31,6 +31,7 @@ import { TransactionDateModal } from "../../modals/transaction-date-modal/transa
 })
 export class SetCriteriaComponent implements OnInit, OnChanges {
   @Input("criteriaMasterData") criteriaMasterData: any;
+  @Input("fieldDisplayData") fieldDisplayData: any;
   @Input("cmCriteriaDataDetails") cmCriteriaDataDetails: any;
   @Input("criteriaDataDetailsJson") criteriaDataDetailsJson: any = {};
   @Input("cmCriteriaSlabType") cmCriteriaSlabType: any = {};
@@ -1037,6 +1038,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       value = this.valueCtrl.value.name;
       valueCode = this.valueCtrl.value.code;
     }
+    console.log(this.criteriaCtrl.value);
 
     let criteria =
       this.criteriaCtrl.value.label +
@@ -1045,7 +1047,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       " " +
       value;
     let criteriaCode =
-      this.criteriaCtrl.value.label +
+      this.criteriaCtrl.value.data +
       " " +
       this.operationCtrl.value.code +
       " " +
@@ -1639,11 +1641,11 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       return formatCrt.split("  ")[0];
     });
 
-    if (Object.keys(this.cmCriteriaDependency).includes(event["label"])) {
+    if (Object.keys(this.cmCriteriaDependency).includes(event["data"])) {
       if (
-        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["label"]])
+        formattedCriteriaArr.includes(this.cmCriteriaDependency[event["data"]])
       ) {
-        if (formattedCriteriaArr.includes(event["label"])) {
+        if (formattedCriteriaArr.includes(event["data"])) {
           return true;
         } else {
           return true;
@@ -1659,9 +1661,9 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
     } else {
       if (
         formattedCriteriaArr.includes(
-          this.cmCriteriaDependency[event["label"]]
+          this.cmCriteriaDependency[event["data"]]
         ) ||
-        formattedCriteriaArr.includes(event["label"])
+        formattedCriteriaArr.includes(event["data"])
       ) {
         return true;
       }
@@ -1732,8 +1734,8 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
             this.valueCtrl.patchValue("");
             if (selectedCorrespondent[0]?.criteriaType == "SQL") {
               this.getCorrespondentValues.emit({
-                fieldName: event.label,
-                displayName: event.data,
+                fieldName: event.data,
+                displayName: event.label,
                 criteriaCodeText: this.criteriaCodeText,
               });
             } else {
@@ -2503,6 +2505,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   }
 
   createFormattedCriteriaMap() {
+    console.log(":::", this.finalCriteriaCodeText);
     let criteriaObj = {};
     criteriaObj["slabs"] = null;
     criteriaObj["dates"] = null;
@@ -2550,7 +2553,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
 
   createFormattedCriteria() {
     this.finalCriteriaCodeText = [];
-    let formattedCriteriaArr = this.criteriaText.map((crt) => {
+    let formattedCriteriaArr = this.criteriaCodeText.map((crt) => {
       if (!crt) return;
       let formatCrt;
       let opr;
@@ -2575,34 +2578,79 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       }
 
       let formatCodeText;
-      if (
-        Object.keys(this.criteriaMasterData).includes(formatCrt.split("  ")[0])
-      ) {
-        Object.keys(this.criteriaMasterData).forEach((field) => {
-          if (field == formatCrt.split("  ")[0]) {
-            this.criteriaMasterData[field].forEach((val) => {
-              if (formatCrt.split("  ")[1] == "Any") {
-                formatCodeText =
-                  formatCrt.split("  ")[0] +
-                  " " +
-                  opr +
-                  " " +
-                  formatCrt.split("  ")[1];
-              } else if (val["codeName"] == formatCrt.split("  ")[1]) {
-                formatCodeText =
-                  formatCrt.split("  ")[0] + " " + opr + " " + val["code"];
-              }
-            });
+      console.log(
+        ":::",
+        this.criteriaCodeText,
+        Object.keys(this.fieldDisplayData),
+        formatCrt.split("  ")[0]
+      );
+
+      let fieldNameArr = [];
+      let criteriaName = "";
+      if (this.fieldDisplayData && Object.keys(this.fieldDisplayData).length) {
+        fieldNameArr = Object.keys(this.fieldDisplayData).filter(
+          (displayName) => {
+            return formatCrt.split("  ")[0] == displayName;
           }
+        );
+      }
+
+      if (fieldNameArr.length) {
+        criteriaName = fieldNameArr[0];
+        Object.keys(this.criteriaMasterData).forEach((field) => {
+          this.criteriaMasterData[field].forEach((val) => {
+            if (formatCrt.split("  ")[1] == "Any") {
+              formatCodeText =
+                criteriaName + " " + opr + " " + formatCrt.split("  ")[1];
+            } else if (val["code"] == formatCrt.split("  ")[1]) {
+              formatCodeText = criteriaName + " " + opr + " " + val["code"];
+            } else {
+              formatCodeText =
+                criteriaName + " " + opr + " " + formatCrt.split("  ")[1];
+            }
+          });
         });
       } else {
+        criteriaName = formatCrt.split("  ")[0];
         formatCodeText =
-          formatCrt.split("  ")[0] + " " + opr + " " + formatCrt.split("  ")[1];
+          criteriaName + " " + opr + " " + formatCrt.split("  ")[1];
       }
+
+      // if (
+      //   Object.keys(this.criteriaMasterData).includes(formatCrt.split("  ")[0])
+      // ) {
+      //   Object.keys(this.criteriaMasterData).forEach((field) => {
+      //     if (field == formatCrt.split("  ")[0]) {
+      //       this.criteriaMasterData[field].forEach((val) => {
+      //         if (formatCrt.split("  ")[1] == "Any") {
+      //           formatCodeText =
+      //             formatCrt.split("  ")[0] +
+      //             " " +
+      //             opr +
+      //             " " +
+      //             formatCrt.split("  ")[1];
+      //         } else if (val["code"] == formatCrt.split("  ")[1]) {
+      //           formatCodeText =
+      //             formatCrt.split("  ")[0] + " " + opr + " " + val["code"];
+      //         } else {
+      //           formatCodeText =
+      //             formatCrt.split("  ")[0] +
+      //             " " +
+      //             opr +
+      //             " " +
+      //             formatCrt.split("  ")[1];
+      //         }
+      //       });
+      //     }
+      //   });
+      // } else {
+      //   formatCodeText =
+      //     formatCrt.split("  ")[0] + " " + opr + " " + formatCrt.split("  ")[1];
+      // }
       if (formatCodeText) {
         this.finalCriteriaCodeText.push(formatCodeText);
       }
-      return formatCrt.split("  ")[0];
+      return criteriaName;
     });
 
     return formattedCriteriaArr;
@@ -2685,8 +2733,9 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
     this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
       this.criteriaCodeText,
       this.criteriaMasterData,
-      this.cmCriteriaSlabType
+      this.fieldDisplayData
     );
+    console.log(this.criteriaText);
   }
 
   saveCriteriaTemplateLink() {

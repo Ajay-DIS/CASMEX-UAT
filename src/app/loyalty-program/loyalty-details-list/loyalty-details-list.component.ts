@@ -7,6 +7,8 @@ import { HttpClient } from "@angular/common/http";
 import { MultiSelect } from "primeng/multiselect";
 import { Observable } from "rxjs";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-loyalty-details-list",
   templateUrl: "./loyalty-details-list.component.html",
@@ -50,6 +52,8 @@ export class LoyaltyDetailsListComponent implements OnInit {
   orderBy = "DESC";
 
   criteriaMap = "NA";
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
