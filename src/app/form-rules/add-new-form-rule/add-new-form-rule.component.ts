@@ -16,6 +16,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-add-new-form-rule",
   templateUrl: "./add-new-form-rule.component.html",
@@ -81,60 +83,167 @@ export class AddNewFormRuleComponent implements OnInit {
 
   cols: any[] = [
     {
-      field: "fieldName",
+      field: "fieldId",
       header: "Field Name",
       type: "string",
-      width: "300px",
+      width: "225px",
+      info: null,
     },
     {
-      field: "fieldLabel",
+      field: "fieldDisplayName",
       header: "Field Label",
       type: "input",
-      width: "200px",
+      width: "150px",
+      info: null,
     },
     {
       field: "isMandatory",
       header: "Is Mandatory",
       type: "checkbox",
-      width: "100px",
+      width: "80px",
+      info: null,
     },
     {
       field: "isEnable",
       header: "Is Enable",
       type: "checkbox",
-      width: "100px",
+      width: "80px",
+      info: null,
     },
     {
-      field: "isVisibile",
+      field: "isVisible",
       header: "Is Visible",
       type: "checkbox",
-      width: "100px",
+      width: "80px",
+      info: null,
     },
     {
       field: "checkDuplicate",
       header: "Check Duplicate",
       type: "checkbox",
-      width: "100px",
+      width: "80px",
+      info: null,
     },
     {
-      field: "newLineField",
+      field: "displayInNewLine",
       header: "Show in newline",
       type: "checkbox",
-      width: "100px",
+      width: "80px",
+      info: null,
     },
     {
-      field: "validLength",
-      header: "Min/Max Length",
+      field: "regex",
+      header: "Regex",
       type: "input",
       width: "120px",
+      info: null,
+    },
+
+    {
+      field: "regexMessage",
+      header: "Regex Message",
+      type: "input",
+      width: "120px",
+      info: null,
+    },
+    {
+      field: "prefix",
+      header: "Prefix",
+      type: "input",
+      width: "80px",
+      info: null,
+    },
+    {
+      field: "suffix",
+      header: "Suffix",
+      type: "input",
+      width: "80px",
+      info: null,
+    },
+    // {
+    //   field: "validLength",
+    //   header: "Min/Max Length",
+    //   type: "input",
+    //   width: "80px",
+    //   info: null
+    // },
+    {
+      field: "minLength",
+      header: "Min Length",
+      type: "input",
+      width: "60px",
+      info: null,
+    },
+    {
+      field: "maxLength",
+      header: "Max Length",
+      type: "input",
+      width: "60px",
+      info: null,
     },
     {
       field: "defaultValue",
-      header: "Default Values",
+      header: "Default Value",
       type: "input",
-      width: "120px",
+      width: "210px",
+      info: null,
     },
-    { field: "regex", header: "Regex", type: "input", width: "120px" },
+    {
+      field: "setOptions",
+      header: "Set Options",
+      type: "dropdownMulti",
+      width: "210px",
+      info: null,
+    },
+    {
+      field: "validValues",
+      header: "Valid Values",
+      type: "chips",
+      width: "200px",
+      info: "Multiple values are allowed, seprate them using , comma.",
+    },
+    {
+      field: "displayValidValuesOnHover",
+      header: "Show Valid Values",
+      type: "checkbox",
+      width: "100px",
+      info: "Tick this, if user is allowed to see valid values on hover.",
+    },
+    {
+      field: "warning",
+      header: "Warning",
+      type: "checkbox",
+      width: "100px",
+      info: null,
+    },
+    {
+      field: "warningMessageCode",
+      header: "Warning Code",
+      type: "dropdownSingle",
+      width: "210px",
+      info: null,
+    },
+    {
+      field: "block",
+      header: "Block",
+      type: "checkbox",
+      width: "100px",
+      info: null,
+    },
+    {
+      field: "blockMessageCode",
+      header: "Block Code",
+      type: "dropdownSingle",
+      width: "210px",
+      info: null,
+    },
+    {
+      field: "masking",
+      header: "Masking",
+      type: "input",
+      width: "100px",
+      info: null,
+    },
   ];
 
   defCols = this.cols.map((col) => col.field);
@@ -159,6 +268,33 @@ export class AddNewFormRuleComponent implements OnInit {
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
+
+  customMsgMaster = {
+    block: [
+      {
+        code: "ERR-001",
+        codeName: "ERR-001",
+      },
+      {
+        code: "ERR-002",
+        codeName: "ERR-002",
+      },
+    ],
+    warning: [
+      {
+        code: "WARN-001",
+        codeName: "WARN-001",
+      },
+      {
+        code: "WARN-002",
+        codeName: "WARN-002",
+      },
+    ],
+  };
+
+  formFieldsMaster = {};
+
+  fieldDisplayData = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -300,9 +436,14 @@ export class AddNewFormRuleComponent implements OnInit {
     );
     this.statusData = this.formRuleService.getData();
     console.log("status", this.statusData);
-    if (this.statusData["status"] == "Inactive") {
+    if (this.statusData && this.statusData["status"] == "Inactive") {
       this.deactivated = true;
     }
+  }
+
+  check(key: any) {
+    console.log(key);
+    console.log(this.applyCriteriaFormattedData);
   }
 
   setSelectAppModule() {
@@ -350,7 +491,20 @@ export class AddNewFormRuleComponent implements OnInit {
     this.appModuleDataPresent = true;
     this.showContent = false;
     this.getCriteriaMasterData();
+    this.getFormFieldsMasterData();
     this.getAllTemplates();
+  }
+
+  getVirtualOptions(apiKey: any) {
+    return [{ code: "1", name: "One" }];
+  }
+
+  getFieldTypeName(fieldType: any) {
+    if (fieldType == "dropdownSingle" || fieldType == "dropdownMulti") {
+      return "Dropdown";
+    } else {
+      return fieldType;
+    }
   }
 
   getFormRulesForEditApi(formRuleCode: any, operation: any) {
@@ -408,7 +562,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   reqData.critMap,
                   this.criteriaMasterData,
-                  ["LCY Amount"]
+                  this.fieldDisplayData
                 );
               console.log("criteriaText", this.criteriaText);
               this.applyCriteriaDataTableColumns = [];
@@ -420,6 +574,8 @@ export class AddNewFormRuleComponent implements OnInit {
               let lcySlabFieldInserted = false;
 
               this.applyCriteriaDataTableColumns = [...this.cols];
+
+              console.log(this.applyCriteriaDataTableColumns);
 
               let completeData = [];
               let amtSlabPresent = false;
@@ -507,7 +663,7 @@ export class AddNewFormRuleComponent implements OnInit {
                   Object.keys(res["labelData"]["label"]).forEach((k, i) => {
                     let formattedRowData = {
                       data: {
-                        fieldName: res["labelData"]["label"][k],
+                        fieldId: res["labelData"]["label"][k],
                         key: i,
                       },
                       expanded: true,
@@ -522,7 +678,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
                     formattedChilds.forEach((child) => {
                       child["leaf"] = true;
-                      if (child["data"]["ruleSelected"] == "Y") {
+                      if (child["data"]["ruleSelected"] == "Yes") {
                         child["partialSelected"] = false;
                         this.selectedNodes.push(child);
                       }
@@ -538,10 +694,29 @@ export class AddNewFormRuleComponent implements OnInit {
                 res["data"]["dataOperation"].forEach((data) => {
                   Object.values(data).forEach((subData) => {
                     (subData as any[]).forEach((d) => {
-                      if (d["data"][col["field"]] == "Y") {
+                      if (
+                        col["field"] == "setOptions" ||
+                        col["field"] == "defaultValue" ||
+                        col["field"] == "validValues" ||
+                        col["field"] == "blockMessageCode" ||
+                        col["field"] == "warningMessageCode"
+                      ) {
+                        if (d["data"][col["field"]]) {
+                          d["data"][col["field"]] = JSON.parse(
+                            d["data"][col["field"]]
+                          );
+                        }
+                      }
+                      if (
+                        d["data"][col["field"]] == "Yes" ||
+                        d["data"][col["field"]] == "True"
+                      ) {
                         d["data"][col["field"]] = true;
                       }
-                      if (d["data"][col["field"]] == "N") {
+                      if (
+                        d["data"][col["field"]] == "No" ||
+                        d["data"][col["field"]] == "False"
+                      ) {
                         d["data"][col["field"]] = false;
                       }
                       if (d["data"][col["field"]] == "null") {
@@ -562,7 +737,7 @@ export class AddNewFormRuleComponent implements OnInit {
                       Object.keys(res["labelData"]["label"]).forEach((k) => {
                         let formattedRowData = {
                           data: {
-                            fieldName: res["labelData"]["label"][k],
+                            fieldId: res["labelData"]["label"][k],
                             key: ai,
                           },
                           expanded: true,
@@ -583,7 +758,7 @@ export class AddNewFormRuleComponent implements OnInit {
                           child["data"]["lcyAmountFrom"] = slabA["from"];
                           child["data"]["lcyAmountTo"] = slabA["to"];
                           child["leaf"] = true;
-                          if (child["data"]["ruleSelected"] == "Y") {
+                          if (child["data"]["ruleSelected"] == "Yes") {
                             child["partialSelected"] = false;
                             this.selectedNodes.push(child);
                           }
@@ -601,7 +776,7 @@ export class AddNewFormRuleComponent implements OnInit {
                       Object.keys(res["labelData"]["label"]).forEach((k) => {
                         let formattedRowData = {
                           data: {
-                            fieldName: res["labelData"]["label"][k],
+                            fieldId: res["labelData"]["label"][k],
                             key: i,
                           },
                           expanded: true,
@@ -619,7 +794,7 @@ export class AddNewFormRuleComponent implements OnInit {
                           child["data"]["lcyAmountFrom"] = slab["from"];
                           child["data"]["lcyAmountTo"] = slab["to"];
                           child["leaf"] = true;
-                          if (child["data"]["ruleSelected"] == "Y") {
+                          if (child["data"]["ruleSelected"] == "Yes") {
                             child["partialSelected"] = false;
                             this.selectedNodes.push(child);
                           }
@@ -634,7 +809,7 @@ export class AddNewFormRuleComponent implements OnInit {
                       Object.keys(res["labelData"]["label"]).forEach((k) => {
                         let formattedRowData = {
                           data: {
-                            fieldName: res["labelData"]["label"][k],
+                            fieldId: res["labelData"]["label"][k],
                             key: i,
                           },
                           expanded: true,
@@ -652,7 +827,7 @@ export class AddNewFormRuleComponent implements OnInit {
                           child["data"]["dateFrom"] = slab["trnStartDate"];
                           child["data"]["dateTo"] = slab["trnEndDate"];
                           child["leaf"] = true;
-                          if (child["data"]["ruleSelected"] == "Y") {
+                          if (child["data"]["ruleSelected"] == "Yes") {
                             child["partialSelected"] = false;
                             this.selectedNodes.push(child);
                           }
@@ -978,7 +1153,7 @@ export class AddNewFormRuleComponent implements OnInit {
         }
       },
       (err) => {
-        console.log("Error in updateBankRouteStatus", err);
+        console.log("Error in updateFormRuleStatus", err);
         this.coreService.removeLoadingScreen();
       }
     );
@@ -1000,6 +1175,34 @@ export class AddNewFormRuleComponent implements OnInit {
     }
   }
 
+  getFormFieldsMasterData() {
+    this.formRuleService
+      .formFieldsMasterData(this.formCtrl.value.name)
+      .subscribe(
+        (res) => {
+          if (
+            res["status"] &&
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
+            this.formFieldsMaster = [];
+          } else {
+            console.log(":::mastee", res);
+            this.formFieldsMaster = res["data"];
+          }
+        },
+        (err) => {
+          console.log("Error in getFormFieldsMasterData", err);
+          this.formFieldsMaster = [];
+        }
+      );
+  }
+
   getCriteriaMasterData() {
     this.coreService.displayLoadingScreen();
     forkJoin({
@@ -1019,15 +1222,18 @@ export class AddNewFormRuleComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addFormRuleCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
               if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+                this.cmCriteriaSlabType["Slab"] = data["fieldId"];
               }
               if (data["criteriaType"] == "date") {
-                this.cmCriteriaSlabType["date"] = data["fieldName"];
+                this.cmCriteriaSlabType["date"] = data["fieldId"];
               }
             }
           );
@@ -1094,7 +1300,7 @@ export class AddNewFormRuleComponent implements OnInit {
               ) {
                 this.appModuleDataPresent = false;
                 this.showContent = false;
-                this.router.navigate([`navbar/bank-routing`]);
+                this.router.navigate([`navbar/form-rules`]);
               } else {
                 this.getFormRulesForEditApi(this.ruleID, "edit");
               }
@@ -1108,7 +1314,7 @@ export class AddNewFormRuleComponent implements OnInit {
               ) {
                 this.appModuleDataPresent = false;
                 this.showContent = false;
-                this.router.navigate([`navbar/bank-routing`]);
+                this.router.navigate([`navbar/form-rules`]);
               } else {
                 this.getFormRulesForEditApi(this.ruleID, "clone");
               }
@@ -1128,7 +1334,7 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   getCorrespondentValues(
-    fieldName: any,
+    fieldId: any,
     displayName: any,
     criteriaCodeText: any
   ) {
@@ -1140,7 +1346,7 @@ export class AddNewFormRuleComponent implements OnInit {
         this.formCtrl.value.name,
         this.appCtrl.value.name,
         criteriaMapValue,
-        fieldName,
+        fieldId,
         displayName,
         this.moduleCtrl.value.name
       )
@@ -1159,12 +1365,12 @@ export class AddNewFormRuleComponent implements OnInit {
             }
           } else {
             this.coreService.removeLoadingScreen();
-            if (res[fieldName]) {
+            if (res[fieldId]) {
               this.setCriteriaSharedComponent.valueCtrl.enable();
               this.setCriteriaSharedComponent.hideValuesDropdown = false;
               this.setCriteriaSharedComponent.showValueInput = false;
 
-              this.correspondentDdlOptions = res[fieldName].map((val) => {
+              this.correspondentDdlOptions = res[fieldId].map((val) => {
                 return { name: val["codeName"], code: val["code"] };
               });
             } else {
@@ -1251,7 +1457,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 let crtfields = this.setCriteriaService.decodeFormattedCriteria(
                   reqData.critMap,
                   this.criteriaMasterData,
-                  ["LCY Amount"]
+                  this.fieldDisplayData
                 );
 
                 this.applyCriteriaDataTableColumns = [];
@@ -1268,7 +1474,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 Object.keys(res["labelData"]["label"]).forEach((k) => {
                   let formattedRowData = {
                     data: {
-                      fieldName: res["labelData"]["label"][k],
+                      fieldId: res["labelData"]["label"][k],
                     },
                     expanded: true,
                     leaf: false,
@@ -1278,10 +1484,16 @@ export class AddNewFormRuleComponent implements OnInit {
                   res["data"][k].forEach((detail) => {
                     let childRow = { data: {} };
                     this.applyCriteriaDataTableColumns.forEach((col) => {
-                      if (detail[col["field"]] == "Y") {
+                      if (
+                        detail[col["field"]] == "True" ||
+                        detail[col["field"]] == "Yes"
+                      ) {
                         detail[col["field"]] = true;
                       }
-                      if (detail[col["field"]] == "N") {
+                      if (
+                        detail[col["field"]] == "False" ||
+                        detail[col["field"]] == "No"
+                      ) {
                         detail[col["field"]] = false;
                       }
                       childRow["data"][col["field"]] = detail[col["field"]];
@@ -1295,11 +1507,15 @@ export class AddNewFormRuleComponent implements OnInit {
                         });
                       }
                     });
-                    childRow["data"]["formLableFieldSequence"] =
-                      detail["formLableFieldSequence"];
-                    childRow["data"]["formSection"] = detail["formSection"];
+                    childRow["data"]["fieldDisplayOrder"] =
+                      detail["fieldDisplayOrder"];
+                    childRow["data"]["displaySection"] =
+                      detail["displaySection"];
+                    childRow["data"]["displaySectionOrder"] =
+                      detail["displaySectionOrder"];
                     childRow["data"]["fieldType"] = detail["fieldType"];
-                    childRow["data"]["fieldLabel"] = detail["fieldLabel"];
+                    childRow["data"]["fieldDisplayName"] =
+                      detail["fieldDisplayName"];
                     childRow["data"]["apiKey"] = detail["apiKey"];
                     childRow["data"]["obscure"] = detail["obscure"];
                     childRow["data"]["multiSelect"] = detail["multiSelect"];
@@ -1523,7 +1739,7 @@ export class AddNewFormRuleComponent implements OnInit {
                 //       detail["formLableFieldSequence"];
                 //     childRow["data"]["formSection"] = detail["formSection"];
                 //     childRow["data"]["fieldType"] = detail["fieldType"];
-                //     childRow["data"]["fieldLabel"] = detail["fieldLabel"];
+                //     childRow["data"]["fieldDisplayName"] = detail["fieldDisplayName"];
                 //     childRow["data"]["apiKey"] = detail["apiKey"];
                 //     childRow["data"]["obscure"] = detail["obscure"];
                 //     childRow["data"]["multiSelect"] = detail["multiSelect"];
@@ -1710,6 +1926,7 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   getAllTemplates() {
+    this.criteriaTemplatesDdlOptions = [];
     this.formRuleService
       .getAllCriteriaTemplates(
         this.userId,
@@ -1764,7 +1981,7 @@ export class AddNewFormRuleComponent implements OnInit {
 
     let isRequiredFields = false;
     let invalidDefValue = false;
-    let invalidLengthValue = false;
+    let invalidMaxLengthValue = false;
 
     let payloadData;
 
@@ -1775,15 +1992,17 @@ export class AddNewFormRuleComponent implements OnInit {
       payloadData["duplicate"] = this.appliedCriteriaIsDuplicate;
     }
 
-    let copyApplyCriteriaFormattedData = [...this.applyCriteriaFormattedData];
+    console.log(":::", this.applyCriteriaFormattedData);
+    let copyApplyCriteriaFormattedData = _lodashClone(
+      this.applyCriteriaFormattedData
+    );
 
     let finalObj = {};
     Object.keys(payloadData["labelData"]["label"]).forEach((k) => {
       let fieldArr = [];
       let fieldObjArr = copyApplyCriteriaFormattedData.filter((tableData) => {
-        return tableData["data"]["fieldName"] == k;
+        return tableData["data"]["fieldId"] == k;
       });
-      console.log(fieldObjArr);
       fieldObjArr.forEach((data) => {
         fieldArr.push(...data["children"]);
       });
@@ -1795,17 +2014,52 @@ export class AddNewFormRuleComponent implements OnInit {
           child["partialSelected"] == false ||
           child["partialSelected"] == "N"
         ) {
-          child["data"]["ruleSelected"] = true;
+          child["data"]["ruleSelected"] = "Yes";
         } else {
-          child["data"]["ruleSelected"] = false;
+          child["data"]["ruleSelected"] = "No";
         }
-        if (child["data"]["isValidLength"] == false) {
-          invalidLengthValue = true;
+        if (child["data"]["isValidMaxLength"] == false) {
+          invalidMaxLengthValue = true;
         }
-
         if (child["data"]["isValidDefValue"] == false) {
           invalidDefValue = true;
         }
+
+        //setting True Yes
+
+        Object.keys(child["data"]).forEach((fieldParam) => {
+          if (child["data"][fieldParam] == undefined) {
+            child["data"][fieldParam] = null;
+          }
+          switch (fieldParam) {
+            case "isMandatory":
+            case "isEnable":
+            case "isVisible":
+            case "displayInNewLine":
+              if (
+                child["data"][fieldParam] == true ||
+                child["data"][fieldParam] == "True"
+              ) {
+                child["data"][fieldParam] = "True";
+              } else {
+                child["data"][fieldParam] = "False";
+              }
+              break;
+            case "block":
+            case "warning":
+            case "checkDuplicate":
+            case "displayValidValuesOnHover":
+              if (
+                child["data"][fieldParam] == true ||
+                child["data"][fieldParam] == "Yes"
+              ) {
+                child["data"][fieldParam] = "Yes";
+              } else {
+                child["data"][fieldParam] = "No";
+              }
+              break;
+          }
+        });
       });
 
       finalObj[k] = fieldArr;
@@ -1821,16 +2075,12 @@ export class AddNewFormRuleComponent implements OnInit {
     if (isRequiredFields) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please Fill required fields.");
-    } else if (invalidLengthValue) {
+    } else if (invalidMaxLengthValue) {
       this.coreService.removeLoadingScreen();
-      this.coreService.showWarningToast(
-        "Some Min/Max Length fields are invalid."
-      );
+      this.coreService.showWarningToast("Max Length fields are invalid.");
     } else if (invalidDefValue) {
       this.coreService.removeLoadingScreen();
-      this.coreService.showWarningToast(
-        "Some Default values fields are invalid."
-      );
+      this.coreService.showWarningToast("Default values fields are invalid.");
     } else {
       payloadData.data = {};
 
@@ -1840,16 +2090,16 @@ export class AddNewFormRuleComponent implements OnInit {
         ? this.ruleDescription
         : "";
       payloadData["userId"] = this.userId;
-      let str = this.stringify(payloadData);
-      str = str.replace(/true/g, '"Y"');
-      str = str.replace(/false/g, '"N"');
-      payloadData = JSON.parse(str);
-      let copyPayload = JSON.parse(this.stringify(payloadData));
-      if (copyPayload["duplicate"] == "N") {
-        payloadData["duplicate"] = false;
-      } else if (copyPayload["duplicate"] == "Y") {
-        payloadData["duplicate"] = true;
-      }
+      // let str = this.stringify(payloadData);
+      // str = str.replace(/true/g, '"Y"');
+      // str = str.replace(/false/g, '"N"');
+      // payloadData = JSON.parse(str);
+      // let copyPayload = JSON.parse(this.stringify(payloadData));
+      // if (copyPayload["duplicate"] == "N") {
+      //   payloadData["duplicate"] = false;
+      // } else if (copyPayload["duplicate"] == "Y") {
+      //   payloadData["duplicate"] = true;
+      // }
 
       console.log(payloadData);
       if (
@@ -1874,7 +2124,36 @@ export class AddNewFormRuleComponent implements OnInit {
             this.formCtrl.value.name
           );
         }
+        // Object.keys(payloadData["labelData"]["label"]).forEach((k) => {
+        //   payloadData["data"]["dataOperation"][0][
+        //     payloadData["labelData"]["label"][k]
+        //   ].forEach((fieldRow) => {
+        //     for (const key in fieldRow.data) {
+        //       if (fieldRow.data.hasOwnProperty(key)) {
+        //         const value = fieldRow.data[key];
 
+        //         if (
+        //           value !== null &&
+        //           value !== undefined &&
+        //           typeof value !== "boolean"
+        //         ) {
+        //           fieldRow.data[key] =
+        //             typeof value === "object" ? JSON.stringify(value) : value;
+        //         } else {
+        //           fieldRow.data[key] = value;
+        //         }
+        //       }
+        //     }
+        //   });
+
+        //   console.log(
+        //     ":::",
+        //     payloadData["data"]["dataOperation"][0][
+        //       payloadData["labelData"]["label"][k]
+        //     ]
+        //   );
+        // });
+        console.log(":::PAYLOAD", JSON.stringify(payloadData, null, 2));
         if (service) {
           service.subscribe(
             (res) => {
@@ -2038,111 +2317,159 @@ export class AddNewFormRuleComponent implements OnInit {
     });
   }
 
-  minMaxValidation(
-    e: any,
-    rowData: any,
-    validLengthInp: any,
-    defaultValueCol: any
-  ) {
-    const pattern = /^(\d+)-(\d+)$/;
-    rowData["isValidLength"] = null;
-
-    rowData[defaultValueCol] = "";
-    const defValueInp = validLengthInp
-      .closest("td")
-      .nextSibling.nextSibling.querySelector("input");
-    defValueInp.classList.remove("inputError");
-
-    if (e.length == 0) {
-      this.minMaxInpTooltip = "";
-      validLengthInp.classList.remove("inputError");
-      rowData["isValidLength"] = null;
-      return;
-    }
-
-    const match = e.match(pattern);
-    if (match) {
-      const lesserNumber = parseInt(match[1]);
-      const bigNumber = parseInt(match[2]);
-
-      if (bigNumber > lesserNumber) {
-        this.minMaxInpTooltip = "";
-        validLengthInp.classList.remove("inputError");
-        rowData["isValidLength"] = true;
+  minValidation(e: any, rowData: any, minInp: any, maxInpVal: any) {
+    rowData["maxLength"] = null;
+    rowData["defaultValue"] = null;
+    rowData["isValidDefValue"] = true;
+    // rowData["minLength"] = e;
+  }
+  maxValidation(e: any, rowData: any, maxInp: any, minInpVal: any) {
+    rowData["isValidMaxLength"] = null;
+    rowData["defaultValue"] = null;
+    rowData["isValidDefValue"] = true;
+    if (minInpVal && e) {
+      if (minInpVal > e) {
+        maxInp.classList.add("inputError");
+        rowData["isValidMaxLength"] = false;
+        this.minMaxInpTooltip = "Max length should be greater than Min length";
       } else {
-        this.minMaxInpTooltip = "{min-length} should be less than {max-length}";
-        rowData["isValidLength"] = false;
-        validLengthInp.classList.add("inputError");
+        maxInp.classList.remove("inputError");
+        rowData["isValidMaxLength"] = true;
       }
-    } else {
-      this.minMaxInpTooltip =
-        "Please enter only number in this format: {min-length}-{max-length}";
-
-      validLengthInp.classList.add("inputError");
-      rowData["isValidLength"] = false;
-    }
-
-    if (rowData["isValidLength"] == false) {
-      this.defValueInpTooltip = "Please set min max length correctly";
-    } else {
-      this.defValueInpTooltip = "";
     }
   }
+
+  // minMaxValidation(
+  //   e: any,
+  //   rowData: any,
+  //   validLengthInp: any,
+  //   defaultValueCol: any
+  // ) {
+  //   const pattern = /^(\d+)-(\d+)$/;
+  //   rowData["isValidLength"] = null;
+
+  //   rowData[defaultValueCol] = "";
+  //   const defValueInp = validLengthInp
+  //     .closest("td")
+  //     .nextSibling.nextSibling.querySelector("input");
+  //   defValueInp.classList.remove("inputError");
+
+  //   if (e.length == 0) {
+  //     this.minMaxInpTooltip = "";
+  //     validLengthInp.classList.remove("inputError");
+  //     rowData["isValidLength"] = null;
+  //     return;
+  //   }
+
+  //   const match = e.match(pattern);
+  //   if (match) {
+  //     const lesserNumber = parseInt(match[1]);
+  //     const bigNumber = parseInt(match[2]);
+
+  //     if (bigNumber > lesserNumber) {
+  //       this.minMaxInpTooltip = "";
+  //       validLengthInp.classList.remove("inputError");
+  //       rowData["isValidLength"] = true;
+  //     } else {
+  //       this.minMaxInpTooltip = "{min-length} should be less than {max-length}";
+  //       rowData["isValidLength"] = false;
+  //       validLengthInp.classList.add("inputError");
+  //     }
+  //   } else {
+  //     this.minMaxInpTooltip =
+  //       "Please enter only number in this format: {min-length}-{max-length}";
+
+  //     validLengthInp.classList.add("inputError");
+  //     rowData["isValidLength"] = false;
+  //   }
+
+  //   if (rowData["isValidLength"] == false) {
+  //     this.defValueInpTooltip = "Please set min max length correctly";
+  //   } else {
+  //     this.defValueInpTooltip = "";
+  //   }
+  // }
 
   toggleCheckbox(e: any, rowData: any, field: any) {
     if (field == "isMandatory") {
       if (e.returnValue) {
-        rowData["isVisibile"] = true;
+        rowData["isVisible"] = true;
         rowData["isEnable"] = true;
       } else {
-        rowData["isVisibile"] = false;
+        rowData["isVisible"] = false;
         rowData["isEnable"] = false;
       }
     }
   }
 
-  defaultValueValidation(
+  defValueValidation(
     e: any,
     rowData: any,
     defValueInp: any,
-    minMaxCol: any
+    minInpVal: any,
+    maxInpVal: any
   ) {
-    rowData["isValidDefValue"] = null;
-    if (e.length == 0) {
-      rowData["isValidDefValue"] = null;
-      defValueInp.classList.remove("inputError");
-      return;
-    } else {
-      if (rowData[minMaxCol]) {
-        const min = rowData[minMaxCol].split("-")[0];
-        const max = rowData[minMaxCol].split("-")[1];
-        if (e.length > max || e.length < min) {
-          rowData["isValidDefValue"] = false;
-          defValueInp.classList.add("inputError");
-        } else {
-          rowData["isValidDefValue"] = true;
-          defValueInp.classList.remove("inputError");
-        }
+    rowData["isValidDefValue"] = true;
+    if (e) {
+      if (minInpVal && !(e.length >= minInpVal)) {
+        rowData["isValidDefValue"] = false;
+        this.defValueInpTooltip =
+          "Default value length is less than specified Min length";
+      } else if (maxInpVal && !(e.length <= maxInpVal)) {
+        rowData["isValidDefValue"] = false;
+        this.defValueInpTooltip =
+          "Default value length is greater than specified Max length";
       } else {
         rowData["isValidDefValue"] = true;
-        defValueInp.classList.remove("inputError");
-      }
-
-      if (rowData["isValidDefValue"] == false) {
-        this.defValueInpTooltip = "Default value is not in specified range";
-      } else {
         this.defValueInpTooltip = "";
       }
     }
   }
 
+  resetDefValueInp(defValueInp: any) {
+    console.log("reset", defValueInp);
+  }
+
+  // defaultValueValidation(
+  //   e: any,
+  //   rowData: any,
+  //   defValueInp: any,
+  //   minMaxCol: any
+  // ) {
+  //   rowData["isValidDefValue"] = null;
+  //   if (e.length == 0) {
+  //     rowData["isValidDefValue"] = null;
+  //     defValueInp.classList.remove("inputError");
+  //     return;
+  //   } else {
+  //     if (rowData[minMaxCol]) {
+  //       const min = rowData[minMaxCol].split("-")[0];
+  //       const max = rowData[minMaxCol].split("-")[1];
+  //       if (e.length > max || e.length < min) {
+  //         rowData["isValidDefValue"] = false;
+  //         defValueInp.classList.add("inputError");
+  //       } else {
+  //         rowData["isValidDefValue"] = true;
+  //         defValueInp.classList.remove("inputError");
+  //       }
+  //     } else {
+  //       rowData["isValidDefValue"] = true;
+  //       defValueInp.classList.remove("inputError");
+  //     }
+
+  //     if (rowData["isValidDefValue"] == false) {
+  //       this.defValueInpTooltip = "Default value is not in specified range";
+  //     } else {
+  //       this.defValueInpTooltip = "";
+  //     }
+  //   }
+  // }
+
   onChange(controlId, rule) {
     let minmax = rule.minFieldLengthMaxLength.split("-");
     let min = minmax[0];
     let max = minmax[1];
-    let index = this.formRulesData.findIndex(
-      (x) => x.fieldName == rule.fieldName
-    );
+    let index = this.formRulesData.findIndex((x) => x.fieldId == rule.fieldId);
     if (controlId == "defaultValues") {
       this.formRulesData[index].maxlengthDefaultValue = Number(max);
     }
@@ -2253,19 +2580,19 @@ export class AddNewFormRuleComponent implements OnInit {
 
   TaxValidation() {}
 
-  checkOperation(operation: any, index: any, selectRow: any, fieldName: any) {
+  checkOperation(operation: any, index: any, selectRow: any, fieldId: any) {
     if (operation == "delete") {
       this.delete(index);
     } else if (operation == "clone") {
-      this.clone(index, selectRow, fieldName);
+      this.clone(index, selectRow, fieldId);
     }
   }
 
-  clone(index: any, selectRow: any, fieldName: any) {
+  clone(index: any, selectRow: any, fieldId: any) {
     let clonedRow = {
       ...selectRow,
     };
-    clonedRow[fieldName] = "clone,delete";
+    clonedRow[fieldId] = "clone,delete";
     this.appliedCriteriaData.splice(index + 1, 0, clonedRow);
   }
   delete(index: any) {

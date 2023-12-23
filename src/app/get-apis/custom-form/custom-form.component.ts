@@ -9,6 +9,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-custom-form",
   templateUrl: "./custom-form.component.html",
@@ -30,6 +32,9 @@ export class CustomFormComponent implements OnInit {
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
+
+  fieldDisplayData = {};
+
   constructor(
     private route: ActivatedRoute,
     private coreService: CoreService,
@@ -102,7 +107,10 @@ export class CustomFormComponent implements OnInit {
       })
       .subscribe((res: any) => {
         console.log("masterdata", res);
-        this.masterData = res;
+        let criteriaMasterJson = _lodashClone(res);
+        delete criteriaMasterJson["fieldDisplay"];
+        this.fieldDisplayData = res["fieldDisplay"];
+        this.masterData = criteriaMasterJson;
       });
   }
   Apply() {
@@ -226,7 +234,7 @@ export class CustomFormComponent implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     this.masterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {

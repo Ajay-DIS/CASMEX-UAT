@@ -11,10 +11,11 @@
     </p>
     <div class="openCriteria">
       <p class="clickcriteria">
-        <a [ngClass]="{ 'disabled': deactivated}"
-        tabindex="0"
-        (keyup.Space)= "saveCriteriaTemplateLink()"
-        (click)="!deactivated && saveCriteriaTemplateLink()"
+        <a
+          [ngClass]="{ disabled: deactivated }"
+          tabindex="0"
+          (keyup.Space)="saveCriteriaTemplateLink()"
+          (click)="!deactivated && saveCriteriaTemplateLink()"
           >Click to save this Criteria as a template</a
         >
       </p>
@@ -82,7 +83,7 @@
                     )
                   "
                 >
-                  {{ criteria.data }}
+                  {{ criteria.label }}
                 </div>
               </ng-template>
             </p-treeSelect>
@@ -141,13 +142,18 @@
                   </div>
                 </ng-template>
                 <ng-template let-options pTemplate="item">
-                  <div *ngIf="options.name == 'divider'" style="border-top: 2px solid lightgray">
-                  </div>
+                  <div
+                    *ngIf="options.name == 'divider'"
+                    style="border-top: 2px solid lightgray"
+                  ></div>
                   <ng-container *ngIf="options.name != 'divider'">
                     <div *ngIf="options.name != 'Any'" class="truncate-text">
                       <div>{{ options.name }}</div>
                     </div>
-                    <div *ngIf="options.name == 'Any'" class="truncate-text any-value">
+                    <div
+                      *ngIf="options.name == 'Any'"
+                      class="truncate-text any-value"
+                    >
                       <div>{{ options.name }}</div>
                     </div>
                   </ng-container>
@@ -245,7 +251,11 @@
                   ? 'Select Template'
                   : 'No saved templates'
               "
-              [disabled]="!criteriaTemplatesDdlOptions.length || inactiveData || deactivated"
+              [disabled]="
+                !criteriaTemplatesDdlOptions.length ||
+                inactiveData ||
+                deactivated
+              "
               (onChange)="selectCriteriaTemplate($event.value)"
               [(ngModel)]="selectedTemplate"
             >
@@ -263,7 +273,7 @@
   <div class="" style="padding: 0 1rem; display: flex; flex-wrap: wrap">
     <span
       *ngFor="let criteria of criteriaText; let i = index"
-      [ngClass]="{ 'disabled': deactivated}"
+      [ngClass]="{ disabled: deactivated }"
       (click)="!deactivated && openRangeModal(criteria)"
       class="criteria-span"
       [ngStyle]="{
@@ -273,19 +283,22 @@
       }"
     >
       {{ isRangeCrt(criteria) ? "" : criteria
-      }}<a [ngClass]="{ 'disabled': deactivated}" style="cursor: pointer" *ngIf="isRangeCrt(criteria)">{{
-        criteria
-      }}</a>
+      }}<a
+        [ngClass]="{ disabled: deactivated }"
+        style="cursor: pointer"
+        *ngIf="isRangeCrt(criteria)"
+        >{{ criteria }}</a
+      >
       <span
         role="button"
         style="padding: 0px 0px 0px 15px; margin-bottom: 10px"
-        [ngClass]="{ 'disabled': deactivated}"
+        [ngClass]="{ disabled: deactivated }"
         (click)="!deactivated && ondeletecriteria(i, criteria)"
       >
         <svg
           style="margin-bottom: 4px"
           tabindex="0"
-          (keyup.Space)= "ondeletecriteria(i, criteria)"
+          (keyup.Space)="ondeletecriteria(i, criteria)"
           xmlns="http://www.w3.org/2000/svg"
           width="12.6"
           height="12.6"

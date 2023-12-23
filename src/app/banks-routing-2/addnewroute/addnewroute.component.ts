@@ -18,6 +18,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-addnewroute",
   templateUrl: "./addnewroute.component.html",
@@ -120,6 +122,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private bankRoutingService: BankRoutingService,
@@ -313,7 +317,7 @@ export class AddnewrouteComponent2 implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   this.criteriaCodeText,
                   this.criteriaMasterData,
-                  this.cmCriteriaSlabType
+                  this.fieldDisplayData
                 );
 
               this.routeCode = res["routeCode"];
@@ -663,7 +667,10 @@ export class AddnewrouteComponent2 implements OnInit {
         take(1),
         map((response) => {
           this.formatMasterData(response.criteriaMasterData);
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
@@ -905,7 +912,7 @@ export class AddnewrouteComponent2 implements OnInit {
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
-              ["LCY Amount"]
+              this.fieldDisplayData
             );
 
             this.routeToBankNameOption = res["data"][

@@ -40,48 +40,50 @@
           <div class="col-md-5 col-lg-5 col-sm-12 col-xs-12">
             <div class="row">
               <div class="buttons-section">
-                  <button
-                    pButton
-                    pRipple
-                    [disabled]="
-                      !applyCriteriaFormattedData ||
-                      !applyCriteriaFormattedData.length || deactivated
-                    "
-                    type="button"
-                    label="Save"
-                    class="p-button-raised"
-                    (click)="saveAddNewRule('save')"
-                  ></button>
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    [disabled]="
-                      !applyCriteriaFormattedData ||
-                      !applyCriteriaFormattedData.length || deactivated
-                    "
-                    label="Save & Add New"
-                    class="p-button-raised"
-                    (click)="saveAddNewRule('saveAndAddNew')"
-                  ></button>
-                  <button
-                    pButton
-                    pRipple
-                    type="button"
-                    label="Reset"
-                    class="p-button-warning"
-                    (click)="reset()"
-                    [disabled]="deactivated"
-                  ></button>
-                  <button
+                <button
+                  pButton
+                  pRipple
+                  [disabled]="
+                    !applyCriteriaFormattedData ||
+                    !applyCriteriaFormattedData.length ||
+                    deactivated
+                  "
+                  type="button"
+                  label="Save"
+                  class="p-button-raised"
+                  (click)="saveAddNewRule('save')"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  [disabled]="
+                    !applyCriteriaFormattedData ||
+                    !applyCriteriaFormattedData.length ||
+                    deactivated
+                  "
+                  label="Save & Add New"
+                  class="p-button-raised"
+                  (click)="saveAddNewRule('saveAndAddNew')"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  label="Reset"
+                  class="p-button-warning"
+                  (click)="reset()"
+                  [disabled]="deactivated"
+                ></button>
+                <button
                   *ngIf="mode == 'edit'"
-                    pButton
-                    pRipple
-                    type="button"
-                    label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
-                    class="p-button-raised"
-                    (click)="onActive()"
-                  ></button>
+                  pButton
+                  pRipple
+                  type="button"
+                  label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+                  class="p-button-raised"
+                  (click)="onActive()"
+                ></button>
               </div>
             </div>
           </div>
@@ -91,7 +93,9 @@
     <div [formGroup]="selectAppModule" class="select-module-application m-2">
       <div class="col-12">
         <div class="row">
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0">
+          <div
+            class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0"
+          >
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 pr-8"
               for="application"
@@ -107,13 +111,16 @@
               formControlName="applications"
               (onChange)="onAppValueChange()"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0 pl-0">
+          <div
+            class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-3 pr-0 pl-0"
+          >
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 small"
               for="module"
@@ -129,13 +136,16 @@
               formControlName="modules"
               (onChange)="onModValueChange()"
             >
-            <ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template></p-dropdown>
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template></p-dropdown
+            >
           </div>
-          <div class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4 pl-0">
+          <div
+            class="d-flex field col-md-4 col-lg-4 col-sm-12 col-xs-12 md-4 pl-0"
+          >
             <label
               class="detail-page-section-heading col-sm-3 col-xs-12 smallForm"
               for="form"
@@ -150,12 +160,12 @@
               optionLabel="name"
               formControlName="forms"
               (onChange)="searchAppModule()"
-            ><ng-template let-options pTemplate="item">
-              <div class="truncate-text">
-                <div >{{ options.name}}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
+              ><ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>{{ options.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
           </div>
         </div>
       </div>
@@ -193,6 +203,7 @@
       *ngIf="appModuleDataPresent && showContent"
       #setCriteriaSharedComponent
       [criteriaMasterData]="criteriaMasterData"
+      [fieldDisplayData]="fieldDisplayData"
       [cmCriteriaDataDetails]="cmCriteriaDataDetails"
       [criteriaDataDetailsJson]="criteriaDataDetailsJson"
       [cmCriteriaSlabType]="cmCriteriaSlabType"
@@ -247,20 +258,30 @@
               scrollHeight="250px"
               [loading]="ttLoading"
             >
+              <ng-template pTemplate="colgroup" let-columns>
+                <colgroup>
+                  <col *ngFor="let col of columns" [style.width]="col.width" />
+                </colgroup>
+              </ng-template>
               <ng-template pTemplate="header" let-columns>
                 <tr [ttRow]="rowNode">
-                  <th
-                    *ngFor="let col of columns"
-                    [style.width]="col.field == 'fieldName' ? '200px' : ''"
-                  >
+                  <th *ngFor="let col of columns">
                     {{ col.header }}
+
+                    <span class="info-span" *ngIf="col.info"
+                      ><i
+                        class="pi pi-info-circle"
+                        [pTooltip]="col.info"
+                        tooltipPosition="top"
+                      ></i
+                    ></span>
                   </th>
                 </tr>
                 <tr class="search-row">
                   <th *ngFor="let col of columns; let i = index">
                     <span
                       *ngIf="
-                        !defCols.includes(col.field) || col.field == 'fieldName'
+                        !defCols.includes(col.field) || col.field == 'fieldId'
                       "
                       class="p-input-icon-left"
                       [style.width]="'95px'"
@@ -287,8 +308,8 @@
               <ng-template
                 pTemplate="body"
                 let-rowNode
-                let-rowData="rowData"
                 let-columns="columns"
+                let-rowData="rowData"
               >
                 <tr
                   [ngClass]="{
@@ -308,7 +329,6 @@
                         : ''
                     "
                     tooltipPosition="bottom"
-                    [style.width]="col.field == 'fieldName' ? '200px' : ''"
                   >
                     <p-treeTableCheckbox
                       [value]="rowNode"
@@ -318,97 +338,453 @@
                           rowData && rowData.hasOwnProperty('fieldType')
                       }"
                     ></p-treeTableCheckbox>
+
                     <ng-container
                       *ngIf="rowData && rowData.hasOwnProperty(col.field)"
+                      [ngSwitch]="col.type"
                     >
-                      <div
-                        *ngIf="col.type == 'string'"
-                        style="display: inline-block"
-                        [title]="rowData[col.field]"
+                      <ng-container *ngSwitchCase="'string'">
+                        <div
+                          style="display: inline-block"
+                          [title]="rowData[col.field]"
+                        >
+                          {{
+                            rowData[col.field].slice(0, 24) +
+                              (rowData[col.field].length > 24 ? "..." : "")
+                          }}
+                        </div>
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'text'">
+                        <input
+                          type="text"
+                          [(ngModel)]="rowData[col.field]"
+                          disabled="true"
+                        />
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="'input'"
+                        [ngSwitch]="col.field"
                       >
-                        {{
-                          rowData[col.field].slice(0, 20) +
-                            (rowData[col.field].length > 20 ? "..." : "")
-                        }}
-                      </div>
-                      <input
-                        *ngIf="col.type == 'text'"
-                        type="text"
-                        [(ngModel)]="rowData[col.field]"
-                        disabled="true"
-                      />
-                      <input
-                        *ngIf="
-                          col.type == 'input' &&
-                          !(
-                            col.field == 'validLength' ||
-                            col.field == 'defaultValue'
-                          )
-                        "
-                        type="text"
-                        [(ngModel)]="rowData[col.field]"
-                      />
-                      <input
-                        *ngIf="col.type == 'checkbox'"
-                        type="checkbox"
-                        [(ngModel)]="rowData[col.field]"
-                        (change)="toggleCheckbox($event, rowData, col.field)"
-                        [disabled]="
-                          (col.field == 'isVisibile' ||
-                            col.field == 'isEnable') &&
-                          rowData['isMandatory'] || deactivated
-                        "
-                      />
-                      <input
-                        #validLengthInp
-                        *ngIf="
-                          col.type == 'input' && col.field == 'validLength'
-                        "
-                        type="text"
-                        [(ngModel)]="rowData[col.field]"
-                        (ngModelChange)="
-                          minMaxValidation(
-                            $event,
-                            rowData,
-                            validLengthInp,
-                            columns[i + 1].field,
-                            defValueInp
-                          )
-                        "
-                        [disabled]="rowData['fieldType'] == 'date' || deactivated"
-                        [pTooltip]="
-                          col.type == 'input' &&
-                          col.field == 'validLength' &&
-                          rowData['isValidLength'] == false
-                            ? minMaxInpTooltip
-                            : ''
-                        "
-                        tooltipPosition="bottom"
-                      />
-                      <input
-                        #defValueInp
-                        *ngIf="
-                          col.type == 'input' && col.field == 'defaultValue' 
-                        "
-                        type="text"
-                        [(ngModel)]="rowData[col.field]"
-                        [placeholder]="
-                          rowData[col.field]
-                            ? rowData[col.field]
-                            : rowData['fieldType'] == 'Date'
-                            ? 'MM/DD/YYYY'
-                            : ''
-                        "
-                        (ngModelChange)="
-                          defaultValueValidation(
-                            $event,
-                            rowData,
-                            defValueInp,
-                            columns[i - 1].field
-                          )
-                        "
-                        [disabled]="rowData['isValidLength'] == false || deactivated"
-                      />
+                        <ng-container *ngSwitchCase="'fieldDisplayName'">
+                          <input type="text" [(ngModel)]="rowData[col.field]" />
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="'minLength'"
+                          [ngSwitch]="true"
+                        >
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'text' ||
+                              rowData['fieldType'] == 'number'
+                            "
+                          >
+                            <input
+                              #minInp
+                              type="number"
+                              [(ngModel)]="rowData[col.field]"
+                              (ngModelChange)="
+                                minValidation(
+                                  $event,
+                                  rowData,
+                                  minInp,
+                                  rowData['maxLength']
+                                )
+                              "
+                              min="0"
+                              max="999"
+                            />
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <span
+                              class="not-applicable-value"
+                              [pTooltip]="
+                                'Not applicable for ' +
+                                getFieldTypeName(rowData['fieldType']) +
+                                ' field'
+                              "
+                              tooltipPosition="left"
+                              >NA</span
+                            >
+                          </ng-container>
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="'maxLength'"
+                          [ngSwitch]="true"
+                        >
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'text' ||
+                              rowData['fieldType'] == 'number'
+                            "
+                          >
+                            <input
+                              #maxInp
+                              type="number"
+                              [(ngModel)]="rowData[col.field]"
+                              (ngModelChange)="
+                                maxValidation(
+                                  $event,
+                                  rowData,
+                                  maxInp,
+                                  rowData['minLength']
+                                )
+                              "
+                              [pTooltip]="
+                                rowData['isValidMaxLength'] == false
+                                  ? minMaxInpTooltip
+                                  : ''
+                              "
+                              tooltipPosition="bottom"
+                              min="0"
+                              max="999"
+                            />
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <span
+                              class="not-applicable-value"
+                              [pTooltip]="
+                                'Not applicable for ' +
+                                getFieldTypeName(rowData['fieldType']) +
+                                ' field'
+                              "
+                              tooltipPosition="left"
+                              >NA</span
+                            >
+                          </ng-container>
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="'validLength'"
+                          [ngSwitch]="true"
+                        >
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'text' ||
+                              rowData['fieldType'] == 'number'
+                            "
+                          >
+                            <input
+                              #validLengthInp
+                              *ngIf="col.field == 'validLength'"
+                              type="text"
+                              [disabled]="
+                                rowData['fieldType'] == 'date' || deactivated
+                              "
+                              [pTooltip]="
+                                col.field == 'validLength' &&
+                                rowData['isValidLength'] == false
+                                  ? minMaxInpTooltip
+                                  : ''
+                              "
+                              tooltipPosition="bottom"
+                            />
+                          </ng-container>
+                          <ng-container *ngSwitchDefault>
+                            <span
+                              class="not-applicable-value"
+                              [pTooltip]="
+                                'Not applicable for ' +
+                                getFieldTypeName(rowData['fieldType']) +
+                                ' field'
+                              "
+                              tooltipPosition="left"
+                              >NA</span
+                            >
+                          </ng-container>
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="'defaultValue'"
+                          [ngSwitch]="true"
+                        >
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'text' ||
+                              rowData['fieldType'] == 'number' ||
+                              rowData['fieldType'] == 'date'
+                            "
+                          >
+                            <input
+                              #defValueInp
+                              type="text"
+                              class="default-Value-input"
+                              [ngClass]="{
+                                inputError:
+                                  rowData['defaultValue'] &&
+                                  rowData['isValidDefValue'] == false
+                              }"
+                              [(ngModel)]="rowData[col.field]"
+                              [placeholder]="
+                                rowData[col.field]
+                                  ? rowData[col.field]
+                                  : rowData['fieldType'] == 'date'
+                                  ? 'DD/MM/YYYY'
+                                  : ''
+                              "
+                              (ngModelChange)="
+                                defValueValidation(
+                                  $event,
+                                  rowData,
+                                  defValueInp,
+                                  rowData['minLength'],
+                                  rowData['maxLength']
+                                )
+                              "
+                              [disabled]="
+                                rowData['isValidLength'] == false || deactivated
+                              "
+                            />
+                          </ng-container>
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'dropdownSingle'
+                            "
+                          >
+                            <p-dropdown
+                              class="block smartSearch"
+                              [options]="formFieldsMaster[rowData['apiKey']]"
+                              [(ngModel)]="rowData[col.field]"
+                              optionLabel="codeName"
+                              [filter]="true"
+                              filterBy="codeName"
+                              placeholder="Select"
+                              [virtualScroll]="true"
+                              [virtualScrollItemSize]="35"
+                            >
+                            </p-dropdown>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault
+                            ><span
+                              class="not-applicable-value"
+                              [pTooltip]="
+                                'Not applicable for ' +
+                                getFieldTypeName(rowData['fieldType']) +
+                                ' field'
+                              "
+                              tooltipPosition="left"
+                              >NA</span
+                            ></ng-container
+                          >
+                        </ng-container>
+                        <ng-container *ngSwitchDefault>
+                          <ng-container [ngSwitch]="true">
+                            <ng-container
+                              *ngSwitchCase="
+                                rowData['fieldType'] == 'text' ||
+                                rowData['fieldType'] == 'number'
+                              "
+                            >
+                              <input
+                                class="editable-input"
+                                *ngIf="
+                                  col.field == 'regex' ||
+                                  col.field == 'regexMessage' ||
+                                  col.field == 'prefix' ||
+                                  col.field == 'suffix' ||
+                                  col.field == 'masking'
+                                "
+                                type="text"
+                                [(ngModel)]="rowData[col.field]"
+                                [disabled]="
+                                  !(
+                                    rowData['fieldType'] == 'text' ||
+                                    rowData['fieldType'] == 'number'
+                                  )
+                                "
+                              />
+                            </ng-container>
+                            <ng-container *ngSwitchDefault>
+                              <span
+                                class="not-applicable-value"
+                                [pTooltip]="
+                                  'Not applicable for ' +
+                                  getFieldTypeName(rowData['fieldType']) +
+                                  ' field'
+                                "
+                                tooltipPosition="left"
+                                >NA</span
+                              >
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+
+                      <ng-container
+                        *ngSwitchCase="'checkbox'"
+                        [ngSwitch]="true"
+                      >
+                        <ng-container
+                          *ngSwitchCase="
+                            col.field == 'displayValidValuesOnHover'
+                          "
+                          [ngSwitch]="true"
+                        >
+                          <ng-container
+                            *ngSwitchCase="
+                              rowData['fieldType'] == 'text' ||
+                              rowData['fieldType'] == 'date' ||
+                              rowData['fieldType'] == 'number'
+                            "
+                          >
+                            <div style="text-align: center">
+                              <input
+                                type="checkbox"
+                                [(ngModel)]="rowData[col.field]"
+                                [disabled]="deactivated"
+                              />
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchDefault
+                            ><span
+                              class="not-applicable-value"
+                              [pTooltip]="
+                                'Not applicable for ' +
+                                getFieldTypeName(rowData['fieldType']) +
+                                ' field'
+                              "
+                              tooltipPosition="left"
+                              >NA</span
+                            ></ng-container
+                          >
+                        </ng-container>
+                        <ng-container
+                          *ngSwitchCase="
+                            col.field == 'isMandatory' ||
+                            col.field == 'isEnable' ||
+                            col.field == 'isVisible' ||
+                            col.field == 'checkDuplicate' ||
+                            col.field == 'displayInNewLine' ||
+                            col.field == 'block' ||
+                            col.field == 'warning'
+                          "
+                        >
+                          <div style="text-align: center">
+                            <input
+                              type="checkbox"
+                              [(ngModel)]="rowData[col.field]"
+                              (change)="
+                                toggleCheckbox($event, rowData, col.field)
+                              "
+                              [disabled]="
+                                ((col.field == 'isVisible' ||
+                                  col.field == 'isEnable') &&
+                                  rowData['isMandatory']) ||
+                                deactivated
+                              "
+                            />
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="'dropdownMulti'"
+                        [ngSwitch]="true"
+                      >
+                        <ng-container
+                          *ngSwitchCase="
+                            rowData['fieldType'] == 'dropdownSingle' ||
+                            rowData['fieldType'] == 'dropdownMulti'
+                          "
+                        >
+                          <p-multiSelect
+                            [options]="formFieldsMaster[rowData['apiKey']]"
+                            [showToggleAll]="false"
+                            [(ngModel)]="rowData[col.field]"
+                            optionLabel="codeName"
+                            [filter]="true"
+                            filterBy="codeName"
+                            [virtualScroll]="true"
+                            [virtualScrollItemSize]="35"
+                            class="multiselect-custom-virtual-scroll"
+                            placeholder="Select"
+                            [appendTo]="'body'"
+                            panelStyleClass="formRule-dropdown"
+                            (ngModelChange)="check(rowData[col.field])"
+                          >
+                          </p-multiSelect>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault
+                          ><span
+                            class="not-applicable-value"
+                            [pTooltip]="
+                              'Not applicable for ' +
+                              getFieldTypeName(rowData['fieldType']) +
+                              ' field'
+                            "
+                            tooltipPosition="left"
+                            >NA</span
+                          ></ng-container
+                        >
+                      </ng-container>
+                      <ng-container *ngSwitchCase="'chips'" [ngSwitch]="true">
+                        <ng-container
+                          *ngSwitchCase="
+                            rowData['fieldType'] == 'text' ||
+                            rowData['fieldType'] == 'date' ||
+                            rowData['fieldType'] == 'number'
+                          "
+                        >
+                          <p-chips
+                            [(ngModel)]="rowData[col.field]"
+                            separator=","
+                            [placeholder]="
+                              rowData['fieldType'] == 'date'
+                                ? 'Hint: DD/MM/YYYY,DD/MM/YYYY'
+                                : rowData['fieldType'] == 'text'
+                                ? 'Hint: A,B,C'
+                                : 'Hint: 1,2,3'
+                            "
+                          ></p-chips>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault
+                          ><span
+                            class="not-applicable-value"
+                            [pTooltip]="
+                              'Not applicable for ' +
+                              getFieldTypeName(rowData['fieldType']) +
+                              ' field'
+                            "
+                            tooltipPosition="left"
+                            >NA</span
+                          ></ng-container
+                        >
+                      </ng-container>
+                      <ng-container
+                        *ngSwitchCase="'dropdownSingle'"
+                        [ngSwitch]="true"
+                      >
+                        <ng-container
+                          *ngSwitchCase="
+                            col.field == 'warningMessageCode' ||
+                            col.field == 'blockMessageCode'
+                          "
+                        >
+                          <p-dropdown
+                            class="block smartSearch"
+                            [options]="
+                              customMsgMaster[col.field.split('MessageCode')[0]]
+                            "
+                            [(ngModel)]="rowData[col.field]"
+                            optionLabel="codeName"
+                            placeholder="Select"
+                          >
+                          </p-dropdown>
+                        </ng-container>
+                        <ng-container *ngSwitchDefault
+                          ><p-dropdown
+                            class="block smartSearch"
+                            [options]="formFieldsMaster[rowData['apiKey']]"
+                            [(ngModel)]="rowData[col.field]"
+                            optionLabel="codeName"
+                            placeholder="Select"
+                            [virtualScroll]="true"
+                            [virtualScrollItemSize]="35"
+                          >
+                          </p-dropdown
+                        ></ng-container>
+                      </ng-container>
+                      <ng-container *ngSwitchDefault
+                        ><span class="not-applicable-value"
+                          >NA</span
+                        ></ng-container
+                      >
                     </ng-container>
                   </td>
                 </tr>

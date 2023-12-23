@@ -17,6 +17,8 @@ import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set
 import { forkJoin } from "rxjs";
 import { map, take } from "rxjs/operators";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-charge-details",
   templateUrl: "./charge-details.component.html",
@@ -127,6 +129,8 @@ export class ChargeDetailsComponent implements OnInit {
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -324,7 +328,7 @@ export class ChargeDetailsComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   this.criteriaCodeText,
                   this.criteriaMasterData,
-                  this.cmCriteriaSlabType
+                  this.fieldDisplayData
                 );
 
               this.chargeCode = res["chargeCode"];
@@ -655,7 +659,10 @@ export class ChargeDetailsComponent implements OnInit {
         take(1),
         map((response) => {
           this.formatMasterData(response.criteriaMasterData);
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
@@ -901,7 +908,7 @@ export class ChargeDetailsComponent implements OnInit {
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
-              ["LCY Amount"]
+              this.fieldDisplayData
             );
             this.setAsOption = res["data"].setAsOption.map((option) => {
               return { code: option.code, codeName: option.codeName };

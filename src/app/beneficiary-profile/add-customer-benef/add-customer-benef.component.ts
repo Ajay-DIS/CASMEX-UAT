@@ -84,10 +84,11 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
     if (e.formData && e.formData.currentValue) {
       this.formDataOrg = JSON.parse(JSON.stringify(e.formData.currentValue));
-      this.setFormByData(e.formData.currentValue);
+      // this.setFormByData(e.formData.currentValue);
     }
     if (e.masterData && e.masterData.currentValue) {
       this.masterDataOrg = e.masterData.currentValue;
+      this.setFormByData(this.formDataOrg);
       console.log("masterData", e.masterData);
     }
     if (e.mode && e.mode.currentValue) {
@@ -113,76 +114,255 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  checkValidValuesText(e: any, fieldData: any) {
+    if (fieldData.validValues && fieldData.validValues.length) {
+      let match = true;
+      if (e.length) {
+        match = false;
+      }
+      fieldData.validValues.forEach((val) => {
+        // if (val.startsWith(e)) {
+        if (val == e) {
+          match = true;
+        }
+      });
+      if (!match) {
+        let currCtrl = this.individualForm
+          .get(fieldData.formName)
+          ?.get(fieldData.name);
+        if (currCtrl) {
+          currCtrl.setErrors({
+            invalidValue: true,
+          });
+        }
+      }
+    }
+    console.log(
+      this.individualForm.get(fieldData.formName)?.get(fieldData.name)
+    );
+  }
+  checkValidValuesDate(e: any, fieldData: any) {
+    console.log(typeof e, e);
+    if (fieldData.validValues && fieldData.validValues.length) {
+      let match = true;
+      if (e) {
+        match = false;
+        fieldData.validValues.forEach((val) => {
+          // if (val.startsWith(e)) {
+          if (val == e.toLocaleDateString("en-GB")) {
+            match = true;
+          }
+        });
+      }
+      if (!match) {
+        let currCtrl = this.individualForm
+          .get(fieldData.formName)
+          ?.get(fieldData.name);
+        if (currCtrl) {
+          currCtrl.setErrors({
+            invalidValue: true,
+          });
+        }
+      }
+    }
+    console.log(
+      this.individualForm.get(fieldData.formName)?.get(fieldData.name)
+    );
+  }
+
   setFormByData(data: any) {
-    this.apiData = data;
-    this.individualForm = this.formBuilder.group({});
-    console.log(data);
-    let allFormSections = [];
-    Object.keys(data).forEach((key) => {
-      let formSection = {
+    // NEW JSON START
+    let groupedData = data.Rules.reduce((acc, field) => {
+      const fieldSectionName = field.displaySection;
+      (acc[fieldSectionName] = acc[fieldSectionName] || []).push(field);
+      return acc;
+    }, {});
+    console.log(":::", groupedData);
+    let allFSec = [];
+    Object.keys(groupedData).forEach((key) => {
+      let fSec = {
         formName: key,
-        fields: data[key]
+        seqOrder: groupedData[key][0]["displaySectionOrder"],
+        fields: groupedData[key]
           .map((secData) => {
-            let fieldData = {
-              name: secData["fieldName"],
-              formLableFieldSequence: secData["formLableFieldSequence"],
-              fieldName: secData["fieldName"],
-              fieldType: secData["fieldType"],
-              fieldSubtype: secData["fieldSubtype"],
-              fieldLabel: secData["fieldLabel"],
-              required: secData["isMandatory"] == "Y" ? true : false,
-              enable: secData["isEnable"] == "Y" ? true : false,
+            // if (secData["checkDuplicate"] == "Yes") {
+            //   this.duplicateCheckFields.push(secData["fieldName"]);
+            // }
+            let fData = {
+              formName: key,
+              name: secData["fieldId"],
+              formLableFieldSequence: +secData["fieldDisplayOrder"],
+              fieldName: secData["fieldId"],
+              fieldType: secData["fieldType"] ? secData["fieldType"] : "text",
+              fieldSubtype: secData["fieldSubtype"]
+                ? secData["fieldSubtype"]
+                : "",
+              fieldLabel: secData["fieldDisplayName"],
+              required: secData["isMandatory"] == "True" ? true : false,
+              enable: secData["isEnable"] == "True" ? true : false,
               visible:
-                !secData["isVisibile"] || secData["isVisibile"] == "Y"
+                !secData["IsVisible"] || secData["IsVisible"] == "True"
                   ? true
                   : false,
-              validLength: secData["validLength"],
-              defaultValue: secData["defaultValue"],
-              newLineField: secData["newLineField"],
+              validLength: secData["validLength"] ? secData["validLength"] : "",
+              defaultValue:
+                secData["defaultValue"] && secData["defaultValue"] != "null"
+                  ? JSON.parse(secData["defaultValue"])
+                  : false,
+              newLineField:
+                secData["displayInNewLine"] == "True" ? true : false,
               apiKey: secData["apiKey"],
               minLength:
-                secData["validLength"]?.length > 0 &&
-                secData["validLength"] != "null"
-                  ? +secData["validLength"].split("-")[0]
+                secData["minLength"]?.length > 0 &&
+                secData["minLength"] != "null"
+                  ? +secData["minLength"]
                   : false,
               maxLength:
-                secData["validLength"]?.length > 0 &&
-                secData["validLength"] != "null"
-                  ? +secData["validLength"].split("-")[1]
-                  : 100,
+                secData["maxLength"]?.length > 0 &&
+                secData["maxLength"] != "null"
+                  ? +secData["maxLength"]
+                  : false,
               regex:
                 secData["regex"] &&
                 secData["regex"] != "null" &&
                 secData["regex"].trim().length
                   ? secData["regex"]
                   : false,
+              regexMsg:
+                secData["regexMessage"] && secData["regexMessage"].trim().length
+                  ? secData["regexMessage"]
+                  : false,
+              validValues:
+                secData["validValues"] && secData["validValues"].length
+                  ? JSON.parse(secData["validValues"])
+                  : false,
+              displayValidValuesOnHover:
+                secData["displayValidValuesOnHover"] &&
+                secData["displayValidValuesOnHover"] == "Yes"
+                  ? secData["displayValidValuesOnHover"]
+                  : false,
+              prefix:
+                secData["prefix"] && secData["prefix"].trim().length
+                  ? secData["prefix"]
+                  : false,
+              suffix:
+                secData["suffix"] && secData["suffix"].trim().length
+                  ? secData["suffix"]
+                  : false,
+              setOptions:
+                secData["setOptions"] && secData["setOptions"].length
+                  ? JSON.parse(secData["setOptions"])
+                  : false,
               minDate:
                 secData["fieldType"] == "date"
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
-                    : this.validMinDate(secData["fieldName"])
+                    : this.validMinDate(secData["fieldId"])
                   : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.validMaxDate(secData["fieldName"])
+                    : this.validMaxDate(secData["fieldId"])
                   : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : this.validDefDate(secData["fieldName"])
+                    : this.validDefDate(secData["fieldId"])
                   : new Date(),
+              blockMessageCode:
+                secData["blockMessageCode"] &&
+                secData["blockMessageCode"].length
+                  ? JSON.parse(secData["blockMessageCode"])
+                  : false,
+              warningMessageCode:
+                secData["warningMessageCode"] &&
+                secData["warningMessageCode"].length
+                  ? JSON.parse(secData["warningMessageCode"])
+                  : false,
+              block: secData["block"] == "True" ? true : false,
+              warning: secData["warning"] == "True" ? true : false,
             };
-            return fieldData;
+            return fData;
           })
           .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
       };
-      allFormSections.push(formSection);
+      allFSec.push(fSec);
     });
+    console.log(":::new", allFSec);
+    // NEW JSON END
 
-    this.formSections = allFormSections;
+    this.apiData = data;
+    this.individualForm = this.formBuilder.group({});
+    console.log(data);
+    // let allFormSections = [];
+    // Object.keys(data).forEach((key) => {
+    //   let formSection = {
+    //     formName: key,
+    //     fields: data[key]
+    //       .map((secData) => {
+    //         let fieldData = {
+    //           name: secData["fieldName"],
+    //           formLableFieldSequence: secData["formLableFieldSequence"],
+    //           fieldName: secData["fieldName"],
+    //           fieldType: secData["fieldType"],
+    //           fieldSubtype: secData["fieldSubtype"],
+    //           fieldLabel: secData["fieldLabel"],
+    //           required: secData["isMandatory"] == "Y" ? true : false,
+    //           enable: secData["isEnable"] == "Y" ? true : false,
+    //           visible:
+    //             !secData["isVisibile"] || secData["isVisibile"] == "Y"
+    //               ? true
+    //               : false,
+    //           validLength: secData["validLength"],
+    //           defaultValue: secData["defaultValue"],
+    //           newLineField: secData["newLineField"],
+    //           apiKey: secData["apiKey"],
+    //           minLength:
+    //             secData["validLength"]?.length > 0 &&
+    //             secData["validLength"] != "null"
+    //               ? +secData["validLength"].split("-")[0]
+    //               : false,
+    //           maxLength:
+    //             secData["validLength"]?.length > 0 &&
+    //             secData["validLength"] != "null"
+    //               ? +secData["validLength"].split("-")[1]
+    //               : 100,
+    //           regex:
+    //             secData["regex"] &&
+    //             secData["regex"] != "null" &&
+    //             secData["regex"].trim().length
+    //               ? secData["regex"]
+    //               : false,
+    //           minDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["minDate"]
+    //                 ? new Date(secData["minDate"])
+    //                 : this.validMinDate(secData["fieldName"])
+    //               : this.pastYear,
+    //           maxDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["maxDate"]
+    //                 ? new Date(secData["maxDate"])
+    //                 : this.validMaxDate(secData["fieldName"])
+    //               : this.futureYear,
+    //           defaultDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["initialDate"]
+    //                 ? new Date(secData["initialDate"])
+    //                 : this.validDefDate(secData["fieldName"])
+    //               : new Date(),
+    //         };
+    //         return fieldData;
+    //       })
+    //       .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
+    //   };
+    //   allFormSections.push(formSection);
+    // });
+
+    // console.log(":::old", allFormSections);
+    this.formSections = allFSec.sort((a, b) => a.seqOrder - b.seqOrder);
     console.log(this.formSections);
     this.disabledFields = {};
     this.formSections.forEach((section) => {
@@ -196,11 +376,11 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
           haveVisibleFields = true;
         }
         let validators = [];
-        if (field.validLength?.length > 0 && field.validLength != "null") {
-          let min = +field.validLength?.split("-")[0];
-          let max = +field.validLength?.split("-")[1];
-          validators.push(Validators.minLength(min));
-          validators.push(Validators.maxLength(max));
+        if (field.minLength) {
+          validators.push(Validators.minLength(field.minLength));
+        }
+        if (field.maxLength) {
+          validators.push(Validators.maxLength(field.maxLength));
         }
         if (field.required) {
           validators.push(Validators.required);
@@ -212,10 +392,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
           field.name,
           this.formBuilder.control(
             {
-              value:
-                field.defaultValue?.length > 0 && field.defaultValue != "null"
-                  ? field.defaultValue
-                  : "",
+              value: field.defaultValue ? field.defaultValue : "",
               disabled: !field.enable,
             },
             validators
@@ -226,6 +403,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       this.individualForm.addControl(section.formName, sectionGroup);
     });
 
+    console.log(this.individualForm);
     this.coreService.removeLoadingScreen();
     if (this.individualForm.get("Contact Details")?.get("contactCountry")) {
       this.countryChange$ = this.individualForm
@@ -318,8 +496,8 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
       section.fields.forEach((field) => {
         if (field["fieldName"] in data) {
           if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
+            field.fieldType == "dropdownSingle" ||
+            field.fieldType == "dropdownMulti"
           ) {
             let filterData = this.masterDataOrg[field["fieldName"]]?.filter(
               (msField) => {
@@ -490,7 +668,10 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
     this.formSections.forEach((section) => {
       section.fields.forEach((field) => {
-        if (field.fieldType == "select" || field.fieldType == "smart-search") {
+        if (
+          field.fieldType == "dropdownSingle" ||
+          field.fieldType == "dropdownMulti"
+        ) {
           let value = payloadData[field["fieldName"]]
             ? payloadData[field["fieldName"]]["codeName"]
             : "";

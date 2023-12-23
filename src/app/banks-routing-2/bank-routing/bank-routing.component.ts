@@ -27,6 +27,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-bank-routing",
   templateUrl: "./bank-routing.component.html",
@@ -38,6 +40,8 @@ export class BankRoutingComponent2 implements OnInit {
   linkedRouteCode: any = [];
 
   inactiveData: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private router: Router,
@@ -236,7 +240,10 @@ export class BankRoutingComponent2 implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           const bankRoutingListingData = response.bankRoutingListingData;
 
           if (bankRoutingListingData["data"]) {
@@ -308,7 +315,7 @@ export class BankRoutingComponent2 implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     criteriaMasterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {
@@ -340,7 +347,9 @@ export class BankRoutingComponent2 implements OnInit {
               return { label: code, value: code };
             });
           } else {
-            this.noDataMsg = bankRoutingListingData["msg"];
+            if (bankRoutingListingData["msg"]) {
+              this.coreService.showWarningToast(bankRoutingListingData["msg"]);
+            }
             this.showNoDataFound = true;
             this.bankRoutingData = [];
           }

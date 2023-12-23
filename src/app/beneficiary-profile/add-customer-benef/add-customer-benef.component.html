@@ -15,11 +15,10 @@
           <div
             *ngIf="field.visible"
             [ngClass]="{
-              'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm': !(
-                field?.newLineField == 'Y'
-              ),
+              'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm':
+                !field?.newLineField,
               checkbox: field.fieldType == 'checkbox',
-              newLineField: field?.newLineField == 'Y'
+              newLineField: field?.newLineField
             }"
           >
             <label
@@ -27,36 +26,80 @@
                 field.fieldLabel.length > 27 ? field.fieldLabel : ''
               "
               >{{
-                field.fieldLabel.length > 27
+                field.fieldLabel.length > 27 && !field?.newLineField
                   ? field.fieldLabel.substring(0, 27) + ".."
                   : field.fieldLabel
               }}</label
             ><span *ngIf="field.required" class="required">*</span>
             <ng-container [ngSwitch]="field.fieldType">
-              <input
-                *ngSwitchCase="'text'"
-                type="text"
-                class="block"
-                pInputText
-                [formControlName]="field.name"
-              />
-              <ng-container *ngSwitchCase="'number'">
-                <ng-container
-                  *ngIf="
-                    field.name == 'contactMobileNumber' ||
-                    field.name == 'contactPhoneNumber'
+              <ng-container *ngSwitchCase="'text'">
+                <div
+                  style="position: 'relative'"
+                  [pTooltip]="
+                    individualForm.controls[field.formName]['controls'][
+                      field.name
+                    ].errors?.invalidValue
+                      ? field.displayValidValuesOnHover == 'Yes'
+                        ? 'Valid values are ' + field.validValues.join(', ')
+                        : ''
+                      : ''
                   "
+                  tooltipPosition="top"
                 >
-                  <div class="phone-Inp">
+                  <input
+                    type="text"
+                    class="block"
+                    pInputText
+                    [formControlName]="field.name"
+                    [ngStyle]="{
+                      paddingLeft: field.prefix ? '45px' : '',
+                      paddingRight: field.suffix ? '40px' : ''
+                    }"
+                    (ngModelChange)="checkValidValuesText($event, field)"
+                  />
+                  <span class="prefix-Inp" *ngIf="field.prefix">{{
+                    field.prefix
+                  }}</span>
+                  <span class="suffix-Inp" *ngIf="field.suffix">{{
+                    field.suffix
+                  }}</span>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="'number'">
+                <ng-container>
+                  <div
+                    style="position: 'relative'"
+                    [pTooltip]="
+                      individualForm.controls[field.formName]['controls'][
+                        field.name
+                      ].errors?.invalidValue
+                        ? field.displayValidValuesOnHover == 'Yes'
+                          ? 'Valid values are ' + field.validValues.join(', ')
+                          : ''
+                        : ''
+                    "
+                    tooltipPosition="top"
+                  >
                     <input
                       type="text"
+                      class="block"
                       pInputText
                       [formControlName]="field.name"
+                      [ngStyle]="{
+                        paddingLeft: field.prefix ? '45px' : '',
+                        paddingRight: field.suffix ? '40px' : ''
+                      }"
+                      (ngModelChange)="checkValidValuesText($event, field)"
                     />
-                    <span>{{ countryDialCode }}</span>
+                    <span class="prefix-Inp" *ngIf="field.prefix">{{
+                      field.prefix
+                    }}</span>
+                    <span class="suffix-Inp" *ngIf="field.suffix">{{
+                      field.suffix
+                    }}</span>
                   </div>
                 </ng-container>
-                <ng-container
+                <!-- <ng-container
                   *ngIf="
                     !(
                       field.name == 'contactMobileNumber' ||
@@ -71,12 +114,12 @@
                     pattern="[0-9\s]{0,20}"
                     [formControlName]="field.name"
                   />
-                </ng-container>
+                </ng-container> -->
               </ng-container>
-              <div class="currency-Inp" *ngSwitchCase="'currency'">
+              <!-- <div class="currency-Inp" *ngSwitchCase="'currency'">
                 <input type="text" pInputText [formControlName]="field.name" />
                 <span>AED</span>
-              </div>
+              </div> -->
               <p-calendar
                 *ngSwitchCase="'date'"
                 class="block"
@@ -89,8 +132,19 @@
                 [defaultDate]="field.defaultDate"
                 [readonlyInput]="false"
                 [appendTo]="'body'"
-                (onSelect)="handleDateSelect(calendar)"
+                (onSelect)="handleDateSelect(calendar, $event)"
+                (ngModelChange)="checkValidValuesDate($event, field)"
                 appDateMask
+                [pTooltip]="
+                  individualForm.controls[field.formName]['controls'][
+                    field.name
+                  ].errors?.invalidValue
+                    ? field.displayValidValuesOnHover == 'Yes'
+                      ? 'Valid values are ' + field.validValues.join(', ')
+                      : ''
+                    : ''
+                "
+                tooltipPosition="top"
                 #calendar
               ></p-calendar>
               <p-checkbox
@@ -100,12 +154,22 @@
                 (onChange)="sameAddress($event, field.name)"
               ></p-checkbox>
               <p-dropdown
-                *ngSwitchCase="'select'"
+                *ngSwitchCase="'dropdownSingle'"
                 class="block"
-                [options]="masterDataOrg[field.apiKey]"
+                [options]="
+                  field.setOptions && field.setOptions.length
+                    ? field.setOptions
+                    : masterData[field.apiKey]
+                "
                 [formControlName]="field.name"
-                placeholder="&nbsp;"
+                placeholder="Type to search"
                 optionLabel="codeName"
+                [appendTo]="'body'"
+                [filter]="true"
+                filterBy="codeName"
+                [virtualScroll]="true"
+                [virtualScrollItemSize]="35"
+                panelStyleClass="formFields-dropdown"
               >
                 <ng-template let-options pTemplate="item">
                   <div class="truncate-text">
@@ -117,7 +181,11 @@
                 *ngSwitchCase="'smart-search'"
                 class="block smartSearch"
                 [formControlName]="field.name"
-                [options]="masterDataOrg[field.apiKey]"
+                [options]="
+                  field.setOptions && field.setOptions.length
+                    ? field.setOptions
+                    : masterData[field.apiKey]
+                "
                 optionLabel="codeName"
                 [filter]="true"
                 filterBy="codeName"
@@ -186,7 +254,11 @@
                 ].errors?.pattern
               "
               class="p-error block"
-              >Improper {{ field.fieldLabel }} format.</small
+              >{{
+                field.regexMsg
+                  ? field.regexMsg
+                  : "Improper " + field.fieldLabel + " format."
+              }}</small
             >
             <small
               *ngIf="
@@ -200,6 +272,15 @@
               class="p-error block"
               >{{ field.fieldLabel }} must not exceed
               {{ field.maxLength }} characters.</small
+            >
+            <small
+              *ngIf="
+                individualForm.controls[section.formName]['controls'][
+                  field.name
+                ].errors?.invalidValue
+              "
+              class="p-error block"
+              >Please enter a valid value.</small
             >
           </div>
         </ng-container>
@@ -243,6 +324,16 @@
     ></button>
   </div>
 </form>
+<div class="NorecordFound" *ngIf="!(apiData && objectKeys(apiData).length)">
+  <div class="row">
+    <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <p>No Data Found.</p>
+    </div>
+  </div>
+</div>
 <p-confirmDialog
   key="resetBenfWarning"
   class="confirm-popup"

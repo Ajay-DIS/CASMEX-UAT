@@ -57,11 +57,11 @@ small.p-error {
 
 div.checkbox {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: left;
   flex-direction: row-reverse;
   align-items: center;
   // flex-basis: fit-content;
-  gap: 15px;
+  gap: 5px;
 }
 
 div.newLineField {
@@ -178,27 +178,13 @@ div.btn-grp {
   right: 5px;
 }
 
-.currency-Inp {
-  position: relative;
-}
-.currency-Inp input {
-  width: 100%;
-  padding-right: 40px;
-}
-.currency-Inp span {
+span.suffix-Inp {
   font-size: 0.8rem;
   position: absolute;
   right: 5%;
-  top: 8px;
+  top: 8.5px;
 }
-.phone-Inp {
-  position: relative;
-}
-.phone-Inp input {
-  width: 100%;
-  padding-left: 45px;
-}
-.phone-Inp span {
+span.prefix-Inp {
   font-size: 0.8rem;
   position: absolute;
   left: 5%;

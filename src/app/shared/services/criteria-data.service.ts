@@ -16,6 +16,7 @@ export class CriteriaDataService {
     cmCriteriaDependency: any,
     cmCriteriaSlabType: any
   ) {
+    console.log(":::", cmCriteriaDataDetails);
     let criteriaMapDdlOptions = [];
     let independantCriteriaArr = [];
 
@@ -70,8 +71,8 @@ export class CriteriaDataService {
           });
         }
         let crElm = {
-          label: element.fieldName,
-          data: element.displayName,
+          label: element.displayName,
+          data: element.fieldName,
           isMandatory: isMandatory,
           isDependent: isDependent,
           dependencyList: dependencyList,
@@ -118,15 +119,15 @@ export class CriteriaDataService {
 
                 //% this needs to be updated when displayName fieldName point arises
 
-                // displayName = cmCriteriaDataDetails.filter(
-                //   (data: { displayName: string; fieldName: string }) => {
-                //       return data["fieldName"] == deps;
-                //   }
-                // )[0]["displayName"];
+                displayName = cmCriteriaDataDetails.filter(
+                  (data: { displayName: string; fieldName: string }) => {
+                    return data["fieldName"] == deps;
+                  }
+                )[0]["displayName"];
 
-                displayName = Object.keys(criteriaMasterData).filter((data) => {
-                  return data == deps;
-                })[0];
+                // displayName = Object.keys(criteriaMasterData).filter((data) => {
+                //   return data == deps;
+                // })[0];
                 if (!displayName) {
                   let rangeType = Object.keys(cmCriteriaSlabType).find(
                     (key) => cmCriteriaSlabType[key] === deps
@@ -193,7 +194,10 @@ export class CriteriaDataService {
         formatVal = (value as string).split("::")[0];
         stringType = false;
         selectType =
-          (value as string).split("::")[1] == "select" ? true : false;
+          (value as string).split("::")[1] == "dropdownSingle" ||
+          (value as string).split("::")[1] == "dropdownMulti"
+            ? true
+            : false;
         inputType = (value as string).split("::")[1] == "input" ? true : false;
         buttonType =
           (value as string).split("::")[1] == "button" ? true : false;

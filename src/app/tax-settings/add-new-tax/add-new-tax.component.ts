@@ -17,6 +17,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-add-new-tax",
   templateUrl: "./add-new-tax.component.html",
@@ -134,6 +136,8 @@ export class AddNewTaxComponent implements OnInit {
 
   appModuleDataPresent: boolean = false;
   showContent: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -331,7 +335,7 @@ export class AddNewTaxComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   this.criteriaCodeText,
                   this.criteriaMasterData,
-                  this.cmCriteriaSlabType
+                  this.fieldDisplayData
                 );
 
               this.taxCode = res["taxCode"];
@@ -667,7 +671,10 @@ export class AddNewTaxComponent implements OnInit {
         take(1),
         map((response) => {
           this.formatMasterData(response.criteriaMasterData);
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {
@@ -912,7 +919,7 @@ export class AddNewTaxComponent implements OnInit {
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
-              ["LCY Amount"]
+              this.fieldDisplayData
             );
             // this.taxTypeOption = res["data"].taxTypeOption.map((option) => {
             //   return { code: option.code, codeName: option.codeName };

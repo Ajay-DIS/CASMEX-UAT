@@ -18,6 +18,8 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
 import { LoyaltyService } from "../loyalty.service";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-add-loyalty",
   templateUrl: "./add-loyalty.component.html",
@@ -179,6 +181,8 @@ export class AddLoyaltyComponent implements OnInit {
   validPromoCodeLength = false;
 
   resetParam = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -592,7 +596,7 @@ export class AddLoyaltyComponent implements OnInit {
                 this.setCriteriaService.decodeFormattedCriteria(
                   this.criteriaCodeText,
                   this.criteriaMasterData,
-                  this.cmCriteriaSlabType
+                  this.fieldDisplayData
                 );
 
               this.programCode = res["programCode"];
@@ -1006,7 +1010,10 @@ export class AddLoyaltyComponent implements OnInit {
         take(1),
         map((response) => {
           this.formatMasterData(response.criteriaMasterData);
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           if (this.criteriaDataDetailsJson.data.listCriteria) {
             this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
@@ -1255,7 +1262,7 @@ export class AddLoyaltyComponent implements OnInit {
               let crtfields = this.setCriteriaService.decodeFormattedCriteria(
                 reqData.critMap,
                 this.criteriaMasterData,
-                ["LCY Amount"]
+                this.fieldDisplayData
               );
               this.loyaltyTypeOption = res["data"].loyaltyTypeOption?.map(
                 (option) => {

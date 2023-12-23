@@ -180,4 +180,16 @@ export class FormRuleService {
       }
     );
   }
+
+  formFieldsMasterData(formType: any) {
+    if (formType == "Customer Profile Beneficiary_Form Rules") {
+      return this.http.get(
+        `/remittance/beneficiaryProfileController/getBeneficiaryProfileMaster`
+      );
+    } else {
+      return this.http.get(
+        `/remittance/corporateCustomerController/getCustomerProfileMasterData`
+      );
+    }
+  }
 }

@@ -442,12 +442,42 @@ p-paginator .p-paginator-bottom {
   color: black !important;
 }
 
+.p-multiselect-panel
+  .p-multiselect-header
+  .p-multiselect-filter-container
+  .p-inputtext,
+.p-dropdown-panel .p-dropdown-header .p-dropdown-filter-container .p-inputtext {
+  padding: 0.25rem 0.5rem;
+}
+
+.p-dropdown-panel .p-dropdown-items .p-dropdown-empty-message,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-empty-message {
+  font-size: 12px;
+}
+
+.p-multiselect-panel .p-multiselect-header,
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item {
+  padding: 0.5rem;
+}
+.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item
+  .p-checkbox
+  .p-checkbox-box {
+  width: 18px;
+  height: 18px;
+}
+
+// .p-multiselect-panel .p-multiselect-header .p-multiselect-close {
+//   display: none;
+// }
+
 // .p-multiselect:not(.p-disabled).p-focus {
 //   //box-shadow: none !important;
 // }
 
 .p-multiselect-panel {
-  max-width: 210px !important;
+  max-width: 187px !important;
 }
 
 .p-multiselect-panel .p-multiselect-items .p-multiselect-item span {
@@ -458,6 +488,31 @@ p-paginator .p-paginator-bottom {
 
 .p-multiselect-panel .p-multiselect-items {
   font-size: 13px;
+}
+
+.formRule-dropdown.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item
+  span,
+.formFields-dropdown.p-multiselect-panel
+  .p-multiselect-items
+  .p-multiselect-item
+  span,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items .p-dropdown-item span {
+  font-size: 12px;
+}
+
+.formRule-dropdown.p-multiselect-panel .p-multiselect-items,
+.formFields-dropdown.p-multiselect-panel .p-multiselect-items,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items {
+  padding: 0;
+}
+.formRule-dropdown.p-multiselect-panel .p-multiselect-items-wrapper .p-scroller,
+.formFields-dropdown.p-multiselect-panel
+  .p-multiselect-items-wrapper
+  .p-scroller,
+.formFields-dropdown.p-dropdown-panel .p-dropdown-items-wrapper .p-scroller {
+  max-height: 105px !important;
 }
 
 // Multiselect style end
@@ -666,10 +721,10 @@ p-table .filter-icon {
   width: 0;
   height: 0 !important;
 }
-.switch:focus{
+.switch:focus {
   border: 1px solid !important;
-      border-radius: 5px !important;
-  }
+  border-radius: 5px !important;
+}
 
 .slider {
   position: absolute;

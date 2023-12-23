@@ -154,7 +154,7 @@ export class SetCriteriaService {
   decodeFormattedCriteria(
     criteriaCodeText: any,
     criteriaMasterData: any,
-    cmCriteriaSlabType: any
+    fieldDisplayData: any
   ) {
     let decodedFormattedCriteriaArr = criteriaCodeText.map((crt) => {
       let formatCrt;
@@ -184,32 +184,31 @@ export class SetCriteriaService {
 
       //% this needs to be updated when displayName fieldName point arises
 
-      displayName = Object.keys(criteriaMasterData).filter((data) => {
-        return data == formatCrt.split("  ")[0];
-      })[0];
-      if (!displayName) {
-        let rangeType = Object.keys(this.RangeTypeCriteria).find(
-          (key) => this.RangeTypeCriteria[key] === formatCrt.split("  ")[0]
-        );
+      // displayName = Object.keys(criteriaMasterData).filter((data) => {
+      //   return data == formatCrt.split("  ")[0];
+      // })[0];
+      // if (!displayName) {
+      //   let rangeType = Object.keys(this.RangeTypeCriteria).find(
+      //     (key) => this.RangeTypeCriteria[key] === formatCrt.split("  ")[0]
+      //   );
 
-        if (rangeType) {
-          displayName = formatCrt.split("  ")[0];
-        }
+      //   if (rangeType) {
+      //     displayName = formatCrt.split("  ")[0];
+      //   }
+      // }
+      console.log(":::", fieldDisplayData);
+      let fieldNameArr = [];
+      if (fieldDisplayData && Object.keys(fieldDisplayData).length) {
+        fieldNameArr = Object.keys(fieldDisplayData).filter((fieldName) => {
+          return formatCrt.split("  ")[0] == fieldName;
+        });
       }
 
-      // let fieldNames = cmCriteriaDataDetails.map((critData) => {
-      //   return critData["fieldName"];
-      // });
-
-      // if (fieldNames.includes(formatCrt.split("  ")[0])) {
-      //   displayName = cmCriteriaDataDetails.filter(
-      //     (data: { displayName: string; fieldName: string }) => {
-      //       return data["fieldName"] == formatCrt.split("  ")[0];
-      //     }
-      //   )[0]["displayName"];
-      // } else {
-      //   displayName = formatCrt.split("  ")[0];
-      // }
+      if (fieldNameArr.length) {
+        displayName = fieldDisplayData[fieldNameArr[0]];
+      } else {
+        displayName = formatCrt.split("  ")[0];
+      }
       //% this needs to be updated when displayName fieldName point arises ENDS
 
       if (Object.keys(criteriaMasterData).includes(formatCrt.split("  ")[0])) {

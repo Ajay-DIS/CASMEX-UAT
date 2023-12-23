@@ -71,8 +71,6 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   uploadedFiles: any[] = [];
 
-  noDataMsg = null;
-
   Options = [
     { name: "first", code: "NY" },
     { name: "second", code: "RM" },
@@ -139,6 +137,14 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
 
   countryChange$: Subscription = null;
 
+  moduleName = "Remittance";
+  formName = "Customer Profile_Form Rules";
+  applicationName =
+    JSON.parse(localStorage.getItem("appAccess"))[0]["name"] || "Casmex Core";
+  licenseCountry = localStorage.getItem("licenseCountry");
+
+  causingCriteriaFieldsArr = [];
+
   ngOnChanges(changes: any) {
     if (changes["activeTabIndex"]) {
       if (changes["activeTabIndex"]["currentValue"] != 1) {
@@ -177,10 +183,47 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
     console.log(this.custId, this.custType);
 
     this.getDocSettingData();
+    this.getCausingCriteriaFields(
+      this.userId,
+      this.applicationName,
+      this.moduleName,
+      this.formName
+    );
+  }
+
+  getCausingCriteriaFields(
+    userId: any,
+    appName: any,
+    modName: any,
+    formName: any
+  ) {
+    this.getCustomerMasterData();
+    this.customerService
+      .getCausingCriteriaFields(userId, appName, modName, formName)
+      .subscribe((res) => {
+        if (res["Criteria FieldNames"]) {
+          console.log(":::", Object.values(res["Criteria FieldNames"]));
+          Object.values(res["Criteria FieldNames"]).forEach((crtField) => {
+            if (crtField == "licenceCountry") {
+              this.causingCriteriaFieldsArr.push(
+                `licenceCountry = ${this.licenseCountry}`
+              );
+            } else if (crtField == "Customer Type") {
+              this.causingCriteriaFieldsArr.push(`Customer Type = COR`);
+            } else {
+              this.causingCriteriaFieldsArr.push(`${crtField} = Any`);
+            }
+          });
+          this.getformRuleData(this.causingCriteriaFieldsArr.join(";"));
+        }
+      });
+  }
+
+  getformRuleData(createdCriteria: any) {
     this.http
-      .get(`/remittance/formRulesController/getFormRules`, {
+      .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
-          .set("criteriaMap", "Country = IN;Customer Type = COR")
+          .set("criteriaMap", createdCriteria)
           .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
@@ -189,20 +232,18 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         (res) => {
           this.showForm = true;
           if (res["msg"]) {
-            this.noDataMsg = res["msg"];
+            this.coreService.showWarningToast(res["msg"]);
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
             this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
             this.setFormByData(res);
-            this.getCustomerMasterData();
           }
         },
         (err) => {
           this.coreService.showWarningToast(
-            "Some error while fetching data, Try again in sometime"
+            "No form data found for selected criteria."
           );
-          this.noDataMsg = true;
           this.coreService.removeLoadingScreen();
         }
       );
@@ -265,6 +306,55 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       return this.dobMaxDate;
     } else {
       return new Date();
+    }
+  }
+
+  checkValidValuesText(e: any, fieldData: any) {
+    if (fieldData.validValues && fieldData.validValues.length && e) {
+      let match = true;
+      if (e.length) {
+        match = false;
+      }
+      fieldData.validValues.forEach((val) => {
+        // if (val.startsWith(e)) {
+        if (val == e) {
+          match = true;
+        }
+      });
+      if (!match) {
+        let currCtrl = this.corporateForm
+          .get(fieldData.formName)
+          ?.get(fieldData.name);
+        if (currCtrl) {
+          currCtrl.setErrors({
+            invalidValue: true,
+          });
+        }
+      }
+    }
+  }
+  checkValidValuesDate(e: any, fieldData: any) {
+    if (fieldData.validValues && fieldData.validValues.length) {
+      let match = true;
+      if (e) {
+        match = false;
+        fieldData.validValues.forEach((val) => {
+          // if (val.startsWith(e)) {
+          if (val == e.toLocaleDateString("en-GB")) {
+            match = true;
+          }
+        });
+      }
+      if (!match) {
+        let currCtrl = this.corporateForm
+          .get(fieldData.formName)
+          ?.get(fieldData.name);
+        if (currCtrl) {
+          currCtrl.setErrors({
+            invalidValue: true,
+          });
+        }
+      }
     }
   }
 
@@ -339,53 +429,66 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   setFormByData(data: any) {
-    this.apiData = data;
-    this.corporateForm = this.formBuilder.group({});
+    // NEW JSON START
 
-    let allFormSections = [];
-    Object.keys(data).forEach((key) => {
-      let formSection = {
+    let groupedData = data.Rules.reduce((acc, field) => {
+      const fieldSectionName = field.displaySection;
+      (acc[fieldSectionName] = acc[fieldSectionName] || []).push(field);
+      return acc;
+    }, {});
+    console.log(":::", groupedData);
+    let allFSec = [];
+    Object.keys(groupedData).forEach((key) => {
+      let fSec = {
         formName: key,
-        fields: data[key]
+        seqOrder: groupedData[key][0]["displaySectionOrder"],
+        fields: groupedData[key]
           .map((secData) => {
-            if (secData["checkDuplicate"] == "Y") {
+            if (secData["checkDuplicate"] == "Yes") {
               this.duplicateCheckFields.push(secData["fieldName"]);
             }
-            let fieldData = {
-              name: secData["fieldName"],
-              formLableFieldSequence: secData["formLableFieldSequence"],
-              fieldName: secData["fieldName"],
-              fieldType: secData["fieldType"],
-              fieldSubtype: secData["fieldSubtype"],
-              fieldLabel: secData["fieldLabel"],
+            let fData = {
+              formName: key,
+              name: secData["fieldId"],
+              formLableFieldSequence: +secData["fieldDisplayOrder"],
+              fieldName: secData["fieldId"],
+              fieldType: secData["fieldType"] ? secData["fieldType"] : "text",
+              fieldSubtype: secData["fieldSubtype"]
+                ? secData["fieldSubtype"]
+                : "",
+              fieldLabel: secData["fieldDisplayName"],
               required: this.docFormSections.includes(key)
                 ? false
-                : secData["isMandatory"] == "Y"
+                : secData["isMandatory"] == "True"
                 ? true
                 : false,
               docFieldMandate: this.docFormSections.includes(key)
-                ? secData["isMandatory"] == "Y"
+                ? secData["isMandatory"] == "True"
                   ? true
                   : false
                 : false,
-              enable: secData["isEnable"] == "Y" ? true : false,
+              enable: secData["isEnable"] == "True" ? true : false,
               visible:
-                !secData["isVisibile"] || secData["isVisibile"] == "Y"
+                !secData["IsVisible"] || secData["IsVisible"] == "True"
                   ? true
                   : false,
-              validLength: secData["validLength"],
-              defaultValue: secData["defaultValue"],
-              newLineField: secData["newLineField"],
+              validLength: secData["validLength"] ? secData["validLength"] : "",
+              defaultValue:
+                secData["defaultValue"] && secData["defaultValue"] != "null"
+                  ? JSON.parse(secData["defaultValue"])
+                  : false,
+              newLineField:
+                secData["displayInNewLine"] == "True" ? true : false,
               apiKey: secData["apiKey"],
               minLength:
-                secData["validLength"]?.length > 0 &&
-                secData["validLength"] != "null"
-                  ? +secData["validLength"].split("-")[0]
+                secData["minLength"]?.length > 0 &&
+                secData["minLength"] != "null"
+                  ? +secData["minLength"]
                   : false,
               maxLength:
-                secData["validLength"]?.length > 0 &&
-                secData["validLength"] != "null"
-                  ? +secData["validLength"].split("-")[1]
+                secData["maxLength"]?.length > 0 &&
+                secData["maxLength"] != "null"
+                  ? +secData["maxLength"]
                   : false,
               regex:
                 secData["regex"] &&
@@ -393,33 +496,153 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
                 secData["regex"].trim().length
                   ? secData["regex"]
                   : false,
+              regexMsg:
+                secData["regexMessage"] && secData["regexMessage"].trim().length
+                  ? secData["regexMessage"]
+                  : false,
+              validValues:
+                secData["validValues"] && secData["validValues"].length
+                  ? JSON.parse(secData["validValues"])
+                  : false,
+              displayValidValuesOnHover:
+                secData["displayValidValuesOnHover"] &&
+                secData["displayValidValuesOnHover"] == "Yes"
+                  ? secData["displayValidValuesOnHover"]
+                  : false,
+              prefix:
+                secData["prefix"] && secData["prefix"].trim().length
+                  ? secData["prefix"]
+                  : false,
+              suffix:
+                secData["suffix"] && secData["suffix"].trim().length
+                  ? secData["suffix"]
+                  : false,
+              setOptions:
+                secData["setOptions"] && secData["setOptions"].length
+                  ? JSON.parse(secData["setOptions"])
+                  : false,
               minDate:
                 secData["fieldType"] == "date"
                   ? secData["minDate"]
                     ? new Date(secData["minDate"])
-                    : this.validMinDate(secData["fieldName"])
+                    : this.validMinDate(secData["fieldId"])
                   : this.pastYear,
               maxDate:
                 secData["fieldType"] == "date"
                   ? secData["maxDate"]
                     ? new Date(secData["maxDate"])
-                    : this.validMaxDate(secData["fieldName"])
+                    : this.validMaxDate(secData["fieldId"])
                   : this.futureYear,
               defaultDate:
                 secData["fieldType"] == "date"
                   ? secData["initialDate"]
                     ? new Date(secData["initialDate"])
-                    : this.validDefDate(secData["fieldName"])
+                    : this.validDefDate(secData["fieldId"])
                   : new Date(),
+              blockMessageCode:
+                secData["blockMessageCode"] &&
+                secData["blockMessageCode"].length
+                  ? JSON.parse(secData["blockMessageCode"])
+                  : false,
+              warningMessageCode:
+                secData["warningMessageCode"] &&
+                secData["warningMessageCode"].length
+                  ? JSON.parse(secData["warningMessageCode"])
+                  : false,
+              block: secData["block"] == "True" ? true : false,
+              warning: secData["warning"] == "True" ? true : false,
             };
-            return fieldData;
+            return fData;
           })
           .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
       };
-      allFormSections.push(formSection);
+      allFSec.push(fSec);
     });
+    console.log(":::new", allFSec);
+    // NEW JSON END
 
-    this.formSections = allFormSections;
+    this.apiData = data;
+    this.corporateForm = this.formBuilder.group({});
+
+    // let allFormSections = [];
+    // Object.keys(data).forEach((key) => {
+    //   let formSection = {
+    //     formName: key,
+    //     fields: data[key]
+    //       .map((secData) => {
+    //         if (secData["checkDuplicate"] == "Y") {
+    //           this.duplicateCheckFields.push(secData["fieldName"]);
+    //         }
+    //         let fieldData = {
+    //           name: secData["fieldName"],
+    //           formLableFieldSequence: secData["formLableFieldSequence"],
+    //           fieldName: secData["fieldName"],
+    //           fieldType: secData["fieldType"],
+    //           fieldSubtype: secData["fieldSubtype"],
+    //           fieldLabel: secData["fieldLabel"],
+    //           required: this.docFormSections.includes(key)
+    //             ? false
+    //             : secData["isMandatory"] == "Y"
+    //             ? true
+    //             : false,
+    //           docFieldMandate: this.docFormSections.includes(key)
+    //             ? secData["isMandatory"] == "Y"
+    //               ? true
+    //               : false
+    //             : false,
+    //           enable: secData["isEnable"] == "Y" ? true : false,
+    //           visible:
+    //             !secData["isVisibile"] || secData["isVisibile"] == "Y"
+    //               ? true
+    //               : false,
+    //           validLength: secData["validLength"],
+    //           defaultValue: secData["defaultValue"],
+    //           newLineField: secData["newLineField"],
+    //           apiKey: secData["apiKey"],
+    //           minLength:
+    //             secData["validLength"]?.length > 0 &&
+    //             secData["validLength"] != "null"
+    //               ? +secData["validLength"].split("-")[0]
+    //               : false,
+    //           maxLength:
+    //             secData["validLength"]?.length > 0 &&
+    //             secData["validLength"] != "null"
+    //               ? +secData["validLength"].split("-")[1]
+    //               : false,
+    //           regex:
+    //             secData["regex"] &&
+    //             secData["regex"] != "null" &&
+    //             secData["regex"].trim().length
+    //               ? secData["regex"]
+    //               : false,
+    //           minDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["minDate"]
+    //                 ? new Date(secData["minDate"])
+    //                 : this.validMinDate(secData["fieldName"])
+    //               : this.pastYear,
+    //           maxDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["maxDate"]
+    //                 ? new Date(secData["maxDate"])
+    //                 : this.validMaxDate(secData["fieldName"])
+    //               : this.futureYear,
+    //           defaultDate:
+    //             secData["fieldType"] == "date"
+    //               ? secData["initialDate"]
+    //                 ? new Date(secData["initialDate"])
+    //                 : this.validDefDate(secData["fieldName"])
+    //               : new Date(),
+    //         };
+    //         return fieldData;
+    //       })
+    //       .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
+    //   };
+    //   allFormSections.push(formSection);
+    // });
+
+    // console.log(":::old", allFormSections);
+    this.formSections = allFSec.sort((a, b) => a.seqOrder - b.seqOrder);
     console.log(this.formSections);
     this.disabledFields = {};
     this.formSections.forEach((section) => {
@@ -433,11 +656,11 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           haveVisibleFields = true;
         }
         let validators = [];
-        if (field.validLength?.length > 0 && field.validLength != "null") {
-          let min = +field.validLength?.split("-")[0];
-          let max = +field.validLength?.split("-")[1];
-          validators.push(Validators.minLength(min));
-          validators.push(Validators.maxLength(max));
+        if (field.minLength) {
+          validators.push(Validators.minLength(field.minLength));
+        }
+        if (field.maxLength) {
+          validators.push(Validators.maxLength(field.maxLength));
         }
         if (field.required) {
           validators.push(Validators.required);
@@ -449,10 +672,7 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
           field.name,
           this.formBuilder.control(
             {
-              value:
-                field.defaultValue?.length > 0 && field.defaultValue != "null"
-                  ? field.defaultValue
-                  : "",
+              value: field.defaultValue ? field.defaultValue : "",
               disabled: !field.enable,
             },
             validators
@@ -2149,8 +2369,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
         ) {
           section.fields.forEach((field) => {
             if (
-              field.fieldType == "select" ||
-              field.fieldType == "smart-search"
+              field.fieldType == "dropdownSingle" ||
+              field.fieldType == "dropdownMulti"
             ) {
               let value = payloadData[field["fieldName"]]
                 ? payloadData[field["fieldName"]]["codeName"]
@@ -2492,8 +2712,8 @@ export class CorporateComponent implements OnInit, OnChanges, OnDestroy {
       section.fields.forEach((field) => {
         if (field["fieldName"] in data) {
           if (
-            field.fieldType == "select" ||
-            field.fieldType == "smart-search"
+            field.fieldType == "dropdownSingle" ||
+            field.fieldType == "dropdownMulti"
           ) {
             let filterData = this.masterData[field["fieldName"]]?.filter(
               (msField) => {

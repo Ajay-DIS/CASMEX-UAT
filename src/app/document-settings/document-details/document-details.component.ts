@@ -15,6 +15,8 @@ import { CriteriaDataService } from "src/app/shared/services/criteria-data.servi
 import { SetCriteriaComponent } from "src/app/shared/components/set-criteria/set-criteria.component";
 import { SetCriteriaService } from "src/app/shared/components/set-criteria/set-criteria.service";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-document-details",
   templateUrl: "./document-details.component.html",
@@ -184,6 +186,8 @@ export class DocumentDetailsComponent implements OnInit {
   isLcyFieldPresent = false;
 
   isDocSettingLinked: boolean = false;
+
+  fieldDisplayData = {};
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -380,7 +384,7 @@ export class DocumentDetailsComponent implements OnInit {
             this.criteriaText = this.setCriteriaService.decodeFormattedCriteria(
               this.criteriaCodeText,
               this.criteriaMasterData,
-              ["LCY Amount"]
+              this.fieldDisplayData
             );
 
             this.documentOption = res["documentOption"].map((docOption) => {
@@ -725,7 +729,7 @@ export class DocumentDetailsComponent implements OnInit {
             let crtfields = this.setCriteriaService.decodeFormattedCriteria(
               reqData.critMap,
               this.criteriaMasterData,
-              ["LCY Amount"]
+              this.fieldDisplayData
             );
             this.documentOption = res["data"].documentOption.map(
               (docOption) => {
@@ -1140,7 +1144,10 @@ export class DocumentDetailsComponent implements OnInit {
         take(1),
         map((response) => {
           this.formatMasterData(response.criteriaMasterData);
-          const criteriaMasterData = response.criteriaMasterData;
+          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+          delete criteriaMasterJson["fieldDisplay"];
+          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+          const criteriaMasterData = criteriaMasterJson;
           this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
           this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
             (data) => {

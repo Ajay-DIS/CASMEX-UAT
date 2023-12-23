@@ -9,6 +9,8 @@ import {
   Validators,
 } from "@angular/forms";
 
+import _lodashClone from "lodash-es/cloneDeep";
+
 @Component({
   selector: "app-get-doc-settings",
   templateUrl: "./get-doc-settings.component.html",
@@ -30,6 +32,8 @@ export class GetDocSettingsComponent implements OnInit {
   selectAppModule: any;
   searchApplicationOptions: any[] = [];
   searchModuleOptions: any[] = [];
+
+  fieldDisplayData = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -115,7 +119,10 @@ export class GetDocSettingsComponent implements OnInit {
       })
       .subscribe((res: any) => {
         console.log("masterdata", res);
-        this.masterData = res;
+        let criteriaMasterJson = _lodashClone(res);
+        delete criteriaMasterJson["fieldDisplay"];
+        this.fieldDisplayData = res["fieldDisplay"];
+        this.masterData = criteriaMasterJson;
       });
   }
   Apply() {
@@ -239,7 +246,7 @@ export class GetDocSettingsComponent implements OnInit {
                   this.setCriteriaService.decodeFormattedCriteria(
                     criteriaCodeText,
                     this.masterData,
-                    [""]
+                    this.fieldDisplayData
                   ) as []
                 ).join(", ");
                 if (afterSplit?.length) {

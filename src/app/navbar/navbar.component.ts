@@ -394,6 +394,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       this.authService.userDataSub.next(null);
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
+      localStorage.removeItem("licenseCountry");
       if (data.name == "Logout") {
         this.coreService.showSuccessToast("Logged Out Successfully.");
       }
