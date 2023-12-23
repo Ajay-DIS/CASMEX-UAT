@@ -229,6 +229,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/beneficiary-profile";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Master":
+          item["routerLink"] = "/navbar/master";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
 
         case "Document Settings":
           item["routerLink"] = "/navbar/document-settings";
@@ -324,6 +328,11 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         break;
       case "Customer Service":
         iconName = "beneficiary-icon";
+        break;
+      case "Master":
+        iconName = "beneficiary-icon";
+        matchUrls = ["/navbar/master"];
+        routeName = "/navbar/master";
         break;
       case "Loyalty":
         iconName = "settings-icon";

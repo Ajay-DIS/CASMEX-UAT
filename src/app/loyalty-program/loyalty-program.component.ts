@@ -109,6 +109,14 @@ export class LoyaltyProgramComponent implements OnInit {
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
+    const translationKey = "Loyalty";
+
+    // Update translation
+    this.coreService
+      .translate(translationKey)
+      .then((translatedTitle: string) => {
+        this.coreService.setPageTitle(translatedTitle);
+      });
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });

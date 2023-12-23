@@ -1,0 +1,332 @@
+<div class="visible-main-section">
+    <div class="pagetitle">
+      <div class="col-12">
+        <div class="row mt-3">
+          <div
+            class="col-md-9 col-lg-10 col-sm-12 col-xs-12 mt-2 flex-align-center"
+          >
+            <div class="row">
+              <div
+                class="col-md-6 col-lg-6 col-sm-12 col-xs-12 inline-flex searchInBtn"
+              >
+                <p-dropdown
+                  class="colorInput"
+                  [options]="userTypeOptions"
+                  [(ngModel)]="masterType"
+                  optionValue="code"
+                  optionLabel="name"
+                  class="firstdropdown"
+                  placeholder="Select Master"
+                ></p-dropdown>
+                
+              </div>
+              <div class="col-md-3 col-lg-3 col-sm-6 col-xs-6 pl-0 ml-0">
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  (click)="searchMaster()"
+                  label="Search"
+                  style="padding: 6px 16px;"
+                  class="search-btn ml-2 headerbtn"
+                ></button>
+                <button
+                  pButton
+                  pRipple
+                  type="button"
+                  (click)="clearMaster()"
+                  style="padding: 6px 16px;"
+                  label="Clear"
+                  class="p-button-warning search-btn ml-2 mt-lg-0 headerbtn"
+                ></button>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+          <!-- *ngIf="addnewHide" -->
+          <div class="col-md-3 col-lg-2 col-sm-4 col-xs-4 mt-2 headerbtn" *ngIf="addnewHide">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Add New"
+              style="padding: 6px 16px;"
+              class="p-button-raised search-btn ml-4"
+              (click)="addNew()"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="ptable" *ngIf="showTable">
+        <p-table
+          #dt
+          [columns]="cols"
+          [value]="masterListData"
+          dataKey="customerCode"
+          [resizableColumns]="true"
+          columnResizeMode="fit"
+          [rowHover]="true"
+          [paginator]="true"
+      [rows]="10"
+          [loading]="customerTableLoading"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th
+                *ngFor="let col of columns; let c = index"
+                pReorderableColumn
+                [pSortableColumn]="col.field"
+                pResizableColumn
+                [style.width]="col.width"
+              >
+                {{ col.header }}
+                <p-sortIcon
+                [field]="col.field"
+              ></p-sortIcon>
+              </th>
+            </tr>
+            <tr class="search-row">
+              <th *ngFor="let col of cols" [style.width]="col.width">
+                <span style="width: 80%;" class="p-input-icon-left" *ngIf="col.field != 'status'">
+                  <i class="pi pi-search"></i>
+                  <input
+                    type="text"
+                    class="p-inputtext table-search"
+                    placeholder="Search"
+                    (input)="dt.filter($event.target.value, col.field, 'contains')"
+                  />
+                </span>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template
+            pTemplate="body"
+            let-rowData
+            let-columns="columns"
+            let-index="rowIndex"
+          >
+            <tr [pReorderableRow]="index">
+              <ng-container *ngFor="let col of columns; let i = index">
+                <td *ngIf="col.field != 'status'" >
+                  <div
+                    style="display: inline-block;" *ngIf="!(i == 0)"
+                  >
+                    {{ rowData[col["field"]] }}
+                  </div>
+                 <div *ngIf="i == 0">
+                  <a
+                  style="text-decoration: underline !important;cursor: pointer;color: var(--primary-color)"
+                  (click)="openClickForEdit(rowData)"
+                  >{{ rowData[col["field"]] }}</a
+                ></div>
+                </td>
+                <td
+              *ngIf="col.field == 'status'"
+              style="border: none;"
+            >
+              <label class="switch" style="border: none">
+                <input
+                  #statusInp
+                  [value]="rowData[col['field']]"
+                  type="checkbox"
+                  (click)="confirmStatus($event, rowData)"
+                  [checked]="
+                    rowData[col['field']] == 'Active' ||
+                    rowData[col['field']] == 'A'
+                      ? true
+                      : false
+                  "
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+              </ng-container>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="cols.length">No Data Found.</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorleft" let-state>
+            {{ state.page * state.rows + 1 }} -
+            {{
+              state.rows * (state.page + 1) > state.totalRecords
+                ? state.totalRecords
+                : state.rows * (state.page + 1)
+            }}
+            of {{ state.totalRecords }}
+          </ng-template>
+        </p-table>
+      </div>
+    
+  </div>
+  <div class="NorecordFound" *ngIf="!showTable">
+    <div class="row">
+      <div class="col-12"><img src="assets/searchCriteria.PNG" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>Select master to view the details.</p>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    key="activeDeactiveStatus"
+    class="status-confirm confirm-popup"
+    #cd
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  <div class="uploadedImgModal">
+    <p-dialog
+      [(visible)]="showAddnewModal"
+      [modal]="true"
+      [style]="{ width: '32vw', left: '50px' }"
+      (onHide)="closeDialog()"
+    >
+      <ng-template pTemplate="header">
+        <div class="application-header">Add New</div>
+      </ng-template>
+      <ng-template pTemplate="body">
+        <div class="row" Master-addnew-section>
+          <div class="col-md-6 col-lg-6">
+            <div
+              class="taxCode"
+            >
+              <p>{{ HeaderCode }}</p>
+              <input type="text" pInputText [(ngModel)]="masterCode" disabled style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;" />
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6">
+            <div class="taxCode">
+              <p style="position: relative;">
+                {{ HeaderName }} <span class="description red-star">*</span>
+              </p>
+              <input
+                type="text"
+                pInputText
+                maxlength="50"
+                placeholder="Max 50 characters"
+                [(ngModel)]="masterName"
+                maxlength="50"
+                style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="row addnewbtnSection" Master-addnew-section >
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Save & Close"
+            class="p-button-raised search-btn "
+            (click)="saveAddNewMaster('save')"
+          ></button>
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Save & Add New"
+            class="p-button-raised search-btn "
+            (click)="saveAddNewMaster('saveAndAddNew')"
+          ></button>
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Reset"
+            class="p-button-warning search-btn "
+            (click)="resetAddNew()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>
+  <div class="uploadedImgModal">
+    <p-dialog
+      [(visible)]="showViewModal"
+      [modal]="true"
+      [style]="{ width: '32vw', left: '50px' }"
+      (onHide)="closeDialog()"
+    >
+      <ng-template pTemplate="header">
+        <div class="application-header">View</div>
+      </ng-template>
+      <ng-template pTemplate="body">
+        <div class="row" Master-addnew-section>
+          <div class="col-md-6 col-lg-6">
+            <div
+              class="taxCode"
+            >
+              <p>{{ HeaderCode }}</p>
+              <input type="text" pInputText [(ngModel)]="masterCode" disabled style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;" />
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-6">
+            <div class="taxCode">
+              <p style="position: relative;">
+                {{ HeaderName }} <span class="description red-star">*</span>
+              </p>
+              <input
+                type="text"
+                pInputText
+                maxlength="50"
+                placeholder="Max 50 characters"
+                [disabled]="disableCodeName"
+                [(ngModel)]="masterName"
+                style="border: 1px solid #a2a3a4 !important;box-shadow: inset 0 0 0 0.01rem #a2a3a4;width: 100%;"
+              />
+            </div>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="row btnsection" Master-addnew-section>
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Edit"
+            class="p-button-warning search-btn "
+            (click)="editDisableModel()"
+            style="padding: 6px 16px;"
+            [disabled]="deactivated"
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            label="Save"
+            class="p-button-raised search-btn "
+            disabled
+            (click)="updateMaster()"
+            style="padding: 6px 16px;"
+          ></button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>
+  

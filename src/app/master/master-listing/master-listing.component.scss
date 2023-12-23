@@ -1,0 +1,181 @@
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+:host ::ng-deep .p-dropdown {
+  font-size: 14px;
+  width: 490px;
+}
+.NorecordFound img {
+  width: 18%;
+  // padding-bottom: 80px;
+  padding-top: 120px;
+}
+.NorecordFound p {
+  padding-bottom: 100px;
+}
+
+
+.flex-align-center {
+  padding-left: 25px;
+}
+
+.pagetitle {
+  background-color: #fff;
+  border-radius: 6px;
+  padding-bottom: 20px;
+}
+:host ::ng-deep .primarydropdown .p-dropdown {
+  // align-items: center;
+  background-color: #e9ecf4 !important ;
+  border: solid 1px#a2a2a2 !important;
+  border-top-right-radius: initial !important;
+  border-bottom-right-radius: initial !important;
+}
+
+
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+
+// :host ::ng-deep p-element p-inputwrapper .searchBox .p-inputtext {
+//   width: 48%;
+// }
+.ptable ::ng-deep .p-datatable .p-sortable-column .p-sortable-column-icon {
+  font-size: 11px;
+  margin-left: 2px;
+}
+
+.btnround {
+  border-radius: 50% !important;
+  height: 26px !important;
+  width: 26px !important;
+}
+.btnsection {
+  margin-top: -7px;
+  margin-left: 153px;
+}
+.addnewbtnSection{
+  margin-top: -7px;
+  margin-left: 80px;
+}
+@media screen and (min-width: 1550px) {
+ .addnewbtnSection{
+  margin-left: 100px;
+}
+}
+@media screen and (max-width: 1502px) and (min-width: 1428px) {
+    :host ::ng-deep .p-dropdown {
+        width: 450px !important;
+      }
+}
+@media screen and (max-width: 1427px) and (min-width: 1350px) {
+    :host ::ng-deep .p-dropdown {
+        width: 400px !important;
+      }
+      .btnsection {
+        margin-left: 135px;
+      }
+      .addnewbtnSection{
+        margin-left: 60px;
+      }
+}
+@media screen and (max-width: 1349px) and (min-width: 1201px) {
+    :host ::ng-deep .p-dropdown {
+        width: 350px !important;
+      }
+      .btnsection {
+        margin-left: 112px;
+      }
+      .addnewbtnSection{
+        margin-left: 30px;
+      }
+}
+@media screen and (max-width: 1200px) and (min-width: 1000px) {
+    :host ::ng-deep .p-dropdown {
+        width: 350px !important;
+      }
+}
+@media screen and (max-width: 999px) and (min-width: 880px) {
+    :host ::ng-deep .p-dropdown {
+        width: 300px !important;
+      }
+}
+@media screen and (max-width: 879px) and (min-width: 767px) {
+    :host ::ng-deep .p-dropdown {
+        width: 250px !important;
+      }
+}
+// @media screen and (max-width: 1750px) and (min-width: 1550pxpx) {
+//   .p-input-icon-right {
+//     width: 65% !important;
+//   }
+// }
+// @media screen and (max-width: 1380px) and (min-width: 1329px) {
+//   .p-input-icon-right {
+//     width: 56% !important;
+//   }
+// }
+// @media screen and (max-width: 1328px) and (min-width: 1201px) {
+//   .p-input-icon-right {
+//     width: 46% !important;
+//   }
+// }
+
+@media screen and (max-width: 1250px)  {
+  .NorecordFound img {
+    width: 15%;
+    // padding-bottom: 80px;
+    padding-top: 100px;
+  }
+  .NorecordFound p {
+    padding-bottom: 80px;
+  }
+}
+// @media screen and (max-width: 785px) and (min-width: 768px) {
+//   .p-input-icon-right i {
+//     position: absolute;
+//     top: 25% !important;
+//   }
+// }
+
+
+.table-search {
+  max-width: unset !important;
+}
+
+.primarydropdown.docId-dropdown ::ng-deep .p-dropdown {
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-top-right-radius: 6px !important;
+  border-bottom-right-radius: 6px !important;
+}
+.disabled {
+  cursor: not-allowed !important;
+  color: #999 !important; 
+}
+.application-header{
+  color: var(--primary-color);
+  font-family: "IBM Plex Sans", sans-serif !important;
+  font-size: 15px;
+  font-weight: 700;
+}
+.Master-addnew-section {
+  font-size: 0.8rem;
+  font-weight: 700;
+  gap: 15px;
+  color: #4b4949 !important; 
+}
+.description.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: -5px;
+  margin-left: 2px;
+}
+// :host ::ng-deep .button.p-button {
+//     padding: 5px 10px !important;
+//   }

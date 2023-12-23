@@ -89,8 +89,13 @@ import { LoyaltyProgramComponent } from "./loyalty-program/loyalty-program.compo
 import { AddLoyaltyComponent } from "./loyalty-program/add-loyalty/add-loyalty.component";
 import { LoyaltyDetailsListComponent } from "./loyalty-program/loyalty-details-list/loyalty-details-list.component";
 import { ClipboardModule } from "ngx-clipboard";
-import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-details.component";
-import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-listing.component";
+
+import { ChargeDetailsComponent } from './charge-settings/charge-details/charge-details.component';
+import { ChargeListingComponent } from './charge-settings/charge-listing/charge-listing.component';
+import { MasterListingComponent } from './master/master-listing/master-listing.component';
+import { CustomisedListingComponent } from './customised-messages/customised-listing/customised-listing.component';
+import { CustomisedDetailsComponent } from './customised-messages/customised-details/customised-details.component';
+
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -136,6 +141,9 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     LoyaltyDetailsListComponent,
     ChargeDetailsComponent,
     ChargeListingComponent,
+    MasterListingComponent,
+    CustomisedListingComponent,
+    CustomisedDetailsComponent,
   ],
   imports: [
     BrowserModule,

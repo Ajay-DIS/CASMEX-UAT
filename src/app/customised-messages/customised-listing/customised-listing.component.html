@@ -1,0 +1,128 @@
+<div class="visible-main-section">
+    <div class="pagetitle">
+      <div class="infoicon">
+        <i class="pi pi-info-circle"></i>
+        List of Customised Messages.
+      </div>
+      <div class="addnew">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New Message"
+          class="p-button-raised"
+          (click)="addNewMessage()"
+        ></button>
+      </div>
+    </div>
+
+<div class="ptable">
+    <p-table
+      #dt
+      [columns]="cols"
+      [value]="customisedMessagesListData"
+      dataKey="customerCode"
+      [resizableColumns]="true"
+      columnResizeMode="fit"
+      [rowHover]="true"
+      [paginator]="true"
+  [rows]="10"
+      [loading]="customisedMessagesTableLoading"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns; let c = index"
+            pReorderableColumn
+            [pSortableColumn]="col.field"
+            pResizableColumn
+            [style.width]="col.width"
+          >
+            {{ col.header }}
+           
+          </th>
+        </tr>
+        <tr class="search-row">
+          <th *ngFor="let col of cols" [style.width]="col.width">
+            <span style="width: 100%;" class="p-input-icon-left" *ngIf="col.field != 'status' && col.field != 'action'">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                class="p-inputtext table-search"
+                placeholder="Search"
+                (input)="dt.filter($event.target.value, col.field, 'contains')"
+              />
+            </span>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template
+        pTemplate="body"
+        let-rowData
+        let-columns="columns"
+        let-index="rowIndex"
+      >
+        <tr [pReorderableRow]="index">
+          <ng-container *ngFor="let col of columns; let i = index">
+            <td *ngIf="col.field != 'status'&& col.field != 'action'" (click)="openClickForEdit(rowData)" style="cursor: pointer;">
+              <div
+                style="display: inline-block;cursor: pointer;"
+              >
+                {{ rowData[col["field"]] }}
+              </div>
+             
+            </td>
+            <td
+          *ngIf="col.field == 'status'"
+          style="border: none;"
+        >
+          <label class="switch" style="border: none">
+            <input
+              #statusInp
+              [value]="rowData[col['field']]"
+              type="checkbox"
+              (click)="confirmStatus($event, rowData)"
+              [checked]="
+                rowData[col['field']] == 'Active' ||
+                rowData[col['field']] == 'A'
+                  ? true
+                  : false
+              "
+            />
+            <span class="slider round"></span>
+          </label>
+        </td>
+        <td
+              *ngIf="col.field == 'action'"
+              style="border: none; text-align: center"
+            >
+              <span class="image-text">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="operation-btns mr-2"
+                  [disabled]="rowData['status'] == 'Inactive'"
+                  (click)="cloneTax(rowData)"
+                ></button>
+              </span>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td [attr.colspan]="cols.length">No Data found.</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state>
+        {{ state.page * state.rows + 1 }} -
+        {{
+          state.rows * (state.page + 1) > state.totalRecords
+            ? state.totalRecords
+            : state.rows * (state.page + 1)
+        }}
+        of {{ state.totalRecords }}
+      </ng-template>
+    </p-table>
+  </div>
