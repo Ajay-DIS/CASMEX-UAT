@@ -1,51 +1,77 @@
 <div class="row visible-main-section">
   <div class="custName">
-    Customer Code: {{customerCode}} | Customer Name: {{customerFullName}}
+    Customer Code: {{ customerCode }} | Customer Name: {{ customerFullName }}
   </div>
-    <div *ngIf="showForm" class="col-12">
-      <p-tabView
-        (onChange)="handleChange($event)"
-        [(activeIndex)]="activeTabIndex"
+  <div class="col-12">
+    <p-tabView
+      (onChange)="handleChange($event)"
+      [(activeIndex)]="activeTabIndex"
+    >
+      <p-tabPanel
+        header="Individual"
+        [disabled]="mode == 'edit' && custType == 'COR'"
       >
-        <p-tabPanel
-          header="Individual"
-          [disabled]="mode == 'edit' && custType == 'COR'"
-        >
-          <app-add-customer-benef [activeIndex]="activeTabIndex" [mode]="mode" [masterData]="masterData" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
-        </p-tabPanel>
-        <p-tabPanel
-          header="Corporate"
-          [disabled]="mode == 'edit' && custType == 'IND'"
-        >
-          <ng-template pTemplate="content">
-            <app-add-customer-benef [activeIndex]="activeTabIndex" [mode]="mode" [masterData]="masterData" [beneData]="beneData" [formData]="formData" (postData)="onSubmit($event)"></app-add-customer-benef>
-          </ng-template>
-        </p-tabPanel>
-      </p-tabView>
-    </div>
+        <app-add-customer-benef
+          *ngIf="custType == 'IND'"
+          [mode]="mode"
+          [showForm]="showForm"
+          [masterData]="masterData"
+          [beneData]="beneData"
+          [formData]="formData"
+          [docFormSections]="docFormSections"
+          [duplicateCheckFields]="duplicateCheckFields"
+          [causingCriteriaFieldsArr]="causingCriteriaFieldsArr"
+          [causingCriteriaMapObj]="causingCriteriaMapObj"
+          (postData)="onSubmit($event)"
+          (sendCausingCriteriaMapObj)="this.getFormRulesFields($event)"
+        ></app-add-customer-benef>
+      </p-tabPanel>
+      <p-tabPanel
+        header="Corporate"
+        [disabled]="mode == 'edit' && custType == 'IND'"
+      >
+        <ng-template pTemplate="content">
+          <app-add-customer-benef
+            *ngIf="custType == 'COR'"
+            [mode]="mode"
+            [showForm]="showForm"
+            [masterData]="masterData"
+            [beneData]="beneData"
+            [formData]="formData"
+            [docFormSections]="docFormSections"
+            [duplicateCheckFields]="duplicateCheckFields"
+            [causingCriteriaFieldsArr]="causingCriteriaFieldsArr"
+            [causingCriteriaMapObj]="causingCriteriaMapObj"
+            (postData)="onSubmit($event)"
+            (sendCausingCriteriaMapObj)="this.getFormRulesFields($event)"
+          ></app-add-customer-benef>
+        </ng-template>
+      </p-tabPanel>
+    </p-tabView>
   </div>
-  
-  <p-confirmDialog
-    key="resetINDWarning"
-    class="confirm-popup"
-    #cd
-    [closable]="false"
-  >
-    <p-footer>
-      <button
-        type="button"
-        pButton
-        icon="pi pi-check"
-        label="Yes"
-        (click)="cd.accept()"
-      ></button>
-  
-      <button
-        type="button"
-        pButton
-        icon="pi pi-times"
-        label="No"
-        (click)="cd.reject()"
-      ></button>
-    </p-footer>
-  </p-confirmDialog>
+</div>
+
+<p-confirmDialog
+  key="resetINDWarning"
+  class="confirm-popup"
+  #cd
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="No"
+      (click)="cd.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

@@ -1,8 +1,4 @@
-<form
-  *ngIf="apiData && objectKeys(apiData).length"
-  class="custom-form"
-  [formGroup]="individualForm"
->
+<form *ngIf="showForm" class="custom-form" [formGroup]="individualForm">
   <ng-container *ngFor="let section of formSections">
     <p-panel
       [header]="section.formName"
@@ -324,7 +320,7 @@
     ></button>
   </div>
 </form>
-<div class="NorecordFound" *ngIf="!(apiData && objectKeys(apiData).length)">
+<div class="NorecordFound" *ngIf="!showForm">
   <div class="row">
     <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
   </div>
