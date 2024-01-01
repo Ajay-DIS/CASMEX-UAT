@@ -195,6 +195,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
+        case "Custom Message":
+          item["routerLink"] = "/navbar/customised-messages";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
         case "Charge Settings":
           item["routerLink"] = "/navbar/charge-settings";
           item["routerLinkActiveOptions"] = { subset: true };
@@ -351,6 +355,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/form-rules",
           "/navbar/bank-routing/addnewroute",
           "/navbar/document-settings",
+          "/navbar/customised-messages",
         ];
         routeName = "/navbar/bank-routing";
         break;

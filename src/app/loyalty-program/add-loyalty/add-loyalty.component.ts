@@ -1680,9 +1680,9 @@ export class AddLoyaltyComponent implements OnInit {
 
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["programDescription"] = this.programDescription
+          data["programDescription"] = this.programDescription.toUpperCase()
             ? this.programDescription.replace(/\s/g, "").length
-              ? this.programDescription
+              ? this.programDescription.toUpperCase()
               : null
             : null;
           if (data["loyaltyValue"] == "null" || data["loyaltyValue"] == null) {
@@ -1700,9 +1700,9 @@ export class AddLoyaltyComponent implements OnInit {
         if (element["invalidLoyaltyValue"]) {
           invalidLoyaltyValue = true;
         }
-        element["programDescription"] = this.programDescription
+        element["programDescription"] = this.programDescription.toUpperCase()
           ? this.programDescription.replace(/\s/g, "").length
-            ? this.programDescription
+            ? this.programDescription.toUpperCase()
             : null
           : null;
         element["programType"] = this.programType

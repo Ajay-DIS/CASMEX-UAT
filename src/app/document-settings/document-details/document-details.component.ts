@@ -1438,9 +1438,9 @@ export class DocumentDetailsComponent implements OnInit {
 
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["documentDesc"] = this.documentDesc
+          data["documentDesc"] = this.documentDesc.toUpperCase()
             ? this.documentDesc.replace(/\s/g, "").length
-              ? this.documentDesc
+              ? this.documentDesc.toUpperCase()
               : null
             : null;
           // if (data["tax"] == "null" || data["tax"] == null) {
@@ -1468,7 +1468,7 @@ export class DocumentDetailsComponent implements OnInit {
         }
         element["documentDesc"] = this.documentDesc
           ? this.documentDesc.replace(/\s/g, "").length
-            ? this.documentDesc
+            ? this.documentDesc.toUpperCase()
             : null
           : null;
         if (!element["documentDesc"] || element["documentDesc"] == "null") {

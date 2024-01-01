@@ -533,7 +533,7 @@ export class ChargeDetailsComponent implements OnInit {
               // console.log("::", this.applyCriteriaDataTableColumns);
 
               this.coreService.showSuccessToast(
-                `charge Setting data fetched Successfully`
+                `Charge Setting Data Fetched Successfully`
               );
               this.coreService.removeLoadingScreen();
             } else {
@@ -1070,18 +1070,27 @@ export class ChargeDetailsComponent implements OnInit {
   updateApplicableOnOptions(data: any) {
     console.log(data);
     console.log(this.appliedCriteriaCriteriaMap);
-
     if (this.appliedCriteriaCriteriaMap) {
-      const chargeTypeMatch = /Charge Type = (.+?)(?:;|$)/.exec(
-        this.appliedCriteriaCriteriaMap
+      const conditions = this.appliedCriteriaCriteriaMap.split(";");
+      const chargeTypeCondition = conditions.find((condition) =>
+        condition.includes("Charge Type")
       );
-      console.log("chargeTypeMatch", chargeTypeMatch);
-      if (chargeTypeMatch && chargeTypeMatch[1]) {
-        const chargeTypeToRemove = chargeTypeMatch[1];
-        console.log("chargeTypeToRemove", chargeTypeToRemove);
-        data.applicableOnOption = data.applicableOnOption?.filter(
-          (option) => option.code !== chargeTypeToRemove
+
+      if (chargeTypeCondition) {
+        const chargeTypeMatch = /Charge Type = (.+?)(?:&&&&|$)/.exec(
+          chargeTypeCondition
         );
+
+        console.log("chargeTypeMatch", chargeTypeMatch);
+
+        if (chargeTypeMatch && chargeTypeMatch[1]) {
+          const chargeTypeToRemove = chargeTypeMatch[1].trim();
+          console.log("chargeTypeToRemove", chargeTypeToRemove);
+
+          data.applicableOnOption = data.applicableOnOption?.filter(
+            (option) => option.codeName !== chargeTypeToRemove
+          );
+        }
       }
     }
 
@@ -1201,9 +1210,9 @@ export class ChargeDetailsComponent implements OnInit {
       let chargeMissing = false;
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["chargeCodeDesc"] = this.chargeDescription
+          data["chargeCodeDesc"] = this.chargeDescription.toUpperCase()
             ? this.chargeDescription.replace(/\s/g, "").length
-              ? this.chargeDescription
+              ? this.chargeDescription.toUpperCase()
               : null
             : null;
           if (data["charge"] == "null" || data["charge"] == null) {
@@ -1221,9 +1230,9 @@ export class ChargeDetailsComponent implements OnInit {
         if (element["invalidChargeAmount"]) {
           invalidChargeAmount = true;
         }
-        element["chargeCodeDesc"] = this.chargeDescription
+        element["chargeCodeDesc"] = this.chargeDescription.toUpperCase()
           ? this.chargeDescription.replace(/\s/g, "").length
-            ? this.chargeDescription
+            ? this.chargeDescription.toUpperCase()
             : null
           : null;
         if (!element["chargeCodeDesc"]) {

@@ -233,7 +233,7 @@ export class MasterListingComponent implements OnInit {
         {
           id: "0",
           code: this.masterCode,
-          codeName: this.masterName.trim(),
+          codeName: this.masterName.trim().toUpperCase(),
           status: "A",
         },
       ];
@@ -350,7 +350,7 @@ export class MasterListingComponent implements OnInit {
         {
           id: String(this.masterId),
           code: this.masterCode,
-          codeName: this.masterName,
+          codeName: this.masterName.trim().toUpperCase(),
           status: "A",
         },
       ];
