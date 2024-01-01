@@ -49,6 +49,7 @@
                     class="p-button-warning search-btn "
                     (click)="editDisableModel()"
                     style="padding: 6px 16px;"
+                    [disabled]="deactivated"
                   ></button>
                   <button
                     pButton
@@ -56,8 +57,8 @@
                     type="button"
                     label="Save"
                     class="p-button-raised"
-                    (click)="saveAddNewMessage()"
-                    [disabled]="deactivated"
+                    (click)="saveAddNewMessage('save')"
+                    [disabled]="deactivated || editDeactivated"
                   ></button>
                   <button
                     pButton
@@ -66,12 +67,13 @@
                     type="button"
                     label="Save & Add New"
                     class="p-button-raised"
-                    (click)="saveAddNewMessage()"
+                    (click)="saveAddNewMessage('saveAndAddNew')"
                     [disabled]="deactivated"
                   ></button>
                   <button
                     pButton
                     pRipple
+                    *ngIf="mode == 'add'"
                     type="button"
                     label="Reset"
                     class="p-button-warning"
@@ -107,17 +109,28 @@
                 name="application"
                 inputId="application"
                 [options]="messageTypeOptions"
+                (onChange)="onMessageTypeChange($event.value)"
                 [(ngModel)]="messageType"
                 placeholder="Select"
                 optionValue="code"
                 optionLabel="name"
-                [disabled]="deactivated"
+                [disabled]="deactivated || editDeactivated"
               >
-                <ng-template let-options pTemplate="item">
-                  <div class="truncate-text">
-                    <div>{{ options.name }}</div>
+              <!-- <ng-template pTemplate="selectedItem">
+                <div class="country-item country-item-value" *ngIf="messageType">
+                  <img [src]="getIconSrcSelected(messageType)" alt="Icon" width="20" height="20">
+                  <div>{{ messageTypeSelected }}</div>
+                </div>
+              </ng-template> -->
+              <ng-template let-options pTemplate="item">
+                <div class="truncate-text">
+                  <div>
+                    <!-- Display the dynamic icon based on codeName -->
+                    <img [src]="getIconSrc(options.name)" alt="Icon" width="20" height="20">
+                    {{ options.name }}
                   </div>
-                </ng-template></p-dropdown
+                </div>
+              </ng-template></p-dropdown
               >
             </div>
           </div>
@@ -137,72 +150,14 @@
               type="text"
               pInputText
               [(ngModel)]="messageCode"
+              disabled
             />
           </div>
         </div>
       </div>
     </div>
   </div>  
-    <div
-    class="d-flex m-3 tax-code-desc-section"
-  >
-    <div class="col-12">
-      <div class="row d-flex mt-4">
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-            <div class="taxCode">
-              <p style="position: relative">
-                  Message Language 
-              </p>
-              <p-dropdown
-                name="application"
-                inputId="application"
-                [options]="messageLanguageOptions"
-                [(ngModel)]="messageLanguage"
-                placeholder="Select"
-                optionValue="code"
-                optionLabel="name"
-                [disabled]="deactivated"
-              >
-                <ng-template let-options pTemplate="item">
-                  <div class="truncate-text">
-                    <div>{{ options.name }}</div>
-                  </div>
-                </ng-template></p-dropdown
-              >
-            </div>
-          </div>
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-          <div
-            class="messageCode"
-          >
-            <p style="position: relative">
-              Message Header 
-            </p>
-            <input
-              type="text"
-              pInputText
-              [(ngModel)]="messageHeader"
-            />
-          </div>
-        </div>
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-          <div
-            class="messageCode"
-          >
-            <p style="position: relative">
-              Message Description
-            </p>
-            <input
-              type="text"
-              pInputText
-              [(ngModel)]="messageDescription"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
-
+ 
     <div
     class="d-flex m-3  tax-code-desc-section" *ngFor="let row of messageRows; let i = index"
   >
@@ -221,7 +176,7 @@
                 placeholder="Select"
                 optionValue="code"
                 optionLabel="name"
-                [disabled]="deactivated"
+                [disabled]="deactivated || editDeactivated"
               >
                 <ng-template let-options pTemplate="item">
                   <div class="truncate-text">
@@ -231,35 +186,30 @@
               >
             </div>
           </div>
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-          <div
-            class="messageCode"
-          >
-            <p style="position: relative">
-              Message Header 
-            </p>
-            <input
-              type="text"
-              pInputText
-              [(ngModel)]="row.messageHeader"
-            />
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="messageCode">
+              <p style="position: relative">Message Header </p>
+              <input
+                type="text"
+                pInputText
+                [disabled]="deactivated || editDeactivated"
+                [(ngModel)]="row.messageHeader"
+              />
+            </div>
           </div>
-        </div>
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
-          <div
-            class="messageCode"
-          >
-            <p style="position: relative">
-              Message Description
-            </p>
-            <input
-              type="text"
-              pInputText
-              [(ngModel)]="row.messageDescription"
-            />
+          
+          <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+            <div class="messageCode">
+              <p style="position: relative">Message Description</p>
+              <input
+                type="text"
+                pInputText
+                [disabled]="deactivated || editDeactivated"
+                [(ngModel)]="row.messageDescription"
+              />
+            </div>
           </div>
-        </div>
-        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12">
+        <div class="col-md-3 col-lg-3 col-sm-12 col-xs-12" *ngIf="!(i == 0)">
             <button
             #addCriteriaBtn
             pButton
@@ -290,6 +240,7 @@
             type="button"
             label="+"
             class="p-button-primary"
+            [disabled]="deactivated || editDeactivated"
             (click)="addMsg()"
             
           ></button>
@@ -303,3 +254,52 @@
     </div>
   </div>  
       </div>
+      <p-confirmDialog
+  key="resetMessageConfirmation"
+  class="confirm-popup"
+  #cd2
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
+      <p-confirmDialog
+      key="activeDeactiveStatusMessage"
+      class="status-confirm confirm-popup"
+      #cd4
+      [closable]="false"
+    >
+      <p-footer>
+        <button
+          type="button"
+          pButton
+          icon="pi pi-check"
+          label="Yes"
+          (click)="cd4.accept()"
+        ></button>
+    
+        <button
+          type="button"
+          pButton
+          icon="pi pi-times"
+          label="No"
+          (click)="cd4.reject()"
+        ></button>
+      </p-footer>
+    </p-confirmDialog>

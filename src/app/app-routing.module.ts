@@ -323,7 +323,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
-        path: "customised-messages/add-charge/:id/edit",
+        path: "customised-messages/add-messages/:id/edit",
         component: CustomisedDetailsComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },

@@ -1367,9 +1367,9 @@ export class AddnewrouteComponent2 implements OnInit {
 
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["routeDesc"] = this.routeDescription
+          data["routeDesc"] = this.routeDescription.toUpperCase()
             ? this.routeDescription.replace(/\s/g, "").length
-              ? this.routeDescription
+              ? this.routeDescription.toUpperCase()
               : null
             : null;
           // if (data["tax"] == "null" || data["tax"] == null) {
@@ -1384,9 +1384,9 @@ export class AddnewrouteComponent2 implements OnInit {
       );
       console.log("111", activeData);
       activeData.forEach((element) => {
-        element["routeDesc"] = this.routeDescription
+        element["routeDesc"] = this.routeDescription.toUpperCase()
           ? this.routeDescription.replace(/\s/g, "").length
-            ? this.routeDescription
+            ? this.routeDescription.toUpperCase()
             : null
           : null;
         if (!element["routeDesc"]) {

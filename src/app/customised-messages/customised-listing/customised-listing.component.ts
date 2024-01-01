@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
 import { CoreService } from "src/app/core.service";
 import { MasterServiceService } from "src/app/master/master-service.service";
+import { CustomisedMessagesServiceService } from "../customised-messages-service.service";
 
 @Component({
   selector: "app-customised-listing",
@@ -58,7 +59,7 @@ export class CustomisedListingComponent implements OnInit {
     private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private masterService: MasterServiceService,
+    private customisedMsgService: CustomisedMessagesServiceService,
     private confirmationService: ConfirmationService
   ) {}
 
@@ -76,11 +77,14 @@ export class CustomisedListingComponent implements OnInit {
   ];
   customisedMessagesTableLoading = false;
 
+  pageNumber = 1;
+  pageSize = 10;
+
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
 
     const translationKey = "Home.Settings";
-    this.customisedMessagesListData = this.customisedlist.data;
+    // this.customisedMessagesListData = this.customisedlist.data;
     console.log(this.customisedMessagesListData);
 
     // Update translation
@@ -96,11 +100,76 @@ export class CustomisedListingComponent implements OnInit {
 
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.coreService.removeLoadingScreen();
+
+    this.getCustomisedMsgList();
   }
 
-  addNewMessage() {}
+  getCustomisedMsgList() {
+    console.log("ada");
+    this.customisedMsgService
+      .getCustomisedListData(String(this.pageNumber), String(this.pageSize))
+      .subscribe(
+        (res) => {
+          this.coreService.removeLoadingScreen();
+          if (res["status"] == "200") {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+              this.customisedMessagesListData = [];
+            } else {
+              this.customisedMessagesListData = res["data"];
+              console.log(this.customisedMessagesListData, res);
+              // this.totalRecords = res.data.PaginationDetails.totalCount;
+              // this.customerCode = res.customerCode?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // this.fullName = res.customerFullName?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // this.nationality = res.nationality?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // this.mobileNumber = res.mobileNumber?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // this.idType = res.idType?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // this.idNumber = res.idNumber?.map((code) => {
+              //   if (code) return { label: code, value: code };
+              // });
+              // if (this.customisedMessagesListData) {
+              //   this.customisedMessagesListData.forEach((data) => {
+              //     data["promotionDetails"] = data["promotionDetails"]
+              //       .split("#")
+              //       .join("\n");
+              //   });
+              // }
+            }
+          }
+        },
+        (err) => {
+          this.coreService.removeLoadingScreen();
+          this.coreService.showWarningToast("Error in fething data");
+        }
+      );
+  }
+
+  addNewMessage() {
+    this.router.navigate(["navbar", "customised-messages", "add-messages"]);
+  }
+
+  openClickForEdit(data: any) {
+    this.router.navigate([
+      "navbar",
+      "customised-messages",
+      "add-messages",
+      data.messageCode,
+      "edit",
+    ]);
+  }
 
   confirmStatus(e: any, data: any) {
+    console.log(data, e);
     e.preventDefault();
     let type = "";
     let reqStatus = "";
@@ -118,13 +187,13 @@ export class CustomisedListingComponent implements OnInit {
       `<img src="../../../assets/warning.svg"><br/><br/>` +
       `Do you wish to ` +
       type +
-      ` the Tax Record: ${data["code"]}?`;
+      ` the Message Record: ${data["messageCode"]}?`;
     let formName = "";
     this.confirmationService.confirm({
       message: completeMsg,
       key: "activeDeactiveStatus",
       accept: () => {
-        this.updateStatus(e, reqStatus, data, formName);
+        this.updateStatus(e, reqStatus, data);
         this.setHeaderSidebarBtn(true);
       },
       reject: () => {
@@ -147,33 +216,43 @@ export class CustomisedListingComponent implements OnInit {
     }
   }
 
-  updateStatus(e: any, reqStatus: any, data: any, formName) {
+  updateStatus(e: any, reqStatus: any, data: any) {
     this.coreService.displayLoadingScreen();
-    this.updateTaxCodeStatus(reqStatus, e.target, data, formName);
+    const formData = new FormData();
+    formData.append("messageCode", data["messageCode"]);
+    formData.append("status", reqStatus);
+    formData.append("languages", data["languages"]);
+    // const newValues = [
+    //   {
+    //     messageCode: data["messageCode"],
+    //     status: reqStatus,
+    //   },
+    // ];
+    this.updateMessageCodeStatus(reqStatus, e.target, formData);
   }
 
-  updateTaxCodeStatus(reqStatus: any, sliderElm: any, Data: any, formName) {
-    console.log(Data, reqStatus, formName);
+  updateMessageCodeStatus(reqStatus: any, sliderElm: any, formData) {
+    console.log(formData, reqStatus);
 
-    this.masterService
-      .updateMasterStatus(String(Data.id), reqStatus, formName)
-      .subscribe(
-        (res) => {
-          let message = "";
-          if (res["msg"]) {
-            message = res["msg"];
-            sliderElm.checked = sliderElm!.checked;
-            this.coreService.showSuccessToast(message);
-          } else {
-            this.coreService.removeLoadingScreen();
-            message = "Error in fetching data, Please try again later";
-            this.coreService.showWarningToast(message);
-          }
-        },
-        (err) => {
-          console.log(err);
+    this.customisedMsgService.updateCustomisedListStatus(formData).subscribe(
+      (res) => {
+        let message = "";
+        if (res["data"]) {
+          message = res["data"];
+          sliderElm.checked = sliderElm!.checked;
+          this.coreService.showSuccessToast(message);
+          this.getCustomisedMsgList();
+          // this.coreService.removeLoadingScreen();
+        } else {
           this.coreService.removeLoadingScreen();
+          message = "Error in fetching data, Please try again later";
+          this.coreService.showWarningToast(message);
         }
-      );
+      },
+      (err) => {
+        console.log(err);
+        this.coreService.removeLoadingScreen();
+      }
+    );
   }
 }

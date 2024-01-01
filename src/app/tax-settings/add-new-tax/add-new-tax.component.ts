@@ -541,7 +541,7 @@ export class AddNewTaxComponent implements OnInit {
               // console.log("::", this.applyCriteriaDataTableColumns);
 
               this.coreService.showSuccessToast(
-                `Tax Setting data fetched Successfully`
+                `Tax Setting Data Fetched Successfully`
               );
               this.coreService.removeLoadingScreen();
             } else {
@@ -1138,17 +1138,40 @@ export class AddNewTaxComponent implements OnInit {
   updateApplicableOnOptions(data: any) {
     console.log(data);
     if (this.appliedCriteriaCriteriaMap) {
-      const taxTypeMatch = /Tax Type = (\w+)/.exec(
-        this.appliedCriteriaCriteriaMap
+      const conditions = this.appliedCriteriaCriteriaMap.split(";");
+      const chargeTypeCondition = conditions.find((condition) =>
+        condition.includes("Tax Type")
       );
 
-      if (taxTypeMatch && taxTypeMatch[1]) {
-        const taxTypeToRemove = taxTypeMatch[1];
-        data.applicableOnOptions = data.applicableOnOptions?.filter(
-          (option) => option.code !== taxTypeToRemove
+      if (chargeTypeCondition) {
+        const taxTypeMatch = /Tax Type = (.+?)(?:&&&&|$)/.exec(
+          chargeTypeCondition
         );
+
+        console.log("taxTypeMatch", taxTypeMatch);
+
+        if (taxTypeMatch && taxTypeMatch[1]) {
+          const taxTypeToRemove = taxTypeMatch[1].trim();
+          console.log("taxTypeToRemove", taxTypeToRemove);
+
+          data.applicableOnOptions = data.applicableOnOptions?.filter(
+            (option) => option.codeName !== taxTypeToRemove
+          );
+        }
       }
     }
+    // if (this.appliedCriteriaCriteriaMap) {
+    //   const taxTypeMatch = /Tax Type = (\w+)/.exec(
+    //     this.appliedCriteriaCriteriaMap
+    //   );
+    //   console.log(taxTypeMatch);
+    //   if (taxTypeMatch && taxTypeMatch[1]) {
+    //     const taxTypeToRemove = taxTypeMatch[1];
+    //     data.applicableOnOptions = data.applicableOnOptions?.filter(
+    //       (option) => option.codeName !== taxTypeToRemove
+    //     );
+    //   }
+    // }
 
     this.applicableOnOption = data.applicableOnOptions?.map((option) => {
       return { code: option.code, codeName: option.codeName };
@@ -1267,9 +1290,9 @@ export class AddNewTaxComponent implements OnInit {
       let taxMissing = false;
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["taxCodeDesc"] = this.taxDescription
+          data["taxCodeDesc"] = this.taxDescription.toUpperCase()
             ? this.taxDescription.replace(/\s/g, "").length
-              ? this.taxDescription
+              ? this.taxDescription.toUpperCase()
               : null
             : null;
           if (data["tax"] == "null" || data["tax"] == null) {
@@ -1287,9 +1310,9 @@ export class AddNewTaxComponent implements OnInit {
         if (element["invalidTaxAmount"]) {
           invalidTaxAmount = true;
         }
-        element["taxCodeDesc"] = this.taxDescription
+        element["taxCodeDesc"] = this.taxDescription.toUpperCase()
           ? this.taxDescription.replace(/\s/g, "").length
-            ? this.taxDescription
+            ? this.taxDescription.toUpperCase()
             : null
           : null;
         if (!element["taxCodeDesc"]) {
