@@ -8,7 +8,7 @@
       [header]="section.formName"
       [toggleable]="true"
       [formGroup]="corporateForm.controls[section.formName]"
-      *ngIf="section.isVisible"
+      *ngIf="isSectionVisible(section)"
     >
       <div class="row">
         <div
@@ -1058,13 +1058,6 @@
           ></button>
         </div>
       </div>
-    </p-panel>
-    <p-panel
-      *ngIf="!section.isVisible"
-      [header]="section.formName"
-      class="no-visible"
-    >
-      No Visible fields available.
     </p-panel>
   </ng-container>
   <div class="form-group btn-grp buttons-section">
