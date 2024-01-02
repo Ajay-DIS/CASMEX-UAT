@@ -215,10 +215,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
                   : false
                 : false,
               enable: secData["isEnable"] == "True" ? true : false,
-              visible:
-                !secData["IsVisible"] || secData["IsVisible"] == "True"
-                  ? true
-                  : false,
+              visible: secData["isVisible"] == "True" ? true : false,
               validLength: secData["validLength"] ? secData["validLength"] : "",
               defaultValue:
                 secData["defaultValue"] && secData["defaultValue"] != "null"
@@ -438,10 +435,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
             : false
           : false,
         enable: fieldRule["isEnable"] == "True" ? true : false,
-        visible:
-          !fieldRule["IsVisible"] || fieldRule["IsVisible"] == "True"
-            ? true
-            : false,
+        visible: fieldRule["isVisible"] == "True" ? true : false,
         validLength: fieldRule["validLength"] ? fieldRule["validLength"] : "",
         defaultValue:
           fieldRule["defaultValue"] && fieldRule["defaultValue"] != "null"
@@ -608,6 +602,7 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
         }
       } else {
         // If same fieldId not found
+        this.initFormRuleFieldsNames.push(fieldRule["fieldId"]);
         let sectionIndexPosition = -1;
         this.formSections.forEach((formSection, sectionIndex) => {
           if (formSection.formName == fieldRule["displaySection"]) {
@@ -670,6 +665,16 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
 
     console.log(":::", this.initFormRuleFieldsNames);
     console.log(":::", this.formSections);
+  }
+
+  isSectionVisible(section: any) {
+    let visible = false;
+    section.fields.forEach((field) => {
+      if (field.visible) {
+        visible = true;
+      }
+    });
+    return visible;
   }
 
   validMinDate(fieldName: string) {
