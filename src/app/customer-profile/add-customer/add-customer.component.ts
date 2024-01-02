@@ -21,6 +21,9 @@ import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "../customer-profile.service";
 import { Calendar } from "primeng/calendar";
 
+import _lodashClone from "lodash-es/cloneDeep";
+import _lodashIsEqual from "lodash-es/isequal";
+
 @Component({
   selector: "app-add-customer",
   templateUrl: "./add-customer.component.html",
@@ -145,6 +148,11 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
   licenseCountry = localStorage.getItem("licenseCountry");
 
   causingCriteriaFieldsArr = [];
+  causingCriteriaMapObj = {};
+
+  initFormRuleDataJson = [];
+
+  initFormRuleFieldsNames = [];
 
   // --------------------AJAY STARTSSSSSSSSSSSSSSSSSS
   ngOnInit(): void {
@@ -192,18 +200,13 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         if (res["Criteria FieldNames"]) {
           console.log(":::", Object.values(res["Criteria FieldNames"]));
-          Object.values(res["Criteria FieldNames"]).forEach((crtField) => {
-            if (crtField == "licenceCountry") {
-              this.causingCriteriaFieldsArr.push(
-                `licenceCountry = ${this.licenseCountry}`
-              );
-            } else if (crtField == "Customer Type") {
-              this.causingCriteriaFieldsArr.push(`Customer Type = IND`);
-            } else {
-              this.causingCriteriaFieldsArr.push(`${crtField} = Any`);
-            }
-          });
-          this.getformRuleData(this.causingCriteriaFieldsArr.join(";"));
+          this.causingCriteriaFieldsArr = _lodashClone(
+            Object.values(res["Criteria FieldNames"])
+          );
+
+          this.setCausingCriteriaMapObj(this.causingCriteriaFieldsArr);
+
+          this.getformRuleData(this.causingCriteriaMapObj, true);
         }
       });
   }
@@ -318,13 +321,22 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     }
   }
 
-  getformRuleData(createdCriteria: any) {
-    console.log(this.causingCriteriaFieldsArr);
+  getformRuleData(causingCriteriaMapObj: any, init: boolean = false) {
+    console.log(this.causingCriteriaMapObj);
+    let causingCriteriaFieldValueArr = [];
+    for (const [crtField, value] of Object.entries(causingCriteriaMapObj)) {
+      console.log(`${crtField}: ${value}`);
+      causingCriteriaFieldValueArr.push(`${crtField} = ${value}`);
+    }
+
+    let causingCriteriaMap = causingCriteriaFieldValueArr.length
+      ? causingCriteriaFieldValueArr.join(";")
+      : "NA";
     // if (this.custType == "IND") {
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
-          .set("criteriaMap", createdCriteria)
+          .set("criteriaMap", causingCriteriaMap)
           .set("form", "Customer Profile_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
@@ -338,7 +350,12 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
             this.coreService.removeLoadingScreen();
           } else {
             this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
-            this.setFormByData(res);
+            if (init) {
+              this.setFormByData(res);
+            } else {
+              console.log(":::res", res);
+              this.modifyFormFieldsRules(res);
+            }
           }
         },
         (err) => {
@@ -350,6 +367,270 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       );
     // }
   }
+
+  modifyFormFieldsRules(formRulesData: any) {
+    formRulesData.Rules.forEach((fieldRule) => {
+      if (fieldRule["checkDuplicate"] == "Yes") {
+        this.duplicateCheckFields.push(fieldRule["fieldId"]);
+      }
+      let fData = {
+        formName: fieldRule["displaySection"],
+        displaySectionOrder: fieldRule["displaySectionOrder"],
+        name: fieldRule["fieldId"],
+        formLableFieldSequence: +fieldRule["fieldDisplayOrder"],
+        fieldName: fieldRule["fieldId"],
+        fieldType: fieldRule["fieldType"] ? fieldRule["fieldType"] : "text",
+        fieldSubtype: fieldRule["fieldSubtype"]
+          ? fieldRule["fieldSubtype"]
+          : "",
+        fieldLabel: fieldRule["fieldDisplayName"],
+        required: this.docFormSections.includes(fieldRule["displaySection"])
+          ? false
+          : fieldRule["isMandatory"] == "True"
+          ? true
+          : false,
+        docFieldMandate: this.docFormSections.includes(
+          fieldRule["displaySection"]
+        )
+          ? fieldRule["isMandatory"] == "True"
+            ? true
+            : false
+          : false,
+        enable: fieldRule["isEnable"] == "True" ? true : false,
+        visible:
+          !fieldRule["IsVisible"] || fieldRule["IsVisible"] == "True"
+            ? true
+            : false,
+        validLength: fieldRule["validLength"] ? fieldRule["validLength"] : "",
+        defaultValue:
+          fieldRule["defaultValue"] && fieldRule["defaultValue"] != "null"
+            ? JSON.parse(fieldRule["defaultValue"])
+            : false,
+        newLineField: fieldRule["displayInNewLine"] == "True" ? true : false,
+        apiKey: fieldRule["apiKey"],
+        minLength:
+          fieldRule["minLength"]?.length > 0 && fieldRule["minLength"] != "null"
+            ? +fieldRule["minLength"]
+            : false,
+        maxLength:
+          fieldRule["maxLength"]?.length > 0 && fieldRule["maxLength"] != "null"
+            ? +fieldRule["maxLength"]
+            : false,
+        regex:
+          fieldRule["regex"] &&
+          fieldRule["regex"] != "null" &&
+          fieldRule["regex"].trim().length
+            ? fieldRule["regex"]
+            : false,
+        regexMsg:
+          fieldRule["regexMessage"] && fieldRule["regexMessage"].trim().length
+            ? fieldRule["regexMessage"]
+            : false,
+        validValues:
+          fieldRule["validValues"] && fieldRule["validValues"].length
+            ? JSON.parse(fieldRule["validValues"])
+            : false,
+        displayValidValuesOnHover:
+          fieldRule["displayValidValuesOnHover"] &&
+          fieldRule["displayValidValuesOnHover"] == "Yes"
+            ? fieldRule["displayValidValuesOnHover"]
+            : false,
+        prefix:
+          fieldRule["prefix"] && fieldRule["prefix"].trim().length
+            ? fieldRule["prefix"]
+            : false,
+        suffix:
+          fieldRule["suffix"] && fieldRule["suffix"].trim().length
+            ? fieldRule["suffix"]
+            : false,
+        setOptions:
+          fieldRule["setOptions"] && fieldRule["setOptions"].length
+            ? JSON.parse(fieldRule["setOptions"])
+            : false,
+        minDate:
+          fieldRule["fieldType"] == "date"
+            ? fieldRule["minDate"]
+              ? new Date(fieldRule["minDate"])
+              : this.validMinDate(fieldRule["fieldId"])
+            : this.pastYear,
+        maxDate:
+          fieldRule["fieldType"] == "date"
+            ? fieldRule["maxDate"]
+              ? new Date(fieldRule["maxDate"])
+              : this.validMaxDate(fieldRule["fieldId"])
+            : this.futureYear,
+        defaultDate:
+          fieldRule["fieldType"] == "date"
+            ? fieldRule["initialDate"]
+              ? new Date(fieldRule["initialDate"])
+              : this.validDefDate(fieldRule["fieldId"])
+            : new Date(),
+        blockMessageCode:
+          fieldRule["blockMessageCode"] && fieldRule["blockMessageCode"].length
+            ? JSON.parse(fieldRule["blockMessageCode"])
+            : false,
+        warningMessageCode:
+          fieldRule["warningMessageCode"] &&
+          fieldRule["warningMessageCode"].length
+            ? JSON.parse(fieldRule["warningMessageCode"])
+            : false,
+        block: fieldRule["block"] == "True" ? true : false,
+        warning: fieldRule["warning"] == "True" ? true : false,
+      };
+
+      if (!fData.enable) {
+        this.disabledFields[fieldRule["displaySection"]] = fData.name;
+      }
+      // if (fData.visible) {
+      //   haveVisibleFields = true;
+      // }
+      let validators = [];
+      if (fData.minLength) {
+        validators.push(Validators.minLength(fData.minLength as number));
+      }
+      if (fData.maxLength) {
+        validators.push(Validators.maxLength(fData.maxLength as number));
+      }
+      if (fData.required) {
+        validators.push(Validators.required);
+      }
+      if (fData.regex) {
+        validators.push(Validators.pattern(fData.regex));
+      }
+
+      const fieldControl = this.formBuilder.control(
+        {
+          value: fData.defaultValue ? fData.defaultValue : "",
+          disabled: !fData.enable,
+        },
+        validators
+      );
+
+      if (
+        this.initFormRuleFieldsNames.find(
+          (fieldId) => fieldRule["fieldId"] == fieldId
+        )
+      ) {
+        // If same fieldId found
+        let isAnyChangeInFieldRule = false;
+        let sectionIndexPosition = -1;
+        let fieldIndexPosition = -1;
+        this.formSections.forEach((formSection, sectionIndex) => {
+          if (formSection.formName == fieldRule["displaySection"]) {
+            sectionIndexPosition = sectionIndex;
+            formSection.fields.forEach((field, fieldIndex) => {
+              if (field.name == fieldRule["fieldId"]) {
+                console.log(":::::already", field);
+                console.log(":::::new", fData);
+                let fieldToIgnore = ["defaultDate", "maxDate", "minDate"];
+                let alreadyPresentFieldCopy = _lodashClone(field);
+                let newFieldCopy = _lodashClone(fData);
+                fieldToIgnore.forEach((f) => {
+                  delete alreadyPresentFieldCopy[f];
+                  delete newFieldCopy[f];
+                });
+                console.log(":::::alreadyCop", alreadyPresentFieldCopy);
+                console.log(":::::newCopy", newFieldCopy);
+                console.log(
+                  ":::::isSame",
+                  _lodashIsEqual(alreadyPresentFieldCopy, newFieldCopy)
+                );
+
+                if (!_lodashIsEqual(alreadyPresentFieldCopy, newFieldCopy)) {
+                  isAnyChangeInFieldRule = true;
+                }
+
+                fieldIndexPosition = fieldIndex;
+              }
+            });
+          }
+        });
+
+        if (isAnyChangeInFieldRule) {
+          // If any change in rules found
+          if (sectionIndexPosition >= 0 && fieldIndexPosition >= 0) {
+            this.formSections[sectionIndexPosition].fields.splice(
+              fieldIndexPosition,
+              1,
+              fData
+            );
+          }
+          if (fData.visible) {
+            this.formSections[sectionIndexPosition]["isVisible"] = true;
+          }
+          (
+            this.individualForm.get(fieldRule["displaySection"]) as FormGroup
+          ).removeControl(fieldRule["fieldId"]);
+          (
+            this.individualForm.get(fieldRule["displaySection"]) as FormGroup
+          ).addControl(fieldRule["fieldId"], fieldControl);
+        }
+      } else {
+        // If same fieldId not found
+        let sectionIndexPosition = -1;
+        this.formSections.forEach((formSection, sectionIndex) => {
+          if (formSection.formName == fieldRule["displaySection"]) {
+            sectionIndexPosition = sectionIndex;
+          }
+        });
+        if (sectionIndexPosition >= 0) {
+          // if section is present
+          let insertIndex = this.formSections[
+            sectionIndexPosition
+          ].fields.findIndex(
+            (field) =>
+              +field.formLableFieldSequence > +fData.formLableFieldSequence
+          );
+
+          if (!(insertIndex >= 0)) {
+            insertIndex = this.formSections[sectionIndexPosition].fields.length;
+          }
+
+          this.formSections[sectionIndexPosition].fields.splice(
+            insertIndex,
+            0,
+            fData
+          );
+
+          if (fData.visible) {
+            this.formSections[sectionIndexPosition]["isVisible"] = true;
+          }
+
+          (
+            this.individualForm.get(fieldRule["displaySection"]) as FormGroup
+          ).addControl(fieldRule["fieldId"], fieldControl);
+        } else {
+          console.log(":::: NOT FOUND SECTION", fieldRule["displaySection"]);
+          // if section is also not present
+          let newFormSection = {
+            formName: fieldRule["displaySection"],
+            seqOrder: fieldRule["displaySectionOrder"],
+            fields: [fData],
+            isVisible: fData.visible ? true : false,
+          };
+          let insertIndex = this.formSections.findIndex(
+            (section) => +section.seqOrder > +fData.displaySectionOrder
+          );
+
+          if (!(insertIndex >= 0)) {
+            insertIndex = this.formSections.length;
+          }
+          this.formSections.splice(insertIndex, 0, newFormSection);
+
+          const newSectionGroup = new UntypedFormGroup({});
+          newSectionGroup.addControl(fieldRule["fieldId"], fieldControl);
+          this.individualForm.addControl(
+            fieldRule["displaySection"],
+            newSectionGroup
+          );
+        }
+      }
+    });
+
+    console.log(":::", this.initFormRuleFieldsNames);
+    console.log(":::", this.formSections);
+  }
+
   getDocSettingData() {
     this.http
       .get(`remittance/documentSettingsController/getDocumentSetting`, {
@@ -420,6 +701,19 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     );
   }
 
+  setCausingCriteriaMapObj(causingCrtFieldsArr: any) {
+    causingCrtFieldsArr.forEach((crtField: string) => {
+      if (crtField == "licenceCountry") {
+        this.causingCriteriaMapObj["licenceCountry"] = this.licenseCountry;
+      } else if (crtField == "Customer Type") {
+        this.causingCriteriaMapObj["Customer Type"] =
+          this.custType == "IND" ? "IND" : "COR";
+      } else {
+        this.causingCriteriaMapObj[crtField] = "NA";
+      }
+    });
+  }
+
   handleChange(event: any) {
     console.log(event);
     this.activeTabIndex = event.index;
@@ -439,12 +733,15 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     } else {
       this.coreService.displayLoadingScreen();
       this.getDocSettingData();
-      this.getformRuleData(this.causingCriteriaFieldsArr.join(";"));
+      this.setCausingCriteriaMapObj(this.causingCriteriaFieldsArr);
+      this.getformRuleData(this.causingCriteriaMapObj, true);
     }
   }
 
   setFormByData(data: any) {
     // NEW JSON START
+
+    this.initFormRuleDataJson = _lodashClone(data.Rules);
 
     let groupedData = data.Rules.reduce((acc, field) => {
       const fieldSectionName = field.displaySection;
@@ -453,17 +750,20 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
     }, {});
     console.log(":::", groupedData);
     let allFSec = [];
+    this.initFormRuleFieldsNames = [];
     Object.keys(groupedData).forEach((key) => {
       let fSec = {
         formName: key,
         seqOrder: groupedData[key][0]["displaySectionOrder"],
         fields: groupedData[key]
           .map((secData) => {
+            this.initFormRuleFieldsNames.push(secData["fieldId"]);
             if (secData["checkDuplicate"] == "Yes") {
-              this.duplicateCheckFields.push(secData["fieldName"]);
+              this.duplicateCheckFields.push(secData["fieldId"]);
             }
             let fData = {
               formName: key,
+              displaySectionOrder: secData["displaySectionOrder"],
               name: secData["fieldId"],
               formLableFieldSequence: +secData["fieldDisplayOrder"],
               fieldName: secData["fieldId"],
@@ -578,84 +878,6 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
 
     this.apiData = data;
     this.individualForm = this.formBuilder.group({});
-    // let allFormSections = [];
-    // Object.keys(data).forEach((key) => {
-    //   let formSection = {
-    //     formName: key,
-    //     fields: data[key]
-    //       .map((secData) => {
-    //         if (secData["checkDuplicate"] == "Y") {
-    //           this.duplicateCheckFields.push(secData["fieldName"]);
-    //         }
-    //         let fieldData = {
-    //           name: secData["fieldName"],
-    //           formLableFieldSequence: secData["formLableFieldSequence"],
-    //           fieldName: secData["fieldName"],
-    //           fieldType: secData["fieldType"],
-    //           fieldSubtype: secData["fieldSubtype"],
-    //           fieldLabel: secData["fieldLabel"],
-    //           required: this.docFormSections.includes(key)
-    //             ? false
-    //             : secData["isMandatory"] == "Y"
-    //             ? true
-    //             : false,
-    //           docFieldMandate: this.docFormSections.includes(key)
-    //             ? secData["isMandatory"] == "Y"
-    //               ? true
-    //               : false
-    //             : false,
-    //           enable: secData["isEnable"] == "Y" ? true : false,
-    //           visible:
-    //             !secData["isVisibile"] || secData["isVisibile"] == "Y"
-    //               ? true
-    //               : false,
-    //           validLength: secData["validLength"],
-    //           defaultValue: secData["defaultValue"],
-    //           newLineField: secData["newLineField"],
-    //           apiKey: secData["apiKey"],
-    //           minLength:
-    //             secData["validLength"]?.length > 0 &&
-    //             secData["validLength"] != "null"
-    //               ? +secData["validLength"].split("-")[0]
-    //               : false,
-    //           maxLength:
-    //             secData["validLength"]?.length > 0 &&
-    //             secData["validLength"] != "null"
-    //               ? +secData["validLength"].split("-")[1]
-    //               : false,
-    //           regex:
-    //             secData["regex"] &&
-    //             secData["regex"] != "null" &&
-    //             secData["regex"].trim().length
-    //               ? secData["regex"]
-    //               : false,
-    //           minDate:
-    //             secData["fieldType"] == "date"
-    //               ? secData["minDate"]
-    //                 ? new Date(secData["minDate"])
-    //                 : this.validMinDate(secData["fieldName"])
-    //               : this.pastYear,
-    //           maxDate:
-    //             secData["fieldType"] == "date"
-    //               ? secData["maxDate"]
-    //                 ? new Date(secData["maxDate"])
-    //                 : this.validMaxDate(secData["fieldName"])
-    //               : this.futureYear,
-    //           defaultDate:
-    //             secData["fieldType"] == "date"
-    //               ? secData["initialDate"]
-    //                 ? new Date(secData["initialDate"])
-    //                 : this.validDefDate(secData["fieldName"])
-    //               : new Date(),
-    //         };
-    //         return fieldData;
-    //       })
-    //       .sort((a, b) => a.formLableFieldSequence - b.formLableFieldSequence),
-    //   };
-    //   allFormSections.push(formSection);
-    // });
-
-    // console.log(":::old", allFormSections);
     this.formSections = allFSec.sort((a, b) => a.seqOrder - b.seqOrder);
     console.log(this.formSections);
     this.disabledFields = {};
@@ -735,6 +957,44 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
             }
           }
         });
+    }
+
+    //
+    if (this.causingCriteriaFieldsArr && this.causingCriteriaFieldsArr.length) {
+      this.causingCriteriaFieldsArr.forEach((crtField) => {
+        if (!(crtField == "licenceCountry" || crtField == "Customer Type")) {
+          let fieldRule = this.initFormRuleDataJson.filter(
+            (fieldRule) => fieldRule.fieldId == crtField
+          )[0];
+          if (fieldRule) {
+            let fieldSecName = fieldRule.displaySection;
+            let fieldType = fieldRule.fieldType;
+            console.log(":::fieldRule", fieldSecName, crtField, fieldType);
+            this.individualForm
+              .get(fieldSecName)
+              ?.get(crtField)
+              .valueChanges.subscribe((value) => {
+                console.log("::", value);
+                this.formatCausingCriteriaMap(crtField, value, fieldType);
+              });
+          }
+        }
+      });
+    }
+  }
+
+  formatCausingCriteriaMap(crtField, value, fieldType) {
+    if (value) {
+      let codeValue = value;
+      switch (fieldType) {
+        case "dropdownSingle":
+          codeValue = value.code;
+          break;
+        default:
+      }
+      console.log(":::updated crt field", crtField, codeValue);
+      this.causingCriteriaMapObj[crtField] = codeValue;
+      this.getformRuleData(this.causingCriteriaMapObj);
     }
   }
 

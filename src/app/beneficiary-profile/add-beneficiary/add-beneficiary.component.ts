@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, ViewChild } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -11,13 +11,17 @@ import { ConfirmationService } from "primeng/api";
 import { delay } from "rxjs/operators";
 import { CoreService } from "src/app/core.service";
 import { CustomerProfileService } from "src/app/customer-profile/customer-profile.service";
-
+import _lodashClone from "lodash-es/cloneDeep";
+import { AddCustomerBenefComponent } from "../add-customer-benef/add-customer-benef.component";
 @Component({
   selector: "app-add-beneficiary",
   templateUrl: "./add-beneficiary.component.html",
   styleUrls: ["./add-beneficiary.component.scss"],
 })
 export class AddBeneficiaryComponent implements OnInit {
+  @ViewChild(AddCustomerBenefComponent)
+  CHILD_BENEF_COMPONENT: AddCustomerBenefComponent;
+
   Select: "Select";
   constructor(
     private coreService: CoreService,
@@ -32,7 +36,7 @@ export class AddBeneficiaryComponent implements OnInit {
   activeTabIndex: any = "0";
   previousTabIndex: any = "0";
 
-  formData: any;
+  formData: any = null;
   beneData: any;
   masterData: any;
 
@@ -49,7 +53,6 @@ export class AddBeneficiaryComponent implements OnInit {
   showForm: boolean = false;
   submitted = false;
 
-  individualForm: FormGroup;
   formSections: any[] = [];
   apiData: any = [];
 
@@ -76,6 +79,10 @@ export class AddBeneficiaryComponent implements OnInit {
   licenseCountry = localStorage.getItem("licenseCountry");
 
   causingCriteriaFieldsArr = [];
+  causingCriteriaMapObj = {};
+
+  docFormSections = [];
+  duplicateCheckFields = [];
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -124,22 +131,26 @@ export class AddBeneficiaryComponent implements OnInit {
       .subscribe((res) => {
         if (res["Criteria FieldNames"]) {
           console.log(":::", Object.values(res["Criteria FieldNames"]));
-          Object.values(res["Criteria FieldNames"]).forEach((crtField) => {
-            if (crtField == "licenceCountry") {
-              this.causingCriteriaFieldsArr.push(
-                `licenceCountry = ${this.licenseCountry}`
-              );
-            } else if (crtField == "Customer Type") {
-              this.causingCriteriaFieldsArr.push(
-                `Customer Type = ${this.custType}`
-              );
-            } else {
-              this.causingCriteriaFieldsArr.push(`${crtField} = Any`);
-            }
-          });
-          this.getFormRulesFields();
+          this.causingCriteriaFieldsArr = _lodashClone(
+            Object.values(res["Criteria FieldNames"])
+          );
+          this.setCausingCriteriaMapObj(this.causingCriteriaFieldsArr);
+          this.getFormRulesFields(this.causingCriteriaMapObj, true);
         }
       });
+  }
+
+  setCausingCriteriaMapObj(causingCrtFieldsArr: any) {
+    causingCrtFieldsArr.forEach((crtField: string) => {
+      if (crtField == "licenceCountry") {
+        this.causingCriteriaMapObj["licenceCountry"] = this.licenseCountry;
+      } else if (crtField == "Customer Type") {
+        this.causingCriteriaMapObj["Customer Type"] =
+          this.custType == "IND" ? "IND" : "COR";
+      } else {
+        this.causingCriteriaMapObj[crtField] = "NA";
+      }
+    });
   }
 
   handleChange(event: any) {
@@ -147,60 +158,66 @@ export class AddBeneficiaryComponent implements OnInit {
     this.activeTabIndex = event.index;
     if (this.activeTabIndex != this.previousTabIndex) {
       this.previousTabIndex = this.activeTabIndex;
-      // this.coreService.showWarningToast("Unsaved change has been reset");
-      if (this.individualForm) {
-        this.individualForm.reset();
+      this.showForm = false;
+      this.formData = null;
+      if (this.CHILD_BENEF_COMPONENT.individualForm) {
+        this.CHILD_BENEF_COMPONENT.formDataOrg = null;
+        if (this.CHILD_BENEF_COMPONENT.individualForm?.dirty) {
+          this.coreService.showWarningToast("Unsaved change has been reset");
+        }
+        this.CHILD_BENEF_COMPONENT.individualForm = undefined;
       }
       this.coreService.displayLoadingScreen();
       if (this.activeTabIndex == "0") {
         console.log(":::", "IND cal");
         this.custType = "IND";
-        this.getFormRulesFields();
+        this.setCausingCriteriaMapObj(this.causingCriteriaFieldsArr);
+        this.getFormRulesFields(this.causingCriteriaMapObj, true);
       } else {
         console.log(":::", "COR cal");
         this.custType = "COR";
-        this.getFormRulesFields();
+        this.setCausingCriteriaMapObj(this.causingCriteriaFieldsArr);
+        this.getFormRulesFields(this.causingCriteriaMapObj, true);
       }
     }
   }
 
-  getFormRulesFields() {
-    let custTypeCrtIndex = this.causingCriteriaFieldsArr.findIndex((element) =>
-      element.includes("Customer Type")
-    );
-    if (this.causingCriteriaFieldsArr.length && custTypeCrtIndex) {
-      this.causingCriteriaFieldsArr.splice(
-        custTypeCrtIndex,
-        1,
-        `Customer Type = ${this.custType}`
-      );
+  getFormRulesFields(causingCriteriaMapObj: any, init: boolean = false) {
+    console.log(this.causingCriteriaMapObj);
+    let causingCriteriaFieldValueArr = [];
+    for (const [crtField, value] of Object.entries(causingCriteriaMapObj)) {
+      console.log(`${crtField}: ${value}`);
+      causingCriteriaFieldValueArr.push(`${crtField} = ${value}`);
     }
+
+    let causingCriteriaMap = causingCriteriaFieldValueArr.length
+      ? causingCriteriaFieldValueArr.join(";")
+      : "NA";
     this.http
       .get(`/remittance/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
-          .set(
-            "criteriaMap",
-            `${this.causingCriteriaFieldsArr.join(";")}
-            `
-          )
+          .set("criteriaMap", causingCriteriaMap)
           .set("form", "Customer Profile Beneficiary_Form Rules")
           .set("moduleName", "Remittance")
           .set("applications", "Casmex Core"),
       })
       .subscribe(
         (res) => {
-          this.showForm = true;
           if (res["msg"]) {
             this.apiData = {};
             this.coreService.removeLoadingScreen();
             this.coreService.showWarningToast(res["msg"]);
           } else {
             // this.setFormByData(res);
-            this.formData = res;
-            if (this.mode == "edit") {
-              this.getBeneficiaryData(this.custId);
+            if (init) {
+              this.formData = res;
+              if (this.mode == "edit") {
+                this.getBeneficiaryData(this.custId);
+              } else {
+                this.coreService.removeLoadingScreen();
+              }
             } else {
-              this.coreService.removeLoadingScreen();
+              this.CHILD_BENEF_COMPONENT.modifyFormFieldsRules(res);
             }
             console.log("API called", this.formData);
           }
@@ -273,7 +290,7 @@ export class AddBeneficiaryComponent implements OnInit {
       );
   }
 
-  onSubmit(payload: any, custType: any): void {
+  onSubmit(payload: any): void {
     this.submitted = true;
     let payloadFormData = new FormData();
     for (let key in payload) {
@@ -286,16 +303,16 @@ export class AddBeneficiaryComponent implements OnInit {
       payload["customerType"] =
         this.custType == "COR" ? "Corporate" : "Individual";
       payload["status"] = String(this.status);
-      this.saveBeneficiaryForEdit(payload, custType);
+      this.saveBeneficiaryForEdit(payload);
     } else {
       payload["customerId"] = +this.customerCode;
       payload["customerType"] =
         this.custType == "COR" ? "Corporate" : "Individual";
       payload["status"] = String((this.status = "Active"));
-      this.saveBeneficiaryCustomer(payload, custType);
+      this.saveBeneficiaryCustomer(payload);
     }
   }
-  saveBeneficiaryForEdit(payload: any, custType: any) {
+  saveBeneficiaryForEdit(payload: any) {
     this.http
       .put(
         `/remittance/beneficiaryProfileController/updateBeneficiaryProfile`,
@@ -339,7 +356,7 @@ export class AddBeneficiaryComponent implements OnInit {
         }
       );
   }
-  saveBeneficiaryCustomer(payload: any, custType: any) {
+  saveBeneficiaryCustomer(payload: any) {
     console.log(this.userId);
     console.log(this.custType);
     this.http
