@@ -64,13 +64,13 @@ export class CustomisedListingComponent implements OnInit {
   ) {}
 
   cols: any[] = [
-    { field: "messageCode", header: "Message Code", width: "13%" },
-    { field: "messageType", header: "Message Type", width: "15%" },
+    { field: "messageCode", header: "Message Code", width: "12%" },
+    { field: "messageType", header: "Message Type", width: "13%" },
     { field: "messageHeader", header: "Message Header", width: "20%" },
     {
       field: "messageDescription",
       header: "Message Description",
-      width: "32%",
+      width: "35%",
     },
     { field: "status", header: "Status", width: "10%" },
     { field: "action", header: "Action", width: "10%" },
@@ -78,7 +78,7 @@ export class CustomisedListingComponent implements OnInit {
   customisedMessagesTableLoading = false;
 
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 50;
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -106,6 +106,7 @@ export class CustomisedListingComponent implements OnInit {
 
   getCustomisedMsgList() {
     console.log("ada");
+    this.coreService.displayLoadingScreen();
     this.customisedMsgService
       .getCustomisedListData(String(this.pageNumber), String(this.pageSize))
       .subscribe(

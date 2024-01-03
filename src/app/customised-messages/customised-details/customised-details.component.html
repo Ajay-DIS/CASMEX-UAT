@@ -192,6 +192,8 @@
               <input
                 type="text"
                 pInputText
+                maxlength="200"
+                placeholder="Max 200 characters"
                 [disabled]="deactivated || editDeactivated"
                 [(ngModel)]="row.messageHeader"
               />
@@ -204,6 +206,8 @@
               <input
                 type="text"
                 pInputText
+                maxlength="500"
+                placeholder="Max 500 characters"
                 [disabled]="deactivated || editDeactivated"
                 [(ngModel)]="row.messageDescription"
               />
