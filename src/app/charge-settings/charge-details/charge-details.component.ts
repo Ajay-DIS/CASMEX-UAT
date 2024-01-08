@@ -571,10 +571,10 @@ export class ChargeDetailsComponent implements OnInit {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
@@ -1419,7 +1419,7 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        this.coreService.showWarningToast("Similar Record already exists");
         isDuplicateApplicableOnFound = true;
       }
     }
@@ -1501,7 +1501,7 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        this.coreService.showWarningToast("Similar Record already exists");
         isDuplicateSetAsFound = true;
       }
     }
@@ -1583,10 +1583,10 @@ export class ChargeDetailsComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Y";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "N";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
