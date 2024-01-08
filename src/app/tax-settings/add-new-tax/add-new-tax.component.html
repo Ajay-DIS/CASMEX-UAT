@@ -162,8 +162,8 @@
                 type="text"
                 pInputText
                 [(ngModel)]="taxDescription"
-                maxlength="100"
-                placeholder="Max 100 characters"
+                maxlength="500"
+                placeholder="Max 500 characters"
                 [disabled]="deactivated"
               />
             </div>
@@ -262,31 +262,32 @@
                       *ngIf="col['fieldType'] == 'dropdown'"
                       class="appliedCriteriaSelect"
                     >
-                      <p-dropdown
-                        [options]="rowData[col.field + 'Option']"
-                        optionLabel="codeName"
-                        appendTo="body"
-                        [placeholder]="
-                          rowData[col['field']] &&
+                    <p-dropdown
+                    [options]="rowData[col.field + 'Option']"
+                    optionLabel="codeName"
+                    appendTo="body"
+                    [placeholder]="
+                      rowData[col['field']] &&
                           rowData[col['field']] != 'null'
-                            ? rowData[col['field']]
-                            : 'Select'
-                        "
-                        (onChange)="
+                        ? rowData[col['field']]
+                        : 'Select'
+                    "
+                    (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="
-                          rowData['linked'] == 'Y' ||
-                          rowData['isActive'] == 'N' ||
-                          deactivated
-                        "
-                        ><ng-template let-options pTemplate="item">
-                          <div class="truncate-text">
-                            <div>{{ options.codeName }}</div>
-                          </div>
-                        </ng-template>
-                      </p-dropdown>
-                    </div>
+                    [disabled]="
+                      rowData['linked'] == 'Y' ||
+                      rowData['isActive'] == 'N' ||
+                      deactivated
+                    "
+                    [pTooltip]="rowData[col['field']]"
+                  ><ng-template let-options pTemplate="item">
+                      <div class="truncate-text">
+                        <div>{{ options.codeName }}</div>
+                      </div>
+                    </ng-template>
+                                    </p-dropdown>
+                                      </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"
                       [pTooltip]="col['info'] ? col['info'] : ''"

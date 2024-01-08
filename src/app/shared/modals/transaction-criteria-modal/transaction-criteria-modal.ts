@@ -69,10 +69,10 @@ export class TransactionCriteriaModal {
 
     this.ref.onClose.pipe(take(1)).subscribe((res) => {
       if (this.isTxnCriteriaRangesSaved) {
-        this.coreService.showSuccessToast("Amount ranges saved");
+        this.coreService.showSuccessToast("Amount Ranges Saved");
       } else {
         if (this.isFormDataChanged) {
-          this.coreService.showWarningToast("Amount ranges not saved properly");
+          this.coreService.showWarningToast("Amount Ranges Not Saved Properly");
         }
       }
     });
@@ -141,14 +141,14 @@ export class TransactionCriteriaModal {
 
   addTxnCriteriaRange(): void {
     if (this.txnCriteriaRange?.length >= 10) {
-      this.isAnyErrorInRangeMsg = "Maximum 10 Amount ranges can be added";
+      this.isAnyErrorInRangeMsg = "Maximum 10 Amount Ranges Can Be Added";
       setTimeout(() => {
         this.isAnyErrorInRangeMsg = "";
       }, 1500);
     } else {
       this.checkConditions();
       if (this.isRangeValueLessThanZero) {
-        this.isAnyErrorInRangeMsg = "Range Value should be positive";
+        this.isAnyErrorInRangeMsg = "Range Value Should Be Positive";
         setTimeout(() => {
           this.isAnyErrorInRangeMsg = "";
         }, 1500);

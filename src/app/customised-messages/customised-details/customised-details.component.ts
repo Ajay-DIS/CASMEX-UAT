@@ -323,7 +323,7 @@ export class CustomisedDetailsComponent implements OnInit {
     } else if (messageHeaderMissing) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please Fill Message Header.");
-    } else if (this.messageRows.length > 1) {
+    } else if (this.messageRows.length >= 1) {
       const messageLanguages = this.messageRows.map(
         (row) => row.messageLanguage
       );
@@ -345,6 +345,7 @@ export class CustomisedDetailsComponent implements OnInit {
             this.userData.userId
           );
         } else {
+          console.log(this.newValues);
           let data = this.newValues;
           service = this.customisedMsgService.addNewMessage(
             data,

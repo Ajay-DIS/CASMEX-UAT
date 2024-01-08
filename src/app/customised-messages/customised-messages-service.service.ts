@@ -7,16 +7,8 @@ import { Observable } from "rxjs";
 })
 export class CustomisedMessagesServiceService {
   constructor(private http: HttpClient) {}
-  getCustomisedListData(pageNumber: any, pageSize: any) {
-    console.log("da", pageNumber, pageSize);
-    return this.http.get(
-      `/remittance/customMessageController/getMessagesList`,
-      {
-        headers: new HttpHeaders()
-          .set("pageNumber", pageNumber)
-          .set("pageSize", pageSize),
-      }
-    );
+  getCustomisedListData() {
+    return this.http.get(`/remittance/customMessageController/getMessagesList`);
   }
   getCustomisedDetailsData() {
     return this.http.get(

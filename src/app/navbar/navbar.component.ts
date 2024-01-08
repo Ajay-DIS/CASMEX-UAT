@@ -195,7 +195,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Custom Message":
+        case "Customised Messages":
           item["routerLink"] = "/navbar/customised-messages";
           item["routerLinkActiveOptions"] = { subset: true };
           break;

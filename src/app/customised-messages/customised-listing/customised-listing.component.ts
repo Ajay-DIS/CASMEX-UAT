@@ -107,52 +107,50 @@ export class CustomisedListingComponent implements OnInit {
   getCustomisedMsgList() {
     console.log("ada");
     this.coreService.displayLoadingScreen();
-    this.customisedMsgService
-      .getCustomisedListData(String(this.pageNumber), String(this.pageSize))
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-              this.customisedMessagesListData = [];
-            } else {
-              this.customisedMessagesListData = res["data"];
-              console.log(this.customisedMessagesListData, res);
-              // this.totalRecords = res.data.PaginationDetails.totalCount;
-              // this.customerCode = res.customerCode?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.fullName = res.customerFullName?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.nationality = res.nationality?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.mobileNumber = res.mobileNumber?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.idType = res.idType?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.idNumber = res.idNumber?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // if (this.customisedMessagesListData) {
-              //   this.customisedMessagesListData.forEach((data) => {
-              //     data["promotionDetails"] = data["promotionDetails"]
-              //       .split("#")
-              //       .join("\n");
-              //   });
-              // }
-            }
+    this.customisedMsgService.getCustomisedListData().subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        if (res["status"] == "200") {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+            this.customisedMessagesListData = [];
+          } else {
+            this.customisedMessagesListData = res["data"];
+            console.log(this.customisedMessagesListData, res);
+            // this.totalRecords = res.data.PaginationDetails.totalCount;
+            // this.customerCode = res.customerCode?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.fullName = res.customerFullName?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.nationality = res.nationality?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.mobileNumber = res.mobileNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idType = res.idType?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idNumber = res.idNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // if (this.customisedMessagesListData) {
+            //   this.customisedMessagesListData.forEach((data) => {
+            //     data["promotionDetails"] = data["promotionDetails"]
+            //       .split("#")
+            //       .join("\n");
+            //   });
+            // }
           }
-        },
-        (err) => {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Error in fething data");
         }
-      );
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Error in fething data");
+      }
+    );
   }
 
   addNewMessage() {
