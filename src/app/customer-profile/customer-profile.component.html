@@ -149,6 +149,7 @@
             type="button"
             label="Add Customer"
             class="p-button-raised search-btn ml-4"
+            [hidden]="showAddCustomer"
             (click)="
               addNewCustomer(customerType == 'Corporate' ? 'COR' : 'IND')
             "

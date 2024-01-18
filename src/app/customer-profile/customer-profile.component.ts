@@ -23,6 +23,7 @@ export class CustomerProfileComponent implements OnInit {
   showbeneficiaryCountOptions: boolean = false;
   showstatusOptions: boolean = false;
   deactivated: boolean = false;
+  showAddCustomer: boolean = false;
 
   customerCode = [];
   fullName = [];
@@ -74,6 +75,7 @@ export class CustomerProfileComponent implements OnInit {
     private http: HttpClient
   ) {}
 
+  showAddBtn = "benef";
   customerType = "";
   customerFieldType = "";
   criteriaTypechange = "";
@@ -197,7 +199,18 @@ export class CustomerProfileComponent implements OnInit {
     this.route.data.subscribe((data) => {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
-
+    const params = this.route.snapshot.params;
+    if (params) {
+      this.showAddBtn = this.route.snapshot.routeConfig.path.substring(
+        this.route.snapshot.routeConfig.path.lastIndexOf("/")
+      );
+      console.log("showadd", this.showAddBtn);
+      if (this.showAddBtn == "beneficiary-profile") {
+        this.showAddCustomer = true;
+      } else {
+        this.showAddCustomer = false;
+      }
+    }
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.formName = "Customer Profile";
     this.getApiDataForsearchCriteria();
@@ -569,64 +582,81 @@ export class CustomerProfileComponent implements OnInit {
     console.log("currentkey", this.currentCriteriaMapKey);
     console.log("search", this.searchCriteriaMap);
     console.log("criteriaType", this.criteriaType);
-    console.log("criteriaType", this.currentCriteriaValue);
+    console.log("currentCriteriaValue", this.currentCriteriaValue);
+    console.log("currentCriteria", this.currentCriteria);
     if (
-      this.searchCriteriaMap.filter((crt) => {
-        return (
-          crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]
-        );
-      }).length > 0
+      !this.currentCriteriaValue == null ||
+      this.currentCriteriaValue?.trim().length
     ) {
-      this.coreService.showWarningToast(
-        "This search criteria is already exists, delete it first."
-      );
-    } else {
-      if (this.criteriaType == "SQL") {
-        if (this.currentCriteria && this.currentCriteria.length > 0) {
-          this.searchCriteria.push(this.currentCriteria);
-          this.searchCriteriaMap.push(this.currentCriteriaMapKey);
-          this.criteriaMap = this.searchCriteriaMap.join(";");
-          console.log("criteriaMapSQL", this.criteriaMap);
-        } else {
-          this.coreService.showWarningToast("Please enter the search value");
-          return;
-        }
-      } else if (
-        (typeof this.currentCriteriaValue == "string" &&
-          this.currentCriteriaValue?.trim().length) ||
-        this.currentCriteriaValue
+      if (
+        this.searchCriteriaMap.filter((crt) => {
+          return (
+            crt.split(" = ")[0] == this.currentCriteriaMapKey.split(" = ")[0]
+          );
+        }).length > 0
       ) {
-        if (this.criteriaType == "date") {
-          let criteriaData = new Date(
-            this.currentCriteriaValue
-          ).toLocaleDateString("en-GB");
-          console.log("criteriaData", criteriaData);
-          this.currentCriteria = this.currentCriteriaKey + criteriaData;
-          this.searchCriteria.push(this.currentCriteria);
-
-          this.currentCriteriaMap = this.currentCriteriaMapKey + criteriaData;
-          this.searchCriteriaMap.push(this.currentCriteriaMap);
-          this.criteriaMap = this.searchCriteriaMap.join(";");
-        } else {
-          this.currentCriteria =
-            this.currentCriteriaKey + this.currentCriteriaValue;
-          this.searchCriteria.push(this.currentCriteria);
-
-          this.currentCriteriaMap =
-            this.currentCriteriaMapKey + this.currentCriteriaValue;
-          this.searchCriteriaMap.push(this.currentCriteriaMap);
-          this.criteriaMap = this.searchCriteriaMap.join(";");
+        this.coreService.showWarningToast(
+          "This search criteria is already exists, delete it first."
+        );
+      } else {
+        if (this.criteriaType == "SQL") {
+          if (this.currentCriteria && this.currentCriteria.length > 0) {
+            this.searchCriteria.push(this.currentCriteria);
+            this.searchCriteriaMap.push(this.currentCriteriaMapKey);
+            this.criteriaMap = this.searchCriteriaMap.join(";");
+            console.log("criteriaMapSQL", this.criteriaMap);
+          } else {
+            this.coreService.showWarningToast("Please enter the search value");
+            return;
+          }
         }
+        //  else if (
+        //   this.currentCriteriaValue == null &&
+        //   this.currentCriteriaValue == ""
+        // ) {
+        //   this.showTable = false;
+        //   this.coreService.showWarningToast("Please enter the search value");
+        // }
+        else if (
+          (typeof this.currentCriteriaValue == "string" &&
+            this.currentCriteriaValue?.trim().length) ||
+          this.currentCriteriaValue
+        ) {
+          if (this.criteriaType == "date") {
+            let criteriaData = new Date(
+              this.currentCriteriaValue
+            ).toLocaleDateString("en-GB");
+            console.log("criteriaData", criteriaData);
+            this.currentCriteria = this.currentCriteriaKey + criteriaData;
+            this.searchCriteria.push(this.currentCriteria);
+
+            this.currentCriteriaMap = this.currentCriteriaMapKey + criteriaData;
+            this.searchCriteriaMap.push(this.currentCriteriaMap);
+            this.criteriaMap = this.searchCriteriaMap.join(";");
+          } else {
+            this.currentCriteria =
+              this.currentCriteriaKey + this.currentCriteriaValue;
+            this.searchCriteria.push(this.currentCriteria);
+
+            this.currentCriteriaMap =
+              this.currentCriteriaMapKey + this.currentCriteriaValue;
+            this.searchCriteriaMap.push(this.currentCriteriaMap);
+            this.criteriaMap = this.searchCriteriaMap.join(";");
+          }
+        }
+        this.globalSearch = true;
+        this.showTable = false;
+        this.getCustomerListData(this.criteriaMap);
+        if (!(this.criteriaType == "SQL")) {
+          this.currentCriteriaValue = null;
+        }
+        // this.customerFieldType = null;
+        // this.currentCriteriaKey = "Customer Code = ";
+        // this.currentCriteriaMapKey = "id = ";
       }
-      this.globalSearch = true;
-      this.showTable = false;
-      this.getCustomerListData(this.criteriaMap);
-      if (!(this.criteriaType == "SQL")) {
-        this.currentCriteriaValue = null;
-      }
-      // this.customerFieldType = null;
-      // this.currentCriteriaKey = "Customer Code = ";
-      // this.currentCriteriaMapKey = "id = ";
+    } else {
+      this.coreService.showWarningToast("Please enter the search value");
+      return;
     }
   }
 

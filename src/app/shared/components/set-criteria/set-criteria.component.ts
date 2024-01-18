@@ -102,6 +102,8 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
     Slab: "LCY Amount",
     date: "Transaction Date",
   };
+  savingCriteriaTemplateErrorMsg = null;
+  @Input("setCriteriaName") setCriteriaName: string = "";
 
   constructor(
     public dialogService: DialogService,
@@ -189,6 +191,8 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         this.operationCtrl?.enable();
       }
     }
+    console.log(this.criteriaText);
+    console.log("onchange", changes);
   }
 
   setSelectAppForm1() {
@@ -1054,6 +1058,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       valueCode;
 
     //validations
+    console.log(this.criteriaText);
     if (this.criteriaText.length) {
       let index = this.criteriaText.indexOf(criteria);
       if (index != -1) {
@@ -1091,6 +1096,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
           criteria.includes(">")
         ) {
           this.validCriteria = true;
+          console.log(this.criteriaText);
           this.criteriaText.every((element) => {
             let splitText;
             let ExistOpr;
@@ -1404,7 +1410,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
           } else {
             isCurrentCriteriaEqualCondition = true;
           }
-
+          console.log(this.criteriaText);
           this.criteriaText.every((element) => {
             let splitText;
             if (element.includes("!=")) {
@@ -1803,6 +1809,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         }
         console.log("::selectedCrit", this.selectedCriteria);
         if (event.name == "Slab") {
+          console.log(this.criteriaText);
           if (
             !this.criteriaText.filter(
               (criteria) => criteria == `${this.selectedCriteria.data} = Slab`
@@ -2032,6 +2039,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   }
 
   ondeletecriteria(i: any, criteria: any) {
+    console.log(this.criteriaText);
     if (this.AddCriteriaClickListener) {
       this.removeAddCriteriaListener();
       this.AddCriteriaClickListener = false;
@@ -2108,6 +2116,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   }
 
   deleteCriteria(formatCrt, criteria) {
+    console.log(this.criteriaText);
     let applicableKeys = [...Object.keys(this.cmCriteriaDependency)];
     let selectedKeys = [];
     let allChildDependants = [];
@@ -2230,14 +2239,14 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         }
       });
     });
-
+    console.log(this.criteriaText);
     this.criteriaText = this.criteriaText.filter((el) => {
       return !removeCrit.includes(el);
     });
     this.criteriaCodeText = this.criteriaCodeText.filter((el) => {
       return !removeCodeCrit.includes(el);
     });
-
+    console.log(this.criteriaText);
     this.coreService.showWarningToast(
       `All dependent values of ${criteria} has been removed`
     );
@@ -2657,21 +2666,24 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   }
 
   savingCriteriaTemplate() {
+    console.log("crrrr", this.criteriaName);
+    this.savingCriteriaTemplateErrorMsg = null;
     if (this.criteriaName.replace(/\s/g, "").length == 0) {
-      this.savingCriteriaTemplateError =
+      this.savingCriteriaTemplateErrorMsg =
         "Name of Criteria Template cannot be Empty";
     } else {
-      this.savingCriteriaTemplateError = null;
+      console.log("crr6", this.savingCriteriaTemplateError);
       let formattedCriteriaArr = this.createFormattedCriteria();
       let finalCriteriaMapObj: any = this.createFormattedCriteriaMap();
       this.lcySlab = null;
-
+      console.log("crrrr2", finalCriteriaMapObj);
+      console.log("crrrr3", formattedCriteriaArr);
       let criteriaMap = finalCriteriaMapObj.criteriaMap;
       let slabText = null;
       let dateText = null;
       let lcyOpr = null;
       let dateOpr = null;
-
+      console.log("crrrr4", criteriaMap);
       if (finalCriteriaMapObj.slabs) {
         let slabs = finalCriteriaMapObj.slabs;
         let slabArr = [];
@@ -2709,13 +2721,15 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         dateOpr = finalCriteriaMapObj.dateOpr;
         criteriaMap = criteriaMap + "&&&&" + dateOpr;
       }
-
+      console.log("crr6", this.criteriaName);
+      console.log("crr6", this.savingCriteriaTemplateError);
       const formData = new FormData();
       formData.append("userId", this.userId);
       formData.append("criteriaName", this.criteriaName.trim());
       formData.append("criteriaMap", criteriaMap);
 
       formData.append("lcySlab", this.lcySlab);
+      // saving
       this.saveCriteriaAsTemplate.emit(formData);
     }
   }

@@ -1,0 +1,322 @@
+<form
+          class="custom-form"
+          [formGroup]="companyForm"
+        >
+          <ng-container *ngFor="let section of formSections">
+            <p-panel
+              [header]="section.formName"
+              [toggleable]="true"
+              [formGroup]="companyForm.controls[section.formName]"
+            >
+              <div class="row">
+                <ng-container *ngFor="let field of section.fields">
+                  <div
+                    [ngClass]="{
+                      'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm':
+                        !field?.newLineField,
+                      checkbox: field.fieldType == 'checkbox',
+                      newLineField: field?.newLineField
+                    }"
+                  >
+                    <label
+                      [attr.title]="
+                        field.fieldLabel.length > 27 ? field.fieldLabel : ''
+                      "
+                      >{{
+                        field.fieldLabel.length > 27 && !field?.newLineField
+                          ? field.fieldLabel.substring(0, 27) + ".."
+                          : field.fieldLabel
+                      }}</label
+                    ><span
+                      *ngIf="field.required || field.docFieldMandate"
+                      class="required"
+                      >*</span
+                    >
+                    <ng-container [ngSwitch]="field.fieldType">
+                      <ng-container *ngSwitchCase="'text'">
+                        <div
+                          style="position: 'relative'"
+                          *ngIf="field.name != 'employerNameEmpDetails'"
+                        >
+                          <input
+                            type="text"
+                            class="block"
+                            pInputText
+                            [formControlName]="field.name"
+                            [ngStyle]="{
+                              paddingLeft: field.prefix ? '45px' : '',
+                              paddingRight: field.suffix ? '40px' : ''
+                            }"
+                            (ngModelChange)="
+                              checkValidValuesText($event, field)
+                            "
+                          />
+                        </div>
+                        <div
+                          class="employername"
+                          *ngIf="field.name == 'employerNameEmpDetails'"
+                        >
+                          <p-autoComplete
+                            [formControlName]="field.name"
+                            [suggestions]="filteredEmployer"
+                            (completeMethod)="searchEmployer($event)"
+                          ></p-autoComplete>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngSwitchCase="'number'">
+                        <ng-container>
+                          <div
+                            style="position: 'relative'"
+                          >
+                            <input
+                              type="text"
+                              class="block"
+                              pInputText
+                              [formControlName]="field.name"
+                              [ngStyle]="{
+                                paddingLeft: field.prefix ? '45px' : '',
+                                paddingRight: field.suffix ? '40px' : ''
+                              }"
+                              (ngModelChange)="
+                                checkValidValuesText($event, field)
+                              "
+                            />
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                      <p-calendar
+                        *ngSwitchCase="'date'"
+                        class="block"
+                        placeholder="DD/MM/YYYY"
+                        dateFormat="dd/mm/yy"
+                        [showIcon]="true"
+                        [formControlName]="field.name"
+                        [minDate]="field.minDate"
+                        [maxDate]="field.maxDate"
+                        [defaultDate]="field.defaultDate"
+                        [readonlyInput]="false"
+                        [appendTo]="'body'"
+                        (onSelect)="handleDateSelect(calendar, $event)"
+                        (ngModelChange)="checkValidValuesDate($event, field)"
+                        appDateMask
+                        [pTooltip]="
+                          companyForm.controls[field.formName]['controls'][
+                            field.name
+                          ].errors?.invalidValue
+                            ? field.displayValidValuesOnHover == 'Yes'
+                              ? 'Valid values are ' +
+                                field.validValues.join(', ')
+                              : ''
+                            : ''
+                        "
+                        tooltipPosition="top"
+                        #calendar
+                      ></p-calendar>
+                      <p-checkbox
+                        *ngSwitchCase="'checkbox'"
+                        [formControlName]="field.name"
+                        [binary]="true"
+                        (onChange)="sameAddress($event, field.name)"
+                      ></p-checkbox>
+                      <!-- <p-autoComplete
+                        *ngSwitchCase="'dropdownSingle'"
+                        class="block"
+                        [showEmptyMessage]="true"
+                        [suggestions]="filteredCountries"
+                        (completeMethod)="filterCountry($event)"
+                        field="name"
+                        [minLength]="1"
+                        [forceSelection]="true"
+                      ></p-autoComplete> -->
+                      <p-dropdown
+                        *ngSwitchCase="'dropdownSingle'"
+                        class="block"
+                        [options]="
+                        "
+                        [formControlName]="field.name"
+                        placeholder="Type to search"
+                        optionLabel="codeName"
+                        [appendTo]="'body'"
+                        [filter]="true"
+                        filterBy="codeName"
+                        [virtualScroll]="true"
+                        [virtualScrollItemSize]="35"
+                        panelStyleClass="formFields-dropdown"
+                      >
+                        <ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div>{{ options.codeName }}</div>
+                          </div>
+                        </ng-template></p-dropdown
+                      >
+                      <p-dropdown
+                        *ngSwitchCase="'smart-search'"
+                        class="block smartSearch"
+                        [formControlName]="field.name"
+                        [options]="
+                        "
+                        optionLabel="codeName"
+                        [filter]="true"
+                        filterBy="codeName"
+                        placeholder="Type to search"
+                      >
+                        <ng-template pTemplate="selectedItem">
+                          <div
+                            class="country-item country-item-value"
+                            *ngIf="field"
+                          >
+                            <div>
+                              {{
+                                companyForm.controls[section.formName][
+                                  "controls"
+                                ][field.name].value.codeName
+                              }}
+                            </div>
+                          </div>
+                        </ng-template>
+                        <ng-template let-options pTemplate="item">
+                          <div class="truncate-text">
+                            <div>{{ options.codeName }}</div>
+                          </div>
+                        </ng-template>
+                      </p-dropdown>
+                      <div
+                        *ngSwitchCase="'file'"
+                        class="file-upload"
+                      >
+                        <div
+                          #inpSelect
+                          class="file-upload-select"
+                          (click)="inpFile.click()"
+                        >
+                          <div class="file-select-name">
+                            <input type="text" [formControlName]="field.name" />
+                          </div>
+                          <div class="file-select-button">
+                            <i class="pi pi-upload"></i>
+                          </div>
+                          <input
+                            #inpFile
+                            onclick="this.value=null;"
+                            (focus)="setUploadBtnStyle(true, inpSelect)"
+                            (blur)="setUploadBtnStyle(false, inpSelect)"
+                            (change)="
+                              fileUploadChange(
+                                $event,
+                                section.formName,
+                                field.name,
+                                companyForm
+                                  .get(section.formName)
+                                  .get(
+                                    section.formName == 'Representative Details'
+                                      ? 'representativeIdNumber'
+                                      : 'idNumber'
+                                  )?.value
+                              )
+                            "
+                            type="file"
+                            name="file-upload-input"
+                            id="file-upload-input"
+                            [accept]="'.pdf, .png, .jpg, .docx, .doc'
+                            "
+                            
+                          />
+                        </div>
+                      </div>
+                      <select
+                        *ngSwitchCase="'multiselect'"
+                        multiple
+                        [formControlName]="field.name"
+                      >
+                        <option
+                          *ngFor="let option of field.options"
+                          [value]="option.value"
+                        >
+                          {{ option.label }}
+                        </option>
+                      </select>
+                    </ng-container>
+                  </div>
+                </ng-container>
+              </div>
+              
+            </p-panel>
+          </ng-container>
+          <p-panel
+              header="Remittance Settings"
+              [toggleable]="true"
+              [formGroup]="companyForm.controls"
+            >
+            <div class="row">
+              <ng-container>
+                <div
+                class="
+                  'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'
+                "
+              >
+                <label
+                  >
+                  Required Dual Counter
+                  </label
+                >
+                <!-- <span
+                  *ngIf="field.required || field.docFieldMandate"
+                  class="required"
+                  >*</span
+                > -->
+                <p-dropdown
+                class="block"
+                [options]="
+                "
+                [formControlName]=""
+                placeholder="Type to search"
+                optionLabel="codeName"
+                [appendTo]="'body'"
+                [filter]="true"
+                filterBy="codeName"
+                [virtualScroll]="true"
+                [virtualScrollItemSize]="35"
+                panelStyleClass="formFields-dropdown"
+              >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.codeName }}</div>
+                  </div>
+                </ng-template></p-dropdown
+              >
+                </div>
+              </ng-container>
+            </div>
+            </p-panel>
+        
+          <div class="form-group btn-grp buttons-section">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Save"
+              class="p-button-raised"
+              (click)="onSubmit()"
+              [disabled]="deactivated"
+            ></button>
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Reset"
+              class="p-button-warning"
+              (click)="onReset()"
+              [disabled]="deactivated"
+            ></button>
+            <button
+              *ngIf="mode == 'edit'"
+              pButton
+              pRipple
+              type="button"
+              label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+              class="p-button-raised"
+              (click)="onActive(data)"
+            ></button>
+          </div>
+        </form>

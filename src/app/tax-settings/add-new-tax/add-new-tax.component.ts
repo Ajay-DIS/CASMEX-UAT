@@ -139,6 +139,8 @@ export class AddNewTaxComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "taxes";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -290,6 +292,15 @@ export class AddNewTaxComponent implements OnInit {
     this.showContent = false;
     this.getCriteriaMasterData();
     this.getAllTemplates();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    const inputChar = String.fromCharCode(event.charCode);
+
+    // Allow only alphanumeric characters
+    if (!/^[a-zA-Z0-9]*$/.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 
   getTaxSettingForEditApi(taxCode: any, operation: any) {
@@ -1208,11 +1219,14 @@ export class AddNewTaxComponent implements OnInit {
             }
           } else {
             this.coreService.removeLoadingScreen();
+
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);
@@ -1296,9 +1310,12 @@ export class AddNewTaxComponent implements OnInit {
       let taxMissing = false;
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["taxCodeDesc"] = this.taxDescription.toUpperCase()
+          data["taxCodeDesc"] = this.taxDescription
+            ?.replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase()
             ? this.taxDescription.replace(/\s/g, "").length
-              ? this.taxDescription.toUpperCase()
+              ? this.taxDescription?.replace(/\s+/g, " ").trim().toUpperCase()
               : null
             : null;
           if (data["tax"] == "null" || data["tax"] == null) {
@@ -1316,9 +1333,12 @@ export class AddNewTaxComponent implements OnInit {
         if (element["invalidTaxAmount"]) {
           invalidTaxAmount = true;
         }
-        element["taxCodeDesc"] = this.taxDescription.toUpperCase()
+        element["taxCodeDesc"] = this.taxDescription
+          ?.replace(/\s+/g, " ")
+          .trim()
+          .toUpperCase()
           ? this.taxDescription.replace(/\s/g, "").length
-            ? this.taxDescription.toUpperCase()
+            ? this.taxDescription?.replace(/\s+/g, " ").trim().toUpperCase()
             : null
           : null;
         if (!element["taxCodeDesc"]) {
@@ -1339,7 +1359,7 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill required fields.");
+        this.coreService.showWarningToast("Please Fill Tax Description.");
       }
       // else if (taxTypeMissing) {
       //   this.coreService.removeLoadingScreen();

@@ -344,12 +344,14 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       .subscribe(
         (res) => {
           this.showForm = true;
+          console.log(":::res", res);
           if (res["msg"]) {
             this.coreService.showWarningToast(res["msg"]);
             this.apiData = {};
             this.coreService.removeLoadingScreen();
           } else {
             this.formRuleAPIResponse = JSON.parse(JSON.stringify(res));
+            console.log(":::res", this.formRuleAPIResponse);
             if (init) {
               this.setFormByData(res);
             } else {
@@ -747,6 +749,7 @@ export class AddCustomerComponent implements OnInit, OnDestroy {
       return acc;
     }, {});
     console.log(":::", groupedData);
+    console.log(":::", this.initFormRuleDataJson);
     let allFSec = [];
     this.initFormRuleFieldsNames = [];
     Object.keys(groupedData).forEach((key) => {

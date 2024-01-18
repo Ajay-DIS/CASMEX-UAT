@@ -19,7 +19,10 @@
 .flex-align-center {
   padding-left: 25px;
 }
-
+.taxCode input::placeholder {
+  color: #8a9099;
+  font-size: 12px;
+}
 .pagetitle {
   background-color: #fff;
   border-radius: 6px;
@@ -108,38 +111,16 @@
         width: 250px !important;
       }
 }
-// @media screen and (max-width: 1750px) and (min-width: 1550pxpx) {
-//   .p-input-icon-right {
-//     width: 65% !important;
-//   }
-// }
-// @media screen and (max-width: 1380px) and (min-width: 1329px) {
-//   .p-input-icon-right {
-//     width: 56% !important;
-//   }
-// }
-// @media screen and (max-width: 1328px) and (min-width: 1201px) {
-//   .p-input-icon-right {
-//     width: 46% !important;
-//   }
-// }
 
 @media screen and (max-width: 1250px)  {
   .NorecordFound img {
     width: 15%;
-    // padding-bottom: 80px;
     padding-top: 100px;
   }
   .NorecordFound p {
     padding-bottom: 80px;
   }
 }
-// @media screen and (max-width: 785px) and (min-width: 768px) {
-//   .p-input-icon-right i {
-//     position: absolute;
-//     top: 25% !important;
-//   }
-// }
 
 
 .table-search {
