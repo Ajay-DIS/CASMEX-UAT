@@ -69,7 +69,7 @@ export class TransactionCriteriaModal {
 
     this.ref.onClose.pipe(take(1)).subscribe((res) => {
       if (this.isTxnCriteriaRangesSaved) {
-        this.coreService.showSuccessToast("Amount Ranges Saved");
+        this.coreService.showSuccessToast("Amount Range Saved");
       } else {
         if (this.isFormDataChanged) {
           this.coreService.showWarningToast("Amount Ranges Not Saved Properly");

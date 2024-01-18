@@ -156,7 +156,7 @@
           <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
             <div class="taxDesc">
               <p style="position: relative">
-                charge Description <span class="description red-star">*</span>
+                Charge Description <span class="description red-star">*</span>
               </p>
               <input
                 type="text"
@@ -165,6 +165,7 @@
                 maxlength="500"
                 placeholder="Max 500 characters"
                 [disabled]="deactivated"
+                (keypress)="onKeyPress($event)"
               />
             </div>
           </div>
@@ -200,6 +201,7 @@
           $event.criteriaCodeText
         )
       "
+      [setCriteriaName]="setCriteriaName"
     ></app-set-criteria>
   </div>
   <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">

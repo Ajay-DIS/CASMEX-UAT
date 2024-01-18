@@ -95,6 +95,7 @@ import { ChargeListingComponent } from './charge-settings/charge-listing/charge-
 import { MasterListingComponent } from './master/master-listing/master-listing.component';
 import { CustomisedListingComponent } from './customised-messages/customised-listing/customised-listing.component';
 import { CustomisedDetailsComponent } from './customised-messages/customised-details/customised-details.component';
+import { CompanyDetailsComponent } from './company-settings/company-details/company-details.component';
 
 
 // AoT requires an exported function for factories
@@ -144,6 +145,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MasterListingComponent,
     CustomisedListingComponent,
     CustomisedDetailsComponent,
+    CompanyDetailsComponent,
   ],
   imports: [
     BrowserModule,

@@ -340,7 +340,7 @@ export class AddBeneficiaryComponent implements OnInit {
                   "Profile data Updated successfully saved"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
               // this.onReset()
             }
           } else {
@@ -386,7 +386,7 @@ export class AddBeneficiaryComponent implements OnInit {
                   "Profile data successfully saved"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
             }
             // this.onReset()
           } else {
@@ -429,7 +429,7 @@ export class AddBeneficiaryComponent implements OnInit {
                   "Profile data updated successfully"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
             }
             // this.onReset()
           }

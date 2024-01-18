@@ -35,6 +35,7 @@ export class CustomisedDetailsComponent implements OnInit {
       messageLanguage: "",
       messageHeader: "",
       messageDescription: "",
+      status: "A",
     },
   ];
 
@@ -139,7 +140,7 @@ export class CustomisedDetailsComponent implements OnInit {
                 (option) => option.name === res["messageType"]
               );
               console.log("IcomessageTypeChangeValue", messageTypeValue);
-              this.messageTypeChangeValue = messageTypeValue.code;
+              this.messageTypeChangeValue = messageTypeValue.name;
               this.messageType = messageTypeValue.code;
               console.log(
                 "IcomessageTypeChangeValue",
@@ -157,6 +158,7 @@ export class CustomisedDetailsComponent implements OnInit {
                   messageLanguage: detail["languages"],
                   messageHeader: detail["messageHeader"],
                   messageDescription: detail["messageDescription"],
+                  status: detail["status"],
                 });
                 this.messageLanguageStatus = detail["languages"];
                 if (detail["status"] == "D") {
@@ -259,6 +261,8 @@ export class CustomisedDetailsComponent implements OnInit {
     let messageTypeMissing = false;
     let messageDescriptionMissing = false;
     console.log("adsa", this.messageRows);
+    console.log("messageTypeChangeValue", this.messageTypeChangeValue);
+    console.log("messageType", this.messageType);
 
     if (this.mode == "edit") {
       this.newValues = this.messageRows.map((row) => {
@@ -275,10 +279,12 @@ export class CustomisedDetailsComponent implements OnInit {
             .trim()
             .toUpperCase(),
           languages: row.messageLanguage,
-          status: "A",
+          status: row.status,
         };
       });
+      console.log(this.newValues);
     } else {
+      console.log("messageTypeChangeValue", this.messageTypeChangeValue);
       this.newValues = this.messageRows.map((row) => {
         return {
           messageCode: this.messageCode,
@@ -311,6 +317,7 @@ export class CustomisedDetailsComponent implements OnInit {
         messageDescriptionMissing = true;
       }
     });
+
     if (messageTypeMissing) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please Select Message Type.");
@@ -405,6 +412,21 @@ export class CustomisedDetailsComponent implements OnInit {
       }
     }
   }
+
+  activeMsgRows() {
+    return this.messageRows.filter((msg) => msg.status == "A");
+  }
+
+  deleteMsg(index: number, value: any) {
+    console.log("delete", this.messageRows);
+    if (this.mode == "edit") {
+      if (this.messageRows[index].id) {
+        this.messageRows[index].status = "Deleted";
+      }
+    } else {
+      this.messageRows.splice(index, 1);
+    }
+  }
   reset() {
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
@@ -439,12 +461,11 @@ export class CustomisedDetailsComponent implements OnInit {
       messageLanguage: "",
       messageHeader: "",
       messageDescription: "",
+      status: "A",
     });
     console.log("message", this.messageRows);
   }
-  deleteMsg(index: number) {
-    this.messageRows.splice(index, 1);
-  }
+
   setHeaderSidebarBtn() {
     this.coreService.displayLoadingScreen();
     setTimeout(() => {
@@ -464,10 +485,10 @@ export class CustomisedDetailsComponent implements OnInit {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "A";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "D";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

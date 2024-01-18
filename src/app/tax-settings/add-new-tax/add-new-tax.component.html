@@ -165,6 +165,7 @@
                 maxlength="500"
                 placeholder="Max 500 characters"
                 [disabled]="deactivated"
+                (keypress)="onKeyPress($event)"
               />
             </div>
           </div>
@@ -200,6 +201,7 @@
           $event.criteriaCodeText
         )
       "
+      [setCriteriaName]="setCriteriaName"
     ></app-set-criteria>
   </div>
   <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">

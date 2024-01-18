@@ -296,6 +296,8 @@ export class AddNewFormRuleComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "forms";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -1904,10 +1906,12 @@ export class AddNewFormRuleComponent implements OnInit {
           } else {
             this.coreService.removeLoadingScreen();
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);
