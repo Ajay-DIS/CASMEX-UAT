@@ -255,6 +255,7 @@ export class AddBeneficiaryComponent implements OnInit {
   }
 
   getBeneficiaryData(custId: any) {
+    this.coreService.displayLoadingScreen();
     this.http
       .get(
         `/remittance/beneficiaryProfileController/getBeneficiaryProfile/${custId}`,
@@ -337,7 +338,7 @@ export class AddBeneficiaryComponent implements OnInit {
                 this.coreService.showSuccessToast(res["data"]);
               } else {
                 this.coreService.showSuccessToast(
-                  "Profile data Updated successfully saved"
+                  "Profile data Updated successfully Saved"
                 );
               }
               this.router.navigate(["navbar", "beneficiary-profile"]);

@@ -293,7 +293,7 @@ const routes: Routes = [
       },
       {
         path: "charge-settings/add-charge/:id/clone",
-        component: AddNewTaxComponent,
+        component: ChargeDetailsComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },

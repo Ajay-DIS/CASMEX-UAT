@@ -1,8 +1,394 @@
-<form
+<div
           class="custom-form"
-          [formGroup]="companyForm"
+          
         >
-          <ng-container *ngFor="let section of formSections">
+        <div class="row">
+          <div class="col-xs-12 col-sm-6 col-md-12 col-lg-12 ">
+
+            <div class="expandAll right">
+              <p>
+                Fields marked with <span class="required">*</span> are mandatory 
+              </p>
+              <button
+              pButton
+              pRipple
+              type="button"
+              label="Expand All"
+              class="p-button-raised"
+              (click)="expandAll()"
+              [disabled]="deactivated"
+            ></button>
+            </div>
+          </div>
+          <ng-container>
+            <p-panel header="Basic Details" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Company Name </label><span class="required">*</span> 
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 65px;"
+                    [pTooltip]="'Legal Name of your company'"
+                  />
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.companyName"
+                     (change)="onChange('basicDetails', 'text','companyName', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Country
+                    </label><span class="required">*</span>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 108px;"
+                    [pTooltip]="'Country of Operation / Head Office of your company'"
+                  />
+                      <p-multiSelect class="block" 
+                 [options]="countryOptions" 
+                 placeholder="Type to search" 
+                 optionLabel="name" 
+                 [appendTo]="'body'"
+                 [filter]="true" 
+                 filterBy="name" 
+                 [virtualScroll]="true" 
+                 [virtualScrollItemSize]="35"
+                 panelStyleClass="formFields-dropdown"
+                 [(ngModel)]="selectedcountry"> <!-- Bind selected values to a variable -->
+    <ng-template let-options pTemplate="item">
+      <div class="truncate-text">
+        <div>{{ options.name }}</div>
+      </div>
+    </ng-template>
+  </p-multiSelect>
+                  </div>
+                 
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> House/Building Number </label><span class="required">*</span>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.buildingNumber"
+                     (change)="onChange('basicDetails', 'text','buildingNumber', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Block Number </label><span class="required">*</span>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.blockNumber"
+                     (change)="onChange('basicDetails', 'text','blockNumber', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Street Name
+                    </label><span class="required">*</span>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.streetName"
+                    (change)="onChange('basicDetails', 'text','pinCode', $event)" [ngStyle]="{
+                     paddingLeft: '', 
+                     paddingRight: ''
+                   }" />
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Pin Code/Zip Code </label>
+                    <input type="number" class="block" pInputText [(ngModel)]="companyFormN.companySettings.pinCode"
+                     (change)="onChange('basicDetails', 'text','pinCode', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Time Zone
+                    </label><span class="required">*</span>
+                    <p-dropdown class="block" placeholder="select"  [options]="timeZoneOptions" optionLabel="name" [appendTo]="'body'" 
+                    [(ngModel)]="selectedTimeZone"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      panelStyleClass="formFields-dropdown" >
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Email </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 128px;"
+                    [pTooltip]="'Official email address of your company’s administrator. Enter multiple address using semi-colon ( ; )'"
+                  />
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.emailId"
+                     (change)="onChange('basicDetails', 'text','emailId', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Mobile Number </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 75px;"
+                    [pTooltip]="'Official mobile number of your company. Enter multiple number using semi-colon ( ; )'"
+                  />
+                  <input type="text"
+                  class="block"
+                  pInputText
+                  [(ngModel)]="companyFormN.companySettings.mobileNumber"
+                  (change)="onChange('basicDetails', 'text','mobileNumber', $event)"
+                  [ngStyle]="{
+                     paddingLeft: '', 
+                     paddingRight: ''
+                  }"
+           />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Phone Number </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 75px;"
+                    [pTooltip]="'Official phone number of your company. Enter multiple (number) using semi-colon ( ; )'"
+                  />
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.phoneNumber"
+                     (change)="onChange('basicDetails', 'text','phoneNumber', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Company Logo </label>
+                    <img
+                      height="15px"
+                      src="../assets/Icon-info.svg"
+                      alt=""
+                      style="padding-left: 79px;"
+                      [pTooltip]="'Upload your Company’s logo to display on CASMEX'"
+                    />
+                    <div class="file-upload">
+                      <div #inpSelect class="file-upload-select" (click)="inpFile.click()">
+                        <div class="file-select-name">
+                          <input type="text" [(ngModel)]="companyLogoName" />
+                        </div>
+                        <div class="file-select-button">
+                          <i class="pi pi-upload"></i>
+                        </div>
+                        <input
+                          #inpFile
+                          onclick="this.value=null;"
+                          (focus)="setUploadBtnStyle(true, inpSelect)"
+                          (blur)="setUploadBtnStyle(false, inpSelect)"
+                          (change)="onFileSelected($event)"
+                          type="file"
+                          name="file-upload-input"
+                          id="file-upload-input"
+                          [accept]="'.png, .jpg'"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </p-panel>
+            <p-panel header="Operational Details" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Base Currency </label><span class="required">*</span>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 72px;"
+                    [pTooltip]="'Select applicable base currency/s for your company. Multiple selection allowed from the drop-down'"
+                  />
+                    <p-multiSelect class="block" 
+                    [options]="baseCurrencyOptions" 
+                    placeholder="Type to search" 
+                    optionLabel="name" 
+                    [appendTo]="'body'"
+                    [filter]="true" 
+                    filterBy="name" 
+                    [virtualScroll]="true" 
+                    [virtualScrollItemSize]="35"
+                    panelStyleClass="formFields-dropdown"
+                    [(ngModel)]="selectedBaseCurrencies"
+                    (onChange)="updatePrimaryBaseCurrencyOptions($event.value)"> 
+       <ng-template let-options pTemplate="item">
+         <div class="truncate-text">
+           <div>{{ options.name }}</div>
+         </div>
+       </ng-template>
+     </p-multiSelect>
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Primary Base Currency
+                    </label><span class="required">*</span>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 26px;"
+                    [pTooltip]="'Select primary base currency from the selected base currencies'"
+                  />
+                   
+     <p-dropdown class="block" placeholder="Type to search"  [options]="primaryBaseCurrencyOptions" optionLabel="name" [appendTo]="'body'"
+     [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+     [(ngModel)]="selectedPrimaryBaseCurrency"
+     panelStyleClass="formFields-dropdown">
+     <ng-template let-options pTemplate="item">
+       <div class="truncate-text">
+         <div>{{ options.name }}</div>
+       </div>
+     </ng-template></p-dropdown>
+                  </div>
+                 
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Cross Currency </label><span class="required">*</span>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 69px;"
+                    [pTooltip]="'Select applicable cross currency for settlement. Multiple selection allowed from the drop-down'"
+                  />
+                    <p-multiSelect class="block" 
+                    [options]="crossCurrencyOptions" 
+                    placeholder="Type to search" 
+                    optionLabel="name" 
+                    [appendTo]="'body'"
+                    [filter]="true" 
+                    filterBy="name" 
+                    [virtualScroll]="true" 
+                    [virtualScrollItemSize]="35"
+                    panelStyleClass="formFields-dropdown"
+                    [(ngModel)]="selectCrossCurrency"> <!-- Bind selected values to a variable -->
+       <ng-template let-options pTemplate="item">
+         <div class="truncate-text">
+           <div>{{ options.name }}</div>
+         </div>
+       </ng-template>
+     </p-multiSelect>
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Number Format </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 72px;"
+                    [pTooltip]="'Select the number format in which amount will be displayed in all fields'"
+                  />
+                    <p-dropdown class="block" placeholder="select"  [options]="numberFormatOptions" optionLabel="name" [appendTo]="'body'"
+                    [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                    [(ngModel)]="selectNumberFormat"
+                    panelStyleClass="formFields-dropdown">
+                    <ng-template let-options pTemplate="item">
+                      <div class="truncate-text">
+                        <div>{{ options.name }}</div>
+                      </div>
+                    </ng-template></p-dropdown>
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Date Dormat
+                    </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 89px;"
+                    [pTooltip]="'Select the date format in which date will be displayed in all fields'"
+                  />
+                    <p-dropdown class="block" placeholder="select"  [options]="dateFormatOptions" optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectDateFormat"
+                    (change)="onChange('basicDetails', 'text','dateFormat', $event)"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                 
+                </ng-container>
+              </div>
+            </p-panel>
+            <p-panel header="Appearance Settings" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Primary Language </label><span class="required">*</span>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 53px;"
+                    [pTooltip]="'Select the primary language in which system will be used'"
+                  />
+                    <p-dropdown class="block" placeholder="select"  [options]="primaryLanguageOptions"  optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectPrimaryLanguage"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Theme
+                    </label>
+                    <img
+                    height="15px"
+                    src="../assets/Icon-info.svg"
+                    alt=""
+                    style="padding-left: 121px;"
+                    [pTooltip]="'Select the theme in which the system features will be displayed'"
+                  />
+                    <p-dropdown class="block" [options]="themeOptions" placeholder="select" optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectThemes"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                 
+                 
+                </ng-container>
+              </div>
+            </p-panel>
+          </ng-container>
+        </div>
+          <!-- <ng-container *ngFor="let section of formSections">
             <p-panel
               [header]="section.formName"
               [toggleable]="true"
@@ -119,16 +505,6 @@
                         [binary]="true"
                         (onChange)="sameAddress($event, field.name)"
                       ></p-checkbox>
-                      <!-- <p-autoComplete
-                        *ngSwitchCase="'dropdownSingle'"
-                        class="block"
-                        [showEmptyMessage]="true"
-                        [suggestions]="filteredCountries"
-                        (completeMethod)="filterCountry($event)"
-                        field="name"
-                        [minLength]="1"
-                        [forceSelection]="true"
-                      ></p-autoComplete> -->
                       <p-dropdown
                         *ngSwitchCase="'dropdownSingle'"
                         class="block"
@@ -242,54 +618,525 @@
               </div>
               
             </p-panel>
-          </ng-container>
+          </ng-container> -->
           <p-panel
               header="Remittance Settings"
               [toggleable]="true"
-              [formGroup]="companyForm.controls"
+              [collapsed]="toggleCollapsed"
             >
             <div class="row">
               <ng-container>
-                <div
-                class="
-                  'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'
-                "
-              >
-                <label
-                  >
-                  Required Dual Counter
-                  </label
-                >
-                <!-- <span
-                  *ngIf="field.required || field.docFieldMandate"
-                  class="required"
-                  >*</span
-                > -->
-                <p-dropdown
-                class="block"
-                [options]="
-                "
-                [formControlName]=""
-                placeholder="Type to search"
-                optionLabel="codeName"
-                [appendTo]="'body'"
-                [filter]="true"
-                filterBy="codeName"
-                [virtualScroll]="true"
-                [virtualScrollItemSize]="35"
-                panelStyleClass="formFields-dropdown"
-              >
-                <ng-template let-options pTemplate="item">
-                  <div class="truncate-text">
-                    <div>{{ options.codeName }}</div>
+                <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                  <label> Required Dual Counter </label>
+                  <img
+                  height="15px"
+                  src="../assets/Icon-info.svg"
+                  alt=""
+                  style="padding-left: 35px;"
+                  [pTooltip]="'Select Yes if Teller and Cashier are different person else select NO'"
+                />
+                  <p-dropdown class="block" [options]="requiredDualCounterOptions" [(ngModel)]="selectRequiredDualCounter" placeholder="Type to search" optionLabel="name" [appendTo]="'body'"
+                    [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                    panelStyleClass="formFields-dropdown">
+                    <ng-template let-options pTemplate="item">
+                      <div class="truncate-text">
+                        <div>{{ options.name }}</div>
+                      </div>
+                    </ng-template></p-dropdown>
+                </div>
+                <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                  <label> Prefix for Remittence ref. No. </label>
+                  <input type="text" class="block" pInputText [(ngModel)]="companyFormN.remittanceSettings.prefixForRemittanceRefNo"
+                   (change)="onChange('remittanceSettings', 'text','prefixForRemittanceRefNo', $event)" [ngStyle]="{
+                    paddingLeft: '', 
+                    paddingRight: ''
+                  }" />
+                    
+                </div>
+                <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+                  <label> Correspondent Routing </label>
+                  <img
+                  height="15px"
+                  src="../assets/Icon-info.svg"
+                  alt=""
+                  [pTooltip]="'Select the default Correspondent routing to be adopted by the system'"
+                />
+                  <div class="correspondentRadio">
+                    <p-radioButton name="group" value="Manual selection by the user" [(ngModel)]="companyFormN.remittanceSettings.correspondentRouting"></p-radioButton>
+                    <label for="option1">Manual selection by the user</label>
+                  <!-- </div>
+                  
+                  <div> -->
+                    <p-radioButton name="group" value="Auto selection by the system" [(ngModel)]="companyFormN.remittanceSettings.correspondentRouting"></p-radioButton>
+                    <label for="option2">Auto selection by the system</label>
+                  </div>                    
+                </div>
+                <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'" *ngIf="companyFormN.remittanceSettings.correspondentRouting === 'Auto selection by the system'">
+                  <div class="radiobtn">
+                    <div>
+                      <div *ngFor="let routingOption of autoRoutingOptions">
+                        <p-radioButton
+                          name="group"
+                          [value]="routingOption.code"
+                          [(ngModel)]="companyFormN.remittanceSettings.autoRoutingTypeCode"
+                        ></p-radioButton>
+                        <label [for]="'option' + routingOption.code">{{ routingOption.codeName }}</label>
+                      </div>
+                    </div>
                   </div>
-                </ng-template></p-dropdown
-              >
+                                     
                 </div>
               </ng-container>
             </div>
+
+            <div class="row">
+              <h6>Remittence Features</h6>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 1. Show rate view in Remittence </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.showRateViewInRemittance"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.showRateViewInRemittance"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 2. Allow new customer addition from Remittance </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowNewCustomerAdditionFromRemittance"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowNewCustomerAdditionFromRemittance"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 3. Allow customer profile edit from Remittance </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowCustomerProfileEditFromRemittance"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowCustomerProfileEditFromRemittance"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 4. Allow beneficiary profile edit from Remittance </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowBeneficiaryProfileEditFromRemittance"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowBeneficiaryProfileEditFromRemittance"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 5. Allow Special Rate request from Remittance </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowSpecialRateRequestFromRemittance"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowSpecialRateRequestFromRemittance"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 6. Allow Buffer in rate to teller </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowBufferInRateToTeller"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowBufferInRateToTeller"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 7. Allow Special Discount Rate </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowSpecialDiscountRate"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowSpecialDiscountRate"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 8. Allow On Account facility </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowOnAccountFacility"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowOnAccountFacility"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row remittenceFeature">
+                <div class="col-sm-6 left">
+                  <label> 9. Allow Credit facility </label>
+                </div>
+                <div class="col-sm-6 right">
+                  <div>
+                    <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.remittanceSettings.allowCreditFacility"></p-radioButton>
+                    <label for="option1">Yes</label>
+                    <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.remittanceSettings.allowCreditFacility"></p-radioButton>
+                    <label for="option2">No</label>
+                  </div>
+                </div>
+              </div>
+            </div>
             </p-panel>
-        
+            <p-panel header="Forex Settings" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Prefix for Forex Ref No. </label>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.forexSettings.prefixForForexRefNo"
+                     (change)="onChange('forexSettings', 'text','prefixForForexRefNo', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                 
+                 
+                </ng-container>
+              </div>
+            </p-panel>
+           
+            <p-panel header="Incoming Settings" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Prefix for Incoming Ref No. </label>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.incomingSettings.prefixForIncomingRefNo"
+                     (change)="onChange('incomingSettings', 'text','prefixForIncomingRefNo', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                </ng-container>
+              </div>
+            </p-panel>
+            <p-panel header="Account Settings" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Prefix for Bank Voucher No. </label>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.accountsSettings.prefixForBankVoucherNumber"
+                     (change)="onChange('accountsSettings', 'text','prefixForBankVoucherNumber', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+                    <label> Prefix for Cash Voucher No. </label>
+                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.accountsSettings.prefixForCashVoucherNumber"
+                     (change)="onChange('accountsSettings', 'text','prefixForCashVoucherNumber', $event)" [ngStyle]="{
+                      paddingLeft: '', 
+                      paddingRight: ''
+                    }" />
+                      
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Accounting
+                    </label><span class="required">*</span>
+                    <p-dropdown class="block" placeholder="select"  [options]="accountingOptions" optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectAccounting"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                </ng-container>
+              </div>
+            </p-panel>
+            <p-panel header="Login Settings" [toggleable]="true" [collapsed]="toggleCollapsed">
+              <div class="row">
+                <ng-container>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Captcha Required at login
+                    </label><span class="required">*</span>
+                    <p-dropdown class="block" placeholder="select"  [options]="captchaRequiredOptions" optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectCaptchaRequired"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                  <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
+                    <label>
+                      Set Password Policy
+                    </label><span class="required">*</span>
+                    <p-dropdown class="block" placeholder="select"  [options]="setPasswordPolicyOptions" optionLabel="name" [appendTo]="'body'"
+                      [filter]="true" filterBy="name" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                      [(ngModel)]="selectPasswordPolicy"
+                      panelStyleClass="formFields-dropdown">
+                      <ng-template let-options pTemplate="item">
+                        <div class="truncate-text">
+                          <div>{{ options.name }}</div>
+                        </div>
+                      </ng-template></p-dropdown>
+                  </div>
+                  <div class="row" *ngIf="companyFormN.loginSettings.passwordPolicy && companyFormN.loginSettings.passwordPolicy.name === 'YES'">
+                    <div class="row loginFeature">
+                      <div class="col-sm-6 left p-0">
+                        <div class="loginLeft">
+
+                          <label> 1. Allow Forceful Password change for first time logged in user </label>
+                          <div class="loginLeftRadio">
+                            <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.loginSettings.passwordChangeFirstLogin"></p-radioButton>
+                            <label for="option1">Yes</label>
+                            <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.loginSettings.passwordChangeFirstLogin"></p-radioButton>
+                            <label for="option2">No</label>
+                          </div>
+                        </div>
+                        <div class="loginLeft1">
+
+                          <label>2. Set password age (in Months)</label>
+                          <img
+                          height="15px"
+                          src="../assets/Icon-info.svg"
+                          alt=""
+                          [pTooltip]="'Select the time frame in months after which password will automatically expire'"
+                        />
+                          <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-8 p-2 fieldForm'">
+                            <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.passwordAge"
+                             (change)="onChange('loginSettings', 'text','passwordAge', $event)" [ngStyle]="{
+                              paddingLeft: '', 
+                              paddingRight: ''
+                            }" />
+                              
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-sm-6 right p-0">
+                        <div class="loginRight">
+
+                          <label> 3. Do not allow new password same as previous old passwords (count) </label>
+                          <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-8 p-2 fieldForm'">
+                            <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.previousPasswordCount"
+                             (change)="onChange('loginSettings', 'text','previousPasswordCount', $event)" [ngStyle]="{
+                              paddingLeft: '', 
+                              paddingRight: ''
+                            }" />
+                              
+                          </div>
+                        </div>
+                        <div class="loginRight1">
+
+                          <label> 4. Account lockout threshold invalid logins (Count) </label>
+                          <img
+                          height="15px"
+                          src="../assets/Icon-info.svg"
+                          alt=""
+                          [pTooltip]="'Select the count after which user account will be blocked after unsuccessful login attempts '"
+                        />
+                          <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-8 p-2 fieldForm'">
+                            <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.lockAccountThreshold"
+                             (change)="onChange('loginSettings', 'text','lockAccountThreshold', $event)" [ngStyle]="{
+                              paddingLeft: '', 
+                              paddingRight: ''
+                            }" />
+                              
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row loginFeature1">
+                      <div class="loginPassCom">
+
+                        <label> 5. Password Complexity </label>
+                        <img
+                        height="15px"
+                        src="../assets/Icon-info.svg"
+                        alt=""
+                        [pTooltip]="'Select the mandatory features required while user is creating a password'"
+                      />
+                      </div>
+                      <div class="row pr-0">
+
+                        <div class="col-sm-12 col-lg-2 left">
+                          <label> A. Allowed Length </label>
+                        </div>
+                        <div class="col-sm-12 col-lg-10 right pr-0">
+                          <div class="row loginPComRight">
+                            <ng-container>
+
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Min.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.allowedLengthMin"
+                                 (change)="onChange('loginSettings', 'text','allowedLengthMin', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Max.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.allowedLengthMax"
+                                 (change)="onChange('loginSettings', 'text','allowedLengthMax', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                            </ng-container>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      <div class="row pr-0">
+
+                        <div class="col-sm-12 col-lg-2 left">
+                          <label> B. Allowed Capital Letter </label>
+                        </div>
+                        <div class="col-sm-12 col-lg-10 right pr-0">
+                          <div class="row loginPComRight">
+                            <ng-container>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm' loginRadio">
+                                <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.loginSettings.upperRequired"></p-radioButton>
+                                <label for="option1">Yes</label>
+                                <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.loginSettings.upperRequired"></p-radioButton>
+                                <label for="option2">No</label>
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Min.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.upperMinLength"
+                                 (change)="onChange('loginSettings', 'text','upperMinLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Max.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.upperMaxLength"
+                                 (change)="onChange('loginSettings', 'text','upperMaxLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                            </ng-container>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      <div class="row pr-0">
+
+                        <div class="col-sm-12 col-lg-2 left">
+                          <label> C. Allowed Small Letter </label>
+                        </div>
+                        <div class="col-sm-12 col-lg-10 right pr-0">
+                          <div class="row loginPComRight">
+                            <ng-container>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm' loginRadio">
+                                <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.loginSettings.lowerRequired"></p-radioButton>
+                                <label for="option1">Yes</label>
+                                <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.loginSettings.lowerRequired"></p-radioButton>
+                                <label for="option2">No</label>
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Min.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.lowerMinLength"
+                                 (change)="onChange('loginSettings', 'text','lowerMinLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Max.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.lowerMaxLength"
+                                 (change)="onChange('loginSettings', 'text','lowerMaxLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                            </ng-container>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      <div class="row pr-0">
+
+                        <div class="col-sm-12 col-lg-2 left">
+                          <label> D. Allowed Special Character </label>
+                        </div>
+                        <div class="col-sm-12 col-lg-10 right pr-0">
+                          <div class="row loginPComRight">
+                            <ng-container>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm' loginRadio">
+                                <p-radioButton name="group" value="Y" [(ngModel)]="companyFormN.loginSettings.upperRequired"></p-radioButton>
+                                <label for="option1">Yes</label>
+                                <p-radioButton name="group" value="N" [(ngModel)]="companyFormN.loginSettings.upperRequired"></p-radioButton>
+                                <label for="option2">No</label>
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Min.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.specialCharacterMinLength"
+                                 (change)="onChange('loginSettings', 'text','specialCharacterMinLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                              <div class="'col-xs-12 col-sm-6 col-md-8 col-lg-2 p-2 fieldForm'">
+                                <label> Max.Length </label>
+                                <input type="text" class="block" pInputText [(ngModel)]="companyFormN.loginSettings.specialCharacterMaxLength"
+                                 (change)="onChange('loginSettings', 'text','specialCharacterMaxLength', $event)" [ngStyle]="{
+                                  paddingLeft: '', 
+                                  paddingRight: ''
+                                }" />
+                                  
+                              </div>
+                            </ng-container>
+                          </div>
+                          
+                        </div>
+                      </div>
+                    </div>
+                 
+                  </div>
+                </ng-container>
+              </div>
+            </p-panel>
           <div class="form-group btn-grp buttons-section">
             <button
               pButton
@@ -309,7 +1156,7 @@
               (click)="onReset()"
               [disabled]="deactivated"
             ></button>
-            <button
+            <!-- <button
               *ngIf="mode == 'edit'"
               pButton
               pRipple
@@ -317,6 +1164,31 @@
               label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
               class="p-button-raised"
               (click)="onActive(data)"
-            ></button>
+            ></button> -->
           </div>
-        </form>
+        </div>
+        <p-confirmDialog
+        key="resetCompanySettingsConfirmation"
+        class="confirm-popup"
+        #cd2
+        icon="pi pi-exclamation-triangle"
+        [closable]="false"
+      >
+        <p-footer>
+          <button
+            type="button"
+            pButton
+            icon="pi pi-check"
+            label="Yes"
+            (click)="cd2.accept()"
+          ></button>
+      
+          <button
+            type="button"
+            pButton
+            icon="pi pi-times"
+            label="Cancel"
+            (click)="cd2.reject()"
+          ></button>
+        </p-footer>
+      </p-confirmDialog>

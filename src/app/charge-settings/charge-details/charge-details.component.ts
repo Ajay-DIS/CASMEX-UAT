@@ -1281,7 +1281,7 @@ export class ChargeDetailsComponent implements OnInit {
         this.coreService.showWarningToast("Please Select Applicable On.");
       } else if (chargeMissing) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill charge Amount.");
+        this.coreService.showWarningToast("Please Fill Charge Amount.");
       } else if (invalidChargeAmount) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid charge Amount.");
@@ -1361,7 +1361,7 @@ export class ChargeDetailsComponent implements OnInit {
         }
       }
     } else {
-      this.coreService.showWarningToast("Applied criteria already exists.");
+      this.coreService.showWarningToast("Similar Record already exists.");
     }
   }
 
@@ -1441,7 +1441,11 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Similar Record already exists");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateApplicableOnFound = true;
       }
     }
@@ -1523,7 +1527,11 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Similar Record already exists");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateSetAsFound = true;
       }
     }

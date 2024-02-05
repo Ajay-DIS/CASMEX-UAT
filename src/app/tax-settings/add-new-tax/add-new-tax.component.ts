@@ -297,8 +297,8 @@ export class AddNewTaxComponent implements OnInit {
   onKeyPress(event: KeyboardEvent): void {
     const inputChar = String.fromCharCode(event.charCode);
 
-    // Allow only alphanumeric characters
-    if (!/^[a-zA-Z0-9]*$/.test(inputChar)) {
+    // Allow alphanumeric characters and space
+    if (!/^[a-zA-Z0-9\s]*$/.test(inputChar)) {
       event.preventDefault();
     }
   }
@@ -1451,7 +1451,7 @@ export class AddNewTaxComponent implements OnInit {
         }
       }
     } else {
-      this.coreService.showWarningToast("Applied criteria already exists.");
+      this.coreService.showWarningToast("Similar Record Already Exists.");
     }
   }
 
@@ -1531,7 +1531,11 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Similar Record already exists");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateApplicableOnFound = true;
       }
     }
@@ -1613,7 +1617,11 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Similar Record already exists");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateSetAsFound = true;
       }
     }
