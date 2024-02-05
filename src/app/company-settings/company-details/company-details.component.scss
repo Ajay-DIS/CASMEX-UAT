@@ -17,14 +17,76 @@
   
   label {
     font-size: 12px;
+    padding-right: 8px;
   }
-  
+  .expandAll{
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    // padding-left: 70px;
+  }
+  .expandAll p{
+    color:  rgb(180, 178, 178);
+    font-size: 14px;
+    padding: 8px;
+  }
+  .buttons-section {
+    display: flex;
+    justify-content: center !important;
+}
+  .loginRadio{
+    margin-top: 30px;
+  }
+  .loginLeft{
+    padding: 15px;
+    // background-color: #f4f6fa;
+    // color: blue;
+    border-top-left-radius: 5px;
+    border: 1px solid #e4e2e2;
+  }
+  .loginLeftRadio{
+padding-top: 8px;
+padding-bottom: 21px;
+  }
+  .loginLeft1{
+    padding: 15px;
+    // background-color: #f4f6fa;
+    // color: blue;
+    // border-top-left-radius: 5px;
+    border-bottom: 1px solid #e4e2e2;
+    border-left: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginRight{
+    padding: 15px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid #e4e2e2;
+    border-top: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginRight1{
+    padding: 15px;
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginPassCom{
+    padding: 15px;
+    border-left: 1px solid #e4e2e2;
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginPComRight{
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+    padding-bottom: 7px;
+  }
   .custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
     min-width: 120px;
   }
   
   .custom-form ::ng-deep .p-panel.p-component {
     margin-bottom: 15px;
+    margin-left: 15px;
   }
   .custom-form ::ng-deep .p-panel .p-panel-header {
     border-bottom: none;
@@ -258,4 +320,80 @@
     cursor: not-allowed;
     color: #999;
   }
-  
+.radiobtn {
+  background-color: #f4f6fa !important;
+  color: rgb(180, 178, 178) !important;
+  padding: 10px;
+}
+.p-radiobutton {
+  width: 20px !important;
+  height: 20px !important;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box {
+  border: 2px solid #3d66ba;
+  background: #f4f6fa;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  width: 11px;
+  height: 11px;
+  background-color: #4a62f0;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+  border-color: #3c3c3e;
+}
+:host ::ng-deep .p-component.p-multiselect {
+  font-size: 12px !important;
+  color: black !important;
+  width: 100%;
+}
+
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box:not(.p-disabled).p-focus {
+//   outline: 0 none;
+//   outline-offset: 0;
+//   box-shadow: 0 0 0 0.15rem #f0f2fe;
+//   border-color: #2455cf;
+// }
+// .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+//   width: 12px;
+//   height: 12px;
+//   transition-duration: 0.2s;
+//   background-color: #fff;
+// }
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+//   border-color: #b2b2b4;
+//   background: #9e9e9f;
+// }
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box .p-highlight:not(.p-disabled):hover {
+//   border-color: #1645b8;
+//   background: #1645b8;
+//   color: #cccbce;
+// }
+  .remittenceFeature .left{
+    padding: 10px;
+    background-color: #f4f6fa;
+    color: blue;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom: 1px solid #fff;
+  }
+  .remittenceFeature .right{
+    padding: 10px;
+    background-color: #fff;
+    color: rgb(180, 178, 178);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 1px solid rgb(241, 241, 241);
+  }
+  .loginFeature1 .left{
+    padding: 35px 10px 25px 10px ;
+    background-color: #f4f6fa;
+    color: blue;
+    border-bottom: 1px solid #fff;
+  }
+  .correspondentRadio{
+padding-top: 10px;
+color: rgb(180, 178, 178);
+  }

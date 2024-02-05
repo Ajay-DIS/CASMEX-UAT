@@ -823,10 +823,10 @@ export class AddCustomerBenefComponent implements OnInit, OnDestroy {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

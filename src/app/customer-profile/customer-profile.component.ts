@@ -759,10 +759,10 @@ export class CustomerProfileComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

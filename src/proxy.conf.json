@@ -10,5 +10,9 @@
   "/applicationSettings": {
     "target": "http://172.26.1.25:8889",
     "secure": false
+  },
+  "/appControl": {
+    "target": "http://172.26.1.25:9096",
+    "secure": false
   }
 }
