@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import {
   FormBuilder,
+  FormControl,
   FormGroup,
   UntypedFormGroup,
   Validators,
@@ -397,6 +398,20 @@ export class CompanyDetailsComponent implements OnInit {
     return value.trim().toUpperCase().replace(/\s+/g, " ");
   }
 
+  isValidEmailFormat(emails: string): boolean {
+    const emailAddresses = emails.split(";").map((email) => email.trim());
+    const invalidEmails = emailAddresses.filter(
+      (email) => !this.isValidEmail(email)
+    );
+    return invalidEmails.length === 0;
+  }
+
+  isValidEmail(email: string): boolean {
+    // Regular expression for email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  }
+
   onSubmit() {
     this.coreService.displayLoadingScreen();
     console.log("enter in click", this.companyFormN);
@@ -598,7 +613,11 @@ export class CompanyDetailsComponent implements OnInit {
     }
 
     console.log("save", this.newValues);
-    if (companyNameMissing) {
+    if (!this.isValidEmailFormat(this.companyFormN.companySettings.emailId)) {
+      this.coreService.removeLoadingScreen();
+      this.coreService.showWarningToast("Please enter a valid email format.");
+      return; // Stop execution here if email format is invalid
+    } else if (companyNameMissing) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please fill the Company Name.");
     } else if (countryMissing) {

@@ -97,6 +97,7 @@ import { CustomisedListingComponent } from "./customised-messages/customised-lis
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RadioButtonModule } from "primeng/radiobutton";
+import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -146,6 +147,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CustomisedListingComponent,
     CustomisedDetailsComponent,
     CompanyDetailsComponent,
+    RateListingComponent,
   ],
   imports: [
     BrowserModule,

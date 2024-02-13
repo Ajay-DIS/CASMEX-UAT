@@ -35,6 +35,7 @@ import { MasterListingComponent } from "./master/master-listing/master-listing.c
 import { CustomisedListingComponent } from "./customised-messages/customised-listing/customised-listing.component";
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
+import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -309,6 +310,16 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/company-settings" },
           { label: "Company Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "rate-settings",
+        component: RateListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/rate-settings" },
+          { label: "Rate Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },

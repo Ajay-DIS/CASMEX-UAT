@@ -131,7 +131,9 @@
                     [pTooltip]="'Official email address of your company’s administrator. Enter multiple address using semi-colon ( ; )'"
                   />
                     <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.emailId"
-                     (change)="onChange('basicDetails', 'text','emailId', $event)" [ngStyle]="{
+                     (change)="onChange('basicDetails', 'text','emailId', $event)"
+                     [ngModelOptions]="{updateOn: 'blur'}" 
+                     [ngStyle]="{
                       paddingLeft: '', 
                       paddingRight: ''
                     }" />
