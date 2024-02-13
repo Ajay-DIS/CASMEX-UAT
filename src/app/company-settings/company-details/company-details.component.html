@@ -30,7 +30,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 65px;"
                     [pTooltip]="'Legal Name of your company'"
                   />
                     <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.companyName"
@@ -48,7 +47,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 108px;"
                     [pTooltip]="'Country of Operation / Head Office of your company'"
                   />
                       <p-multiSelect class="block" 
@@ -127,11 +125,12 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 128px;"
                     [pTooltip]="'Official email address of your company’s administrator. Enter multiple address using semi-colon ( ; )'"
                   />
                     <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.emailId"
-                     (change)="onChange('basicDetails', 'text','emailId', $event)" [ngStyle]="{
+                     (change)="onChange('basicDetails', 'text','emailId', $event)"
+                     [ngModelOptions]="{updateOn: 'blur'}" 
+                     [ngStyle]="{
                       paddingLeft: '', 
                       paddingRight: ''
                     }" />
@@ -143,7 +142,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 75px;"
                     [pTooltip]="'Official mobile number of your company. Enter multiple number using semi-colon ( ; )'"
                   />
                   <input type="text"
@@ -164,7 +162,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 75px;"
                     [pTooltip]="'Official phone number of your company. Enter multiple (number) using semi-colon ( ; )'"
                   />
                     <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.phoneNumber"
@@ -180,7 +177,6 @@
                       height="15px"
                       src="../assets/Icon-info.svg"
                       alt=""
-                      style="padding-left: 79px;"
                       [pTooltip]="'Upload your Company’s logo to display on CASMEX'"
                     />
                     <div class="file-upload">
@@ -217,7 +213,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 72px;"
                     [pTooltip]="'Select applicable base currency/s for your company. Multiple selection allowed from the drop-down'"
                   />
                     <p-multiSelect class="block" 
@@ -248,7 +243,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 26px;"
                     [pTooltip]="'Select primary base currency from the selected base currencies'"
                   />
                    
@@ -269,7 +263,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 69px;"
                     [pTooltip]="'Select applicable cross currency for settlement. Multiple selection allowed from the drop-down'"
                   />
                     <p-multiSelect class="block" 
@@ -297,7 +290,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 72px;"
                     [pTooltip]="'Select the number format in which amount will be displayed in all fields'"
                   />
                     <p-dropdown class="block" placeholder="select"  [options]="numberFormatOptions" optionLabel="name" [appendTo]="'body'"
@@ -319,7 +311,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 89px;"
                     [pTooltip]="'Select the date format in which date will be displayed in all fields'"
                   />
                     <p-dropdown class="block" placeholder="select"  [options]="dateFormatOptions" optionLabel="name" [appendTo]="'body'"
@@ -346,7 +337,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 53px;"
                     [pTooltip]="'Select the primary language in which system will be used'"
                   />
                     <p-dropdown class="block" placeholder="select"  [options]="primaryLanguageOptions"  optionLabel="name" [appendTo]="'body'"
@@ -368,7 +358,6 @@
                     height="15px"
                     src="../assets/Icon-info.svg"
                     alt=""
-                    style="padding-left: 121px;"
                     [pTooltip]="'Select the theme in which the system features will be displayed'"
                   />
                     <p-dropdown class="block" [options]="themeOptions" placeholder="select" optionLabel="name" [appendTo]="'body'"
@@ -388,237 +377,6 @@
             </p-panel>
           </ng-container>
         </div>
-          <!-- <ng-container *ngFor="let section of formSections">
-            <p-panel
-              [header]="section.formName"
-              [toggleable]="true"
-              [formGroup]="companyForm.controls[section.formName]"
-            >
-              <div class="row">
-                <ng-container *ngFor="let field of section.fields">
-                  <div
-                    [ngClass]="{
-                      'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm':
-                        !field?.newLineField,
-                      checkbox: field.fieldType == 'checkbox',
-                      newLineField: field?.newLineField
-                    }"
-                  >
-                    <label
-                      [attr.title]="
-                        field.fieldLabel.length > 27 ? field.fieldLabel : ''
-                      "
-                      >{{
-                        field.fieldLabel.length > 27 && !field?.newLineField
-                          ? field.fieldLabel.substring(0, 27) + ".."
-                          : field.fieldLabel
-                      }}</label
-                    ><span
-                      *ngIf="field.required || field.docFieldMandate"
-                      class="required"
-                      >*</span
-                    >
-                    <ng-container [ngSwitch]="field.fieldType">
-                      <ng-container *ngSwitchCase="'text'">
-                        <div
-                          style="position: 'relative'"
-                          *ngIf="field.name != 'employerNameEmpDetails'"
-                        >
-                          <input
-                            type="text"
-                            class="block"
-                            pInputText
-                            [formControlName]="field.name"
-                            [ngStyle]="{
-                              paddingLeft: field.prefix ? '45px' : '',
-                              paddingRight: field.suffix ? '40px' : ''
-                            }"
-                            (ngModelChange)="
-                              checkValidValuesText($event, field)
-                            "
-                          />
-                        </div>
-                        <div
-                          class="employername"
-                          *ngIf="field.name == 'employerNameEmpDetails'"
-                        >
-                          <p-autoComplete
-                            [formControlName]="field.name"
-                            [suggestions]="filteredEmployer"
-                            (completeMethod)="searchEmployer($event)"
-                          ></p-autoComplete>
-                        </div>
-                      </ng-container>
-
-                      <ng-container *ngSwitchCase="'number'">
-                        <ng-container>
-                          <div
-                            style="position: 'relative'"
-                          >
-                            <input
-                              type="text"
-                              class="block"
-                              pInputText
-                              [formControlName]="field.name"
-                              [ngStyle]="{
-                                paddingLeft: field.prefix ? '45px' : '',
-                                paddingRight: field.suffix ? '40px' : ''
-                              }"
-                              (ngModelChange)="
-                                checkValidValuesText($event, field)
-                              "
-                            />
-                          </div>
-                        </ng-container>
-                      </ng-container>
-                      <p-calendar
-                        *ngSwitchCase="'date'"
-                        class="block"
-                        placeholder="DD/MM/YYYY"
-                        dateFormat="dd/mm/yy"
-                        [showIcon]="true"
-                        [formControlName]="field.name"
-                        [minDate]="field.minDate"
-                        [maxDate]="field.maxDate"
-                        [defaultDate]="field.defaultDate"
-                        [readonlyInput]="false"
-                        [appendTo]="'body'"
-                        (onSelect)="handleDateSelect(calendar, $event)"
-                        (ngModelChange)="checkValidValuesDate($event, field)"
-                        appDateMask
-                        [pTooltip]="
-                          companyForm.controls[field.formName]['controls'][
-                            field.name
-                          ].errors?.invalidValue
-                            ? field.displayValidValuesOnHover == 'Yes'
-                              ? 'Valid values are ' +
-                                field.validValues.join(', ')
-                              : ''
-                            : ''
-                        "
-                        tooltipPosition="top"
-                        #calendar
-                      ></p-calendar>
-                      <p-checkbox
-                        *ngSwitchCase="'checkbox'"
-                        [formControlName]="field.name"
-                        [binary]="true"
-                        (onChange)="sameAddress($event, field.name)"
-                      ></p-checkbox>
-                      <p-dropdown
-                        *ngSwitchCase="'dropdownSingle'"
-                        class="block"
-                        [options]="
-                        "
-                        [formControlName]="field.name"
-                        placeholder="Type to search"
-                        optionLabel="codeName"
-                        [appendTo]="'body'"
-                        [filter]="true"
-                        filterBy="codeName"
-                        [virtualScroll]="true"
-                        [virtualScrollItemSize]="35"
-                        panelStyleClass="formFields-dropdown"
-                      >
-                        <ng-template let-options pTemplate="item">
-                          <div class="truncate-text">
-                            <div>{{ options.codeName }}</div>
-                          </div>
-                        </ng-template></p-dropdown
-                      >
-                      <p-dropdown
-                        *ngSwitchCase="'smart-search'"
-                        class="block smartSearch"
-                        [formControlName]="field.name"
-                        [options]="
-                        "
-                        optionLabel="codeName"
-                        [filter]="true"
-                        filterBy="codeName"
-                        placeholder="Type to search"
-                      >
-                        <ng-template pTemplate="selectedItem">
-                          <div
-                            class="country-item country-item-value"
-                            *ngIf="field"
-                          >
-                            <div>
-                              {{
-                                companyForm.controls[section.formName][
-                                  "controls"
-                                ][field.name].value.codeName
-                              }}
-                            </div>
-                          </div>
-                        </ng-template>
-                        <ng-template let-options pTemplate="item">
-                          <div class="truncate-text">
-                            <div>{{ options.codeName }}</div>
-                          </div>
-                        </ng-template>
-                      </p-dropdown>
-                      <div
-                        *ngSwitchCase="'file'"
-                        class="file-upload"
-                      >
-                        <div
-                          #inpSelect
-                          class="file-upload-select"
-                          (click)="inpFile.click()"
-                        >
-                          <div class="file-select-name">
-                            <input type="text" [formControlName]="field.name" />
-                          </div>
-                          <div class="file-select-button">
-                            <i class="pi pi-upload"></i>
-                          </div>
-                          <input
-                            #inpFile
-                            onclick="this.value=null;"
-                            (focus)="setUploadBtnStyle(true, inpSelect)"
-                            (blur)="setUploadBtnStyle(false, inpSelect)"
-                            (change)="
-                              fileUploadChange(
-                                $event,
-                                section.formName,
-                                field.name,
-                                companyForm
-                                  .get(section.formName)
-                                  .get(
-                                    section.formName == 'Representative Details'
-                                      ? 'representativeIdNumber'
-                                      : 'idNumber'
-                                  )?.value
-                              )
-                            "
-                            type="file"
-                            name="file-upload-input"
-                            id="file-upload-input"
-                            [accept]="'.pdf, .png, .jpg, .docx, .doc'
-                            "
-                            
-                          />
-                        </div>
-                      </div>
-                      <select
-                        *ngSwitchCase="'multiselect'"
-                        multiple
-                        [formControlName]="field.name"
-                      >
-                        <option
-                          *ngFor="let option of field.options"
-                          [value]="option.value"
-                        >
-                          {{ option.label }}
-                        </option>
-                      </select>
-                    </ng-container>
-                  </div>
-                </ng-container>
-              </div>
-              
-            </p-panel>
-          </ng-container> -->
           <p-panel
               header="Remittance Settings"
               [toggleable]="true"
@@ -632,7 +390,6 @@
                   height="15px"
                   src="../assets/Icon-info.svg"
                   alt=""
-                  style="padding-left: 35px;"
                   [pTooltip]="'Select Yes if Teller and Cashier are different person else select NO'"
                 />
                   <p-dropdown class="block" [options]="requiredDualCounterOptions" [(ngModel)]="selectRequiredDualCounter" placeholder="Type to search" optionLabel="name" [appendTo]="'body'"

@@ -1,0 +1,214 @@
+
+<div class="visible-main-section">
+    <div class="ptable">
+      <p-table
+        #dt
+        [columns]="cols"
+        [value]="rateListingData"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th
+              *ngFor="let col of columns; let c = index"
+              pReorderableColumn
+              [pSortableColumn]="col.field"
+              pResizableColumn
+              [style.width]="col.width"
+            >
+              {{ col.header }}
+              <p-sortIcon
+              *ngIf="
+                (col.field == 'currencyCode' || col.field == 'currency')
+              "
+              [field]="col.field"
+            ></p-sortIcon>
+            </th>
+          </tr>
+          <tr class="search-row">
+            <th *ngFor="let col of cols" [style.width]="col.width">
+              <span
+                style="width: 100%"
+                class="p-input-icon-left"
+                *ngIf="col.field === 'currencyCode' || col.field === 'currency'"
+              >
+                <i class="pi pi-search"></i>
+                <input
+                  type="text"
+                  class="p-inputtext table-search"
+                  placeholder="Search"
+                  (input)="dt.filter($event.target.value, col.field, 'contains')"
+                />
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-columns="columns"
+          let-index="rowIndex"
+        >
+          <tr [pReorderableRow]="index">
+            <ng-container *ngFor="let col of columns; let i = index">
+              <td *ngIf="col.field != 'status' && col.field != 'operation'">
+                <div
+                      *ngIf="col['field'] === 'currencyCode' || col['field'] === 'currency'"
+                    >
+                      <input
+                        #inp
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                        disabled
+                      />
+                    </div>
+                <div
+                      *ngIf="col['field'] === 'rateMask'"
+                    >
+                      <input
+                        #inp
+                        [(ngModel)]="rowData[col.field]"
+                        type="text"
+                        pInputText
+                      />
+                    </div>
+                    <div class="correspondentRadio" *ngIf="col['field'] === 'marginRatio'">
+                        <p-radioButton name="group" value="PIPS" [(ngModel)]="rowData[col.field]"></p-radioButton>
+                        <label class="radioLabel" for="option1">PIPS</label>
+                      <!-- </div>
+                      
+                      <div> -->
+                        <p-radioButton name="group" value="Percentage" [(ngModel)]="rowData[col.field]"></p-radioButton>
+                        <label class="radioLabel" for="option2">PERCENTAGE</label>
+                      </div>   
+                    <div class="correspondentRadio" *ngIf="col['field'] === 'factor'">
+                        <p-radioButton name="group" value="M" [(ngModel)]="rowData[col.field]"></p-radioButton>
+                        <label class="radioLabel" for="option1">MULTIPLICATION</label>
+                      <!-- </div>
+                      
+                      <div> -->
+                        <p-radioButton name="group" value="D" [(ngModel)]="rowData[col.field]"></p-radioButton>
+                        <label class="radioLabel" for="option2">DIVISION</label>
+                      </div>   
+              </td>
+  
+              <td
+                *ngIf="col.field == 'status'"
+                style="border: none; text-align: center"
+              >
+                <label class="switch" tabindex="0"
+                (keyup.Space)= "statusInp.click()">
+                  <input
+                    #statusInp
+                    [value]="rowData[col['field']]"
+                    type="checkbox"
+                    (click)="confirmStatus($event, rowData)"
+                    [checked]="
+                      rowData[col['field']] == 'Active' ||
+                      rowData[col['field']] == 'A'
+                        ? true
+                        : false
+                    "
+                  />
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length">No Data Found.</td>
+          </tr>
+        </ng-template>
+    </p-table>
+    <div class="form-group btn-grp buttons-section p-4">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Save"
+          class="p-button-raised"
+          (click)="onSubmit()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Reset"
+          class="p-button-warning"
+          (click)="onReset()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <div class="NorecordFound" *ngIf="!rateListingData?.length && showNoDataFound">
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>"No Record Found."</p>
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New Tax"
+          class="p-button-raised"
+          (click)="addNewTaxPage()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    key="activeDeactiveStatus"
+    class="status-confirm confirm-popup"
+    #cd
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  <p-confirmDialog
+  key="resetRateSettingsConfirmation"
+  class="confirm-popup"
+  #cd2
+  icon="pi pi-exclamation-triangle"
+  [closable]="false"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      label="Yes"
+      (click)="cd2.accept()"
+    ></button>
+
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      label="Cancel"
+      (click)="cd2.reject()"
+    ></button>
+  </p-footer>
+</p-confirmDialog>
