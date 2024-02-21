@@ -1,0 +1,199 @@
+<form
+  id="document-collection-form"
+  *ngIf="documentSettingData && documentSettingData.length"
+  class="doc-collection-form"
+  [formGroup]="docCollectionForm"
+>
+  <p-panel [header]="docSettingDescription" [toggleable]="true" *ngIf="true">
+    <p-table
+      [value]="docTableData"
+      [columns]="docTableCols"
+      [tableStyle]="{ 'min-width': '50rem', position: 'relative' }"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            [style.minWidth]="col.minWidth"
+            [style.maxWidth]="col.maxWidth"
+          >
+            {{ col.header }}
+          </th>
+          <th
+            *ngIf="
+              customerUploadedDocumentsData &&
+              customerUploadedDocumentsData.length
+            "
+            [style.minWidth]="'100px'"
+          >
+            Download ID
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-docData let-columns="columns">
+        <tr>
+          <ng-container [formGroup]="docForm[docData['docName']]">
+            <td
+              *ngFor="let docField of docData.docFields"
+              [pTooltip]="
+                showTooltip(
+                  docForm[docData['docName']]['controls'][
+                    docField['fieldName']
+                  ],
+                  docField
+                )
+              "
+            >
+              <ng-container [ngSwitch]="docField.fieldType">
+                <ng-container *ngSwitchCase="'text'">
+                  <div style="display: inline-block; position: relative">
+                    <span>{{
+                      docField?.defaultValue
+                        ? docField.defaultValue
+                        : "Document"
+                    }}</span
+                    ><span *ngIf="docData.isDocMandatory" class="red-star"
+                      >*</span
+                    >
+                  </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="'input'">
+                  <input
+                    [formControlName]="docField.fieldName"
+                    type="text"
+                    [ngStyle]="{
+                      borderRadius: '7px',
+                      border:
+                        docForm[docData['docName']].controls[
+                          docField['fieldName']
+                        ].errors?.required && docFormSubmitted
+                          ? '1px solid red'
+                          : ''
+                    }"
+                  />
+                </ng-container>
+                <ng-container *ngSwitchCase="'date'">
+                  <p-calendar
+                    #calendar
+                    class="block"
+                    placeholder="DD/MM/YYYY"
+                    dateFormat="dd/mm/yy"
+                    [showIcon]="true"
+                    [readonlyInput]="false"
+                    [appendTo]="'body'"
+                    (onSelect)="handleDateSelect(calendar, $event)"
+                    appDateMask
+                    tooltipPosition="top"
+                    [formControlName]="docField.fieldName"
+                    [maxDate]="docField.maxDate"
+                    [minDate]="docField.minDate"
+                    [ngStyle]="{
+                      borderRadius: '7px',
+                      border:
+                        docForm[docData['docName']].controls[
+                          docField['fieldName']
+                        ].errors?.required && docFormSubmitted
+                          ? '1px solid red'
+                          : ''
+                    }"
+                  ></p-calendar>
+                </ng-container>
+
+                <ng-container *ngSwitchCase="'dropdownSingle'">
+                  <p-dropdown
+                    class="block docCollection-dropdown"
+                    [options]="idIssueCountryList"
+                    optionLabel="codeName"
+                    placeholder="Select"
+                    [formControlName]="docField.fieldName"
+                    panelStyleClass="docCollection-dropdown"
+                    appendTo="body"
+                    [pTooltip]="
+                      docForm[docData['docName']].controls[
+                        docField['fieldName']
+                      ].value?.codeName
+                    "
+                    [ngStyle]="{
+                      borderRadius: '7px',
+                      border:
+                        docForm[docData['docName']].controls[
+                          docField['fieldName']
+                        ].errors?.required && docFormSubmitted
+                          ? '1px solid red'
+                          : ''
+                    }"
+                  >
+                    <ng-template let-options pTemplate="item">
+                      <div class="truncate-text">
+                        <div>{{ options.codeName }}</div>
+                      </div>
+                    </ng-template>
+                  </p-dropdown>
+                </ng-container>
+
+                <div *ngSwitchCase="'file'" class="file-upload">
+                  <app-file-upload
+                    [formControlName]="docField.fieldName"
+                    [uploadedFileName]="
+                      docForm[docData['docName']]['controls'][
+                        docField['fieldName'] + 'Name'
+                      ].value
+                    "
+                    [hasError]="
+                      docFormSubmitted &&
+                      docForm[docData['docName']]['controls'][
+                        docField['fieldName']
+                      ].errors?.required
+                    "
+                    (fileNameToView)="viewDocument($event)"
+                  ></app-file-upload>
+                </div>
+              </ng-container>
+            </td>
+            <td
+              *ngIf="
+                customerUploadedDocumentsData &&
+                customerUploadedDocumentsData.length
+              "
+            >
+              <div
+                class="fake-btn"
+                (click)="
+                  downloadDocuments([
+                    docForm[docData['docName']]['controls'][
+                      'uploadFrontSideName'
+                    ]['value'],
+                    docForm[docData['docName']]['controls'][
+                      'uploadBackSideName'
+                    ]['value']
+                  ])
+                "
+              >
+                <i class="pi pi-download"></i>
+              </div>
+            </td>
+          </ng-container>
+        </tr>
+      </ng-template>
+    </p-table>
+    <div
+      *ngIf="docTableData.length"
+      id="hereby-confirm-div"
+      class="hereby-confirm-check"
+    >
+      <input
+        [(ngModel)]="hereByConfirmed"
+        [ngModelOptions]="{ standalone: true }"
+        type="checkbox"
+        (change)="docFormSubmit($event)"
+        [ngStyle]="{
+          'box-shadow':
+            docTableData.length && !hereByConfirmed && customerFormSubmitted
+              ? '0px 0px 0px 1px red'
+              : ''
+        }"
+      />
+      <span>Hereby confirm that ID details provided are verified</span>
+    </div>
+  </p-panel>
+</form>

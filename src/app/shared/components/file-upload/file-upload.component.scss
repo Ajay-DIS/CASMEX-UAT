@@ -1,0 +1,55 @@
+.file-drop-area {
+  position: relative;
+  width: 150px;
+  max-width: 100%;
+  margin: 0 auto;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4f6fa;
+  padding-left: 5px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.fake-btn {
+  background: #55c78a;
+  padding: 9px 12px;
+  color: #ffffff;
+  font-size: 12px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  cursor: pointer;
+}
+
+.file-msg {
+  font-size: small;
+  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: calc(100% - 38px);
+}
+
+span.file-link {
+  color: var(--primary-color);
+  border-bottom: 1px solid;
+  cursor: pointer;
+}
+
+.file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  display: none;
+}
+
+.file-input:focus {
+  outline: none;
+}

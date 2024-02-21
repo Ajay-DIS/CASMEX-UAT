@@ -57,7 +57,7 @@ import { AddnewrouteComponent2 } from "./banks-routing-2/addnewroute/addnewroute
 import { SetCriteriaComponent } from "./shared/components/set-criteria/set-criteria.component";
 import { TransactionCriteriaModal } from "./shared/modals/transaction-criteria-modal/transaction-criteria-modal";
 import { AddNewTaxComponent } from "./tax-settings/add-new-tax/add-new-tax.component";
-import { MessageService } from "primeng/api";
+import { ConfirmationService, MessageService } from "primeng/api";
 import { AddNewFormRuleComponent } from "./form-rules/add-new-form-rule/add-new-form-rule.component";
 import { FormRuleListingComponent } from "./form-rules/form-rule-listing/form-rule-listing.component";
 import { GroupSettingsComponent } from "./get-apis/group-settings/group-settings.component";
@@ -74,7 +74,6 @@ import { SearchListingComponent } from "./search-settings/search-listing/search-
 import { AddNewSearchComponent } from "./search-settings/add-new-search/add-new-search.component";
 import { CustomFieldsComponent } from "./get-apis/custom-fields/custom-fields.component";
 import { CustomFormComponent } from "./get-apis/custom-form/custom-form.component";
-import { CorporateComponent } from "./customer-profile/corporate/corporate.component";
 import { UserIdleModule } from "angular-user-idle";
 import { BeneficiaryProfileComponent } from "./beneficiary-profile/beneficiary-profile.component";
 import { AddBeneficiaryComponent } from "./beneficiary-profile/add-beneficiary/add-beneficiary.component";
@@ -95,6 +94,12 @@ import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-
 import { MasterListingComponent } from "./master/master-listing/master-listing.component";
 import { CustomisedListingComponent } from "./customised-messages/customised-listing/customised-listing.component";
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
+
+import { DocumentCollectionComponent } from "./shared/forms/document-collection/document-collection.component";
+import { FileUploadComponent } from "./shared/components/file-upload/file-upload.component";
+import { CustomerFormComponent } from "./shared/forms/customer-form/customer-form.component";
+import { ConfirmDialogModalComponent } from "./shared/modals/confirm-dialog-modal/confirm-dialog-modal.component";
+
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
@@ -133,7 +138,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     AddNewSearchComponent,
     CustomFieldsComponent,
     CustomFormComponent,
-    CorporateComponent,
     BeneficiaryProfileComponent,
     AddBeneficiaryComponent,
     DocumentListingComponent,
@@ -150,12 +154,19 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MasterListingComponent,
     CustomisedListingComponent,
     CustomisedDetailsComponent,
+
+    DocumentCollectionComponent,
+    FileUploadComponent,
+    CustomerFormComponent,
+    ConfirmDialogModalComponent,
+
     CompanyDetailsComponent,
     RateListingComponent,
     UsersPermisionsComponent,
     SystemUsersDetailsComponent,
     SystemUsersListingComponent,
     UserGroupComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -214,6 +225,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     },
     DatePipe,
     MessageService,
+    ConfirmationService,
   ],
   bootstrap: [AppComponent],
 })

@@ -96,14 +96,17 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.switchLanguage(this.selectedLanguage);
     this.selectTheme({ name: "Blue", color: "#4759e4" });
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
+      console.log(":::mainBCrumbs", menu);
       this.breadcrumbsItems = menu;
     });
     this.coreService
       .getBreadCrumbMenuFromInternalPages()
       .subscribe((bCrumbsInternal) => {
         console.log(":::bCrumbsInternal", bCrumbsInternal);
-        this.breadcrumbsItems = null;
+
         if (bCrumbsInternal && bCrumbsInternal.length) {
+          this.breadcrumbsItems = null;
+
           this.breadcrumbsItems = [...bCrumbsInternal];
         }
       });

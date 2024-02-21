@@ -1,0 +1,22 @@
+<div class="file-drop-area">
+  <span
+    [ngClass]="{
+      'file-msg': true,
+      'file-link': uploadedFileName && uploadedFileName != '' && !file
+    }"
+    [ngStyle]="{ color: hasError ? 'red' : '' }"
+    (click)="
+      uploadedFileName &&
+        uploadedFileName != '' &&
+        !file &&
+        fileNameToView.emit(uploadedFileName)
+    "
+    >{{
+      file ? file.name : uploadedFileName ? uploadedFileName : "choose file"
+    }}</span
+  >
+  <span (click)="fileInp.click()" class="fake-btn"
+    ><i class="pi pi-upload"></i
+  ></span>
+  <input #fileInp class="file-input" type="file" />
+</div>
