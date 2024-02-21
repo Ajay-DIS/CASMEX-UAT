@@ -1,0 +1,203 @@
+<div class="visible-main-section">
+    <div class="pagetitle">
+      <div class="infoicon">
+        <i class="pi pi-info-circle"></i>
+        List of System Users.
+      </div>
+      <div class="addnew">
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New System User"
+          class="p-button-raised"
+          (click)="addNewSystemUserPage()"
+        ></button>
+      </div>
+    </div>
+    <div class="ptable" *ngIf="systemUsersListingData?.length">
+      <p-table
+        #dt
+        [columns]="cols"
+        [value]="systemUsersListingData"
+        [paginator]="true"
+        [rows]="10"
+        [resizableColumns]="true"
+        columnResizeMode="fit"
+        [rowHover]="true"
+      >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th
+              *ngFor="let col of columns; let c = index"
+              pReorderableColumn
+              [pSortableColumn]="col.field"
+              pResizableColumn
+              [style.width]="col.width"
+            >
+              {{ col.header }}
+            </th>
+          </tr>
+          <tr class="search-row">
+            <th *ngFor="let col of cols" [style.width]="col.width">
+              <span
+                style="width: 100%"
+                class="p-input-icon-left"
+              >
+                <i class="pi pi-search"></i>
+                <input
+                  type="text"
+                  class="p-inputtext table-search"
+                  placeholder="Search"
+                  (input)="dt.filter($event.target.value, col.field, 'contains')"
+                />
+              </span>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-rowData
+          let-columns="columns"
+          let-index="rowIndex"
+        >
+          <tr [pReorderableRow]="index">
+            <ng-container *ngFor="let col of columns; let i = index">
+              <td *ngIf="col.field != 'status'">
+                <div
+                  *ngIf="!(i == 0 || i == 6 )"
+                  style="display: inline-block"
+                >
+                  {{ rowData[col["field"]] }}
+                </div>
+                <a
+                  *ngIf="i == 0"
+                  style="text-decoration: underline !important;cursor: pointer"
+                  tabindex="0"
+                  (keyup.Space)= "viewSystemUser(rowData)"
+                  (click)="viewSystemUser(rowData)"
+                  >{{ rowData[col["field"]] }}</a
+                >
+                <span
+                  *ngIf="i == 1"
+                  [pTooltip]="
+                    rowData[col['field']].length > 30 ? rowData[col['field']] : ''
+                  "
+                  tooltipPosition="bottom"
+                >
+                  {{
+                    rowData[col["field"]].length > 30
+                      ? rowData[col["field"]].substring(0, 30) + ".."
+                      : rowData[col["field"]]
+                  }}</span
+                >
+                <span
+                  *ngIf="i == 2"
+                  [pTooltip]="
+                    rowData[col['field']].length > 80 ? rowData[col['field']] : ''
+                  "
+                  tooltipPosition="bottom"
+                  (mouseenter)="rowData['isHovered'] = true"
+                  (mouseleave)="rowData['isHovered'] = false"
+                >
+                  {{
+                    rowData[col["field"]].length > 80
+                      ? rowData["isHovered"]
+                        ? rowData[col["field"]].substring(0, 75) + ".."
+                        : rowData[col["field"]].substring(0, 80) + ".."
+                      : rowData[col["field"]]
+                  }}<a
+                    style="cursor: pointer"
+                    *ngIf="
+                      rowData['isHovered'] && rowData[col['field']].length > 80
+                    "
+                    (click)="copyToClipboard(rowData[col['field']])"
+                    >COPY</a
+                  ></span
+                >
+              </td>
+  
+              <td
+                *ngIf="col.field == 'status'"
+                style="border: none; text-align: center"
+              >
+                <label class="switch" tabindex="0"
+                (keyup.Space)= "statusInp.click()">
+                  <input
+                    #statusInp
+                    [value]="rowData[col['field']]"
+                    type="checkbox"
+                    (click)="confirmStatus($event, rowData)"
+                    [checked]="
+                      rowData[col['field']] == 'Active' ||
+                      rowData[col['field']] == 'A'
+                        ? true
+                        : false
+                    "
+                  />
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="cols.length">No Data Found.</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft" let-state>
+          {{ state.page * state.rows + 1 }} -
+          {{
+            state.rows * (state.page + 1) > state.totalRecords
+              ? state.totalRecords
+              : state.rows * (state.page + 1)
+          }}
+          of {{ state.totalRecords }}
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+  <div class="NorecordFound" *ngIf="!systemUsersListingData?.length">
+    <div class="row">
+      <div class="col-12"><img src="assets/noRecordFound.svg" /></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>"No Record Found.Click Add New System User To Add Record"</p>
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Add New System User"
+          class="p-button-raised"
+          (click)="addNewTaxPage()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    key="activeDeactiveStatus"
+    class="status-confirm confirm-popup"
+    #cd
+    [closable]="false"
+  >
+    <p-footer>
+      <button
+        type="button"
+        pButton
+        icon="pi pi-check"
+        label="Yes"
+        (click)="cd.accept()"
+      ></button>
+  
+      <button
+        type="button"
+        pButton
+        icon="pi pi-times"
+        label="No"
+        (click)="cd.reject()"
+      ></button>
+    </p-footer>
+  </p-confirmDialog>
+  

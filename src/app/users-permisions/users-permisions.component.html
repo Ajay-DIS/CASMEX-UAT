@@ -1,0 +1,54 @@
+<div class="row visible-main-section">
+    <div class="col-12">
+      <p-tabView
+      (onChange)="clickTabChange($event)"
+      >
+        <p-tabPanel
+          header="System Users"
+          
+        >
+        <div *ngIf="mode != 'add'">
+
+          <app-system-users-listing  (modeEvent)="handleMode($event)" (editEvent)="handleEdit($event)"></app-system-users-listing>
+        </div>
+        <div *ngIf="mode === 'add'">
+
+          <app-system-users-details (modeEventBack)="handleModeBack($event)" [bankTransferModel]="bankTransferModel"></app-system-users-details>
+        </div>
+        </p-tabPanel>
+        <p-tabPanel
+          header="User Group"
+        >
+        <app-user-group></app-user-group>
+        </p-tabPanel>
+        <p-tabPanel
+          header="User Group Menu Permission"
+        >
+          <ng-template pTemplate="content">
+            <!-- <app-corporate [activeIndex]="activeTabIndex"></app-corporate> -->
+          </ng-template>
+        </p-tabPanel>
+        <p-tabPanel
+          header="Data Access Group"
+        >
+          <ng-template pTemplate="content">
+            <!-- <app-corporate [activeIndex]="activeTabIndex"></app-corporate> -->
+          </ng-template>
+        </p-tabPanel>
+        <p-tabPanel
+          header="Data Access Group Permission"
+        >
+          <ng-template pTemplate="content">
+            <!-- <app-corporate [activeIndex]="activeTabIndex"></app-corporate> -->
+          </ng-template>
+        </p-tabPanel>
+        <p-tabPanel
+          header="User Group Field Permission"
+        >
+          <ng-template pTemplate="content">
+            <!-- <app-corporate [activeIndex]="activeTabIndex"></app-corporate> -->
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>

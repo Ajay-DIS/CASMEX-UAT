@@ -98,6 +98,10 @@ import { CustomisedDetailsComponent } from "./customised-messages/customised-det
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
+import { UsersPermisionsComponent } from './users-permisions/users-permisions.component';
+import { SystemUsersDetailsComponent } from './users-permisions/system-users/system-users-details/system-users-details.component';
+import { SystemUsersListingComponent } from './users-permisions/system-users/system-users-listing/system-users-listing.component';
+import { UserGroupComponent } from './users-permisions/user-group/user-group/user-group.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -148,6 +152,10 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     CustomisedDetailsComponent,
     CompanyDetailsComponent,
     RateListingComponent,
+    UsersPermisionsComponent,
+    SystemUsersDetailsComponent,
+    SystemUsersListingComponent,
+    UserGroupComponent,
   ],
   imports: [
     BrowserModule,

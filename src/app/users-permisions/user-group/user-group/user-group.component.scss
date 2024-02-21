@@ -1,0 +1,35 @@
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+    text-align: center;
+  }
+  .custom-form{
+    margin: 0px;
+    padding: 10px;
+        background: #ffff;
+        border: 1px solid #e0e1e2;
+        border-bottom-right-radius: 6px;
+        border-bottom-left-radius: 6px;
+        border-top-right-radius: 6px;
+        border-top-left-radius: 6px;
+}
+p-inputNumber.contactNumber {
+    width: 100% !important;
+}
+p-inputNumber.contactNumber ::ng-deep .p-inputnumber.p-component{
+  width: 100% !important;
+}
+
+  div.btn-grp {
+    position: flex;
+    justify-content: center;
+  }
+
+  .application-header{
+    color: var(--primary-color);
+    font-family: "IBM Plex Sans", sans-serif !important;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .addnewbtnSection {
+    position: flex;
+    justify-content: center;
+  }

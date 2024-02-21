@@ -98,12 +98,10 @@
                   </div>
                   <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
                     <label> Pin Code/Zip Code </label>
-                    <input type="number" class="block" pInputText [(ngModel)]="companyFormN.companySettings.pinCode"
-                     (change)="onChange('basicDetails', 'text','pinCode', $event)" [ngStyle]="{
-                      paddingLeft: '', 
-                      paddingRight: ''
-                    }" />
-                      
+                    <p-inputNumber class="contactNumber" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"
+                    [(ngModel)]="companyFormN.companySettings.pinCode"
+                     (change)="onChange('basicDetails', 'text','pinCode', $event)">
+                    </p-inputNumber>
                   </div>
                   <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'                        ">
                     <label>
@@ -144,17 +142,10 @@
                     alt=""
                     [pTooltip]="'Official mobile number of your company. Enter multiple number using semi-colon ( ; )'"
                   />
-                  <input type="text"
-                  class="block"
-                  pInputText
-                  [(ngModel)]="companyFormN.companySettings.mobileNumber"
-                  (change)="onChange('basicDetails', 'text','mobileNumber', $event)"
-                  [ngStyle]="{
-                     paddingLeft: '', 
-                     paddingRight: ''
-                  }"
-           />
-                      
+           <p-inputNumber class="contactNumber" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"
+           [(ngModel)]="companyFormN.companySettings.mobileNumber"
+           (change)="onChange('basicDetails', 'text','mobileNumber', $event)">
+           </p-inputNumber>     
                   </div>
                   <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
                     <label> Phone Number </label>
@@ -164,12 +155,10 @@
                     alt=""
                     [pTooltip]="'Official phone number of your company. Enter multiple (number) using semi-colon ( ; )'"
                   />
-                    <input type="text" class="block" pInputText [(ngModel)]="companyFormN.companySettings.phoneNumber"
-                     (change)="onChange('basicDetails', 'text','phoneNumber', $event)" [ngStyle]="{
-                      paddingLeft: '', 
-                      paddingRight: ''
-                    }" />
-                      
+                    <p-inputNumber class="contactNumber" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"
+                    [(ngModel)]="companyFormN.companySettings.phoneNumber"
+                     (change)="onChange('basicDetails', 'text','phoneNumber', $event)">
+                    </p-inputNumber>      
                   </div>
                   <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
                     <label> Company Logo </label>

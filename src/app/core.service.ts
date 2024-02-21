@@ -3,7 +3,7 @@ import { Inject, Injectable } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { ClipboardService } from "ngx-clipboard";
 import { MessageService } from "primeng/api";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root",
@@ -85,6 +85,15 @@ export class CoreService {
   }
   setBreadCrumbMenu(val: any) {
     this.$breadCrumbMenu.next(val);
+  }
+
+  $breadCrumbMenuFromInternalPages = new Subject<any[]>();
+
+  setBreadCrumbMenuFromInternalPages(breadCrumbMenuFromInternalPages: any) {
+    this.$breadCrumbMenuFromInternalPages.next(breadCrumbMenuFromInternalPages);
+  }
+  getBreadCrumbMenuFromInternalPages(): Observable<any> {
+    return this.$breadCrumbMenuFromInternalPages.asObservable();
   }
 
   $headerSticky = new BehaviorSubject<boolean>(false);

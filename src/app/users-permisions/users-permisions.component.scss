@@ -1,0 +1,76 @@
+:host ::ng-deep .p-dropdown {
+    width: 100%;
+  }
+  :host ::ng-deep .p-inputtext {
+    width: 100%;
+  }
+  
+  .btnRight {
+    text-align: right;
+  }
+  
+  // --------------- //
+  
+  .required {
+    color: red;
+  }
+  
+  label {
+    font-size: 12px;
+  }
+  
+  .custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    min-width: 120px;
+  }
+  
+  .custom-form ::ng-deep .p-panel.p-component {
+    margin-bottom: 15px;
+  }
+  .custom-form ::ng-deep .p-panel .p-panel-header {
+    border-bottom: none;
+  }
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-header {
+    background: #fff;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+  
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
+    font-weight: 500;
+    color: var(--primary-color);
+  }
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-content {
+    padding: 0px 1.5rem 1rem 2rem;
+  }
+  
+  .custom-form
+    ::ng-deep
+    p-panel.no-visible
+    .p-panel.p-component
+    .p-panel-content {
+    padding: 0.75rem 1.5rem 1rem 1.3rem;
+  }
+  
+  
+  :host ::ng-deep .p-tabview .p-tabview-nav {
+    background:#fff;
+    border-bottom: 1px solid gainsboro;
+    margin-bottom: 10px;
+  }
+  :host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
+    color: #000;
+    font-weight: 500;
+    background: transparent;
+    padding: 1.25rem 1.25rem 0.75rem 1rem;
+    border: none;
+  }
+  :host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: transparent;
+    border: none;
+    border-bottom: 5px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  :host ::ng-deep .p-tabview .p-tabview-panels {
+    background: transparent;
+    padding: 0;
+  }

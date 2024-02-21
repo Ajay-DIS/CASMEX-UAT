@@ -34,6 +34,12 @@
     display: flex;
     justify-content: center !important;
 }
+p-inputNumber.contactNumber {
+  width: 100% !important;
+}
+p-inputNumber.contactNumber ::ng-deep .p-inputnumber.p-component{
+width: 100% !important;
+}
   .loginRadio{
     margin-top: 30px;
   }
