@@ -1,0 +1,22 @@
+<p-confirmDialog
+  [visible]="isVisible"
+  key="confirmDialog"
+  header="{{ header }}"
+>
+  <p-footer>
+    <button
+      type="button"
+      pButton
+      [icon]="acceptIcon"
+      (click)="onConfirm()"
+      label="{{ acceptLabel }}"
+    ></button>
+    <button
+      type="button"
+      pButton
+      [icon]="rejectIcon"
+      (click)="onReject()"
+      label="{{ rejectLabel }}"
+    ></button>
+  </p-footer>
+</p-confirmDialog>

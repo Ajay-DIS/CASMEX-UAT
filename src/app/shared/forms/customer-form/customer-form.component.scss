@@ -1,0 +1,378 @@
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+}
+:host ::ng-deep .p-inputtext {
+  width: 100%;
+}
+
+.btnRight {
+  text-align: right;
+}
+
+// --------------- //
+
+.required {
+  color: red;
+}
+
+label {
+  font-size: 12px;
+}
+
+.customer-form
+  ::ng-deep
+  .search-view-table
+  .p-datatable
+  .p-datatable-thead
+  > tr
+  > th {
+  min-width: 120px;
+}
+
+.customer-form ::ng-deep .p-panel.p-component {
+  margin-bottom: 15px;
+}
+.customer-form ::ng-deep .p-panel .p-panel-header {
+  border-bottom: none;
+}
+.customer-form ::ng-deep .p-panel.p-component .p-panel-header {
+  background: #fff;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.customer-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+.customer-form ::ng-deep .p-panel.p-component .p-panel-content {
+  padding: 0px 1.5rem 1rem 1.5rem;
+}
+
+.customer-form
+  ::ng-deep
+  p-panel.no-visible
+  .p-panel.p-component
+  .p-panel-content {
+  padding: 0.75rem 1.5rem 1rem 1.3rem;
+}
+
+small.p-error {
+  font-size: 10px;
+}
+
+div.checkbox {
+  display: flex;
+  justify-content: left;
+  flex-direction: row-reverse;
+  align-items: center;
+  // flex-basis: fit-content;
+  gap: 5px;
+}
+div.newLineField {
+  display: flex;
+  justify-content: left;
+  // flex-direction: row-reverse;
+  align-items: center;
+  gap: 3px;
+  margin: 10px 0;
+}
+
+div.btn-grp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+:host ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only {
+  width: 2.5rem;
+}
+
+// fileupload
+.file-upload {
+  width: 100%;
+}
+
+.file-upload .file-upload-select {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  background: #f4f6fa;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  height: 37px;
+}
+.file-upload .file-upload-select .file-select-button {
+  background: #55c78a;
+  position: absolute;
+  right: 0;
+  top: 0px;
+  padding: 7px 12px;
+  color: #ffffff;
+}
+.file-upload .file-upload-select .file-select-name {
+  text-align: center;
+  font-size: 12px;
+  width: 128px;
+}
+.file-upload .file-upload-select .file-select-name input {
+  width: 110%;
+  border: none;
+  background: transparent;
+}
+.file-upload .file-upload-select:hover .file-select-button {
+  transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+}
+.file-upload .file-upload-select input[type="file"] {
+  // display: none;
+  opacity: 0;
+  position: absolute;
+  right: 100%;
+}
+// fileupload end
+
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.view-link {
+  cursor: pointer;
+  color: var(--primary-color) !important;
+  text-decoration: underline;
+}
+
+.file-name {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+
+.remove-file-btn {
+  position: absolute;
+  right: 5px;
+}
+
+span.suffix-Inp {
+  font-size: 0.8rem;
+  position: absolute;
+  right: 5%;
+  top: 8.5px;
+}
+span.prefix-Inp {
+  font-size: 0.8rem;
+  position: absolute;
+  left: 5%;
+  top: 8.5px;
+}
+.p-checkbox-label {
+  font-size: 14px;
+}
+.customerViewBtn2 {
+  margin-left: 15px;
+}
+.customerViewBtn {
+  padding: 1rem 1rem 0rem 1rem;
+  margin-left: 400px;
+}
+
+@media screen and (max-width: 576px) {
+  .block {
+    width: 100% !important;
+  }
+  .p-dropdown {
+    width: 100% !important;
+  }
+  .file-upload {
+    width: 100% !important;
+  }
+}
+@media screen and (max-width: 1520px) and (min-width: 1201px) {
+  .fieldForm {
+    // margin-right: 30px;
+    width: 20%;
+  }
+  label {
+    font-size: 11px;
+  }
+  .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 10px !important;
+  }
+}
+:host ::ng-deep .p-autocomplete {
+  display: initial !important;
+}
+
+.smartSearch ::ng-deep .p-overlay.p-component {
+  width: 100%;
+}
+.p-inputtext .p-component .p-placeholder {
+  color: rgb(180, 178, 178);
+}
+::ng-deep .p-calendar .p-inputtext::placeholder {
+  color: rgb(180, 178, 178); /* Replace with the desired color */
+  font-size: 12px;
+}
+::ng-deep .p-dropdown-item {
+  font-size: 11px;
+}
+
+:host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+  font-size: 12px;
+  color: rgb(180, 178, 178) !important;
+}
+.disabled {
+  cursor: not-allowed;
+  color: #999;
+}
+
+// customer-search-component
+
+.customer-search-component ::ng-deep .p-dropdown-label {
+  font-size: 12px !important;
+}
+.criteria-search-box-div .select-criteria {
+  padding-right: 0 !important;
+}
+.criteria-search-box-div .select-criteria ::ng-deep .p-dropdown,
+.criteria-search-box-div .select-criteria ::ng-deep .p-dropdown-trigger {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.criteria-search-box-div .select-criteria ::ng-deep .p-dropdown {
+  border: solid 1px #a2a2a2;
+}
+.criteria-search-box-div
+  .select-criteria
+  ::ng-deep
+  .p-dropdown
+  .p-dropdown-label {
+  color: var(--primary-color);
+}
+.criteria-search-box-div .search-box-div {
+  padding-left: 0 !important;
+}
+
+.criteria-search-box-div .search-box-div input,
+.criteria-search-box-div .search-box-div ::ng-deep .p-inputtext {
+  font-size: 12px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border: solid 1px #a2a2a2;
+}
+.criteria-search-box-div .search-box-div ::ng-deep .p-inputnumber {
+  width: 100%;
+}
+
+.criteria-search-box-div .search-box-div input:hover,
+.criteria-search-box-div .select-criteria ::ng-deep .p-dropdown:hover {
+  border: solid 1px var(--primary-color);
+}
+
+.criteria-search-box-div .search-box-div i:last-of-type {
+  right: 20px;
+}
+
+.customer-search-component ::ng-deep .p-paginator-rpp-options.p-dropdown {
+  height: 34px;
+  width: 70px;
+  left: 13%;
+  top: 13%;
+  background-color: var(--primary-color);
+}
+
+.customer-search-component
+  ::ng-deep
+  .p-paginator-rpp-options.p-dropdown
+  .p-dropdown-label {
+  color: #fff;
+  font-size: 12px;
+}
+.customer-search-component
+  ::ng-deep
+  .p-paginator-rpp-options.p-dropdown
+  .p-dropdown-trigger {
+  color: #fff;
+}
+
+.add-party-options span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.add-party-options .add-party-link span {
+  border-bottom: 2px solid var(--primary-color);
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.customer-search-component .customerCriteria {
+  background-color: #fff;
+  margin-top: -15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.customer-search-component .customerMapConditions {
+  background: #eaedf4;
+  padding: 5px 8px;
+  border-radius: 5px;
+  margin-right: 5px;
+  margin-left: 10px;
+  font-size: 12px;
+}
+
+.customer-search-component .NorecordFound {
+  padding-bottom: 0px !important;
+}
+.NorecordFound {
+  margin-left: 0 !important;
+}
+
+.customer-search-component ::ng-deep .p-radiobutton-disabled {
+  cursor: not-allowed;
+}
+
+.customer-search-component ::ng-deep .p-radiobutton .p-radiobutton-box {
+  border: 2px solid #eaedf4;
+  background: #eaedf4;
+}
+.customer-search-component
+  ::ng-deep
+  .p-radiobutton
+  .p-radiobutton-box.p-highlight {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+}
+
+.customer-search-component
+  ::ng-deep
+  .p-paginator
+  .p-paginator-pages
+  .p-paginator-page {
+  font-size: 12px;
+}
+
+.customer-form
+  ::ng-deep
+  p-dropdown.docCollection-dropdown
+  .p-dropdown
+  .p-dropdown-label,
+.customer-form
+  ::ng-deep
+  p-dropdown.docCollection-dropdown
+  .p-dropdown
+  .p-dropdown-label.p-placeholder,
+.customer-form ::ng-deep input {
+  font-size: 12px !important;
+}

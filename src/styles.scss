@@ -285,7 +285,7 @@ input {
 }
 
 button.p-button {
-  border-radius: 5px !important;
+  border-radius: 5px;
   height: 35px;
   line-height: 1px;
   padding: 5px 8px;
@@ -434,6 +434,13 @@ p-paginator .p-paginator-bottom {
   border-radius: 50%;
   margin: 0 5px;
 }
+
+//p-dropdown style
+.docCollection-dropdown.p-dropdown-panel {
+  max-width: 150px !important;
+}
+
+//p-dropdown style ends
 
 // Multiselect style
 

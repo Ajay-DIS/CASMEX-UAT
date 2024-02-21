@@ -1,0 +1,168 @@
+.doc-collection-form ::ng-deep .p-panel.p-component {
+  margin-bottom: 15px;
+}
+.doc-collection-form ::ng-deep .p-panel .p-panel-header {
+  border-bottom: none;
+}
+.doc-collection-form ::ng-deep .p-panel.p-component .p-panel-header {
+  background: #fff;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.doc-collection-form
+  ::ng-deep
+  .p-panel.p-component
+  .p-panel-header
+  .p-panel-title {
+  font-weight: 500;
+  color: var(--primary-color);
+}
+.doc-collection-form ::ng-deep .p-panel.p-component .p-panel-content {
+  padding: 0px 1.5rem 1rem 1.5rem;
+}
+.doc-collection-form
+  ::ng-deep
+  .p-datatable
+  .p-datatable-tbody
+  tr
+  td
+  .p-calendar
+  input {
+  width: 100px;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}
+.doc-collection-form ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+  background-color: #f4f6fa;
+}
+.doc-collection-form
+  ::ng-deep
+  .p-datatable
+  .p-datatable-tbody
+  tr
+  td
+  input:hover {
+  border: 1px solid var(--primary-color);
+}
+.doc-collection-form
+  ::ng-deep
+  .p-datatable
+  .p-datatable-tbody
+  tr
+  td
+  .file-select-name
+  input {
+  height: 100%;
+  padding-left: 0;
+}
+.doc-collection-form ::ng-deep .p-datatable .p-datatable-table {
+  border-spacing: 0 30px;
+}
+.doc-collection-form ::ng-deep p-dropdown.docCollection-dropdown .p-dropdown {
+  width: 150px !important;
+}
+.doc-collection-form
+  ::ng-deep
+  p-dropdown.docCollection-dropdown
+  .p-dropdown
+  .p-dropdown-label,
+.doc-collection-form
+  ::ng-deep
+  p-dropdown.docCollection-dropdown
+  .p-dropdown
+  .p-dropdown-label.p-placeholder,
+.doc-collection-form ::ng-deep input {
+  font-size: 12px !important;
+}
+.doc-collection-form .hereby-confirm-check {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+.doc-collection-form .hereby-confirm-check span {
+  font-size: 12px;
+  font-weight: 500;
+}
+.doc-collection-form .hereby-confirm-check input {
+  height: 18px;
+  width: 18px;
+}
+.doc-collection-form input.ng-dirty.ng-invalid,
+.doc-collection-form input.ng-dirty.ng-invalid:hover {
+  border: 1px solid#f74440;
+}
+
+.doc-collection-form input.ng-dirty.ng-invalid:focus {
+  box-shadow: 0 0 0 0.1rem #f74440;
+}
+
+// fileupload
+.file-upload {
+  width: 100%;
+}
+
+.file-upload .file-upload-select {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+  background: #f4f6fa;
+  overflow: hidden;
+  position: relative;
+  border-radius: 6px;
+  padding: 0.5rem 0.5rem;
+  height: 37px;
+  width: 150px;
+}
+.file-upload .file-upload-select .file-select-button {
+  background: #55c78a;
+  padding: 9px 12px;
+  color: #ffffff;
+  position: absolute;
+  right: 0;
+  top: 0px;
+}
+.file-upload .file-upload-select .file-select-name {
+  text-align: center;
+  font-size: 12px;
+  width: 90px;
+}
+.file-upload .file-upload-select .file-select-name input {
+  width: 110%;
+  border: none;
+  background: transparent;
+}
+.file-upload .file-upload-select:hover .file-select-button {
+  transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+}
+.file-upload .file-upload-select input[type="file"] {
+  // display: none;
+  opacity: 0;
+  position: absolute;
+  right: 100%;
+}
+// fileupload end
+
+.red-star {
+  font-size: 18px;
+  color: red;
+  font-weight: 500;
+  position: absolute;
+  top: -7px;
+  margin-left: 3px;
+}
+
+.fake-btn {
+  background: #55c78a;
+  padding: 9px 12px;
+  color: #ffffff;
+  font-size: 12px;
+  border-radius: 5px;
+  width: 39px;
+  cursor: pointer;
+  margin: 0 auto;
+}
