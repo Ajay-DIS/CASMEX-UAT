@@ -1,0 +1,217 @@
+<div class="row custom-form">
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label> User Code </label><span class="required">*</span> 
+        <input type="text" class="block" pInputText [(ngModel)]="userCode"/>
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label>
+          Branch
+        </label><span class="required">*</span>
+        <p-dropdown class="block" placeholder="select"  [options]="branchOptions" optionLabel="codeName" [appendTo]="'body'" 
+        [(ngModel)]="userBranch"
+          [filter]="true" filterBy="codeName" [virtualScroll]="true" [virtualScrollItemSize]="35"
+          panelStyleClass="formFields-dropdown" >
+          <ng-template let-options pTemplate="item">
+            <div class="truncate-text">
+              <div>{{ options.codeName }}</div>
+            </div>
+          </ng-template></p-dropdown>
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label>
+          User Group
+        </label><span class="required">*</span>
+        <p-dropdown class="block" placeholder="select"  [options]="userGroupOptions" optionLabel="codeName" [appendTo]="'body'" 
+        [(ngModel)]="userGroup"
+          [filter]="true" filterBy="codeName" [virtualScroll]="true" [virtualScrollItemSize]="35"
+          panelStyleClass="formFields-dropdown" >
+          <ng-template let-options pTemplate="item">
+            <div class="truncate-text">
+              <div>{{ options.codeName }}</div>
+            </div>
+          </ng-template></p-dropdown>
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label>
+          Data Access Group
+        </label>
+        <p-dropdown class="block" placeholder="select"  [options]="dataAccessGroupOptions" optionLabel="codeName" [appendTo]="'body'" 
+        [(ngModel)]="dataAccessGroup"
+          [filter]="true" filterBy="codeName" [virtualScroll]="true" [virtualScrollItemSize]="35"
+          panelStyleClass="formFields-dropdown" >
+          <ng-template let-options pTemplate="item">
+            <div class="truncate-text">
+              <div>{{ options.codeName }}</div>
+            </div>
+          </ng-template></p-dropdown>
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label>
+         Name
+        </label><span class="required">*</span>
+        <input type="text" class="block" pInputText [(ngModel)]="userName"/>
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label> User ID </label><span class="required">*</span>
+        <input type="text" class="block" pInputText [(ngModel)]="userIDText"/>
+        
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label> Email </label><span class="required">*</span>
+        <input type="text" class="block" pInputText [(ngModel)]="userEmailId" />
+          
+      </div>
+      <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-2 p-2 fieldForm'">
+        <label> Contact Number </label><span class="required">*</span>
+<p-inputNumber class="contactNumber" [(ngModel)]="contactNumber" mode="decimal" inputId="withoutgrouping" [useGrouping]="false">
+</p-inputNumber>     
+      </div>
+      <div class="form-group btn-grp buttons-section">
+        <button
+        pButton
+        pRipple
+        type="button"
+        label="Back"
+        class="p-button-raised"
+        (click)="onBack()"
+      ></button>
+        <button
+          *ngIf="mode == 'edit'"
+          pButton
+          pRipple
+          type="button"
+          label="edit"
+          class="p-button-raised"
+          (click)="onEdit()"
+        ></button>
+        <button
+          pButton
+          pRipple
+          type="button"
+          label="Save"
+          class="p-button-raised"
+          (click)="onSubmit('save')"
+          [disabled]="deactivated"
+        ></button>
+        <button
+        *ngIf="!bankTransferModel"
+          pButton
+          pRipple
+          type="button"
+          label="Save & Add New"
+          class="p-button-raised"
+          (click)="onSubmit('saveAndAddNew')"
+          [disabled]="deactivated"
+        ></button>
+        <button
+        *ngIf="!bankTransferModel"
+          pButton
+          pRipple
+          type="button"
+          label="Reset"
+          class="p-button-warning"
+          (click)="onReset()"
+          [disabled]="deactivated"
+        ></button>
+        <button
+          *ngIf="bankTransferModel"
+          pButton
+          pRipple
+          type="button"
+          label="{{ deactivated ? 'Activate' : 'Deactivate' }}"
+          class="p-button-warning"
+          (click)="onActive()"
+        ></button>
+        <button
+          *ngIf="bankTransferModel"
+          pButton
+          pRipple
+          type="button"
+          label="Bank Transfer"
+          class="p-button-raised"
+          (click)="onBankTransfer()"
+        ></button>
+      </div>
+  </div>
+  <div class="uploadedImgModal">
+    <p-dialog
+      [(visible)]="showEditModal"
+      [modal]="true"
+      [style]="{ width: '40vw', left: '50px' }"
+      (onHide)="closeDialog()"
+    >
+      <ng-template pTemplate="header">
+        <div class="application-header">Branch Transfer</div>
+      </ng-template>
+      <ng-template pTemplate="body">
+        <div class="row">
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+              <label>
+               Name
+              </label>
+              <input type="text" class="block" pInputText [(ngModel)]="userName"/>
+            </div>
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+              <label>
+               Current Branch
+              </label>
+              <input type="text" class="block" pInputText [(ngModel)]="userCurrentBranch"/>
+            </div>
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+              <label>
+               Currency Code
+              </label>
+              <input type="text" class="block" pInputText [(ngModel)]="userCurrencyCode"/>
+            </div>
+            </div>
+            <div class="row">
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+              <label>
+               FX Stock
+              </label>
+              <input type="text" class="block" pInputText [(ngModel)]="userFXStock"/>
+            </div>
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'">
+              <label>
+               Cashier Account
+              </label>
+              <input type="text" class="block" pInputText [(ngModel)]="userCashierAccount"/>
+            </div>
+            <div class="'col-xs-12 col-sm-6 col-md-4 col-lg-4 p-2 fieldForm'                        ">
+              <label>
+                Transfer Branch
+              </label>
+              <p-dropdown class="block" placeholder="select"  [options]="transferBranchOptions" optionLabel="codeName" [appendTo]="'body'" 
+              [(ngModel)]="userTransferBranch"
+                [filter]="true" filterBy="codeName" [virtualScroll]="true" [virtualScrollItemSize]="35"
+                panelStyleClass="formFields-dropdown" >
+                <ng-template let-options pTemplate="item">
+                  <div class="truncate-text">
+                    <div>{{ options.codeName }}</div>
+                  </div>
+                </ng-template></p-dropdown>
+            </div>
+          </div>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <div class="row addnewbtnSection" Master-addnew-section >
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Save & Close"
+            class="p-button-raised search-btn "
+            (click)="saveAddNewSystem()"
+          ></button>
+            <button
+            pButton
+            pRipple
+            type="button"
+            label="Reset"
+            class="p-button-warning search-btn "
+            (click)="resetAddNewModal()"
+          ></button>
+        </div>
+      </ng-template>
+    </p-dialog>
+  </div>

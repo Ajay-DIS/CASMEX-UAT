@@ -36,6 +36,7 @@ import { CustomisedListingComponent } from "./customised-messages/customised-lis
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
+import { UsersPermisionsComponent } from "./users-permisions/users-permisions.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -323,6 +324,71 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "users-permissions",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          { label: "Users & Permissions", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "users-permissions/system-user",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          {
+            label: "Users & Permissions",
+            routerLink: "../navbar/users-permissions",
+          },
+          {
+            label: "System User",
+            routerLink: "../navbar/users-permissions/system-user",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "users-permissions/user-group",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          {
+            label: "Users & Permissions",
+            routerLink: "../navbar/users-permissions",
+          },
+          {
+            label: "User Group",
+            routerLink: "../navbar/users-permissions/user-group",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      // {
+      //   path: "users-permissions/system-user/addNew",
+      //   component: UsersPermisionsComponent,
+      //   data: [
+      //     { label: "Home", routerLink: "../navbar/bank-routing" },
+      //     { label: "Settings", routerLink: "../navbar/users-permissions" },
+      //     {
+      //       label: "Users & Permissions",
+      //       routerLink: "../navbar/users-permissions",
+      //     },
+      //     {
+      //       label: "System User",
+      //       routerLink: "../navbar/users-permissions/system-user",
+      //     },
+      //     {
+      //       label: "Add New System User",
+      //       routerLink: "../navbar/users-permissions/system-user/addNew",
+      //     },
+      //   ],
+      //   canActivate: [AuthGuard],
+      // },
       {
         path: "customised-messages",
         component: CustomisedListingComponent,
