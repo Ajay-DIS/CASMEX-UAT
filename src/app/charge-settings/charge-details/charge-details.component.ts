@@ -132,6 +132,8 @@ export class ChargeDetailsComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "charges";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -266,6 +268,15 @@ export class ChargeDetailsComponent implements OnInit {
   }
   get moduleCtrl() {
     return this.selectAppModule.get("modules");
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    const inputChar = String.fromCharCode(event.charCode);
+
+    // Allow alphanumeric characters and space
+    if (!/^[a-zA-Z0-9\s]*$/.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 
   onAppValueChange() {
@@ -571,10 +582,10 @@ export class ChargeDetailsComponent implements OnInit {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
@@ -1124,10 +1135,12 @@ export class ChargeDetailsComponent implements OnInit {
           } else {
             this.coreService.removeLoadingScreen();
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);
@@ -1210,9 +1223,15 @@ export class ChargeDetailsComponent implements OnInit {
       let chargeMissing = false;
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["chargeCodeDesc"] = this.chargeDescription.toUpperCase()
+          data["chargeCodeDesc"] = this.chargeDescription
+            ?.replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase()
             ? this.chargeDescription.replace(/\s/g, "").length
-              ? this.chargeDescription.toUpperCase()
+              ? this.chargeDescription
+                  ?.replace(/\s+/g, " ")
+                  .trim()
+                  .toUpperCase()
               : null
             : null;
           if (data["charge"] == "null" || data["charge"] == null) {
@@ -1230,9 +1249,12 @@ export class ChargeDetailsComponent implements OnInit {
         if (element["invalidChargeAmount"]) {
           invalidChargeAmount = true;
         }
-        element["chargeCodeDesc"] = this.chargeDescription.toUpperCase()
+        element["chargeCodeDesc"] = this.chargeDescription
+          ?.replace(/\s+/g, " ")
+          .trim()
+          .toUpperCase()
           ? this.chargeDescription.replace(/\s/g, "").length
-            ? this.chargeDescription.toUpperCase()
+            ? this.chargeDescription?.replace(/\s+/g, " ").trim().toUpperCase()
             : null
           : null;
         if (!element["chargeCodeDesc"]) {
@@ -1250,7 +1272,7 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill required fields.");
+        this.coreService.showWarningToast("Please Fill Charge Description.");
       } else if (setAsMissing) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Select Set As.");
@@ -1259,7 +1281,7 @@ export class ChargeDetailsComponent implements OnInit {
         this.coreService.showWarningToast("Please Select Applicable On.");
       } else if (chargeMissing) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill charge Amount.");
+        this.coreService.showWarningToast("Please Fill Charge Amount.");
       } else if (invalidChargeAmount) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast("Please Enter Valid charge Amount.");
@@ -1339,7 +1361,7 @@ export class ChargeDetailsComponent implements OnInit {
         }
       }
     } else {
-      this.coreService.showWarningToast("Applied criteria already exists.");
+      this.coreService.showWarningToast("Similar Record already exists.");
     }
   }
 
@@ -1419,7 +1441,11 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateApplicableOnFound = true;
       }
     }
@@ -1501,7 +1527,11 @@ export class ChargeDetailsComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateSetAsFound = true;
       }
     }
@@ -1583,10 +1613,10 @@ export class ChargeDetailsComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Y";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "N";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

@@ -84,6 +84,7 @@ export class AddCustomerComponent implements OnInit {
         "addnewcustomer",
         "COR",
       ]);
+
     } else {
       this.custType = "IND";
       this.router.navigate([

@@ -184,6 +184,8 @@ export class AddLoyaltyComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "loyalty";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -1529,10 +1531,12 @@ export class AddLoyaltyComponent implements OnInit {
           } else {
             this.coreService.removeLoadingScreen();
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);

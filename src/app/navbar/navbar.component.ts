@@ -103,8 +103,10 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       .getBreadCrumbMenuFromInternalPages()
       .subscribe((bCrumbsInternal) => {
         console.log(":::bCrumbsInternal", bCrumbsInternal);
+
         if (bCrumbsInternal && bCrumbsInternal.length) {
           this.breadcrumbsItems = null;
+
           this.breadcrumbsItems = [...bCrumbsInternal];
         }
       });
@@ -210,8 +212,20 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           item["routerLink"] = "/navbar/tax-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
-        case "Custom Message":
+        case "Customised Messages":
           item["routerLink"] = "/navbar/customised-messages";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Company Settings":
+          item["routerLink"] = "/navbar/company-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Company Settings":
+          item["routerLink"] = "/navbar/company-settings";
+          item["routerLinkActiveOptions"] = { subset: true };
+          break;
+        case "Rate Settings":
+          item["routerLink"] = "/navbar/rate-settings";
           item["routerLinkActiveOptions"] = { subset: true };
           break;
         case "Charge Settings":
@@ -371,6 +385,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/bank-routing/addnewroute",
           "/navbar/document-settings",
           "/navbar/customised-messages",
+          "/navbar/company-settings",
+          "/navbar/rate-settings",
         ];
         routeName = "/navbar/bank-routing";
         break;

@@ -64,13 +64,48 @@
       >
         <tr [pReorderableRow]="index">
           <ng-container *ngFor="let col of columns; let i = index">
-            <td *ngIf="col.field != 'status'&& col.field != 'action'" (click)="openClickForEdit(rowData)" style="cursor: pointer;">
+            <td *ngIf="col.field != 'status'&& col.field != 'action'"  style="cursor: pointer;">
               <div
+              *ngIf="!(i == 0  || i == 2 || i == 3)"
                 style="display: inline-block;cursor: pointer;"
               >
                 {{ rowData[col["field"]] }}
+               
               </div>
-             
+              <span
+                *ngIf="i == 2"
+                [pTooltip]="
+                  rowData[col['field']].length > 30 ? rowData[col['field']] : ''
+                "
+                tooltipPosition="bottom"
+              >
+                {{
+                  rowData[col["field"]].length > 30
+                    ? rowData[col["field"]].substring(0, 30) + ".."
+                    : rowData[col["field"]]
+                }}</span
+              >
+              <span
+                *ngIf="i == 3"
+                [pTooltip]="
+                  rowData[col['field']].length > 40 ? rowData[col['field']] : ''
+                "
+                tooltipPosition="bottom"
+              >
+                {{
+                  rowData[col["field"]].length > 40
+                    ? rowData[col["field"]].substring(0, 40) + ".."
+                    : rowData[col["field"]]
+                }}</span
+              >
+              <div *ngIf="i == 0">
+                <a
+                style="text-decoration: underline !important;cursor: pointer;color: var(--primary-color)"
+                (click)="openClickForEdit(rowData)"
+                >{{ rowData[col["field"]] }}</a
+              >
+              
+            </div>
             </td>
             <td
           *ngIf="col.field == 'status'"
@@ -112,7 +147,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td [attr.colspan]="cols.length">No Data found.</td>
+          <td [attr.colspan]="cols.length">No Data Found.</td>
         </tr>
       </ng-template>
       <ng-template pTemplate="paginatorleft" let-state>

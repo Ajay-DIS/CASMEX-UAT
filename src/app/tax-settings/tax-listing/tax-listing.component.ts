@@ -32,9 +32,9 @@ export class TaxListingComponent implements OnInit {
   showNoDataFound: boolean = false;
 
   cols: any[] = [
-    { field: "taxCode", header: "Tax Code", width: "10%" },
+    { field: "taxCode", header: "Tax Code", width: "12%" },
     { field: "taxCodeDesc", header: "Tax Description", width: "25%" },
-    { field: "criteriaMap", header: "Criteria", width: "50%" },
+    { field: "criteriaMap", header: "Criteria", width: "48%" },
     { field: "status", header: "Status", width: "7%" },
     { field: "operation", header: "Operations", width: "8%" },
   ];
@@ -378,10 +378,10 @@ export class TaxListingComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

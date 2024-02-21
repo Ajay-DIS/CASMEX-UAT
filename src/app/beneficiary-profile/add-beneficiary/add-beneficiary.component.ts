@@ -255,6 +255,7 @@ export class AddBeneficiaryComponent implements OnInit {
   }
 
   getBeneficiaryData(custId: any) {
+    this.coreService.displayLoadingScreen();
     this.http
       .get(
         `/remittance/beneficiaryProfileController/getBeneficiaryProfile/${custId}`,
@@ -337,10 +338,10 @@ export class AddBeneficiaryComponent implements OnInit {
                 this.coreService.showSuccessToast(res["data"]);
               } else {
                 this.coreService.showSuccessToast(
-                  "Profile data Updated successfully saved"
+                  "Profile data Updated successfully Saved"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
               // this.onReset()
             }
           } else {
@@ -386,7 +387,7 @@ export class AddBeneficiaryComponent implements OnInit {
                   "Profile data successfully saved"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
             }
             // this.onReset()
           } else {
@@ -429,7 +430,7 @@ export class AddBeneficiaryComponent implements OnInit {
                   "Profile data updated successfully"
                 );
               }
-              this.router.navigate(["navbar", "customer-profile"]);
+              this.router.navigate(["navbar", "beneficiary-profile"]);
             }
             // this.onReset()
           }

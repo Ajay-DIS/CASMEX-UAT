@@ -156,15 +156,16 @@
           <div class="col-md-8 col-lg-8 col-sm-12 col-xs-12">
             <div class="taxDesc">
               <p style="position: relative">
-                charge Description <span class="description red-star">*</span>
+                Charge Description <span class="description red-star">*</span>
               </p>
               <input
                 type="text"
                 pInputText
                 [(ngModel)]="chargeDescription"
-                maxlength="100"
-                placeholder="Max 100 characters"
+                maxlength="500"
+                placeholder="Max 500 characters"
                 [disabled]="deactivated"
+                (keypress)="onKeyPress($event)"
               />
             </div>
           </div>
@@ -200,6 +201,7 @@
           $event.criteriaCodeText
         )
       "
+      [setCriteriaName]="setCriteriaName"
     ></app-set-criteria>
   </div>
   <div class="details-page-card mt-2" *ngIf="applyCriteriaFormattedData.length">
@@ -211,7 +213,7 @@
             height="15px"
             src="../assets/Icon-info.svg"
             alt=""
-            pTooltip="On selected criteria charges below taxes will be applied."
+            pTooltip="On selected criteria charges below charges will be applied."
           />
         </p>
       </div>
@@ -262,11 +264,11 @@
                       *ngIf="col['fieldType'] == 'dropdown'"
                       class="appliedCriteriaSelect"
                     >
-                      <p-dropdown
-                        [options]="rowData[col.field + 'Option']"
-                        optionLabel="codeName"
-                        appendTo="body"
-                        [placeholder]="
+                    <p-dropdown
+                    [options]="rowData[col.field + 'Option']"
+                    optionLabel="codeName"
+                    appendTo="body"
+                    [placeholder]="
                           rowData[col['field']] &&
                           rowData[col['field']] != 'null'
                             ? rowData[col['field']]
@@ -275,17 +277,18 @@
                         (onChange)="
                           selectedColumn(col['field'], $event.value, rowIndex)
                         "
-                        [disabled]="
-                          rowData['linked'] == 'Y' ||
-                          rowData['isActive'] == 'N' ||
-                          deactivated
-                        "
-                        ><ng-template let-options pTemplate="item">
-                          <div class="truncate-text">
-                            <div>{{ options.codeName }}</div>
-                          </div>
-                        </ng-template>
-                      </p-dropdown>
+                    [disabled]="
+                      rowData['linked'] == 'Y' ||
+                      rowData['isActive'] == 'N' ||
+                      deactivated
+                    "
+                    [pTooltip]="rowData[col['field']]"
+                    ><ng-template let-options pTemplate="item">
+                      <div class="truncate-text">
+                        <div>{{ options.codeName }}</div>
+                      </div>
+                    </ng-template>
+                                    </p-dropdown>
                     </div>
                     <div
                       *ngIf="col['fieldType'] == 'input'"

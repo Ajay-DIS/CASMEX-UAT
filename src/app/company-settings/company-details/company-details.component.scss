@@ -1,0 +1,405 @@
+:host ::ng-deep .p-dropdown {
+    width: 100%;
+  }
+  :host ::ng-deep .p-inputtext {
+    width: 100%;
+  }
+  
+  .btnRight {
+    text-align: right;
+  }
+  
+  // --------------- //
+  
+  .required {
+    color: red;
+  }
+  
+  label {
+    font-size: 12px;
+    padding-right: 8px;
+  }
+  .expandAll{
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    // padding-left: 70px;
+  }
+  .expandAll p{
+    color:  rgb(180, 178, 178);
+    font-size: 14px;
+    padding: 8px;
+  }
+  .buttons-section {
+    display: flex;
+    justify-content: center !important;
+}
+p-inputNumber.contactNumber {
+  width: 100% !important;
+}
+p-inputNumber.contactNumber ::ng-deep .p-inputnumber.p-component{
+width: 100% !important;
+}
+  .loginRadio{
+    margin-top: 30px;
+  }
+  .loginLeft{
+    padding: 15px;
+    // background-color: #f4f6fa;
+    // color: blue;
+    border-top-left-radius: 5px;
+    border: 1px solid #e4e2e2;
+  }
+  .loginLeftRadio{
+padding-top: 8px;
+padding-bottom: 21px;
+  }
+  .loginLeft1{
+    padding: 15px;
+    // background-color: #f4f6fa;
+    // color: blue;
+    // border-top-left-radius: 5px;
+    border-bottom: 1px solid #e4e2e2;
+    border-left: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginRight{
+    padding: 15px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid #e4e2e2;
+    border-top: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginRight1{
+    padding: 15px;
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginPassCom{
+    padding: 15px;
+    border-left: 1px solid #e4e2e2;
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+  }
+  .loginPComRight{
+    border-bottom: 1px solid #e4e2e2;
+    border-right: 1px solid #e4e2e2;
+    padding-bottom: 7px;
+  }
+  .custom-form ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    min-width: 120px;
+  }
+  
+  .custom-form ::ng-deep .p-panel.p-component {
+    margin-bottom: 15px;
+    margin-left: 15px;
+  }
+  .custom-form ::ng-deep .p-panel .p-panel-header {
+    border-bottom: none;
+  }
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-header {
+    background: #fff;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+  
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-header .p-panel-title {
+    font-weight: 500;
+    color: var(--primary-color);
+  }
+  .custom-form ::ng-deep .p-panel.p-component .p-panel-content {
+    padding: 0px 1.5rem 1rem 2rem;
+  }
+  
+  .custom-form
+    ::ng-deep
+    p-panel.no-visible
+    .p-panel.p-component
+    .p-panel-content {
+    padding: 0.75rem 1.5rem 1rem 1.3rem;
+  }
+  
+  small.p-error {
+    font-size: 10px;
+  }
+  
+  div.checkbox {
+    display: flex;
+    justify-content: left;
+    flex-direction: row-reverse;
+    align-items: center;
+    // flex-basis: fit-content;
+    gap: 5px;
+  }
+  div.newLineField {
+    display: flex;
+    justify-content: left;
+    // flex-direction: row-reverse;
+    align-items: center;
+    gap: 3px;
+    margin: 10px 0;
+  }
+  
+  // div.btn-grp {
+  //   position: absolute;
+  //   top: 10px;
+  //   right: 10px;
+  // }
+  
+  :host ::ng-deep .p-tabview .p-tabview-nav {
+    background: transparent;
+    border-bottom: 1px solid gainsboro;
+    margin-bottom: 20px;
+  }
+  :host ::ng-deep .p-tabview .p-tabview-nav .p-tabview-nav-link {
+    color: #000;
+    font-weight: 500;
+    background: transparent;
+    padding: 1.25rem 1.25rem 0.75rem 1rem;
+    border: none;
+  }
+  :host ::ng-deep .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+    background: transparent;
+    border: none;
+    border-bottom: 5px solid var(--primary-color);
+    color: var(--primary-color);
+  }
+  :host ::ng-deep .p-tabview .p-tabview-panels {
+    background: transparent;
+    padding: 0;
+  }
+  
+  :host ::ng-deep .p-calendar {
+    width: 100%;
+  }
+  
+  :host ::ng-deep .p-button.p-button-icon-only {
+    width: 2.5rem;
+  }
+  
+  // fileupload
+  .file-upload {
+    width: 100%;
+  }
+  
+  .file-upload .file-upload-select {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+    background: #f4f6fa;
+    overflow: hidden;
+    position: relative;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    height: 37px;
+  }
+  .file-upload .file-upload-select .file-select-button {
+    background: #55c78a;
+    position: absolute;
+    right: 0;
+    top: 0px;
+    padding: 7px 12px;
+    color: #ffffff;
+  }
+  .file-upload .file-upload-select .file-select-name {
+    text-align: center;
+    font-size: 12px;
+    width: 128px;
+  }
+  .file-upload .file-upload-select .file-select-name input {
+    width: 110%;
+    border: none;
+    background: transparent;
+  }
+  .file-upload .file-upload-select:hover .file-select-button {
+    transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -webkit-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+  }
+  .file-upload .file-upload-select input[type="file"] {
+    // display: none;
+    opacity: 0;
+    position: absolute;
+    right: 100%;
+  }
+  // fileupload end
+  
+  .confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+    text-align: center;
+  }
+  
+  .view-link {
+    cursor: pointer;
+    color: var(--primary-color) !important;
+    text-decoration: underline;
+  }
+  
+  .file-name {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 90px;
+  }
+  
+  .remove-file-btn {
+    position: absolute;
+    right: 5px;
+  }
+  
+  span.suffix-Inp {
+    font-size: 0.8rem;
+    position: absolute;
+    right: 5%;
+    top: 8.5px;
+  }
+  span.prefix-Inp {
+    font-size: 0.8rem;
+    position: absolute;
+    left: 5%;
+    top: 8.5px;
+  }
+  .custName {
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .p-checkbox-label {
+    font-size: 14px;
+  }
+  .customerViewBtn2 {
+    margin-left: 15px;
+  }
+  .customerViewBtn {
+    padding: 1rem 1rem 0rem 1rem;
+    margin-left: 400px;
+  }
+  
+  @media screen and (max-width: 576px) {
+    .block {
+      width: 100% !important;
+    }
+    .p-dropdown {
+      width: 100% !important;
+    }
+    .file-upload {
+      width: 100% !important;
+    }
+  }
+  @media screen and (max-width: 1520px) and (min-width: 1201px) {
+    .fieldForm {
+      // margin-right: 30px;
+      width: 20%;
+    }
+    label {
+      font-size: 11px;
+    }
+    .p-dropdown .p-dropdown-label.p-placeholder {
+      font-size: 10px !important;
+    }
+  }
+  :host ::ng-deep .p-autocomplete {
+    display: initial !important;
+  }
+  
+  .smartSearch ::ng-deep .p-overlay.p-component {
+    width: 100%;
+  }
+  .p-inputtext .p-component .p-placeholder {
+    color: rgb(180, 178, 178);
+  }
+  ::ng-deep .p-calendar .p-inputtext::placeholder {
+    color: rgb(180, 178, 178); /* Replace with the desired color */
+    font-size: 12px;
+  }
+  ::ng-deep .p-dropdown-item {
+    font-size: 11px;
+  }
+  
+  :host ::ng-deep .p-dropdown .p-dropdown-label.p-placeholder {
+    font-size: 12px;
+    color: rgb(180, 178, 178) !important;
+  }
+  .disabled {
+    cursor: not-allowed;
+    color: #999;
+  }
+.radiobtn {
+  background-color: #f4f6fa !important;
+  color: rgb(180, 178, 178) !important;
+  padding: 10px;
+}
+.p-radiobutton {
+  width: 20px !important;
+  height: 20px !important;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box {
+  border: 2px solid #3d66ba;
+  background: #f4f6fa;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  width: 11px;
+  height: 11px;
+  background-color: #4a62f0;
+}
+:host ::ng-deep .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+  border-color: #3c3c3e;
+}
+:host ::ng-deep .p-component.p-multiselect {
+  font-size: 12px !important;
+  color: black !important;
+  width: 100%;
+}
+
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box:not(.p-disabled).p-focus {
+//   outline: 0 none;
+//   outline-offset: 0;
+//   box-shadow: 0 0 0 0.15rem #f0f2fe;
+//   border-color: #2455cf;
+// }
+// .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+//   width: 12px;
+//   height: 12px;
+//   transition-duration: 0.2s;
+//   background-color: #fff;
+// }
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box.p-highlight {
+//   border-color: #b2b2b4;
+//   background: #9e9e9f;
+// }
+// :host ::ng-deep .p-radiobutton .p-radiobutton-box .p-highlight:not(.p-disabled):hover {
+//   border-color: #1645b8;
+//   background: #1645b8;
+//   color: #cccbce;
+// }
+  .remittenceFeature .left{
+    padding: 10px;
+    background-color: #f4f6fa;
+    color: blue;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom: 1px solid #fff;
+  }
+  .remittenceFeature .right{
+    padding: 10px;
+    background-color: #fff;
+    color: rgb(180, 178, 178);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border: 1px solid rgb(241, 241, 241);
+  }
+  .loginFeature1 .left{
+    padding: 35px 10px 25px 10px ;
+    background-color: #f4f6fa;
+    color: blue;
+    border-bottom: 1px solid #fff;
+  }
+  .correspondentRadio{
+padding-top: 10px;
+color: rgb(180, 178, 178);
+  }

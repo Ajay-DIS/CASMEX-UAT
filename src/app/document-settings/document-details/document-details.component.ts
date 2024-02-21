@@ -189,6 +189,8 @@ export class DocumentDetailsComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "documents";
+
   constructor(
     private fb: UntypedFormBuilder,
     private activatedRoute: ActivatedRoute,
@@ -1389,10 +1391,12 @@ export class DocumentDetailsComponent implements OnInit {
           } else {
             this.coreService.removeLoadingScreen();
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);

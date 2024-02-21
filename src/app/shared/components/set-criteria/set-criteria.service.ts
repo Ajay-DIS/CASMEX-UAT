@@ -178,7 +178,7 @@ export class SetCriteriaService {
         formatCrt = crt.replace(/[=]/g, "");
         opr = "=";
       }
-
+      console.log(formatCrt);
       let decodeCriteriaText;
       let displayName = null;
 

@@ -410,10 +410,10 @@ export class MasterListingComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "A";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "D";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

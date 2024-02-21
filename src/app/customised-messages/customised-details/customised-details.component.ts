@@ -35,6 +35,7 @@ export class CustomisedDetailsComponent implements OnInit {
       messageLanguage: "",
       messageHeader: "",
       messageDescription: "",
+      status: "A",
     },
   ];
 
@@ -124,20 +125,27 @@ export class CustomisedDetailsComponent implements OnInit {
     this.customisedMsgService.getMessageDataForEdit(this.messageCode).subscribe(
       (res) => {
         if (res["status"] == "200") {
+          this.coreService.removeLoadingScreen();
           if (res["error"]) {
             this.coreService.showWarningToast(res["error"]);
             // this.dataformsg = ;
           } else {
             console.log(res);
+            console.log(res, this.messageTypeOptions);
             this.messageCode = res["messageCode"];
             // this.messageType = res["messageType"];
             if (res["messageType"]) {
-              this.messageType = res["messageType"];
+              // this.messageType = res["messageType"];
               const messageTypeValue = this.messageTypeOptions.find(
-                (option) => option.code === res["messageType"]
+                (option) => option.name === res["messageType"]
               );
               console.log("IcomessageTypeChangeValue", messageTypeValue);
               this.messageTypeChangeValue = messageTypeValue.name;
+              this.messageType = messageTypeValue.code;
+              console.log(
+                "IcomessageTypeChangeValue",
+                this.messageTypeChangeValue
+              );
             }
             console.log("messageType", this.messageType);
             this.messageRows = [];
@@ -150,6 +158,7 @@ export class CustomisedDetailsComponent implements OnInit {
                   messageLanguage: detail["languages"],
                   messageHeader: detail["messageHeader"],
                   messageDescription: detail["messageDescription"],
+                  status: detail["status"],
                 });
                 this.messageLanguageStatus = detail["languages"];
                 if (detail["status"] == "D") {
@@ -252,6 +261,8 @@ export class CustomisedDetailsComponent implements OnInit {
     let messageTypeMissing = false;
     let messageDescriptionMissing = false;
     console.log("adsa", this.messageRows);
+    console.log("messageTypeChangeValue", this.messageTypeChangeValue);
+    console.log("messageType", this.messageType);
 
     if (this.mode == "edit") {
       this.newValues = this.messageRows.map((row) => {
@@ -259,19 +270,33 @@ export class CustomisedDetailsComponent implements OnInit {
           id: row.id,
           messageCode: this.messageCode,
           messageType: this.messageTypeChangeValue,
-          messageHeader: row.messageHeader.toUpperCase(),
-          messageDescription: row.messageDescription.toUpperCase(),
+          messageHeader: row.messageHeader
+            .replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase(),
+          messageDescription: row.messageDescription
+            .replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase(),
           languages: row.messageLanguage,
-          status: "A",
+          status: row.status,
         };
       });
+      console.log(this.newValues);
     } else {
+      console.log("messageTypeChangeValue", this.messageTypeChangeValue);
       this.newValues = this.messageRows.map((row) => {
         return {
           messageCode: this.messageCode,
           messageType: this.messageTypeChangeValue,
-          messageHeader: row.messageHeader.toUpperCase(),
-          messageDescription: row.messageDescription.toUpperCase(),
+          messageHeader: row.messageHeader
+            .replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase(),
+          messageDescription: row.messageDescription
+            .replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase(),
           languages: row.messageLanguage,
           status: "A",
         };
@@ -292,6 +317,7 @@ export class CustomisedDetailsComponent implements OnInit {
         messageDescriptionMissing = true;
       }
     });
+
     if (messageTypeMissing) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please Select Message Type.");
@@ -304,86 +330,101 @@ export class CustomisedDetailsComponent implements OnInit {
     } else if (messageHeaderMissing) {
       this.coreService.removeLoadingScreen();
       this.coreService.showWarningToast("Please Fill Message Header.");
-    } else if (this.messageRows.length > 1) {
+    } else if (this.messageRows.length >= 1) {
       const messageLanguages = this.messageRows.map(
         (row) => row.messageLanguage
       );
       const uniqueMessageLanguages = new Set(messageLanguages);
-
-      if (messageLanguages.length !== uniqueMessageLanguages.size) {
+      console.log(uniqueMessageLanguages);
+      if (messageLanguages.length != uniqueMessageLanguages.size) {
         this.coreService.removeLoadingScreen();
         this.coreService.showWarningToast(
           "Same Message Languages are not allowed."
         );
         return;
+      } else {
+        console.log("Rows to save:", this.newValues);
+        let service;
+        if (this.mode == "edit") {
+          let data = this.newValues;
+          service = this.customisedMsgService.updateMessage(
+            data,
+            this.userData.userId
+          );
+        } else {
+          console.log(this.newValues);
+          let data = this.newValues;
+          service = this.customisedMsgService.addNewMessage(
+            data,
+            this.userData.userId
+          );
+        }
+        if (service) {
+          service.subscribe(
+            (res) => {
+              if (
+                res["status"] &&
+                typeof res["status"] == "string" &&
+                (res["status"] == "400" || res["status"] == "500")
+              ) {
+                if (res["error"]) {
+                  this.coreService.showWarningToast(res["error"]);
+                } else {
+                  this.coreService.showWarningToast(
+                    "Something went wrong, Please try again later"
+                  );
+                }
+              } else {
+                if (res["msg"]) {
+                  this.coreService.showSuccessToast(res.msg);
+                  if (action == "save") {
+                    // this.showAddnewModal = false;
+                    // this.getMasterListData(this.formName);
+                    this.router.navigate([`navbar/customised-messages`]);
+                    this.setHeaderSidebarBtn();
+                  } else if (action == "saveAndAddNew") {
+                    this.getCustomisedDetails();
+                    this.messageType = "";
+                    this.messageCode = "";
+                    this.messageRows = [
+                      {
+                        messageLanguage: "",
+                        messageHeader: "",
+                        messageDescription: "",
+                      },
+                    ];
+                  }
+                } else if (res["error"]) {
+                  this.coreService.showWarningToast(res["error"]);
+                  this.coreService.removeLoadingScreen();
+                }
+              }
+            },
+            (err) => {
+              this.coreService.removeLoadingScreen();
+              console.log("error in saveAddNew", err);
+              this.coreService.showWarningToast(
+                "Something went wrong, Please try again later"
+              );
+            }
+          );
+        }
+      }
+    }
+  }
+
+  activeMsgRows() {
+    return this.messageRows.filter((msg) => msg.status == "A");
+  }
+
+  deleteMsg(index: number, value: any) {
+    console.log("delete", this.messageRows);
+    if (this.mode == "edit") {
+      if (this.messageRows[index].id) {
+        this.messageRows[index].status = "Deleted";
       }
     } else {
-      console.log("Rows to save:", this.newValues);
-      let service;
-      if (this.mode == "edit") {
-        let data = this.newValues;
-        service = this.customisedMsgService.updateMessage(
-          data,
-          this.userData.userId
-        );
-      } else {
-        let data = this.newValues;
-        service = this.customisedMsgService.addNewMessage(
-          data,
-          this.userData.userId
-        );
-      }
-
-      if (service) {
-        service.subscribe(
-          (res) => {
-            if (
-              res["status"] &&
-              typeof res["status"] == "string" &&
-              (res["status"] == "400" || res["status"] == "500")
-            ) {
-              if (res["error"]) {
-                this.coreService.showWarningToast(res["error"]);
-              } else {
-                this.coreService.showWarningToast(
-                  "Something went wrong, Please try again later"
-                );
-              }
-            } else {
-              if (res["msg"]) {
-                this.coreService.showSuccessToast(res.msg);
-                if (action == "save") {
-                  // this.showAddnewModal = false;
-                  // this.getMasterListData(this.formName);
-                  this.router.navigate([`navbar/customised-messages`]);
-                  this.setHeaderSidebarBtn();
-                } else if (action == "saveAndAddNew") {
-                  this.getCustomisedDetails();
-                  this.messageType = "";
-                  this.messageCode = "";
-                  this.messageRows = [
-                    {
-                      messageLanguage: "",
-                      messageHeader: "",
-                      messageDescription: "",
-                    },
-                  ];
-                }
-              } else if (res["error"]) {
-                this.coreService.showWarningToast(res["error"]);
-                this.coreService.removeLoadingScreen();
-              }
-            }
-          },
-          (err) => {
-            this.coreService.removeLoadingScreen();
-            console.log("error in saveAddNew", err);
-            this.coreService.showWarningToast(
-              "Something went wrong, Please try again later"
-            );
-          }
-        );
-      }
+      this.messageRows.splice(index, 1);
     }
   }
   reset() {
@@ -420,12 +461,11 @@ export class CustomisedDetailsComponent implements OnInit {
       messageLanguage: "",
       messageHeader: "",
       messageDescription: "",
+      status: "A",
     });
     console.log("message", this.messageRows);
   }
-  deleteMsg(index: number) {
-    this.messageRows.splice(index, 1);
-  }
+
   setHeaderSidebarBtn() {
     this.coreService.displayLoadingScreen();
     setTimeout(() => {
@@ -445,10 +485,10 @@ export class CustomisedDetailsComponent implements OnInit {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "A";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "D";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

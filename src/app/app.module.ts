@@ -94,10 +94,19 @@ import { ChargeListingComponent } from "./charge-settings/charge-listing/charge-
 import { MasterListingComponent } from "./master/master-listing/master-listing.component";
 import { CustomisedListingComponent } from "./customised-messages/customised-listing/customised-listing.component";
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
+
 import { DocumentCollectionComponent } from "./shared/forms/document-collection/document-collection.component";
 import { FileUploadComponent } from "./shared/components/file-upload/file-upload.component";
 import { CustomerFormComponent } from "./shared/forms/customer-form/customer-form.component";
 import { ConfirmDialogModalComponent } from "./shared/modals/confirm-dialog-modal/confirm-dialog-modal.component";
+
+import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
+import { RadioButtonModule } from "primeng/radiobutton";
+import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
+import { UsersPermisionsComponent } from './users-permisions/users-permisions.component';
+import { SystemUsersDetailsComponent } from './users-permisions/system-users/system-users-details/system-users-details.component';
+import { SystemUsersListingComponent } from './users-permisions/system-users/system-users-listing/system-users-listing.component';
+import { UserGroupComponent } from './users-permisions/user-group/user-group/user-group.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -145,10 +154,19 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     MasterListingComponent,
     CustomisedListingComponent,
     CustomisedDetailsComponent,
+
     DocumentCollectionComponent,
     FileUploadComponent,
     CustomerFormComponent,
     ConfirmDialogModalComponent,
+
+    CompanyDetailsComponent,
+    RateListingComponent,
+    UsersPermisionsComponent,
+    SystemUsersDetailsComponent,
+    SystemUsersListingComponent,
+    UserGroupComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -176,6 +194,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     TreeTableModule,
     InputMaskModule,
     CheckboxModule,
+    RadioButtonModule,
     TreeSelectModule,
     ToastModule,
     KeyFilterModule,

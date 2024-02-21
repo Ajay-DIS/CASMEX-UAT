@@ -1,0 +1,100 @@
+:host ::ng-deep .p-multiselect-trigger,
+:host ::ng-deep .p-multiselect-label-container {
+  display: none;
+}
+:host ::ng-deep .p-datatable-resizable-table > .p-datatable-tbody > tr > td {
+  white-space: initial;
+}
+.confirm-popup ::ng-deep .p-dialog-content .p-confirm-dialog-message {
+  text-align: center;
+}
+
+.app-form-search {
+  background: white;
+  border-radius: 6px;
+}
+
+.select-module-application {
+  display: flex;
+  gap: 10px;
+}
+.select-module-application .field {
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 0;
+}
+@media screen and (max-width: 575px){
+  .small {
+     padding-right: 25px !important;
+   }
+ }
+.select-module-application label {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+.select-module-application p-dropdown {
+  width: 100%;
+}
+.select-module-application::ng-deep .p-dropdown {
+  width: 95%;
+  height: 35px;
+  align-items: center;
+  // border: none !important;
+}
+:host ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+  width: 100%;
+}
+.correspondentRadio{
+  padding-top: 10px;
+    }
+    .radiobtn {
+      background-color: #f4f6fa !important;
+      color: rgb(180, 178, 178) !important;
+      padding: 10px;
+    }
+    .p-radiobutton {
+      width: 20px !important;
+      height: 20px !important;
+    }
+    :host ::ng-deep .p-radiobutton .p-radiobutton-box {
+      border: 2px solid #3d66ba;
+      background: #f4f6fa;
+      width: 16px;
+      height: 16px;
+    }
+    :host ::ng-deep .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+      width: 11px;
+      height: 11px;
+      background-color: #4a62f0;
+    }
+    :host ::ng-deep .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
+      border-color: #3c3c3e;
+    }
+    label {
+      font-size: 12px;
+      padding-right: 8px;
+      padding-bottom: 6px
+    }
+     .buttons-section {
+      background-color: #fff;
+      display: flex;
+      justify-content: center !important;
+  }
+  @media screen and (max-width: 1400px) and (min-width:1201px) {
+    .radioLabel {
+      font-size: 10px !important;
+      padding-right: 6px !important;
+      padding-bottom: 6px !important;
+    }
+    :host ::ng-deep .p-radiobutton .p-radiobutton-box {
+      width: 15px;
+      height: 15px;
+    }
+    :host ::ng-deep .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+      width: 10px;
+      height: 10px;
+    }
+    :host ::ng-deep .p-datatable .p-datatable-tbody tr td input {
+      font-size: 10px !important;
+    }
+  }

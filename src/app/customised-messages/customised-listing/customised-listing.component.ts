@@ -64,13 +64,13 @@ export class CustomisedListingComponent implements OnInit {
   ) {}
 
   cols: any[] = [
-    { field: "messageCode", header: "Message Code", width: "13%" },
-    { field: "messageType", header: "Message Type", width: "15%" },
+    { field: "messageCode", header: "Message Code", width: "12%" },
+    { field: "messageType", header: "Message Type", width: "13%" },
     { field: "messageHeader", header: "Message Header", width: "20%" },
     {
       field: "messageDescription",
       header: "Message Description",
-      width: "32%",
+      width: "35%",
     },
     { field: "status", header: "Status", width: "10%" },
     { field: "action", header: "Action", width: "10%" },
@@ -78,7 +78,7 @@ export class CustomisedListingComponent implements OnInit {
   customisedMessagesTableLoading = false;
 
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 50;
 
   ngOnInit(): void {
     this.coreService.displayLoadingScreen();
@@ -106,52 +106,51 @@ export class CustomisedListingComponent implements OnInit {
 
   getCustomisedMsgList() {
     console.log("ada");
-    this.customisedMsgService
-      .getCustomisedListData(String(this.pageNumber), String(this.pageSize))
-      .subscribe(
-        (res) => {
-          this.coreService.removeLoadingScreen();
-          if (res["status"] == "200") {
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-              this.customisedMessagesListData = [];
-            } else {
-              this.customisedMessagesListData = res["data"];
-              console.log(this.customisedMessagesListData, res);
-              // this.totalRecords = res.data.PaginationDetails.totalCount;
-              // this.customerCode = res.customerCode?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.fullName = res.customerFullName?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.nationality = res.nationality?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.mobileNumber = res.mobileNumber?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.idType = res.idType?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // this.idNumber = res.idNumber?.map((code) => {
-              //   if (code) return { label: code, value: code };
-              // });
-              // if (this.customisedMessagesListData) {
-              //   this.customisedMessagesListData.forEach((data) => {
-              //     data["promotionDetails"] = data["promotionDetails"]
-              //       .split("#")
-              //       .join("\n");
-              //   });
-              // }
-            }
+    this.coreService.displayLoadingScreen();
+    this.customisedMsgService.getCustomisedListData().subscribe(
+      (res) => {
+        this.coreService.removeLoadingScreen();
+        if (res["status"] == "200") {
+          if (res["error"]) {
+            this.coreService.showWarningToast(res["error"]);
+            this.customisedMessagesListData = [];
+          } else {
+            this.customisedMessagesListData = res["data"];
+            console.log(this.customisedMessagesListData, res);
+            // this.totalRecords = res.data.PaginationDetails.totalCount;
+            // this.customerCode = res.customerCode?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.fullName = res.customerFullName?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.nationality = res.nationality?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.mobileNumber = res.mobileNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idType = res.idType?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // this.idNumber = res.idNumber?.map((code) => {
+            //   if (code) return { label: code, value: code };
+            // });
+            // if (this.customisedMessagesListData) {
+            //   this.customisedMessagesListData.forEach((data) => {
+            //     data["promotionDetails"] = data["promotionDetails"]
+            //       .split("#")
+            //       .join("\n");
+            //   });
+            // }
           }
-        },
-        (err) => {
-          this.coreService.removeLoadingScreen();
-          this.coreService.showWarningToast("Error in fething data");
         }
-      );
+      },
+      (err) => {
+        this.coreService.removeLoadingScreen();
+        this.coreService.showWarningToast("Error in fething data");
+      }
+    );
   }
 
   addNewMessage() {
@@ -175,10 +174,10 @@ export class CustomisedListingComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "A";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "D";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

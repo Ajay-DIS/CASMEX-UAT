@@ -34,6 +34,9 @@ import { ChargeDetailsComponent } from "./charge-settings/charge-details/charge-
 import { MasterListingComponent } from "./master/master-listing/master-listing.component";
 import { CustomisedListingComponent } from "./customised-messages/customised-listing/customised-listing.component";
 import { CustomisedDetailsComponent } from "./customised-messages/customised-details/customised-details.component";
+import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
+import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
+import { UsersPermisionsComponent } from "./users-permisions/users-permisions.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
@@ -292,7 +295,7 @@ const routes: Routes = [
       },
       {
         path: "charge-settings/add-charge/:id/clone",
-        component: AddNewTaxComponent,
+        component: ChargeDetailsComponent,
         data: [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },
@@ -301,6 +304,91 @@ const routes: Routes = [
         ],
         canActivate: [AuthGuard],
       },
+      {
+        path: "company-settings",
+        component: CompanyDetailsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/company-settings" },
+          { label: "Company Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "rate-settings",
+        component: RateListingComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/rate-settings" },
+          { label: "Rate Settings", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "users-permissions",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          { label: "Users & Permissions", routerLink: "" },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "users-permissions/system-user",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          {
+            label: "Users & Permissions",
+            routerLink: "../navbar/users-permissions",
+          },
+          {
+            label: "System User",
+            routerLink: "../navbar/users-permissions/system-user",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      {
+        path: "users-permissions/user-group",
+        component: UsersPermisionsComponent,
+        data: [
+          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Settings", routerLink: "../navbar/users-permissions" },
+          {
+            label: "Users & Permissions",
+            routerLink: "../navbar/users-permissions",
+          },
+          {
+            label: "User Group",
+            routerLink: "../navbar/users-permissions/user-group",
+          },
+        ],
+        canActivate: [AuthGuard],
+      },
+      // {
+      //   path: "users-permissions/system-user/addNew",
+      //   component: UsersPermisionsComponent,
+      //   data: [
+      //     { label: "Home", routerLink: "../navbar/bank-routing" },
+      //     { label: "Settings", routerLink: "../navbar/users-permissions" },
+      //     {
+      //       label: "Users & Permissions",
+      //       routerLink: "../navbar/users-permissions",
+      //     },
+      //     {
+      //       label: "System User",
+      //       routerLink: "../navbar/users-permissions/system-user",
+      //     },
+      //     {
+      //       label: "Add New System User",
+      //       routerLink: "../navbar/users-permissions/system-user/addNew",
+      //     },
+      //   ],
+      //   canActivate: [AuthGuard],
+      // },
       {
         path: "customised-messages",
         component: CustomisedListingComponent,
@@ -318,7 +406,7 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/customised-messages" },
           { label: "Customised Messages", routerLink: "customised-messages" },
-          { label: "Add New Message", routerLink: "" },
+          { label: "Add New Customised Message", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -329,7 +417,7 @@ const routes: Routes = [
           { label: "Home", routerLink: "../navbar/bank-routing" },
           { label: "Settings", routerLink: "../navbar/customised-messages" },
           { label: "Customised Messages", routerLink: "customised-messages" },
-          { label: "Edit Message", routerLink: "" },
+          { label: "Edit Customised  Message", routerLink: "" },
         ],
         canActivate: [AuthGuard],
       },
@@ -440,10 +528,10 @@ const routes: Routes = [
         path: "beneficiary-profile",
         component: CustomerProfileComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/customer-profile" },
+          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/customer-profile",
+            routerLink: "../navbar/beneficiary-profile",
           },
         ],
         canActivate: [AuthGuard],
@@ -452,10 +540,10 @@ const routes: Routes = [
         path: "beneficiary-profile/addnewbeneficiary/:type/:id/:name/add",
         component: AddBeneficiaryComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/customer-profile" },
+          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/customer-profile",
+            routerLink: "../navbar/beneficiary-profile",
           },
           { label: "Add Beneficiary", routerLink: "" },
         ],
@@ -465,10 +553,10 @@ const routes: Routes = [
         path: "beneficiary-profile/addnewbeneficiary/:type/:id/:name/:benefid/edit",
         component: AddBeneficiaryComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/customer-profile" },
+          { label: "Home", routerLink: "../navbar/beneficiary-profile" },
           {
             label: "Beneficiary Profile",
-            routerLink: "../navbar/customer-profile",
+            routerLink: "../navbar/beneficiary-profile",
           },
           { label: "Edit Beneficiary", routerLink: "" },
         ],

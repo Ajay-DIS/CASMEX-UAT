@@ -125,6 +125,8 @@ export class AddnewrouteComponent2 implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "banks";
+
   constructor(
     private bankRoutingService: BankRoutingService,
     private activatedRoute: ActivatedRoute,
@@ -1163,10 +1165,12 @@ export class AddnewrouteComponent2 implements OnInit {
             }
           } else {
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);

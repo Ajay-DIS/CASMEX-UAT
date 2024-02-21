@@ -139,6 +139,8 @@ export class AddNewTaxComponent implements OnInit {
 
   fieldDisplayData = {};
 
+  setCriteriaName = "taxes";
+
   constructor(
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService,
@@ -290,6 +292,15 @@ export class AddNewTaxComponent implements OnInit {
     this.showContent = false;
     this.getCriteriaMasterData();
     this.getAllTemplates();
+  }
+
+  onKeyPress(event: KeyboardEvent): void {
+    const inputChar = String.fromCharCode(event.charCode);
+
+    // Allow alphanumeric characters and space
+    if (!/^[a-zA-Z0-9\s]*$/.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 
   getTaxSettingForEditApi(taxCode: any, operation: any) {
@@ -583,10 +594,10 @@ export class AddNewTaxComponent implements OnInit {
     let reqStatus = "";
     if (this.deactivated == true) {
       reqStatus = "Active";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "Inactive";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);
@@ -1113,7 +1124,6 @@ export class AddNewTaxComponent implements OnInit {
               data["status"] = "Active";
               data["userID"] = this.userId;
               data["taxCode"] = this.taxCode;
-
               console.log("filter", data);
               console.log("filter1", data["criteriaMap"]);
             });
@@ -1209,11 +1219,14 @@ export class AddNewTaxComponent implements OnInit {
             }
           } else {
             this.coreService.removeLoadingScreen();
+
             if (res.msg == "Criteria Template already exists.") {
-              this.savingCriteriaTemplateError =
-                "Criteria Template already exists.";
+              // this.savingCriteriaTemplateError =
+              //   "Criteria Template already exists.";
+              this.savingCriteriaTemplateError = true;
+              console.log(this.savingCriteriaTemplateError);
             } else {
-              this.savingCriteriaTemplateError = null;
+              this.savingCriteriaTemplateError = false;
               this.setCriteriaSharedComponent.selectedTemplate =
                 this.setCriteriaSharedComponent.criteriaName;
               this.coreService.showSuccessToast(res.msg);
@@ -1297,9 +1310,12 @@ export class AddNewTaxComponent implements OnInit {
       let taxMissing = false;
       this.applyCriteriaFormattedData.forEach((data) => {
         if (data["isActive"] == "N") {
-          data["taxCodeDesc"] = this.taxDescription.toUpperCase()
+          data["taxCodeDesc"] = this.taxDescription
+            ?.replace(/\s+/g, " ")
+            .trim()
+            .toUpperCase()
             ? this.taxDescription.replace(/\s/g, "").length
-              ? this.taxDescription.toUpperCase()
+              ? this.taxDescription?.replace(/\s+/g, " ").trim().toUpperCase()
               : null
             : null;
           if (data["tax"] == "null" || data["tax"] == null) {
@@ -1317,9 +1333,12 @@ export class AddNewTaxComponent implements OnInit {
         if (element["invalidTaxAmount"]) {
           invalidTaxAmount = true;
         }
-        element["taxCodeDesc"] = this.taxDescription.toUpperCase()
+        element["taxCodeDesc"] = this.taxDescription
+          ?.replace(/\s+/g, " ")
+          .trim()
+          .toUpperCase()
           ? this.taxDescription.replace(/\s/g, "").length
-            ? this.taxDescription.toUpperCase()
+            ? this.taxDescription?.replace(/\s+/g, " ").trim().toUpperCase()
             : null
           : null;
         if (!element["taxCodeDesc"]) {
@@ -1340,7 +1359,7 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (isRequiredFields) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Please Fill required fields.");
+        this.coreService.showWarningToast("Please Fill Tax Description.");
       }
       // else if (taxTypeMissing) {
       //   this.coreService.removeLoadingScreen();
@@ -1432,7 +1451,7 @@ export class AddNewTaxComponent implements OnInit {
         }
       }
     } else {
-      this.coreService.showWarningToast("Applied criteria already exists.");
+      this.coreService.showWarningToast("Similar Record Already Exists.");
     }
   }
 
@@ -1512,7 +1531,11 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateApplicableOnFound = true;
       }
     }
@@ -1594,7 +1617,11 @@ export class AddNewTaxComponent implements OnInit {
       });
       if (new Set(docTypeArr).size !== docTypeArr.length) {
         this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Duplicate set as option found !");
+        if (this.mode == "clone") {
+          this.coreService.showWarningToast("Similar Record Already Exists");
+        } else {
+          this.coreService.showWarningToast("Duplicate Set As Option Found");
+        }
         isDuplicateSetAsFound = true;
       }
     }
@@ -1676,10 +1703,10 @@ export class AddNewTaxComponent implements OnInit {
     let reqStatus = "";
     if (e.target.checked) {
       reqStatus = "Y";
-      type = "activate";
+      type = "Activate";
     } else {
       reqStatus = "N";
-      type = "deactivate";
+      type = "Deactivate";
     }
     this.coreService.setSidebarBtnFixedStyle(false);
     this.coreService.setHeaderStickyStyle(false);

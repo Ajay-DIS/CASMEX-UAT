@@ -6,7 +6,7 @@
         height="15px"
         src="../assets/Icon-info.svg"
         alt=""
-        pTooltip="Based on the selected criteria banks will be routed."
+        [pTooltip]="'Based on the selected criteria '+setCriteriaName+' will be routed.'"
       />
     </p>
     <div class="openCriteria">
@@ -14,7 +14,8 @@
         <a
           [ngClass]="{ disabled: deactivated }"
           tabindex="0"
-          (keyup.Space)="saveCriteriaTemplateLink()"
+          (keyup.enter)="!deactivated && saveCriteriaTemplateLink()"
+        (keyup.space)="!deactivated && saveCriteriaTemplateLink()"
           (click)="!deactivated && saveCriteriaTemplateLink()"
           >Click to save this Criteria as a template</a
         >
@@ -40,11 +41,18 @@
     <p class="mb-2" style="font-weight: 500">Name</p>
     <input class="w-100" type="text" pInputText [(ngModel)]="criteriaName" />
     <div
-      *ngIf="savingCriteriaTemplateError"
+      *ngIf="savingCriteriaTemplateError && !savingCriteriaTemplateErrorMsg"
       class="saving-criteria-template-error"
     >
       <i class="red-dot pi pi-circle-fill"></i>
-      {{ savingCriteriaTemplateError }}
+      "Criteria Template already exists." 
+    </div>
+    <div
+      *ngIf="savingCriteriaTemplateErrorMsg"
+      class="saving-criteria-template-error"
+    >
+      <i class="red-dot pi pi-circle-fill"></i>
+      {{ savingCriteriaTemplateErrorMsg }}
     </div>
     <ng-template pTemplate="footer">
       <div style="text-align: center">
@@ -299,6 +307,7 @@
           style="margin-bottom: 4px"
           tabindex="0"
           (keyup.Space)="ondeletecriteria(i, criteria)"
+          (keyup.Enter)="ondeletecriteria(i, criteria)"
           xmlns="http://www.w3.org/2000/svg"
           width="12.6"
           height="12.6"
