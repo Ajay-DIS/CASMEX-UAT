@@ -63,7 +63,7 @@ export class LoginService {
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
 
     // setting licenseCountry in localstorage
-    localStorage.setItem("licenseCountry", "CO");
+    localStorage.setItem("licenseCountry", "IN");
 
     sessionStorage.setItem("bankRoute", null),
       sessionStorage.setItem("tax", null),
