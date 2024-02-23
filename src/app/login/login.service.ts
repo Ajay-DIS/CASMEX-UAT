@@ -29,36 +29,28 @@ export class LoginService {
     );
 
     // save app & mod in localstorage
-    localStorage.setItem(
-      "applicationName",
-      data.application ? data.application : "CASMEX_CORE"
-    );
-    localStorage.setItem(
-      "moduleName",
-      data.module ? data.module : "Remittance"
-    );
+    let appsAvailable = [];
+    let modsAvailable = [];
+    if (data.application) {
+      appsAvailable = data.application.map((apps) => {
+        return { code: apps.code, name: apps.description };
+      });
+    }
+    if (data.module) {
+      modsAvailable = data.module.map((mods) => {
+        return { code: mods.code, name: mods.description };
+      });
+    }
 
-    let application = {
-      code: data?.applicationAccess?.cmApplicationMaster?.code,
-      name: data?.applicationAccess?.cmApplicationMaster?.name,
-    };
-    let module = { code: "Remittance", name: "Remittance" };
-
-    localStorage.setItem("appAccess", JSON.stringify([application]));
-    localStorage.setItem(
-      "modAccess",
-      JSON.stringify(
-        data?.applicationAccess?.cmApplicationMaster[
-          "cmPrimaryModuleMaster"
-        ].map((mod) => {
-          return { code: mod.code, name: mod.primaryModuleName };
-        })
-      )
-    );
+    localStorage.setItem("appAccess", JSON.stringify(appsAvailable));
+    localStorage.setItem("modAccess", JSON.stringify(modsAvailable));
     let defAppMod = {
-      applicationName: application,
-      moduleName: module,
+      applicationName: appsAvailable[0],
+      moduleName: modsAvailable[0],
     };
+
+    localStorage.setItem("applicationName", JSON.stringify(appsAvailable[0]));
+    localStorage.setItem("moduleName", JSON.stringify(modsAvailable[0]));
 
     localStorage.setItem("defAppModule", JSON.stringify(defAppMod));
 
@@ -71,7 +63,7 @@ export class LoginService {
     localStorage.setItem("menuItems", JSON.stringify(menuTree));
 
     // setting licenseCountry in localstorage
-    localStorage.setItem("licenseCountry", "CO");
+    localStorage.setItem("licenseCountry", "IN");
 
     sessionStorage.setItem("bankRoute", null),
       sessionStorage.setItem("tax", null),

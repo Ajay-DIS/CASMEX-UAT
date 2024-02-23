@@ -44,8 +44,6 @@ import { BnNgIdleService } from "bn-ng-idle";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { NavbarComponent } from "./navbar/navbar.component";
-import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payment-mode.component";
-import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { LoginComponent } from "./login/login.component";
 import { HttpInterceptorInterceptor } from "./http-interceptor.interceptor";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
@@ -103,10 +101,10 @@ import { ConfirmDialogModalComponent } from "./shared/modals/confirm-dialog-moda
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
-import { UsersPermisionsComponent } from './users-permisions/users-permisions.component';
-import { SystemUsersDetailsComponent } from './users-permisions/system-users/system-users-details/system-users-details.component';
-import { SystemUsersListingComponent } from './users-permisions/system-users/system-users-listing/system-users-listing.component';
-import { UserGroupComponent } from './users-permisions/user-group/user-group/user-group.component';
+import { UsersPermisionsComponent } from "./users-permisions/users-permisions.component";
+import { SystemUsersDetailsComponent } from "./users-permisions/system-users/system-users-details/system-users-details.component";
+import { SystemUsersListingComponent } from "./users-permisions/system-users/system-users-listing/system-users-listing.component";
+import { UserGroupComponent } from "./users-permisions/user-group/user-group/user-group.component";
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -117,8 +115,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   declarations: [
     AppComponent,
     NavbarComponent,
-    PaymentModeComponent,
-    ViewPaymentModeComponent,
     LoginComponent,
     SessionTimeOutComponent,
     CriteriaListingComponent,
@@ -166,7 +162,6 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SystemUsersDetailsComponent,
     SystemUsersListingComponent,
     UserGroupComponent,
-
   ],
   imports: [
     BrowserModule,

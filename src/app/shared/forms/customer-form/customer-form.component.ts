@@ -44,7 +44,8 @@ export class CustomerFormComponent implements OnInit, OnChanges {
     private scroller: ViewportScroller,
     private confirmDialogModalService: ConfirmDialogModalService
   ) {
-    this.getCustomerMasterData();
+    // this.getCustomerMasterData();
+    this.getCustomerMasterDataFromAppControlAndRemittance();
   }
 
   @ViewChild("calendar") calendar: Calendar;
@@ -124,10 +125,10 @@ export class CustomerFormComponent implements OnInit, OnChanges {
 
   // --------------------AJAY ENDSSSSSSSSSSSSSSSSSSSS
 
-  moduleName = "Remittance";
+  applicationName = JSON.parse(localStorage.getItem("applicationName"));
+  moduleName = JSON.parse(localStorage.getItem("moduleName"));
+
   formName = "Customer Profile_Form Rules";
-  applicationName =
-    JSON.parse(localStorage.getItem("appAccess"))[0]["name"] || "Casmex Core";
   licenseCountry = localStorage.getItem("licenseCountry");
 
   causingCriteriaFieldsArr = [];
@@ -385,15 +386,15 @@ export class CustomerFormComponent implements OnInit, OnChanges {
         changes.custType.currentValue == "IND" ? "Individual" : "Corporate";
       this.getCausingCriteriaFields(
         this.userId,
-        this.applicationName,
-        this.moduleName,
+        this.applicationName["code"],
+        this.moduleName["code"],
         this.formName
       );
 
       this.getCausingCriteriaFieldsForDocSetting(
         this.userId,
-        this.applicationName,
-        this.moduleName,
+        this.applicationName["code"],
+        this.moduleName["code"],
         "Document Settings"
       );
 
@@ -853,8 +854,8 @@ export class CustomerFormComponent implements OnInit, OnChanges {
     this.customerFormService
       .getDataForsearchCriteria(
         this.userId,
-        this.applicationName,
-        this.moduleName,
+        this.applicationName["code"],
+        this.moduleName["code"],
         "Customer Profile"
       )
       .subscribe(
@@ -1124,33 +1125,71 @@ export class CustomerFormComponent implements OnInit, OnChanges {
   // ! Related Party related ends
 
   // ! Customer Master Data API starts
-  getCustomerMasterData() {
-    this.customerFormService.getCustomerMaster().subscribe(
-      (res) => {
-        this.masterData = res["data"];
+  // getCustomerMasterData() {
+  //   this.customerFormService.getCustomerMaster().subscribe(
+  //     (res) => {
+  //       this.masterData = res["data"];
 
-        // remove customer from partyType dropdown
-        if (this.masterData["masterRelatedParties"]) {
-          this.masterData["masterRelatedParties"] = this.masterData[
-            "masterRelatedParties"
-          ].filter((party) => party.code != "C");
+  //       // remove customer from partyType dropdown
+  //       if (this.masterData["masterRelatedParties"]) {
+  //         this.masterData["masterRelatedParties"] = this.masterData[
+  //           "masterRelatedParties"
+  //         ].filter((party) => party.code != "C");
+  //       }
+
+  //       // salaryDateMaster
+  //       for (let i = 1; i <= 30; i++) {
+  //         this.masterData.salaryDateEmpDetails.push({
+  //           code: `${i}`,
+  //           codeName: `${i}`,
+  //         });
+  //       }
+
+  //       // idIssueCountryList
+  //       this.idIssueCountryList = this.masterData["idIssueCountry"];
+  //     },
+  //     (err) => {
+  //       this.coreService.showWarningToast("Error in fething data");
+  //     }
+  //   );
+  // }
+
+  getCustomerMasterDataFromAppControlAndRemittance() {
+    this.customerFormService
+      .getCustomerMasterDataFromAppControlAndRemittance()
+      .subscribe(
+        (responses: any[]) => {
+          // Handle successful responses
+          console.log("Response from API 1:", responses[0]);
+          console.log("Response from API 2:", responses[1]);
+          this.masterData = {
+            ...responses[0]["data"],
+            ...responses[1]["data"],
+          };
+          // remove customer from partyType dropdown
+          if (this.masterData["masterRelatedParties"]) {
+            this.masterData["masterRelatedParties"] = this.masterData[
+              "masterRelatedParties"
+            ].filter((party) => party.code != "C");
+          }
+
+          // salaryDateMaster
+          for (let i = 1; i <= 30; i++) {
+            this.masterData.salaryDateEmpDetails.push({
+              code: `${i}`,
+              codeName: `${i}`,
+            });
+          }
+
+          // idIssueCountryList
+          this.idIssueCountryList = this.masterData["idIssueCountry"];
+        },
+        (error) => {
+          // Handle error if any API request fails
+          console.error("Error:", error);
+          // You can show an error message to the user or handle it in any other way
         }
-
-        // salaryDateMaster
-        for (let i = 1; i <= 30; i++) {
-          this.masterData.salaryDateEmpDetails.push({
-            code: `${i}`,
-            codeName: `${i}`,
-          });
-        }
-
-        // idIssueCountryList
-        this.idIssueCountryList = this.masterData["idIssueCountry"];
-      },
-      (err) => {
-        this.coreService.showWarningToast("Error in fething data");
-      }
-    );
+      );
   }
   // ! Customer Master Data API ends
 

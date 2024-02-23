@@ -44,7 +44,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   isviewPaymentMode: boolean = false;
   menuItems: MenuItem[] = [];
   $MenuItems: MenuItem[] = [];
-  menuItemTree = {};
+  menuItemTree: any = [];
 
   userActions = [{ name: "Profile" }, { name: "Logout" }];
   get profileOptions() {
@@ -154,135 +154,183 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         this.coreService.setPageTitle(translatedTitle);
       });
   }
+
+  createPanelMenuData(apiData: any) {
+    // Create a map to efficiently look up items by their IDs
+    const itemsMap = {};
+
+    // Initialize an array to store the root items (items with parentId 0)
+    const rootItems = [];
+
+    // Iterate over the API data to create items and populate the itemsMap
+    apiData.forEach((item) => {
+      const newItem = {
+        id: String(item.id),
+        label: item.menuName,
+        // Assuming you want to assign some default icon for each item
+        icon: this.getIcons(item.id).icon,
+        items: [],
+        expanded:
+          this.getIcons(item.id).matchUrls &&
+          this.getIcons(item.id).matchUrls.some((v) =>
+            this.currRoute.includes(v)
+          ),
+      };
+
+      // Store the item in the itemsMap using its ID as the key
+      itemsMap[item.id] = newItem;
+
+      // Check if the item is a root item (parentId is 0)
+      if (item.parentId === 0) {
+        rootItems.push(newItem);
+      } else {
+        // If not a root item, find its parent in the itemsMap and add it as a child
+        const parentItem = itemsMap[item.parentId];
+        if (parentItem) {
+          newItem["icon"] = null;
+          newItem["items"] = null;
+          parentItem.items.push(this.getSubMenus(newItem));
+        } else {
+          // Handle the case where the parent item is not found (optional)
+          console.error(
+            `Parent item with ID ${item.parentId} not found for item ${item.id}`
+          );
+        }
+      }
+    });
+    return rootItems;
+  }
+
   setSidebarMenu() {
     if (!!localStorage.getItem("menuItems")) {
       const menuItems = localStorage.getItem("menuItems");
       this.menuItemTree = JSON.parse(menuItems);
     }
     this.menuItems = [];
-    Object.keys(this.menuItemTree).map((menu) => {
-      if (this.menuItemTree[menu].length > 0) {
-        const submenus = [];
-        this.menuItemTree[menu].map((sub) => {
-          submenus.push({
-            label: sub,
-          });
-        });
-        this.menuItems.push({
-          label: menu,
-          icon: this.getIcons(menu).icon,
-          items: this.getSubMenus(submenus),
-          expanded:
-            this.getIcons(menu).matchUrls &&
-            this.getIcons(menu).matchUrls.some((v) =>
-              this.currRoute.includes(v)
-            ),
-        });
-      } else {
-        this.menuItems.push({
-          label: menu,
-          icon: this.getIcons(menu).icon,
-          routerLink: this.getIcons(menu).routerLink,
-          routerLinkActiveOptions: { subset: true },
-          expanded: true,
-        });
-      }
-    });
+
+    // Object.keys(this.menuItemTree).map((menu) => {
+    //   if (this.menuItemTree[menu].length > 0) {
+    //     const submenus = [];
+    //     this.menuItemTree[menu].map((sub) => {
+    //       submenus.push({
+    //         label: sub,
+    //       });
+    //     });
+    //     this.menuItems.push({
+    //       label: menu,
+    //       icon: this.getIcons(menu).icon,
+    //       items: this.getSubMenus(submenus),
+    //       expanded:
+    //         this.getIcons(menu).matchUrls &&
+    //         this.getIcons(menu).matchUrls.some((v) =>
+    //           this.currRoute.includes(v)
+    //         ),
+    //     });
+    //   } else {
+    //     this.menuItems.push({
+    //       label: menu,
+    //       icon: this.getIcons(menu).icon,
+    //       routerLink: this.getIcons(menu).routerLink,
+    //       routerLinkActiveOptions: { subset: true },
+    //       expanded: true,
+    //     });
+    //   }
+    // });
+
+    // !
+    console.log(":::apimenudata", this.menuItemTree);
+    let formattedMenuTree = this.createPanelMenuData(this.menuItemTree);
+    console.log(":::", JSON.stringify(formattedMenuTree));
+    // !
+
+    this.menuItems = formattedMenuTree;
     this.$MenuItems = this.menuItems;
   }
 
-  getSubMenus(menu: any) {
-    menu.forEach((item) => {
-      switch (item["label"]) {
-        case "Bank Routing Settings":
-          item["routerLink"] = "/navbar/bank-routing";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
+  getSubMenus(item: any) {
+    switch (item["id"]) {
+      case "6":
+        item["routerLink"] = "/navbar/rate-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
 
-        case "Criteria Setting":
-          item["routerLink"] = "/navbar/criteria-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Search Settings":
-          item["routerLink"] = "/navbar/search-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
+      case "7":
+        item["routerLink"] = "/navbar/customised-messages";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "8":
+        item["routerLink"] = "/navbar/master";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "9":
+        item["routerLink"] = "/navbar/charge-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "10":
+        item["routerLink"] = "/navbar/company-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "11":
+        item["routerLink"] = "/navbar/tax-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "12":
+        item["routerLink"] = "/navbar/bank-routing";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "13":
+        item["routerLink"] = "/navbar/document-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
 
-        case "Tax Settings":
-          item["routerLink"] = "/navbar/tax-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Customised Messages":
-          item["routerLink"] = "/navbar/customised-messages";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Company Settings":
-          item["routerLink"] = "/navbar/company-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Company Settings":
-          item["routerLink"] = "/navbar/company-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Rate Settings":
-          item["routerLink"] = "/navbar/rate-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Charge Settings":
-          item["routerLink"] = "/navbar/charge-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
+      case "14":
+        item["routerLink"] = "/navbar/form-rules";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "15":
+        item["routerLink"] = "/navbar/criteria-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "16":
+        item["routerLink"] = "/navbar/search-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "17":
+        item["routerLink"] = "/navbar/customer-profile";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "18":
+        item["routerLink"] = "/navbar/beneficiary-profile";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
 
-        case "Form Rules Settings":
-          item["routerLink"] = "/navbar/form-rules";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Form Rules":
-          item["routerLink"] = "/navbar/form-rules";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
+      case "19":
+        item["routerLink"] = "/navbar/loyalty-programs";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "20":
+        item["routerLink"] = "/navbar/loyalty-programs-details";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
 
-        case "Bank Routing Settings API":
-          item["routerLink"] = "/navbar/get-bank-routings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Tax Settings API":
-          item["routerLink"] = "/navbar/get-tax-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Document Settings API":
-          item["routerLink"] = "/navbar/get-doc-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Loyalty Programs Manager API":
-          item["routerLink"] = "/navbar/get-loyalty-programs";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Beneficiary Profile":
-          item["routerLink"] = "/navbar/beneficiary-profile";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Master":
-          item["routerLink"] = "/navbar/master";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-
-        case "Document Settings":
-          item["routerLink"] = "/navbar/document-settings";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-
-        case "Loyalty Programs Manager":
-          item["routerLink"] = "/navbar/loyalty-programs";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-        case "Customer Loyalty Program Details":
-          item["routerLink"] = "/navbar/loyalty-programs-details";
-          item["routerLinkActiveOptions"] = { subset: true };
-          break;
-      }
-    });
-    return menu;
+      case "21":
+        item["routerLink"] = "/navbar/get-tax-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "22":
+        item["routerLink"] = "/navbar/get-doc-settings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "23":
+        item["routerLink"] = "/navbar/get-bank-routings";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+      case "24":
+        item["routerLink"] = "/navbar/get-loyalty-programs";
+        item["routerLinkActiveOptions"] = { subset: true };
+        break;
+    }
+    return item;
   }
 
   ngAfterViewInit() {
@@ -335,47 +383,12 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getIcons(menuName) {
+  getIcons(menuId: number) {
     let iconName;
     let routeName;
     let matchUrls;
-    switch (menuName) {
-      case "Dashboard":
-        iconName = "dashboard-icon";
-        break;
-      case "Customer Profile":
-        iconName = "beneficiary-icon";
-        matchUrls = ["/navbar/customer-profile"];
-        routeName = "/navbar/customer-profile";
-        break;
-      case "Rate Setup":
-        iconName = "rateSetup-icon";
-        break;
-      case "Beneficiary Profile":
-        iconName = "beneficiary-icon";
-        matchUrls = ["/navbar/beneficiary-profile"];
-        routeName = "/navbar/beneficiary-profile";
-        break;
-      case "Remmitance":
-        iconName = "remmitance-icon";
-        break;
-      case "Customer Service":
-        iconName = "beneficiary-icon";
-        break;
-      case "Master":
-        iconName = "beneficiary-icon";
-        matchUrls = ["/navbar/master"];
-        routeName = "/navbar/master";
-        break;
-      case "Loyalty":
-        iconName = "settings-icon";
-        matchUrls = [
-          "/navbar/loyalty-programs",
-          "/navbar/loyalty-programs-details",
-        ];
-        routeName = "/navbar/loyalty-programs";
-        break;
-      case "Settings":
+    switch (menuId) {
+      case 1:
         iconName = "settings-icon";
         matchUrls = [
           "/navbar/bank-routing",
@@ -387,15 +400,29 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           "/navbar/customised-messages",
           "/navbar/company-settings",
           "/navbar/rate-settings",
+          "/navbar/master",
         ];
         routeName = "/navbar/bank-routing";
         break;
-      case "Application Settings":
+      case 2:
         iconName = "applicationsettings-icon";
         matchUrls = ["/navbar/criteria-settings", "/navbar/search-settings"];
         routeName = "/navbar/criteria-settings";
         break;
-      case "API Test":
+      case 3:
+        iconName = "beneficiary-icon";
+        matchUrls = ["/navbar/customer-profile", "/navbar/beneficiary-profile"];
+        routeName = "/navbar/customer-profile";
+        break;
+      case 4:
+        iconName = "settings-icon";
+        matchUrls = [
+          "/navbar/loyalty-programs",
+          "/navbar/loyalty-programs-details",
+        ];
+        routeName = "/navbar/loyalty-programs";
+        break;
+      case 5:
         iconName = "applicationsettings-icon";
         matchUrls = [
           "/navbar/get-bank-routings",
@@ -405,18 +432,42 @@ export class NavbarComponent implements OnInit, AfterViewInit {
         ];
         routeName = "/navbar/criteria-settings";
         break;
-      case "User Roles Management":
-        iconName = "rateSetup-icon";
-        break;
-      case "Reports":
-        iconName = "reports-icon";
-        break;
-      case "Accounts":
-        iconName = "Accounts-icon";
-        break;
-      case "Incoming":
-        iconName = "Incoming-icon";
-        break;
+      // case "Master":
+      //   iconName = "beneficiary-icon";
+      //   matchUrls = ["/navbar/master"];
+      //   routeName = "/navbar/master";
+      //   break;
+      // case "Customer Profile":
+      //   iconName = "beneficiary-icon";
+      //   matchUrls = ["/navbar/customer-profile"];
+      //   routeName = "/navbar/customer-profile";
+      //   break;
+      // case "Beneficiary Profile":
+      //   iconName = "beneficiary-icon";
+      //   matchUrls = ["/navbar/beneficiary-profile"];
+      //   routeName = "/navbar/beneficiary-profile";
+      //   break;
+      // case "Dashboard":
+      //   iconName = "dashboard-icon";
+      //   break;
+      // case "Rate Setup":
+      //   iconName = "rateSetup-icon";
+      //   break;
+      // case "Remmitance":
+      //   iconName = "remmitance-icon";
+      //   break;
+      // case "User Roles Management":
+      //   iconName = "rateSetup-icon";
+      //   break;
+      // case "Reports":
+      //   iconName = "reports-icon";
+      //   break;
+      // case "Accounts":
+      //   iconName = "Accounts-icon";
+      //   break;
+      // case "Incoming":
+      //   iconName = "Incoming-icon";
+      //   break;
 
       default:
         iconName = "settings-icon";

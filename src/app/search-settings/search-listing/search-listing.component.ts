@@ -135,7 +135,6 @@ export class SearchListingComponent implements OnInit {
         (err) => {
           console.log("Error in criterisSettingListing", err);
           this.showNoDataFound = true;
-          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {

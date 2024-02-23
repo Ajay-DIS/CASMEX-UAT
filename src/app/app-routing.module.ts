@@ -3,8 +3,6 @@ import { Routes, RouterModule } from "@angular/router";
 import { AuthGuard } from "./auth/auth.guard";
 import { LoginComponent } from "./login/login.component";
 import { NavbarComponent } from "./navbar/navbar.component";
-import { PaymentModeComponent } from "./payment-mode-settings/payment-mode/payment-mode.component";
-import { ViewPaymentModeComponent } from "./payment-mode-settings/view-payment-mode/view-payment-mode.component";
 import { SessionTimeOutComponent } from "./session-time-out/session-time-out.component";
 import { CriteriaListingComponent } from "./criteria-settings/criteria-listing/criteria-listing.component";
 import { CriteriaSettingsDetailComponent } from "./criteria-settings/criteria-settings-detail/criteria-settings-detail.component";
@@ -48,16 +46,6 @@ const routes: Routes = [
     children: [
       { path: "", redirectTo: "bank-routing", pathMatch: "full" },
       { path: "session-time-out", component: SessionTimeOutComponent },
-      {
-        path: "payment-mode",
-        component: PaymentModeComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: "view-payment-mode/:id",
-        component: ViewPaymentModeComponent,
-        canActivate: [AuthGuard],
-      },
       {
         path: "criteria-settings",
         component: CriteriaListingComponent,

@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit {
   loggedInUserData = {
     username: "yogeshm",
     password: "test@123",
-    application: "CASMEX_CORE",
+    // application: "CASMEX_CORE",
   };
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
       this.coreService.displayLoadingScreen();
       this.isFormInvalid = false;
       const formData: LoginFormData = {
-        application: "CASMEX_CORE",
+        // application: "CASMEX_CORE",
         ...this.loginForm.value,
       };
 
@@ -55,7 +55,7 @@ export class LoginComponent implements OnInit {
         .pipe(take(1))
         .subscribe(
           (data: any) => {
-            if (data && data.jwt) {
+            if (data && data.jwt && !data["msg"]) {
               this.loginService.saveLoggedUserInfo(data);
               this.router.navigate(["/navbar"]);
               this.coreService.showSuccessToast("Login Successfull");

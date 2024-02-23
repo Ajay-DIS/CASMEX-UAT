@@ -1,12 +1,14 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable, forkJoin, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
 })
 export class CustomerProfileService {
-  applicationName: any = null;
-  moduleName: any = null;
+  applicationName = JSON.parse(localStorage.getItem("applicationName"));
+  moduleName = JSON.parse(localStorage.getItem("moduleName"));
 
   constructor(private http: HttpClient) {}
   // getCustomerIndividualData(
@@ -16,7 +18,7 @@ export class CustomerProfileService {
   //   pageSize: any
   // ) {
   //   return this.http.get(
-  //     `/remittance/individualCustomerController/getIndividualCustomerDetailsList`,
+  //     `/appControl/individualCustomerController/getIndividualCustomerDetailsList`,
   //     {
   //       headers: new HttpHeaders()
   //         .set("userId", id)
@@ -37,7 +39,7 @@ export class CustomerProfileService {
     orderBy: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCorporateCustomerDetailsList`,
+      `/appControl/corporateCustomerController/getCorporateCustomerDetailsList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
@@ -57,19 +59,19 @@ export class CustomerProfileService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCustomerSearchSetting`,
+      `/appControl/corporateCustomerController/getCustomerSearchSetting`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applicationName", appName)
-          .set("moduleName", moduleName)
+          .set("applicationName", String(appName))
+          .set("moduleName", String(moduleName))
           .set("formName", formName),
       }
     );
   }
   // updateCustomerIndividualStatus(userId: any, status: any, id: any) {
   //   return this.http.get(
-  //     `/remittance/individualCustomerController/updateIndividualStatus`,
+  //     `/appControl/individualCustomerController/updateIndividualStatus`,
   //     {
   //       headers: new HttpHeaders()
   //         .set("userId", userId)
@@ -79,11 +81,34 @@ export class CustomerProfileService {
   //   );
   // }
 
-  getCustomerMaster() {
-    return this.http.get(
-      `/remittance/corporateCustomerController/getCustomerProfileMasterData`
+  // getCustomerMaster() {
+  //   return this.http.get(
+  //     `/appControl/corporateCustomerController/getCustomerProfileMasterData`
+  //   );
+  // }
+
+  // ! calling two api for customer master data
+  getCustomerMasterDataFromAppControlAndRemittance(): Observable<any[]> {
+    // Define API endpoints
+    const appControlUrl =
+      "/appControl/formRulesController/getCustomerProfileMasterDataAppControl";
+    const remittanceUrl =
+      "/remittance/corporateCustomerController/getCustomerProfileMasterDataRemittance";
+
+    // Make HTTP requests to both APIs
+    const appControlUrlRequest = this.http.get(appControlUrl);
+    const remittanceUrlRequest = this.http.get(remittanceUrl);
+
+    // Combine requests using forkJoin
+    return forkJoin([appControlUrlRequest, remittanceUrlRequest]).pipe(
+      catchError((error) => {
+        // Handle errors if any API request fails
+        console.error("Customer Master Data request failed:", error);
+        return throwError("API request failed");
+      })
     );
   }
+  // ! calling two api for customer master data ends
 
   updateCustomerCorporateStatus(
     userId: any,
@@ -92,7 +117,7 @@ export class CustomerProfileService {
     custType: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/updateCorporateStatus`,
+      `/appControl/corporateCustomerController/updateCorporateStatus`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
@@ -104,7 +129,7 @@ export class CustomerProfileService {
   }
   updateBeneficiaryStatusApi(userId: any, status: any, id: any, custType: any) {
     return this.http.get(
-      `/remittance/beneficiaryProfileController/updateBeneficiaryProfileStatus`,
+      `/appControl/beneficiaryProfileController/updateBeneficiaryProfileStatus`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
@@ -122,12 +147,12 @@ export class CustomerProfileService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/commonUtilController/getLoyaltyProgramCriteriaFields`,
+      `/appControl/commonUtilController/getLoyaltyProgramCriteriaFields`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );

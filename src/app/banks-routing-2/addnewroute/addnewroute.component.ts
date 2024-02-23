@@ -181,12 +181,8 @@ export class AddnewrouteComponent2 implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -212,30 +208,6 @@ export class AddnewrouteComponent2 implements OnInit {
       }
     }
     //
-
-    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe(
-      (res) => {
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
 
     this.statusData = this.bankRoutingService.getData();
     console.log("status", this.statusData);
@@ -603,8 +575,8 @@ export class AddnewrouteComponent2 implements OnInit {
     formData.append("userId", this.userId);
     formData.append("routeCode", this.routeCode);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateBankRouteStatus(formData);
   }
@@ -655,115 +627,134 @@ export class AddnewrouteComponent2 implements OnInit {
       criteriaMasterData: this.bankRoutingService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData:
         this.bankRoutingService.getAddBankRouteCriteriaData(
-          this.appCtrl.value.name,
-          this.moduleCtrl.value.name,
+          this.appCtrl.value.code,
+          this.moduleCtrl.value.code,
           this.formName
         ),
     })
       .pipe(
         take(1),
         map((response) => {
-          this.formatMasterData(response.criteriaMasterData);
-          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
-          delete criteriaMasterJson["fieldDisplay"];
-          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
-          const criteriaMasterData = criteriaMasterJson;
-          this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
-          this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
-            (data) => {
-              if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+          if (
+            response.addBankRouteCriteriaData["data"] &&
+            Object.keys(response.addBankRouteCriteriaData["data"]).length == 0
+          ) {
+            return {
+              msg: "No Criteria Found for Selected Application & Module.",
+            };
+          } else {
+            this.formatMasterData(response.criteriaMasterData);
+            let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+            delete criteriaMasterJson["fieldDisplay"];
+            this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+            const criteriaMasterData = criteriaMasterJson;
+            this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
+            this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
+              (data) => {
+                if (data["criteriaType"] == "Slab") {
+                  this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+                }
+                if (data["criteriaType"] == "date") {
+                  this.cmCriteriaSlabType["date"] = data["fieldName"];
+                }
               }
-              if (data["criteriaType"] == "date") {
-                this.cmCriteriaSlabType["date"] = data["fieldName"];
-              }
-            }
-          );
-
-          if (this.mode == "add") {
-            this.routeCode = this.criteriaDataDetailsJson.data.routeCode;
-            this.routeID = this.routeCode;
-            this.routeDescription = this.criteriaDataDetailsJson.data.routeDesc;
-          }
-
-          this.cmCriteriaDataDetails = [
-            ...this.criteriaDataDetailsJson.data.listCriteria
-              .cmCriteriaDataDetails,
-          ];
-
-          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-            .replace(/["|\[|\]]/g, "")
-            .split(", ");
-
-          this.cmCriteriaDependency =
-            this.criteriaDataDetailsJson.data.dependance;
-
-          let criteriaDependencyTreeData =
-            this.criteriaDataService.setDependencyTree(
-              this.criteriaDataDetailsJson,
-              this.cmCriteriaDataDetails,
-              criteriaMasterData,
-              this.cmCriteriaMandatory,
-              this.cmCriteriaDependency,
-              this.cmCriteriaSlabType
             );
 
-          this.criteriaMapDdlOptions =
-            criteriaDependencyTreeData["criteriaMapDdlOptions"];
-          this.independantCriteriaArr =
-            criteriaDependencyTreeData["independantCriteriaArr"];
-          return criteriaMasterData;
+            if (this.mode == "add") {
+              this.routeCode = this.criteriaDataDetailsJson.data.routeCode;
+              this.routeID = this.routeCode;
+              this.routeDescription =
+                this.criteriaDataDetailsJson.data.routeDesc;
+            }
+
+            this.cmCriteriaDataDetails = [
+              ...this.criteriaDataDetailsJson.data.listCriteria
+                .cmCriteriaDataDetails,
+            ];
+
+            this.cmCriteriaMandatory =
+              this.criteriaDataDetailsJson.data.mandatory
+                .replace(/["|\[|\]]/g, "")
+                .split(", ");
+
+            this.cmCriteriaDependency =
+              this.criteriaDataDetailsJson.data.dependance;
+
+            let criteriaDependencyTreeData =
+              this.criteriaDataService.setDependencyTree(
+                this.criteriaDataDetailsJson,
+                this.cmCriteriaDataDetails,
+                criteriaMasterData,
+                this.cmCriteriaMandatory,
+                this.cmCriteriaDependency,
+                this.cmCriteriaSlabType
+              );
+
+            this.criteriaMapDdlOptions =
+              criteriaDependencyTreeData["criteriaMapDdlOptions"];
+            this.independantCriteriaArr =
+              criteriaDependencyTreeData["independantCriteriaArr"];
+            return criteriaMasterData;
+          }
         })
       )
       .subscribe(
         (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-          } else {
-            this.criteriaMasterData = res;
-            if (this.mode == "edit") {
-              if (
-                !(
-                  this.bankRoutingService.applicationName ||
-                  this.bankRoutingService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/bank-routing`]);
+          if (!res["msg"]) {
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
               } else {
-                this.getBanksRoutingForEditApi(this.routeID, "edit");
-              }
-            } else if (this.mode == "clone") {
-              if (
-                !(
-                  this.bankRoutingService.applicationName ||
-                  this.bankRoutingService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/bank-routing`]);
-              } else {
-                this.getBanksRoutingForEditApi(this.routeID, "clone");
+                this.coreService.showWarningToast(
+                  "Some error in fetching data"
+                );
               }
             } else {
-              this.showContent = true;
-              this.coreService.removeLoadingScreen();
+              this.criteriaMasterData = res;
+              if (this.mode == "edit") {
+                if (
+                  !(
+                    this.bankRoutingService.applicationName ||
+                    this.bankRoutingService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/bank-routing`]);
+                } else {
+                  this.getBanksRoutingForEditApi(this.routeID, "edit");
+                }
+              } else if (this.mode == "clone") {
+                if (
+                  !(
+                    this.bankRoutingService.applicationName ||
+                    this.bankRoutingService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/bank-routing`]);
+                } else {
+                  this.getBanksRoutingForEditApi(this.routeID, "clone");
+                }
+              } else {
+                this.showContent = true;
+                this.coreService.removeLoadingScreen();
+              }
             }
+          } else if (res["msg"]) {
+            this.coreService.showWarningToast(res["msg"]);
+            this.coreService.removeLoadingScreen();
+            return;
           }
         },
         (err) => {
@@ -791,11 +782,11 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.name,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.name
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -846,9 +837,9 @@ export class AddnewrouteComponent2 implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("routeCode", this.routeID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.name);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isBankRoutingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1144,9 +1135,9 @@ export class AddnewrouteComponent2 implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.name);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.name);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.bankRoutingService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1194,8 +1185,8 @@ export class AddnewrouteComponent2 implements OnInit {
     this.bankRoutingService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe((res) => {
@@ -1442,8 +1433,8 @@ export class AddnewrouteComponent2 implements OnInit {
           service = this.bankRoutingService.updateRoute(
             this.userId,
             data,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
             this.formName
           );
         } else {
@@ -1454,8 +1445,8 @@ export class AddnewrouteComponent2 implements OnInit {
           };
           service = this.bankRoutingService.addNewRoute(
             data,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
             this.formName
           );
         }

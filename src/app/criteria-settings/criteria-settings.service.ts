@@ -8,21 +8,32 @@ export class CriteriaSettingsService {
   constructor(private http: HttpClient) {}
 
   getCriteriaSettingListing() {
-    return this.http.get(`/applicationSettings/getListOfCriteria`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/getListOfCriteria`
+    );
   }
 
   getCriteriaAppFormsList() {
-    return this.http.get(`/applicationSettings/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getCriteriaFieldsExecuteQueries() {
-    return this.http.get(`/applicationSettings/executeQueries`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/executeQueries`
+    );
   }
 
   getCriteriaCloneData(criteriaId: any) {
-    return this.http.get(`/applicationSettings/getCriteriaClone/${criteriaId}`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/getCriteriaClone/${criteriaId}`
+    );
   }
   postCriteriaFieldsToSave(data: any) {
-    return this.http.post(`/applicationSettings/saveCriteria`, data);
+    return this.http.post(
+      `/appControl/applicationSettingsController/saveCriteria`,
+      data
+    );
   }
 }

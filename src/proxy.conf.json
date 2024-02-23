@@ -1,18 +1,18 @@
 {
   "/login/loginController": {
-    "target": "http://172.26.1.25:8889",
+    "target": "http://172.26.1.30:7081",
     "secure": false
   },
   "/remittance": {
-    "target": "http://172.26.1.25:8889",
+    "target": "http://172.26.1.30:7081",
     "secure": false
   },
   "/applicationSettings": {
-    "target": "http://172.26.1.25:8889",
+    "target": "http://172.26.1.30:7081",
     "secure": false
   },
   "/appControl": {
-    "target": "http://172.26.1.25:9096",
+    "target": "http://172.26.1.30:7081",
     "secure": false
   }
 }

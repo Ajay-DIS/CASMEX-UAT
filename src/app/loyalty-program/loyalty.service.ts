@@ -23,7 +23,9 @@ export class LoyaltyService {
 
   // COMMON SERVICES
   getAppModuleList() {
-    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getCriteriaMasterData(
@@ -33,13 +35,13 @@ export class LoyaltyService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
+      `/appControl/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName)),
       }
     );
   }
@@ -52,20 +54,20 @@ export class LoyaltyService {
     displayName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+    return this.http.get(`/appControl/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("form", formName)
-        .set("applications", appName)
+        .set("applications", String(appName))
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", moduleName),
+        .set("moduleName", String(moduleName)),
     });
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/formRulesController/saveFormRuleCriteria`,
+      `appControl/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
@@ -77,13 +79,13 @@ export class LoyaltyService {
     formName: any
   ): Observable<any> {
     return this.http.get(
-      `remittance/formRulesController/getExistingFormRuleList
+      `appControl/formRulesController/getExistingFormRuleList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -91,10 +93,10 @@ export class LoyaltyService {
   // COMMON SERVICES END
 
   getProgramTypeData() {
-    return this.http.get(`/remittance/loyaltyProgramController/getProgramType`);
+    return this.http.get(`/appControl/loyaltyProgramController/getProgramType`);
   }
   getPromoCodeData(promoLength: any) {
-    return this.http.get(`/remittance/loyaltyProgramController/getPromocode`, {
+    return this.http.get(`/appControl/loyaltyProgramController/getPromocode`, {
       headers: new HttpHeaders().set("length", promoLength),
     });
   }
@@ -106,12 +108,12 @@ export class LoyaltyService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/loyaltyProgramController/getLoyaltyProgramList`,
+      `/appControl/loyaltyProgramController/getLoyaltyProgramList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -126,7 +128,7 @@ export class LoyaltyService {
     orderBy: any
   ) {
     return this.http.get(
-      `/remittance/loyaltyProgramController/getCustomerLoyaltyRedeemDetailsList`,
+      `/appControl/loyaltyProgramController/getCustomerLoyaltyRedeemDetailsList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
@@ -141,7 +143,7 @@ export class LoyaltyService {
 
   updateLoyaltyStatus(data: any) {
     return this.http.post(
-      `/remittance/loyaltyProgramController/updateLoyaltyProgramStatus`,
+      `/appControl/loyaltyProgramController/updateLoyaltyProgramStatus`,
       data
     );
   }
@@ -155,14 +157,14 @@ export class LoyaltyService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/loyaltyProgramController/getLoyaltyProgramEdit`,
+      `/appControl/loyaltyProgramController/getLoyaltyProgramEdit`,
       {
         headers: new HttpHeaders()
           .set("programCode", programCode)
           .set("operation", operation)
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -175,12 +177,12 @@ export class LoyaltyService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/loyaltyProgramController/addLoyaltyProgram`,
+      `/appControl/loyaltyProgramController/addLoyaltyProgram`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -188,7 +190,7 @@ export class LoyaltyService {
 
   postLoyaltyProgramCriteriaSearch(data: any) {
     return this.http.post(
-      `/remittance/loyaltyProgramController/applyCriteriaSearch`,
+      `/appControl/loyaltyProgramController/applyCriteriaSearch`,
       data
     );
   }
@@ -202,14 +204,14 @@ export class LoyaltyService {
     formName: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/loyaltyProgramController/saveLoyaltyProgram`,
+      `/appControl/loyaltyProgramController/saveLoyaltyProgram`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("operation", operation)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -225,14 +227,14 @@ export class LoyaltyService {
     reset: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/loyaltyProgramController/updateLoyaltyProgram`,
+      `/appControl/loyaltyProgramController/updateLoyaltyProgram`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("operation", operation)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName)
           .set("reset", reset),
       }

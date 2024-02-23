@@ -330,6 +330,42 @@ export class AddNewFormRuleComponent implements OnInit {
       );
       this.ruleID = params.id;
     }
+
+    // !
+
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let currAppMod = JSON.parse(sessionStorage.getItem("form"));
+
+    let defApp = null;
+    let defMod = null;
+
+    if (currAppMod) {
+      console.log(currAppMod);
+      defApp = this.searchApplicationOptions.filter(
+        (opt) => opt.code == currAppMod.applicationName.code
+      )[0];
+      defMod = this.searchModuleOptions.filter(
+        (opt) => opt.code == currAppMod.moduleName.code
+      )[0];
+    } else {
+      if (defAppMod) {
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
+      }
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+    }
+
     this.formRuleService.getFormRulesAppModuleList().subscribe(
       (res) => {
         if (
@@ -345,13 +381,6 @@ export class AddNewFormRuleComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-
             this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
               .filter((form) => {
                 return form.criteriaForms.includes("_Form Rules");
@@ -360,41 +389,14 @@ export class AddNewFormRuleComponent implements OnInit {
                 return { name: form.criteriaForms, code: form.criteriaForms };
               });
 
-            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
-            let currAppMod = JSON.parse(sessionStorage.getItem("form"));
-
-            let defApp = null;
-            let defMod = null;
             let defForm = null;
 
             if (currAppMod) {
-              console.log(currAppMod);
-              defApp = this.searchApplicationOptions.filter(
-                (opt) => opt.code == currAppMod.applicationName.code
-              )[0];
-              defMod = this.searchModuleOptions.filter(
-                (opt) => opt.code == currAppMod.moduleName.code
-              )[0];
               defForm = this.searchFormOptions.filter(
                 (opt) => opt.code == currAppMod.formName.code
               )[0];
-            } else {
-              if (defAppMod) {
-                defApp = this.searchApplicationOptions.filter(
-                  (opt) => opt.code == defAppMod.applicationName.code
-                )[0];
-                defMod = this.searchModuleOptions.filter(
-                  (opt) => opt.code == defAppMod.moduleName.code
-                )[0];
-              }
             }
 
-            if (defApp) {
-              this.appCtrl.patchValue(defApp);
-            }
-            if (defMod) {
-              this.moduleCtrl.patchValue(defMod);
-            }
             if (defForm) {
               this.formCtrl.patchValue(defForm);
             }
@@ -493,7 +495,8 @@ export class AddNewFormRuleComponent implements OnInit {
     this.appModuleDataPresent = true;
     this.showContent = false;
     this.getCriteriaMasterData();
-    this.getFormFieldsMasterData();
+    // this.getFormFieldsMasterData();
+    this.getCustomerMasterDataFromAppControlAndRemittance();
     this.getAllTemplates();
   }
 
@@ -844,212 +847,6 @@ export class AddNewFormRuleComponent implements OnInit {
               } else {
               }
 
-              // % old-
-
-              // if (
-              //   !(res["criteriaMap"].indexOf("&&&&") >= 0) &&
-              //   !(res["criteriaMap"].indexOf("LCY Amount") >= 0)
-              // ) {
-              //   simpleData = true;
-              // } else {
-              //   simpleData = false;
-              //   res["data"]["dataOperation"].forEach((data) => {
-              //     Object.values(data).forEach((subData) => {
-              //       (subData as any[]).forEach((d) => {
-              //         d["data"]["key"] =
-              //           d["data"]["criteriaMapSplit"].split("&&&&")[1];
-              //       });
-              //     });
-              //   });
-              // }
-
-              // this.criteriaText
-              //   .slice()
-              //   .reverse()
-              //   .forEach((crt) => {
-              //     console.log("crt", crt);
-              //     if (!crt) {
-              //       return;
-              //     }
-              //     let formatCrt;
-              //     let opr;
-              //     if (crt.includes("!=")) {
-              //       formatCrt = crt.replace(/[!=]/g, "");
-              //       opr = "!=";
-              //     } else if (crt.includes(">=")) {
-              //       formatCrt = crt.replace(/[>=]/g, "");
-              //       opr = ">=";
-              //     } else if (crt.includes("<=")) {
-              //       formatCrt = crt.replace(/[<=]/g, "");
-              //       opr = "<=";
-              //     } else if (crt.includes("<")) {
-              //       formatCrt = crt.replace(/[<]/g, "");
-              //       opr = "<";
-              //     } else if (crt.includes(">")) {
-              //       formatCrt = crt.replace(/[>]/g, "");
-              //       opr = ">";
-              //     } else {
-              //       formatCrt = crt.replace(/[=]/g, "");
-              //       opr = "=";
-              //     }
-
-              //     if (formatCrt.split("  ")[0] == "LCY Amount") {
-              //       isLcyOprFieldPresent = true;
-              //       lcyOprFields.push(
-              //         formatCrt.split("  ")[0] +
-              //           " " +
-              //           opr +
-              //           " " +
-              //           formatCrt.split("  ")[1]
-              //       );
-              //     }
-              //     if (
-              //       this.criteriaCodeText.includes("LCY Amount = Slab") &&
-              //       !lcySlabFieldInserted
-              //     ) {
-              //       this.applyCriteriaDataTableColumns.splice(-7, 0, {
-              //         field: "amountFrom",
-              //         header: "Amount From",
-              //         type: "lcySlabFrom",
-              //       });
-              //       this.applyCriteriaDataTableColumns.splice(-7, 0, {
-              //         field: "amountTo",
-              //         header: "Amount To",
-              //         type: "lcySlabTo",
-              //       });
-              //       lcySlabFieldInserted = true;
-              //     }
-
-              //     if (formatCrt.split("  ")[0] == "LCY Amount") {
-              //       if (!lcyOprFieldInserted) {
-              //         this.applyCriteriaDataTableColumns.splice(-7, 0, {
-              //           field: "lcyAmount",
-              //           header: formatCrt.split("  ")[0],
-              //           value: formatCrt.split("  ")[1],
-              //           type: "lcyOpr",
-              //         });
-              //         lcyOprFieldInserted = true;
-              //       } else {
-              //         return;
-              //       }
-              //     }
-              //   });
-
-              // this.applyCriteriaDataTableColumns.forEach((col) => {
-              //   res["data"]["dataOperation"].forEach((data) => {
-              //     Object.values(data).forEach((subData) => {
-              //       (subData as any[]).forEach((d) => {
-              //         if (d["data"][col["field"]] == "Y") {
-              //           d["data"][col["field"]] = true;
-              //         }
-              //         if (d["data"][col["field"]] == "N") {
-              //           d["data"][col["field"]] = false;
-              //         }
-              //         if (d["data"][col["field"]] == "null") {
-              //           d["data"][col["field"]] = "";
-              //         }
-              //         if (col["value"]) {
-              //           d["data"][col["field"]] = col["value"];
-              //         }
-              //       });
-              //     });
-              //   });
-              // });
-
-              // let completeData = [];
-              // if (simpleData) {
-              //   Object.keys(res["labelData"]["label"]).forEach((k, i) => {
-              //     let formattedRowData = {
-              //       data: {
-              //         fieldName: res["labelData"]["label"][k],
-              //         key: i,
-              //       },
-              //       expanded: true,
-              //       leaf: false,
-              //       children: [],
-              //     };
-
-              //     let formattedChilds =
-              //       res["data"]["dataOperation"][0][
-              //         res["labelData"]["label"][k]
-              //       ];
-
-              //     formattedChilds.forEach((child) => {
-              //       child["leaf"] = true;
-              //       if (child["data"]["ruleSelected"] == "Y") {
-              //         child["partialSelected"] = false;
-              //         this.selectedNodes.push(child);
-              //       }
-              //     });
-
-              //     formattedRowData["children"] = formattedChilds;
-              //     completeData.push(formattedRowData);
-              //   });
-              // } else {
-              //   if (reqData.lcySlabArr.length > 0) {
-              //     reqData.lcySlabArr.forEach((slab, i) => {
-              //       Object.keys(res["labelData"]["label"]).forEach((k) => {
-              //         let formattedRowData = {
-              //           data: {
-              //             fieldName: res["labelData"]["label"][k],
-              //             key: i,
-              //           },
-              //           expanded: true,
-              //           leaf: false,
-              //           children: [],
-              //         };
-              //         let formattedChilds = res["data"]["dataOperation"][0][
-              //           res["labelData"]["label"][k]
-              //         ].filter(
-              //           (child) =>
-              //             child["data"]["key"] ==
-              //             `from:${slab["from"]}::to:${slab["to"]}`
-              //         );
-              //         formattedChilds.forEach((child) => {
-              //           child["data"]["amountFrom"] = slab["from"];
-              //           child["data"]["amountTo"] = slab["to"];
-              //           child["leaf"] = true;
-              //           if (child["data"]["ruleSelected"] == "Y") {
-              //             child["partialSelected"] = false;
-              //             this.selectedNodes.push(child);
-              //           }
-              //         });
-
-              //         formattedRowData["children"] = formattedChilds;
-              //         completeData.push(formattedRowData);
-              //       });
-              //     });
-              //   } else if (lcyOprFields.length > 0) {
-              //     lcyOprFields.forEach((oprField, i) => {
-              //       Object.keys(res["labelData"]["label"]).forEach((k) => {
-              //         let formattedRowData = {
-              //           data: {
-              //             fieldName: res["labelData"]["label"][k],
-              //             key: i,
-              //           },
-              //           expanded: true,
-              //           leaf: false,
-              //           children: [],
-              //         };
-              //         let formattedChilds = res["data"]["dataOperation"][0][
-              //           res["labelData"]["label"][k]
-              //         ].filter((child) => child["data"]["key"] == oprField);
-              //         formattedChilds.forEach((child) => {
-              //           child["data"]["lcyAmount"] = oprField;
-              //           child["leaf"] = true;
-              //           if (child["data"]["ruleSelected"] == "Y") {
-              //             child["partialSelected"] = false;
-              //             this.selectedNodes.push(child);
-              //           }
-              //         });
-
-              //         formattedRowData["children"] = formattedChilds;
-              //         completeData.push(formattedRowData);
-              //       });
-              //     });
-              //   }
-              // }
-
               console.log("::", completeData);
               console.log("::", this.applyCriteriaDataTableColumns);
 
@@ -1117,9 +914,9 @@ export class AddNewFormRuleComponent implements OnInit {
     formData.append("userId", this.userId);
     formData.append("formRuleCode", this.formRuleCode);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
-    formData.append("form", this.formCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("form", this.formCtrl.value.code);
     this.updateFormStatus(formData);
   }
 
@@ -1177,153 +974,207 @@ export class AddNewFormRuleComponent implements OnInit {
     }
   }
 
-  getFormFieldsMasterData() {
+  getCustomerMasterDataFromAppControlAndRemittance() {
+    this.formFieldsMaster = {};
     this.formRuleService
-      .formFieldsMasterData(this.formCtrl.value.name)
+      .getCustomerMasterDataFromAppControlAndRemittance()
       .subscribe(
-        (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-            this.formFieldsMaster = [];
-          } else {
-            console.log(":::mastee", res);
-            this.formFieldsMaster = res["data"];
+        (responses: any[]) => {
+          // Handle successful responses
+          console.log("Response from API 1:", responses[0]);
+          console.log("Response from API 2:", responses[1]);
+          this.formFieldsMaster = {
+            ...responses[0]["data"],
+            ...responses[1]["data"],
+          };
+          // salaryDateMaster
+          for (let i = 1; i <= 30; i++) {
+            this.formFieldsMaster["salaryDateEmpDetails"].push({
+              code: `${i}`,
+              codeName: `${i}`,
+            });
           }
+          console.log(this.formFieldsMaster);
         },
-        (err) => {
-          console.log("Error in getFormFieldsMasterData", err);
-          this.formFieldsMaster = [];
+        (error) => {
+          console.error("Error:", error);
         }
       );
   }
+
+  // getFormFieldsMasterData() {
+  //   this.formRuleService
+  //     .formFieldsMasterData(this.formCtrl.value.code)
+  //     .subscribe(
+  //       (res) => {
+  //         if (
+  //           res["status"] &&
+  //           typeof res["status"] == "string" &&
+  //           (res["status"] == "400" || res["status"] == "500")
+  //         ) {
+  //           if (res["error"]) {
+  //             this.coreService.showWarningToast(res["error"]);
+  //           } else {
+  //             this.coreService.showWarningToast("Some error in fetching Data");
+  //           }
+  //           this.formFieldsMaster = [];
+  //         } else {
+  //           console.log(":::mastee", res);
+  //           this.formFieldsMaster = res["data"];
+  //         }
+  //       },
+  //       (err) => {
+  //         console.log("Error in getFormFieldsMasterData", err);
+  //         this.formFieldsMaster = [];
+  //       }
+  //     );
+  // }
 
   getCriteriaMasterData() {
     this.coreService.displayLoadingScreen();
     forkJoin({
       criteriaMasterData: this.formRuleService.getCriteriaMasterData(
         this.userId,
-        this.formCtrl.value.name,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.formCtrl.value.code,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addFormRuleCriteriaData: this.formRuleService.getAddFormRuleCriteriaData(
         this.userId,
-        this.formCtrl.value.name,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.formCtrl.value.code,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
     })
       .pipe(
         take(1),
         map((response) => {
-          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
-          delete criteriaMasterJson["fieldDisplay"];
-          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
-          const criteriaMasterData = criteriaMasterJson;
-          this.criteriaDataDetailsJson = response.addFormRuleCriteriaData;
-          this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
-            (data) => {
-              if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType["Slab"] = data["fieldId"];
+          if (
+            response.addFormRuleCriteriaData["data"] &&
+            Object.keys(response.addFormRuleCriteriaData["data"]).length == 0
+          ) {
+            return {
+              msg: "No Criteria Found for Selected Application & Module.",
+            };
+          } else if (
+            !response.addFormRuleCriteriaData["data"] &&
+            response.addFormRuleCriteriaData["msg"]
+          ) {
+            return {
+              msg: response.addFormRuleCriteriaData["msg"],
+            };
+          } else {
+            let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+            delete criteriaMasterJson["fieldDisplay"];
+            this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+            const criteriaMasterData = criteriaMasterJson;
+            this.criteriaDataDetailsJson = response.addFormRuleCriteriaData;
+            this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
+              (data) => {
+                if (data["criteriaType"] == "Slab") {
+                  this.cmCriteriaSlabType["Slab"] = data["fieldId"];
+                }
+                if (data["criteriaType"] == "date") {
+                  this.cmCriteriaSlabType["date"] = data["fieldId"];
+                }
               }
-              if (data["criteriaType"] == "date") {
-                this.cmCriteriaSlabType["date"] = data["fieldId"];
-              }
-            }
-          );
-
-          if (this.mode == "add") {
-            this.formRuleCode = this.criteriaDataDetailsJson.data.formRuleCode;
-            this.ruleID = this.formRuleCode;
-            this.ruleDescription =
-              this.criteriaDataDetailsJson.data.formRuleDesc;
-          }
-
-          this.cmCriteriaDataDetails = [
-            ...this.criteriaDataDetailsJson.data.listCriteria
-              .cmCriteriaDataDetails,
-          ];
-
-          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-            .replace(/["|\[|\]]/g, "")
-            .split(", ");
-
-          this.cmCriteriaDependency =
-            this.criteriaDataDetailsJson.data.dependance;
-
-          let criteriaDependencyTreeData =
-            this.criteriaDataService.setDependencyTree(
-              this.criteriaDataDetailsJson,
-              this.cmCriteriaDataDetails,
-              criteriaMasterData,
-              this.cmCriteriaMandatory,
-              this.cmCriteriaDependency,
-              this.cmCriteriaSlabType
             );
 
-          this.criteriaMapDdlOptions =
-            criteriaDependencyTreeData["criteriaMapDdlOptions"];
-          this.independantCriteriaArr =
-            criteriaDependencyTreeData["independantCriteriaArr"];
-          return criteriaMasterData;
+            if (this.mode == "add") {
+              this.formRuleCode =
+                this.criteriaDataDetailsJson.data.formRuleCode;
+              this.ruleID = this.formRuleCode;
+              this.ruleDescription =
+                this.criteriaDataDetailsJson.data.formRuleDesc;
+            }
+
+            this.cmCriteriaDataDetails = [
+              ...this.criteriaDataDetailsJson.data.listCriteria
+                .cmCriteriaDataDetails,
+            ];
+
+            this.cmCriteriaMandatory =
+              this.criteriaDataDetailsJson.data.mandatory
+                .replace(/["|\[|\]]/g, "")
+                .split(", ");
+
+            this.cmCriteriaDependency =
+              this.criteriaDataDetailsJson.data.dependance;
+
+            let criteriaDependencyTreeData =
+              this.criteriaDataService.setDependencyTree(
+                this.criteriaDataDetailsJson,
+                this.cmCriteriaDataDetails,
+                criteriaMasterData,
+                this.cmCriteriaMandatory,
+                this.cmCriteriaDependency,
+                this.cmCriteriaSlabType
+              );
+
+            this.criteriaMapDdlOptions =
+              criteriaDependencyTreeData["criteriaMapDdlOptions"];
+            this.independantCriteriaArr =
+              criteriaDependencyTreeData["independantCriteriaArr"];
+            return criteriaMasterData;
+          }
         })
       )
       .subscribe(
         (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            this.coreService.removeLoadingScreen();
-            this.showContent = false;
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-          } else {
-            this.criteriaMasterData = res;
-            if (this.mode == "edit") {
-              if (
-                !(
-                  this.formRuleService.applicationName ||
-                  this.formRuleService.moduleName ||
-                  this.formRuleService.formName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/form-rules`]);
-              } else {
-                this.getFormRulesForEditApi(this.ruleID, "edit");
-              }
-            } else if (this.mode == "clone") {
-              if (
-                !(
-                  this.formRuleService.applicationName ||
-                  this.formRuleService.moduleName ||
-                  this.formRuleService.formName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/form-rules`]);
-              } else {
-                this.getFormRulesForEditApi(this.ruleID, "clone");
-              }
-            } else {
-              this.showContent = true;
+          if (!res["msg"]) {
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
               this.coreService.removeLoadingScreen();
+              this.showContent = false;
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "Some error in fetching data"
+                );
+              }
+            } else {
+              this.criteriaMasterData = res;
+              if (this.mode == "edit") {
+                if (
+                  !(
+                    this.formRuleService.applicationName ||
+                    this.formRuleService.moduleName ||
+                    this.formRuleService.formName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/form-rules`]);
+                } else {
+                  this.getFormRulesForEditApi(this.ruleID, "edit");
+                }
+              } else if (this.mode == "clone") {
+                if (
+                  !(
+                    this.formRuleService.applicationName ||
+                    this.formRuleService.moduleName ||
+                    this.formRuleService.formName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/form-rules`]);
+                } else {
+                  this.getFormRulesForEditApi(this.ruleID, "clone");
+                }
+              } else {
+                this.showContent = true;
+                this.coreService.removeLoadingScreen();
+              }
             }
+          } else if (res["msg"]) {
+            this.coreService.showWarningToast(res["msg"]);
+            this.coreService.removeLoadingScreen();
+            return;
           }
         },
         (err) => {
@@ -1345,12 +1196,12 @@ export class AddNewFormRuleComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .getCorrespondentValuesData(
-        this.formCtrl.value.name,
-        this.appCtrl.value.name,
+        this.formCtrl.value.code,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldId,
         displayName,
-        this.moduleCtrl.value.name
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -1402,9 +1253,9 @@ export class AddNewFormRuleComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("formRuleCode", this.ruleID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.name);
-    postDataCriteria.append("form", this.formCtrl.value.name);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
+    postDataCriteria.append("form", this.formCtrl.value.code);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isFromRulesLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1658,181 +1509,6 @@ export class AddNewFormRuleComponent implements OnInit {
                   }
                 }
 
-                // % old-
-                // crtfields
-                //   .slice()
-                //   .reverse()
-                //   .forEach((crt) => {
-                //     let formatCrt;
-                //     let opr;
-                //     if (crt.includes("!=")) {
-                //       formatCrt = crt.replace(/[!=]/g, "");
-                //       opr = "!=";
-                //     } else if (crt.includes(">=")) {
-                //       formatCrt = crt.replace(/[>=]/g, "");
-                //       opr = ">=";
-                //     } else if (crt.includes("<=")) {
-                //       formatCrt = crt.replace(/[<=]/g, "");
-                //       opr = "<=";
-                //     } else if (crt.includes("<")) {
-                //       formatCrt = crt.replace(/[<]/g, "");
-                //       opr = "<";
-                //     } else if (crt.includes(">")) {
-                //       formatCrt = crt.replace(/[>]/g, "");
-                //       opr = ">";
-                //     } else {
-                //       formatCrt = crt.replace(/[=]/g, "");
-                //       opr = "=";
-                //     }
-
-                //     if (formatCrt.split("  ")[0] == "LCY Amount") {
-                //       isLcyOprFieldPresent = true;
-                //       lcyOprFields.push(
-                //         formatCrt.split("  ")[0] +
-                //           " " +
-                //           opr +
-                //           " " +
-                //           formatCrt.split("  ")[1]
-                //       );
-                //       if (!lcyOprFieldInserted) {
-                //         this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                //           field: "lcyAmount",
-                //           header: formatCrt.split("  ")[0],
-                //           value: formatCrt.split("  ")[1],
-                //           type: "lcyOpr",
-                //         });
-                //         lcyOprFieldInserted = true;
-                //       }
-                //     }
-                //   });
-
-                // let completeData = [];
-                // Object.keys(res["labelData"]["label"]).forEach((k) => {
-                //   let formattedRowData = {
-                //     data: {
-                //       fieldName: res["labelData"]["label"][k],
-                //     },
-                //     expanded: true,
-                //     leaf: false,
-                //     children: [],
-                //   };
-
-                //   res["data"][k].forEach((detail) => {
-                //     let childRow = { data: {} };
-                //     this.applyCriteriaDataTableColumns.forEach((col) => {
-                //       if (detail[col["field"]] == "Y") {
-                //         detail[col["field"]] = true;
-                //       }
-                //       if (detail[col["field"]] == "N") {
-                //         detail[col["field"]] = false;
-                //       }
-                //       childRow["data"][col["field"]] = detail[col["field"]];
-                //     });
-                //     Object.keys(childRow.data).forEach((field) => {
-                //       if (childRow.data[field] === undefined) {
-                //         this.applyCriteriaDataTableColumns.forEach((col) => {
-                //           if (field == col["field"]) {
-                //             childRow.data[field] = col["value"];
-                //           }
-                //         });
-                //       }
-                //     });
-                //     childRow["data"]["formLableFieldSequence"] =
-                //       detail["formLableFieldSequence"];
-                //     childRow["data"]["formSection"] = detail["formSection"];
-                //     childRow["data"]["fieldType"] = detail["fieldType"];
-                //     childRow["data"]["fieldDisplayName"] = detail["fieldDisplayName"];
-                //     childRow["data"]["apiKey"] = detail["apiKey"];
-                //     childRow["data"]["obscure"] = detail["obscure"];
-                //     childRow["data"]["multiSelect"] = detail["multiSelect"];
-                //     childRow["data"]["minDate"] = detail["minDate"];
-                //     childRow["data"]["maxDate"] = detail["maxDate"];
-                //     childRow["data"]["initialDate"] = detail["initialDate"];
-
-                //     childRow["leaf"] = true;
-
-                //     formattedRowData["children"].push(childRow);
-                //   });
-                //   completeData.push(formattedRowData);
-                // });
-
-                // if (
-                //   !reqData.lcySlabArr.length &&
-                //   reqData.critMap.findIndex((element) =>
-                //     element.includes("LCY Amount")
-                //   ) < 0
-                // ) {
-                //   this.isLcySlab = false;
-                //   this.isLcyAmount = false;
-                //   this.applyCriteriaFormattedData = [...completeData];
-                //   this.applyCriteriaFormattedData.forEach((row, i) => {
-                //     row["data"]["key"] = i;
-                //     row["children"].forEach((child) => {
-                //       child["data"]["criteriaMapSplit"] = null;
-                //     });
-                //   });
-                // } else {
-                //   if (
-                //     reqData.lcySlabArr.length &&
-                //     reqData.critMap.findIndex((element) =>
-                //       element.includes("LCY Amount")
-                //     ) < 0
-                //   ) {
-                //     this.isLcySlab = true;
-                //     this.isLcyAmount = false;
-                //     this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                //       field: "amountFrom",
-                //       header: "Amount From",
-                //       type: "lcySlabFrom",
-                //     });
-                //     this.applyCriteriaDataTableColumns.splice(-7, 0, {
-                //       field: "amountTo",
-                //       header: "Amount To",
-                //       type: "lcySlabTo",
-                //     });
-
-                //     this.applyCriteriaFormattedData = [];
-
-                //     reqData.lcySlabArr.forEach((slab, i) => {
-                //       let copy = JSON.parse(JSON.stringify(completeData));
-                //       copy.forEach((row) => {
-                //         row["data"]["key"] = i;
-                //         row["children"].forEach((child) => {
-                //           child["data"]["amountFrom"] = slab["from"];
-                //           child["data"]["amountTo"] = slab["to"];
-                //           child["data"][
-                //             "criteriaMapSplit"
-                //           ] = `from:${slab["from"]}::to:${slab["to"]}`;
-                //         });
-                //       });
-
-                //       this.applyCriteriaFormattedData.push(...copy);
-                //     });
-                //   } else if (
-                //     !reqData.lcySlabArr.length &&
-                //     reqData.critMap.findIndex((element) =>
-                //       element.includes("LCY Amount")
-                //     ) >= 0
-                //   ) {
-                //     this.applyCriteriaFormattedData = [];
-                //     this.isLcySlab = false;
-                //     this.isLcyAmount = true;
-
-                //     lcyOprFields.forEach((opr, i) => {
-                //       let copy = JSON.parse(JSON.stringify(completeData));
-                //       copy.forEach((row) => {
-                //         row["data"]["key"] = i;
-                //         row["children"].forEach((child) => {
-                //           child["data"]["lcyAmount"] = opr;
-                //           child["data"]["criteriaMapSplit"] = opr;
-                //         });
-                //       });
-
-                //       this.applyCriteriaFormattedData.push(...copy);
-                //     });
-                //   }
-                // }
-
                 console.log("::", this.applyCriteriaFormattedData);
                 console.log("::", this.applyCriteriaDataTableColumns);
 
@@ -1882,9 +1558,9 @@ export class AddNewFormRuleComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.name);
-    templateFormData.append("form", this.formCtrl.value.name);
-    templateFormData.append("moduleName", this.moduleCtrl.value.name);
+    templateFormData.append("applications", this.appCtrl.value.code);
+    templateFormData.append("form", this.formCtrl.value.code);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.formRuleService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1934,9 +1610,9 @@ export class AddNewFormRuleComponent implements OnInit {
     this.formRuleService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
-        this.formCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
+        this.formCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -2116,16 +1792,16 @@ export class AddNewFormRuleComponent implements OnInit {
           service = this.formRuleService.updateFormRule(
             this.userId,
             payloadData,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
-            this.formCtrl.value.name
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formCtrl.value.code
           );
         } else {
           service = this.formRuleService.addNewFormRule(
             payloadData,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
-            this.formCtrl.value.name
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
+            this.formCtrl.value.code
           );
         }
         // Object.keys(payloadData["labelData"]["label"]).forEach((k) => {

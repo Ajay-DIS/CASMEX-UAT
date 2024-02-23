@@ -243,12 +243,8 @@ export class DocumentDetailsComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -275,34 +271,9 @@ export class DocumentDetailsComponent implements OnInit {
     }
     //
 
-    this.documentService.getAppModuleList().subscribe(
-      (res) => {
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          // this.coreService.removeLoadingScreen();
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
-
     this.statusData = this.documentService.getData();
     console.log("status", this.statusData);
-    if (this.statusData["status"] == "Inactive") {
+    if (this.statusData && this.statusData["status"] == "Inactive") {
       this.deactivated = true;
     }
   }
@@ -310,9 +281,9 @@ export class DocumentDetailsComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("docSettingsCode", this.documentCode);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.name);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isDocSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -642,8 +613,8 @@ export class DocumentDetailsComponent implements OnInit {
     formData.append("userId", this.userId);
     formData.append("documentSettingsCode", this.documentCode);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateDocumentRouteStatus(formData);
   }
@@ -1132,117 +1103,137 @@ export class DocumentDetailsComponent implements OnInit {
       criteriaMasterData: this.documentService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData: this.documentService.getAddDocumentCriteriaData(
         this.userId,
         this.formName,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
     })
       .pipe(
         take(1),
         map((response) => {
-          this.formatMasterData(response.criteriaMasterData);
-          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
-          delete criteriaMasterJson["fieldDisplay"];
-          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
-          const criteriaMasterData = criteriaMasterJson;
-          this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
-          this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
-            (data) => {
-              if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+          if (
+            response.addBankRouteCriteriaData["data"] &&
+            Object.keys(response.addBankRouteCriteriaData["data"]).length == 0
+          ) {
+            return {
+              msg: "No Criteria Found for Selected Application & Module.",
+            };
+          } else {
+            this.formatMasterData(response.criteriaMasterData);
+            let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+            delete criteriaMasterJson["fieldDisplay"];
+            this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+            const criteriaMasterData = criteriaMasterJson;
+            this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
+            this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
+              (data) => {
+                if (data["criteriaType"] == "Slab") {
+                  this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+                }
+                if (data["criteriaType"] == "date") {
+                  this.cmCriteriaSlabType["date"] = data["fieldName"];
+                }
               }
-              if (data["criteriaType"] == "date") {
-                this.cmCriteriaSlabType["date"] = data["fieldName"];
-              }
-            }
-          );
-
-          if (this.mode == "add") {
-            this.documentCode = this.criteriaDataDetailsJson.data.documentCode;
-            this.documentID = this.documentCode;
-            this.documentDesc = this.criteriaDataDetailsJson.data.documentDesc;
-          }
-
-          this.cmCriteriaDataDetails = [
-            ...this.criteriaDataDetailsJson.data.listCriteria
-              .cmCriteriaDataDetails,
-          ];
-
-          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-            .replace(/["|\[|\]]/g, "")
-            .split(", ");
-
-          this.cmCriteriaDependency =
-            this.criteriaDataDetailsJson.data.dependance;
-
-          let criteriaDependencyTreeData =
-            this.criteriaDataService.setDependencyTree(
-              this.criteriaDataDetailsJson,
-              this.cmCriteriaDataDetails,
-              criteriaMasterData,
-              this.cmCriteriaMandatory,
-              this.cmCriteriaDependency,
-              this.cmCriteriaSlabType
             );
 
-          this.criteriaMapDdlOptions =
-            criteriaDependencyTreeData["criteriaMapDdlOptions"];
-          this.independantCriteriaArr =
-            criteriaDependencyTreeData["independantCriteriaArr"];
-          return criteriaMasterData;
+            if (this.mode == "add") {
+              this.documentCode =
+                this.criteriaDataDetailsJson.data.documentCode;
+              this.documentID = this.documentCode;
+              this.documentDesc =
+                this.criteriaDataDetailsJson.data.documentDesc;
+            }
+
+            this.cmCriteriaDataDetails = [
+              ...this.criteriaDataDetailsJson.data.listCriteria
+                .cmCriteriaDataDetails,
+            ];
+
+            this.cmCriteriaMandatory =
+              this.criteriaDataDetailsJson.data.mandatory
+                .replace(/["|\[|\]]/g, "")
+                .split(", ");
+
+            this.cmCriteriaDependency =
+              this.criteriaDataDetailsJson.data.dependance;
+
+            let criteriaDependencyTreeData =
+              this.criteriaDataService.setDependencyTree(
+                this.criteriaDataDetailsJson,
+                this.cmCriteriaDataDetails,
+                criteriaMasterData,
+                this.cmCriteriaMandatory,
+                this.cmCriteriaDependency,
+                this.cmCriteriaSlabType
+              );
+
+            this.criteriaMapDdlOptions =
+              criteriaDependencyTreeData["criteriaMapDdlOptions"];
+            this.independantCriteriaArr =
+              criteriaDependencyTreeData["independantCriteriaArr"];
+            return criteriaMasterData;
+          }
         })
       )
       .subscribe(
         (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            this.coreService.removeLoadingScreen();
-            this.showContent = false;
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-          } else {
-            this.criteriaMasterData = res;
-            if (this.mode == "edit") {
-              if (
-                !(
-                  this.documentService.applicationName ||
-                  this.documentService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/document-settings`]);
-              } else {
-                this.getDocSettingForEditApi(this.documentID, "edit");
-              }
-            } else if (this.mode == "clone") {
-              if (
-                !(
-                  this.documentService.applicationName ||
-                  this.documentService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/document-settings`]);
-              } else {
-                this.getDocSettingForEditApi(this.documentID, "clone");
-              }
-            } else {
-              this.showContent = true;
+          if (!res["msg"]) {
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
               this.coreService.removeLoadingScreen();
+              this.showContent = false;
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "Some error in fetching data"
+                );
+              }
+            } else {
+              this.criteriaMasterData = res;
+              if (this.mode == "edit") {
+                if (
+                  !(
+                    this.documentService.applicationName ||
+                    this.documentService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/document-settings`]);
+                } else {
+                  this.getDocSettingForEditApi(this.documentID, "edit");
+                }
+              } else if (this.mode == "clone") {
+                if (
+                  !(
+                    this.documentService.applicationName ||
+                    this.documentService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/document-settings`]);
+                } else {
+                  this.getDocSettingForEditApi(this.documentID, "clone");
+                }
+              } else {
+                this.showContent = true;
+                this.coreService.removeLoadingScreen();
+              }
             }
+          } else if (res["msg"]) {
+            this.coreService.showWarningToast(res["msg"]);
+            this.coreService.removeLoadingScreen();
+            return;
           }
         },
         (err) => {
@@ -1274,11 +1265,11 @@ export class DocumentDetailsComponent implements OnInit {
     this.documentService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.name,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.name
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -1327,8 +1318,8 @@ export class DocumentDetailsComponent implements OnInit {
     this.documentService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe(
@@ -1367,9 +1358,9 @@ export class DocumentDetailsComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.name);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.name);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.documentService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1515,8 +1506,8 @@ export class DocumentDetailsComponent implements OnInit {
             service = this.documentService.updateDocument(
               this.userId,
               this.applyCriteriaFormattedData,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
               this.formName,
               this.mode
             );
@@ -1524,8 +1515,8 @@ export class DocumentDetailsComponent implements OnInit {
             service = this.documentService.saveNewDocument(
               this.userId,
               this.applyCriteriaFormattedData,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
               this.formName,
               this.mode
             );
