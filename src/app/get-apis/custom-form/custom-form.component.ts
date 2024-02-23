@@ -98,12 +98,12 @@ export class CustomFormComponent implements OnInit {
 
   getMasterData() {
     return this.http
-      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+      .get(`appControl/formRulesController/getCriteriaMasterData`, {
         headers: new HttpHeaders()
           .set("userId", String(this.userData.userId))
           .set("form", "Loyalty Programs Manager")
-          .set("applications", this.appCtrl.value.name)
-          .set("moduleName", this.moduleCtrl.value.name),
+          .set("applications", this.appCtrl.value.code)
+          .set("moduleName", this.moduleCtrl.value.code),
       })
       .subscribe((res: any) => {
         console.log("masterdata", res);
@@ -169,12 +169,12 @@ export class CustomFormComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.http;
     this.http
-      .get(`remittance/loyaltyProgramController/getLoyaltySetting`, {
+      .get(`appControl/loyaltyProgramController/getLoyaltySetting`, {
         headers: new HttpHeaders()
           .set("criteriaMap", this.newcriteriaMapCode)
           .set("form", "Loyalty Programs Manager")
-          .set("applications", this.appCtrl.value.name)
-          .set("moduleName", this.moduleCtrl.value.name),
+          .set("applications", this.appCtrl.value.code)
+          .set("moduleName", this.moduleCtrl.value.code),
       })
       .subscribe(
         (res: any) => {

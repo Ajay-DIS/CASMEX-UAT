@@ -225,16 +225,15 @@ export class AddLoyaltyComponent implements OnInit {
     this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
 
     if (localStorage.getItem("applicationName")) {
-      let defApplication = this.searchApplicationOptions.filter(
-        (opt) => opt.code == localStorage.getItem("applicationName")
-      )[0];
+      let defApplication = JSON.parse(localStorage.getItem("applicationName"));
+      console.log(defApplication);
       if (defApplication) {
         this.appCtrl.patchValue(defApplication);
       }
     }
     if (localStorage.getItem("moduleName")) {
       let defModule = this.searchModuleOptions.filter(
-        (opt) => opt.code == "Loyalty Programs"
+        (opt) => opt.name == "Loyalty Programs"
       )[0];
       if (defModule) {
         this.moduleCtrl.patchValue(defModule);
@@ -245,6 +244,8 @@ export class AddLoyaltyComponent implements OnInit {
     if (this.appCtrl.value && this.moduleCtrl.value) {
       this.appModuleDataPresent = true;
       this.searchAppModule();
+    } else {
+      this.coreService.showWarningToast("No Access to Loyalty Module");
     }
     //
 
@@ -259,30 +260,6 @@ export class AddLoyaltyComponent implements OnInit {
       });
     }
 
-    // this.loyaltyService.getAppModuleList().subscribe(
-    //   (res) => {
-    //     if (
-    //       res["status"] &&
-    //       typeof res["status"] == "string" &&
-    //       (res["status"] == "400" || res["status"] == "500")
-    //     ) {
-    //       // this.coreService.removeLoadingScreen();
-    //       if (res["error"]) {
-    //         this.coreService.showWarningToast(res["error"]);
-    //       } else {
-    //         this.coreService.showWarningToast("Some error in fetching data");
-    //       }
-    //     } else {
-    //       if (!res["msg"]) {
-    //       } else {
-    //       }
-    //     }
-    //   },
-    //   (err) => {
-    //     this.coreService.removeLoadingScreen();
-    //     this.coreService.showWarningToast("Some error in fetching data");
-    //   }
-    // );
     this.loyaltyService.getProgramTypeData().subscribe(
       (res) => {
         if (
@@ -315,7 +292,7 @@ export class AddLoyaltyComponent implements OnInit {
 
     this.statusData = this.loyaltyService.getData();
     console.log("status", this.statusData);
-    if (this.statusData["status"] == "Inactive") {
+    if (this.statusData && this.statusData["status"] == "Inactive") {
       this.deactivated = true;
     }
   }
@@ -497,7 +474,7 @@ export class AddLoyaltyComponent implements OnInit {
   downloadDoc(dbFileName: any) {
     this.coreService.displayLoadingScreen();
     let services = this.http.get(
-      `/remittance/kycUpload/fileDownload/${dbFileName}`,
+      `/appControl/kycUpload/fileDownload/${dbFileName}`,
       {
         headers: new HttpHeaders().set("userId", this.userId),
         observe: "response",
@@ -569,8 +546,8 @@ export class AddLoyaltyComponent implements OnInit {
         programCode,
         operation,
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe(
@@ -945,8 +922,8 @@ export class AddLoyaltyComponent implements OnInit {
     formData.append("userId", this.userId);
     formData.append("programCode", this.programCode);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateLoyaltyStatus(formData);
   }
@@ -997,14 +974,14 @@ export class AddLoyaltyComponent implements OnInit {
       criteriaMasterData: this.loyaltyService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData:
         this.loyaltyService.getAddLoyaltyProgramCriteriaData(
           this.userId,
-          this.appCtrl.value.name,
-          this.moduleCtrl.value.name,
+          this.appCtrl.value.code,
+          this.moduleCtrl.value.code,
           this.formName
         ),
     })
@@ -1087,7 +1064,7 @@ export class AddLoyaltyComponent implements OnInit {
           } else {
             this.criteriaMasterData = res;
             if (this.mode == "edit") {
-              if (!(this.appCtrl.value.name || this.moduleCtrl.value.name)) {
+              if (!(this.appCtrl.value.code || this.moduleCtrl.value.code)) {
                 this.appModuleDataPresent = false;
                 this.showContent = false;
                 this.router.navigate([`navbar/loyalty-programs`]);
@@ -1095,7 +1072,7 @@ export class AddLoyaltyComponent implements OnInit {
                 this.getLoyaltyProgramForEditApi(this.loyaltyID, "edit");
               }
             } else if (this.mode == "clone") {
-              if (!(this.appCtrl.value.name || this.moduleCtrl.value.name)) {
+              if (!(this.appCtrl.value.code || this.moduleCtrl.value.code)) {
                 this.appModuleDataPresent = false;
                 this.showContent = false;
                 this.router.navigate([`navbar/loyalty-programs`]);
@@ -1131,11 +1108,11 @@ export class AddLoyaltyComponent implements OnInit {
     this.loyaltyService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.name,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.name
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -1187,9 +1164,9 @@ export class AddLoyaltyComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("programCode", this.loyaltyID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.name);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isLoyaltyProgramLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1507,9 +1484,9 @@ export class AddLoyaltyComponent implements OnInit {
   }
 
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.name);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.name);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.loyaltyService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1558,8 +1535,8 @@ export class AddLoyaltyComponent implements OnInit {
     this.loyaltyService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe(
@@ -1638,7 +1615,7 @@ export class AddLoyaltyComponent implements OnInit {
         }
       }
       fileService = this.http.post(
-        `/remittance/loyaltyProgramController/${
+        `/appControl/loyaltyProgramController/${
           this.mode == "add" ? "savePromoImages" : "updatePromoImages"
         }`,
         formData,
@@ -1646,8 +1623,8 @@ export class AddLoyaltyComponent implements OnInit {
           headers: new HttpHeaders()
             .set("userId", this.userId)
             .set("operation", this.mode)
-            .set("applications", this.appCtrl.value.name)
-            .set("moduleName", this.moduleCtrl.value.name)
+            .set("applications", this.appCtrl.value.code)
+            .set("moduleName", this.moduleCtrl.value.code)
             .set("form", this.formName),
         }
       );
@@ -1774,8 +1751,8 @@ export class AddLoyaltyComponent implements OnInit {
             this.userId,
             this.applyCriteriaFormattedData,
             this.mode,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
             this.formName,
             this.resetParam ? "yes" : "no"
           );
@@ -1784,8 +1761,8 @@ export class AddLoyaltyComponent implements OnInit {
             this.userId,
             this.applyCriteriaFormattedData,
             this.mode,
-            this.appCtrl.value.name,
-            this.moduleCtrl.value.name,
+            this.appCtrl.value.code,
+            this.moduleCtrl.value.code,
             this.formName
           );
         }

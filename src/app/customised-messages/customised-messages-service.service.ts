@@ -8,21 +8,21 @@ import { Observable } from "rxjs";
 export class CustomisedMessagesServiceService {
   constructor(private http: HttpClient) {}
   getCustomisedListData() {
-    return this.http.get(`/remittance/customMessageController/getMessagesList`);
+    return this.http.get(`/appControl/customMessageController/getMessagesList`);
   }
   getCustomisedDetailsData() {
     return this.http.get(
-      `/remittance/customMessageController/getSystemMessageDetails`
+      `/appControl/customMessageController/getSystemMessageDetails`
     );
   }
   getCustomisedCodeData(messageType: any) {
-    return this.http.get(`/remittance/customMessageController/getMessageCode`, {
+    return this.http.get(`/appControl/customMessageController/getMessageCode`, {
       headers: new HttpHeaders().set("messageType", messageType),
     });
   }
   getMessageDataForEdit(messageCode: any) {
     return this.http.get(
-      `/remittance/customMessageController/getCustomMessagesDetails`,
+      `/appControl/customMessageController/getCustomMessagesDetails`,
       {
         headers: new HttpHeaders().set("messageCode", messageCode),
       }
@@ -30,14 +30,14 @@ export class CustomisedMessagesServiceService {
   }
   updateCustomisedListStatus(data: any) {
     return this.http.post(
-      `/remittance/customMessageController/updateStatus`,
+      `/appControl/customMessageController/updateStatus`,
       data
     );
   }
 
   addNewMessage(data, userId: any): Observable<any> {
     return this.http.post(
-      `/remittance/customMessageController/saveCustomMessages`,
+      `/appControl/customMessageController/saveCustomMessages`,
       data,
       {
         headers: new HttpHeaders().set("userId", userId),
@@ -46,7 +46,7 @@ export class CustomisedMessagesServiceService {
   }
   updateMessage(data, userId: any): Observable<any> {
     return this.http.put(
-      `/remittance/customMessageController/updateCustomMessages`,
+      `/appControl/customMessageController/updateCustomMessages`,
       data,
       {
         headers: new HttpHeaders().set("userId", userId),

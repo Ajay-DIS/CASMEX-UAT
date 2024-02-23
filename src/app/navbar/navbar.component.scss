@@ -31,23 +31,23 @@
     margin-left: 0px;
     z-index: 998;
   }
-  .toggle-sidebar{
+  .toggle-sidebar {
     z-index: 1001 !important;
   }
-  .sidebar{
+  .sidebar {
     z-index: 1000 !important;
   }
 }
-@media (max-width: 1199px) and (min-width:816px) {
+@media (max-width: 1199px) and (min-width: 816px) {
   .header {
     width: 100%;
     margin-left: 0px;
     z-index: 998;
   }
-  .toggle-sidebar{
+  .toggle-sidebar {
     z-index: 1001 !important;
   }
-  .sidebar{
+  .sidebar {
     z-index: 998 !important;
   }
 }
@@ -247,6 +247,7 @@
 .sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a {
   background: transparent;
   color: var(--primary-color-text);
+  font-size: 12.5px;
 }
 
 .sidebar ::ng-deep .p-panelmenu .p-panelmenu-header > a .p-menuitem-icon {
@@ -294,7 +295,7 @@
   .p-menuitem-link
   .p-menuitem-text {
   color: var(--primary-color-text);
-  font-size: 0.82rem;
+  font-size: 12px;
   // text-decoration: underline;
   // text-underline-offset: 3px;
 }
@@ -342,7 +343,8 @@
 
 @media (max-width: 1199px) {
   .toggle-sidebar .sidebar {
-    left: 0;z-index: 999999;
+    left: 0;
+    z-index: 999999;
   }
 }
 

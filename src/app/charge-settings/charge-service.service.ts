@@ -23,7 +23,9 @@ export class ChargeServiceService {
 
   // COMMON SERVICES
   getChargeSettingAppModuleList() {
-    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getCriteriaMasterData(
@@ -33,13 +35,13 @@ export class ChargeServiceService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
+      `/appControl/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName)),
       }
     );
   }
@@ -52,20 +54,20 @@ export class ChargeServiceService {
     displayName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+    return this.http.get(`/appControl/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("form", formName)
-        .set("applications", appName)
+        .set("applications", String(appName))
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", moduleName),
+        .set("moduleName", String(moduleName)),
     });
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/formRulesController/saveFormRuleCriteria`,
+      `appControl/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
@@ -77,13 +79,13 @@ export class ChargeServiceService {
     formName: any
   ): Observable<any> {
     return this.http.get(
-      `remittance/formRulesController/getExistingFormRuleList
+      `appControl/formRulesController/getExistingFormRuleList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -92,12 +94,12 @@ export class ChargeServiceService {
 
   getChargeCodeData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(
-      `/remittance/chargeSettingController/getChargeCodeList`,
+      `/appControl/chargeSettingController/getChargeCodeList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -105,7 +107,7 @@ export class ChargeServiceService {
 
   updateChargeSettingsStatus(data: any) {
     return this.http.post(
-      `/remittance/chargeSettingController/updateChargeSettingsStatus`,
+      `/appControl/chargeSettingController/updateChargeSettingsStatus`,
       data
     );
   }
@@ -118,7 +120,7 @@ export class ChargeServiceService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/chargeSettingController/getChargeSettingCriteriaForEdit`,
+      `/appControl/chargeSettingController/getChargeSettingCriteriaForEdit`,
       {
         headers: new HttpHeaders()
           .set("chargeCode", chargeCode)
@@ -133,11 +135,11 @@ export class ChargeServiceService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/chargeSettingController/addChargeSettings`,
+      `/appControl/chargeSettingController/addChargeSettings`,
       {
         headers: new HttpHeaders()
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -145,7 +147,7 @@ export class ChargeServiceService {
 
   postChargeCriteriaSearch(data: any) {
     return this.http.post(
-      `/remittance/chargeSettingController/applyCriteriaSearch`,
+      `/appControl/chargeSettingController/applyCriteriaSearch`,
       data
     );
   }
@@ -157,12 +159,12 @@ export class ChargeServiceService {
     formName: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/chargeSettingController/addCriteriaDetails`,
+      `/appControl/chargeSettingController/addCriteriaDetails`,
       data,
       {
         headers: new HttpHeaders()
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -176,13 +178,13 @@ export class ChargeServiceService {
     formName: any
   ): Observable<any> {
     return this.http.put(
-      `/remittance/chargeSettingController/updateChargeSettingsCriteria`,
+      `/appControl/chargeSettingController/updateChargeSettingsCriteria`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );

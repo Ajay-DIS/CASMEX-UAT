@@ -189,12 +189,8 @@ export class ChargeDetailsComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -222,30 +218,6 @@ export class ChargeDetailsComponent implements OnInit {
 
     // local get app-mod end
 
-    this.chargeSettingsService.getChargeSettingAppModuleList().subscribe(
-      (res) => {
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          this.coreService.removeLoadingScreen();
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
     this.statusData = this.chargeSettingsService.getData();
     console.log("status", this.statusData);
     if (this.statusData && this.statusData["status"] == "Inactive") {
@@ -616,8 +588,8 @@ export class ChargeDetailsComponent implements OnInit {
     formData.append("userId", this.userId);
     formData.append("chargeCode", this.chargeCode);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateChargeCodeStatus(formData);
   }
@@ -656,118 +628,136 @@ export class ChargeDetailsComponent implements OnInit {
       criteriaMasterData: this.chargeSettingsService.getCriteriaMasterData(
         this.userId,
         this.formName,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code
       ),
       addBankRouteCriteriaData:
         this.chargeSettingsService.getAddChargeSettingsCriteriaData(
-          this.appCtrl.value.name,
-          this.moduleCtrl.value.name,
+          this.appCtrl.value.code,
+          this.moduleCtrl.value.code,
           this.formName
         ),
     })
       .pipe(
         take(1),
         map((response) => {
-          this.formatMasterData(response.criteriaMasterData);
-          let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
-          delete criteriaMasterJson["fieldDisplay"];
-          this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
-          const criteriaMasterData = criteriaMasterJson;
-          this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
-          this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
-            (data) => {
-              if (data["criteriaType"] == "Slab") {
-                this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+          if (
+            response.addBankRouteCriteriaData["data"] &&
+            Object.keys(response.addBankRouteCriteriaData["data"]).length == 0
+          ) {
+            return {
+              msg: "No Criteria Found for Selected Application & Module.",
+            };
+          } else {
+            this.formatMasterData(response.criteriaMasterData);
+            let criteriaMasterJson = _lodashClone(response.criteriaMasterData);
+            delete criteriaMasterJson["fieldDisplay"];
+            this.fieldDisplayData = response.criteriaMasterData["fieldDisplay"];
+            const criteriaMasterData = criteriaMasterJson;
+            this.criteriaDataDetailsJson = response.addBankRouteCriteriaData;
+            this.criteriaDataDetailsJson.data.listCriteria.cmCriteriaDataDetails.forEach(
+              (data) => {
+                if (data["criteriaType"] == "Slab") {
+                  this.cmCriteriaSlabType["Slab"] = data["fieldName"];
+                }
+                if (data["criteriaType"] == "date") {
+                  this.cmCriteriaSlabType["date"] = data["fieldName"];
+                }
               }
-              if (data["criteriaType"] == "date") {
-                this.cmCriteriaSlabType["date"] = data["fieldName"];
-              }
-            }
-          );
-
-          if (this.mode == "add") {
-            this.chargeCode = this.criteriaDataDetailsJson.data.chargeCode;
-            this.chargeID = this.chargeCode;
-            this.chargeDescription =
-              this.criteriaDataDetailsJson.data.chargeCodeDesc;
-          }
-
-          this.cmCriteriaDataDetails = [
-            ...this.criteriaDataDetailsJson.data.listCriteria
-              .cmCriteriaDataDetails,
-          ];
-
-          this.cmCriteriaMandatory = this.criteriaDataDetailsJson.data.mandatory
-            .replace(/["|\[|\]]/g, "")
-            .split(", ");
-
-          this.cmCriteriaDependency =
-            this.criteriaDataDetailsJson.data.dependance;
-
-          let criteriaDependencyTreeData =
-            this.criteriaDataService.setDependencyTree(
-              this.criteriaDataDetailsJson,
-              this.cmCriteriaDataDetails,
-              criteriaMasterData,
-              this.cmCriteriaMandatory,
-              this.cmCriteriaDependency,
-              this.cmCriteriaSlabType
             );
 
-          this.criteriaMapDdlOptions =
-            criteriaDependencyTreeData["criteriaMapDdlOptions"];
-          this.independantCriteriaArr =
-            criteriaDependencyTreeData["independantCriteriaArr"];
-          return criteriaMasterData;
+            if (this.mode == "add") {
+              this.chargeCode = this.criteriaDataDetailsJson.data.chargeCode;
+              this.chargeID = this.chargeCode;
+              this.chargeDescription =
+                this.criteriaDataDetailsJson.data.chargeCodeDesc;
+            }
+
+            this.cmCriteriaDataDetails = [
+              ...this.criteriaDataDetailsJson.data.listCriteria
+                .cmCriteriaDataDetails,
+            ];
+
+            this.cmCriteriaMandatory =
+              this.criteriaDataDetailsJson.data.mandatory
+                .replace(/["|\[|\]]/g, "")
+                .split(", ");
+
+            this.cmCriteriaDependency =
+              this.criteriaDataDetailsJson.data.dependance;
+
+            let criteriaDependencyTreeData =
+              this.criteriaDataService.setDependencyTree(
+                this.criteriaDataDetailsJson,
+                this.cmCriteriaDataDetails,
+                criteriaMasterData,
+                this.cmCriteriaMandatory,
+                this.cmCriteriaDependency,
+                this.cmCriteriaSlabType
+              );
+
+            this.criteriaMapDdlOptions =
+              criteriaDependencyTreeData["criteriaMapDdlOptions"];
+            this.independantCriteriaArr =
+              criteriaDependencyTreeData["independantCriteriaArr"];
+            return criteriaMasterData;
+          }
         })
       )
       .subscribe(
         (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            this.coreService.removeLoadingScreen();
-            this.showContent = false;
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
-            } else {
-              this.coreService.showWarningToast("Some error in fetching data");
-            }
-          } else {
-            this.criteriaMasterData = res;
-            if (this.mode == "edit") {
-              if (
-                !(
-                  this.chargeSettingsService.applicationName ||
-                  this.chargeSettingsService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/charge-settings`]);
-              } else {
-                this.getChargeSettingForEditApi(this.chargeID, "edit");
-              }
-            } else if (this.mode == "clone") {
-              if (
-                !(
-                  this.chargeSettingsService.applicationName ||
-                  this.chargeSettingsService.moduleName
-                )
-              ) {
-                this.appModuleDataPresent = false;
-                this.showContent = false;
-                this.router.navigate([`navbar/charge-settings`]);
-              } else {
-                this.getChargeSettingForEditApi(this.chargeID, "clone");
-              }
-            } else {
-              this.showContent = true;
+          if (!res["msg"]) {
+            if (
+              res["status"] &&
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
               this.coreService.removeLoadingScreen();
+              this.showContent = false;
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast(
+                  "Some error in fetching data"
+                );
+              }
+            } else {
+              this.criteriaMasterData = res;
+              if (this.mode == "edit") {
+                if (
+                  !(
+                    this.chargeSettingsService.applicationName ||
+                    this.chargeSettingsService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/charge-settings`]);
+                } else {
+                  this.getChargeSettingForEditApi(this.chargeID, "edit");
+                }
+              } else if (this.mode == "clone") {
+                if (
+                  !(
+                    this.chargeSettingsService.applicationName ||
+                    this.chargeSettingsService.moduleName
+                  )
+                ) {
+                  this.appModuleDataPresent = false;
+                  this.showContent = false;
+                  this.router.navigate([`navbar/charge-settings`]);
+                } else {
+                  this.getChargeSettingForEditApi(this.chargeID, "clone");
+                }
+              } else {
+                this.showContent = true;
+                this.coreService.removeLoadingScreen();
+              }
             }
+          } else if (res["msg"]) {
+            this.coreService.showWarningToast(res["msg"]);
+            this.coreService.removeLoadingScreen();
+            return;
           }
         },
         (err) => {
@@ -793,11 +783,11 @@ export class ChargeDetailsComponent implements OnInit {
     this.chargeSettingsService
       .getCorrespondentValuesData(
         this.formName,
-        this.appCtrl.value.name,
+        this.appCtrl.value.code,
         criteriaMapValue,
         fieldName,
         displayName,
-        this.moduleCtrl.value.name
+        this.moduleCtrl.value.code
       )
       .subscribe(
         (res) => {
@@ -849,9 +839,9 @@ export class ChargeDetailsComponent implements OnInit {
   applyCriteria(postDataCriteria: FormData) {
     postDataCriteria.append("chargeCode", this.chargeID);
     postDataCriteria.append("operation", this.mode);
-    postDataCriteria.append("applications", this.appCtrl.value.name);
+    postDataCriteria.append("applications", this.appCtrl.value.code);
     postDataCriteria.append("form", this.formName);
-    postDataCriteria.append("moduleName", this.moduleCtrl.value.name);
+    postDataCriteria.append("moduleName", this.moduleCtrl.value.code);
     this.isApplyCriteriaClicked = true;
     if (this.isChargeSettingLinked && this.mode != "clone") {
       this.coreService.setSidebarBtnFixedStyle(false);
@@ -1111,9 +1101,9 @@ export class ChargeDetailsComponent implements OnInit {
     console.log(data.applicableOnOption);
   }
   saveCriteriaAsTemplate(templateFormData: any) {
-    templateFormData.append("applications", this.appCtrl.value.name);
+    templateFormData.append("applications", this.appCtrl.value.code);
     templateFormData.append("form", this.formName);
-    templateFormData.append("moduleName", this.moduleCtrl.value.name);
+    templateFormData.append("moduleName", this.moduleCtrl.value.code);
     this.coreService.displayLoadingScreen();
     this.chargeSettingsService
       .currentCriteriaSaveAsTemplate(templateFormData)
@@ -1162,8 +1152,8 @@ export class ChargeDetailsComponent implements OnInit {
     this.chargeSettingsService
       .getAllCriteriaTemplates(
         this.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe(
@@ -1300,8 +1290,8 @@ export class ChargeDetailsComponent implements OnInit {
             service = this.chargeSettingsService.updateChargeSetting(
               this.userId,
               data,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
               this.formName
             );
             console.log("::", data);
@@ -1313,8 +1303,8 @@ export class ChargeDetailsComponent implements OnInit {
             };
             service = this.chargeSettingsService.addNewCharge(
               data,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
               this.formName
             );
           }

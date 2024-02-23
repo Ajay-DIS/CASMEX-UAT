@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, forkJoin, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -22,23 +23,25 @@ export class FormRuleService {
   }
 
   getRuleCodeData(id: string, formName: any, appName: any, moduleName: any) {
-    return this.http.get(`/remittance/formRulesController/getFormRuleList`, {
+    return this.http.get(`/appControl/formRulesController/getFormRuleList`, {
       headers: new HttpHeaders()
         .set("userId", id)
-        .set("applications", appName)
-        .set("moduleName", moduleName)
+        .set("applications", String(appName))
+        .set("moduleName", String(moduleName))
         .set("form", formName),
     });
   }
   updateFormRuleStatus(data: any) {
     return this.http.post(
-      `/remittance/formRulesController/updateFormRuleStatus`,
+      `/appControl/formRulesController/updateFormRuleStatus`,
       data
     );
   }
 
   getFormRulesAppModuleList() {
-    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getFormRuleForEdit(
@@ -48,12 +51,12 @@ export class FormRuleService {
     moduleName: any,
     formName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getFormRuleForEdit`, {
+    return this.http.get(`/appControl/formRulesController/getFormRuleForEdit`, {
       headers: new HttpHeaders()
         .set("formRuleCode", formRuleCode)
         .set("operation", operation)
-        .set("applications", appName)
-        .set("moduleName", moduleName)
+        .set("applications", String(appName))
+        .set("moduleName", String(moduleName))
         .set("form", formName),
     });
   }
@@ -64,11 +67,11 @@ export class FormRuleService {
     appName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/addFormRules`, {
+    return this.http.get(`/appControl/formRulesController/addFormRules`, {
       headers: new HttpHeaders()
         .set("userId", userId)
-        .set("applications", appName)
-        .set("moduleName", moduleName)
+        .set("applications", String(appName))
+        .set("moduleName", String(moduleName))
         .set("form", formName),
     });
   }
@@ -80,13 +83,13 @@ export class FormRuleService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
+      `/appControl/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName)),
       }
     );
   }
@@ -99,27 +102,27 @@ export class FormRuleService {
     displayName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+    return this.http.get(`/appControl/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("form", formName)
-        .set("applications", appName)
+        .set("applications", String(appName))
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", moduleName),
+        .set("moduleName", String(moduleName)),
     });
   }
 
   postFormRuleSearch(data: any) {
     return this.http.post(
-      `/remittance/formRulesController/applyCriteriaSearch`,
+      `/appControl/formRulesController/applyCriteriaSearch`,
       data
     );
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/formRulesController/saveFormRuleCriteria`,
+      `appControl/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
@@ -131,13 +134,13 @@ export class FormRuleService {
     formName: any
   ): Observable<any> {
     return this.http.get(
-      `remittance/formRulesController/getExistingFormRuleList
+      `appControl/formRulesController/getExistingFormRuleList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -150,12 +153,12 @@ export class FormRuleService {
     formName: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/formRulesController/addCriteriaDetails`,
+      `/appControl/formRulesController/addCriteriaDetails`,
       data,
       {
         headers: new HttpHeaders()
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -169,27 +172,50 @@ export class FormRuleService {
     formName: any
   ): Observable<any> {
     return this.http.put(
-      `/remittance/formRulesController/updateFormRule`,
+      `/appControl/formRulesController/updateFormRule`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
   }
 
-  formFieldsMasterData(formType: any) {
-    if (formType == "Customer Profile Beneficiary_Form Rules") {
-      return this.http.get(
-        `/remittance/beneficiaryProfileController/getBeneficiaryProfileMaster`
-      );
-    } else {
-      return this.http.get(
-        `/remittance/corporateCustomerController/getCustomerProfileMasterData`
-      );
-    }
+  // formFieldsMasterData(formType: any) {
+  //   if (formType == "Customer Profile Beneficiary_Form Rules") {
+  //     return this.http.get(
+  //       `/appControl/beneficiaryProfileController/getBeneficiaryProfileMaster`
+  //     );
+  //   } else {
+  //     return this.http.get(
+  //       `/appControl/corporateCustomerController/getCustomerProfileMasterData`
+  //     );
+  //   }
+  // }
+
+  // ! calling two api for customer master data
+  getCustomerMasterDataFromAppControlAndRemittance(): Observable<any[]> {
+    // Define API endpoints
+    const appControlUrl =
+      "/appControl/formRulesController/getCustomerProfileMasterDataAppControl";
+    const remittanceUrl =
+      "/remittance/corporateCustomerController/getCustomerProfileMasterDataRemittance";
+
+    // Make HTTP requests to both APIs
+    const appControlUrlRequest = this.http.get(appControlUrl);
+    const remittanceUrlRequest = this.http.get(remittanceUrl);
+
+    // Combine requests using forkJoin
+    return forkJoin([appControlUrlRequest, remittanceUrlRequest]).pipe(
+      catchError((error) => {
+        // Handle errors if any API request fails
+        console.error("Customer Master Data request failed:", error);
+        return throwError("API request failed");
+      })
+    );
   }
+  // ! calling two api for customer master data ends
 }

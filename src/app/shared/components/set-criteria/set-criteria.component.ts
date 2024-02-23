@@ -269,7 +269,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   //     this.cmCriteriaSlabType.includes(this.criteriaCtrl.value.label) ||
   //     this.selectedCriteria.criteriaType != "SQL"
   //   ) {
-  //     if (this.operationCtrl.value.name == "Slab") {
+  //     if (this.operationCtrl.value.code == "Slab") {
   //       value = "Slab";
   //       valueCode = "Slab";
   //     } else {
@@ -277,7 +277,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   //       valueCode = this.valueCtrl.value;
   //     }
   //   } else {
-  //     value = this.valueCtrl.value.name;
+  //     value = this.valueCtrl.value.code;
   //     valueCode = this.valueCtrl.value.code;
   //   }
 
@@ -506,7 +506,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   //     this.selectedCriteria.criteriaType == "Slab" ||
   //     this.selectedCriteria.criteriaType != "SQL"
   //   ) {
-  //     if (this.operationCtrl.value.name == "Slab") {
+  //     if (this.operationCtrl.value.code == "Slab") {
   //       value = "Slab";
   //       valueCode = "Slab";
   //     } else {
@@ -525,7 +525,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
   //       }
   //     }
   //   } else {
-  //     value = this.valueCtrl.value.name;
+  //     value = this.valueCtrl.value.code;
   //     valueCode = this.valueCtrl.value.code;
   //   }
 
@@ -1026,7 +1026,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
     let value = "";
     let valueCode = "";
     if (this.selectedCriteria.criteriaType != "SQL") {
-      if (this.operationCtrl.value.name == "Slab") {
+      if (this.operationCtrl.value.code == "Slab") {
         value = "Slab";
         valueCode = "Slab";
       } else {
@@ -1043,6 +1043,8 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
       valueCode = this.valueCtrl.value.code;
     }
     console.log(this.criteriaCtrl.value);
+    console.log(this.operationCtrl.value);
+    console.log(this.valueCtrl.value);
 
     let criteria =
       this.criteriaCtrl.value.label +
@@ -2264,6 +2266,7 @@ export class SetCriteriaComponent implements OnInit, OnChanges {
         let finalFormattedCriteriaObj = this.createFormattedCriteriaMap();
         return finalFormattedCriteriaObj;
       } else {
+        console.log(this.cmCriteriaMandatory, formattedCriteriaArr);
         this.coreService.showWarningToast(
           `Please add all mandatory criteria for applying the criteria. Mandatory criteria are ${this.cmCriteriaMandatory.join(
             ", "

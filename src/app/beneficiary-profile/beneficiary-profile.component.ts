@@ -556,10 +556,10 @@ export class BeneficiaryProfileComponent implements OnInit {
     if (expanded == false) {
       this.http
         .get(
-          `/remittance/beneficiaryProfileController/getBeneficiaryProfileList`,
+          `/appControl/beneficiaryProfileController/getBeneficiaryProfileList`,
           {
             headers: new HttpHeaders()
-              .set("customerType", customerType)
+              .set("customerType", String(customerType))
               .set("customerId", String(rowData.customerCode)),
           }
         )

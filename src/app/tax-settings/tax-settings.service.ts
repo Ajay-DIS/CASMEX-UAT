@@ -23,7 +23,9 @@ export class TaxSettingsService {
 
   // COMMON SERVICES
   getTaxSettingAppModuleList() {
-    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getCriteriaMasterData(
@@ -33,13 +35,13 @@ export class TaxSettingsService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
+      `/appControl/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName)),
       }
     );
   }
@@ -52,20 +54,20 @@ export class TaxSettingsService {
     displayName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+    return this.http.get(`/appControl/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("form", formName)
-        .set("applications", appName)
+        .set("applications", String(appName))
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", moduleName),
+        .set("moduleName", String(moduleName)),
     });
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/formRulesController/saveFormRuleCriteria`,
+      `appControl/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
@@ -77,13 +79,13 @@ export class TaxSettingsService {
     formName: any
   ): Observable<any> {
     return this.http.get(
-      `remittance/formRulesController/getExistingFormRuleList
+      `appControl/formRulesController/getExistingFormRuleList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -92,12 +94,12 @@ export class TaxSettingsService {
 
   getTaxCodeData(id: string, formName: any, appName: any, moduleName: any) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getTaxCodeList`,
+      `/appControl/taxSettingCriteriaController/getTaxCodeList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -105,7 +107,7 @@ export class TaxSettingsService {
 
   updateTaxSettingsStatus(data: any) {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/updateTaxSettingsStatus`,
+      `/appControl/taxSettingCriteriaController/updateTaxSettingsStatus`,
       data
     );
   }
@@ -118,7 +120,7 @@ export class TaxSettingsService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
+      `/appControl/taxSettingCriteriaController/getTaxSettingCriteriaForEdit`,
       {
         headers: new HttpHeaders()
           .set("taxCode", taxCode)
@@ -129,11 +131,11 @@ export class TaxSettingsService {
 
   getAddTaxSettingsCriteriaData(appName: any, moduleName: any, formName: any) {
     return this.http.get(
-      `/remittance/taxSettingCriteriaController/addTaxSettings`,
+      `/appControl/taxSettingCriteriaController/addTaxSettings`,
       {
         headers: new HttpHeaders()
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -141,7 +143,7 @@ export class TaxSettingsService {
 
   postTaxCriteriaSearch(data: any) {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/applyCriteriaSearch`,
+      `/appControl/taxSettingCriteriaController/applyCriteriaSearch`,
       data
     );
   }
@@ -153,12 +155,12 @@ export class TaxSettingsService {
     formName: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/taxSettingCriteriaController/addCriteriaDetails`,
+      `/appControl/taxSettingCriteriaController/addCriteriaDetails`,
       data,
       {
         headers: new HttpHeaders()
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -172,13 +174,13 @@ export class TaxSettingsService {
     formName: any
   ): Observable<any> {
     return this.http.put(
-      `/remittance/taxSettingCriteriaController/updateTaxSettingsCriteria`,
+      `/appControl/taxSettingCriteriaController/updateTaxSettingsCriteria`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );

@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable, forkJoin, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root",
@@ -7,9 +9,35 @@ import { Injectable } from "@angular/core";
 export class CustomerFormService {
   constructor(private http: HttpClient) {}
 
+  applicationName = JSON.parse(localStorage.getItem("applicationName"));
+  moduleName = JSON.parse(localStorage.getItem("moduleName"));
+
+  // ! calling two api for customer master data
+  getCustomerMasterDataFromAppControlAndRemittance(): Observable<any[]> {
+    // Define API endpoints
+    const appControlUrl =
+      "/appControl/formRulesController/getCustomerProfileMasterDataAppControl";
+    const remittanceUrl =
+      "/remittance/corporateCustomerController/getCustomerProfileMasterDataRemittance";
+
+    // Make HTTP requests to both APIs
+    const appControlUrlRequest = this.http.get(appControlUrl);
+    const remittanceUrlRequest = this.http.get(remittanceUrl);
+
+    // Combine requests using forkJoin
+    return forkJoin([appControlUrlRequest, remittanceUrlRequest]).pipe(
+      catchError((error) => {
+        // Handle errors if any API request fails
+        console.error("Customer Master Data request failed:", error);
+        return throwError("API request failed");
+      })
+    );
+  }
+  // ! calling two api for customer master data ends
+
   getCustomerMaster() {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCustomerProfileMasterData`
+      `/appControl/corporateCustomerController/getCustomerProfileMasterData`
     );
   }
 
@@ -20,12 +48,12 @@ export class CustomerFormService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/commonUtilController/getLoyaltyProgramCriteriaFields`,
+      `/appControl/commonUtilController/getLoyaltyProgramCriteriaFields`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -33,7 +61,7 @@ export class CustomerFormService {
 
   getEmployeeDetailsByLetters(empType: any, typeLetters: any) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getEmployeeDetails`,
+      `/appControl/corporateCustomerController/getEmployeeDetails`,
       {
         headers: new HttpHeaders()
           .set("customerType", empType)
@@ -44,26 +72,26 @@ export class CustomerFormService {
 
   getFormRuleDataByCritreriaMap(causingCriteriaMap: any) {
     return this.http.get(
-      `/remittance/formRulesController/getFormRulesSetting`,
+      `/appControl/formRulesController/getFormRulesSetting`,
       {
         headers: new HttpHeaders()
           .set("criteriaMap", causingCriteriaMap)
           .set("form", "Customer Profile_Form Rules")
-          .set("moduleName", "Remittance")
-          .set("applications", "Casmex Core"),
+          .set("moduleName", this.moduleName["code"])
+          .set("applications", this.applicationName["code"]),
       }
     );
   }
 
   getDocumentDataByCriteriaMap(causingCriteriaMap: any) {
     return this.http.get(
-      `remittance/documentSettingsController/getDocumentSetting`,
+      `appControl/documentSettingsController/getDocumentSetting`,
       {
         headers: new HttpHeaders()
           .set("criteriaMap", causingCriteriaMap)
           .set("form", "Document Settings")
-          .set("moduleName", "Remittance")
-          .set("applications", "Casmex Core"),
+          .set("moduleName", this.moduleName["code"])
+          .set("applications", this.applicationName["code"]),
       }
     );
   }
@@ -77,7 +105,7 @@ export class CustomerFormService {
     relatedPartyTypeCode: any
   ) {
     return this.http.post(
-      `/remittance/corporateCustomerController/saveCorporateCustomer`,
+      `/appControl/corporateCustomerController/saveCorporateCustomer`,
       customerData,
       {
         headers: new HttpHeaders()
@@ -104,7 +132,7 @@ export class CustomerFormService {
     relatedPartyTypeCode: any
   ) {
     return this.http.put(
-      `/remittance/corporateCustomerController/updateCorporateCustomer`,
+      `/appControl/corporateCustomerController/updateCorporateCustomer`,
       customerData,
       {
         headers: new HttpHeaders()
@@ -125,7 +153,7 @@ export class CustomerFormService {
 
   getCustomerFormDataForEdit(customerId: any, userId: any, customerType: any) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCorporateCustomerDetails/${customerId}`,
+      `/appControl/corporateCustomerController/getCorporateCustomerDetails/${customerId}`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
@@ -144,7 +172,7 @@ export class CustomerFormService {
     custType: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/updateCorporateStatus`,
+      `/appControl/corporateCustomerController/updateCorporateStatus`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
@@ -167,7 +195,7 @@ export class CustomerFormService {
     orderBy: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCorporateCustomerDetailsList`,
+      `/appControl/corporateCustomerController/getCorporateCustomerDetailsList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
@@ -188,12 +216,12 @@ export class CustomerFormService {
     formName: any
   ) {
     return this.http.get(
-      `/remittance/corporateCustomerController/getCustomerSearchSetting`,
+      `/appControl/corporateCustomerController/getCustomerSearchSetting`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applicationName", appName)
-          .set("moduleName", moduleName)
+          .set("applicationName", String(appName))
+          .set("moduleName", String(moduleName))
           .set("formName", formName),
       }
     );

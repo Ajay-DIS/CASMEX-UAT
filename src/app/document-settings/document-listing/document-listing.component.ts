@@ -121,12 +121,8 @@ export class DocumentListingComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -142,32 +138,6 @@ export class DocumentListingComponent implements OnInit {
       this.coreService.removeLoadingScreen();
     }
     //
-
-    this.documentService.getAppModuleList().subscribe(
-      (res) => {
-        // this.coreService.removeLoadingScreen();
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-            // this.coreService.removeLoadingScreen();
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
   }
 
   setSelectAppModule() {
@@ -196,8 +166,8 @@ export class DocumentListingComponent implements OnInit {
     sessionStorage.setItem("doc", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
     );
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
@@ -375,8 +345,8 @@ export class DocumentListingComponent implements OnInit {
   }
 
   viewDocDetails(data: any) {
-    this.documentService.applicationName = this.appCtrl.value.name;
-    this.documentService.moduleName = this.moduleCtrl.value.name;
+    this.documentService.applicationName = this.appCtrl.value.code;
+    this.documentService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "document-settings",
@@ -444,8 +414,8 @@ export class DocumentListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("documentSettingsCode", data["documentCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateDocSettingStatus(formData, e.target, data);
   }
@@ -464,8 +434,8 @@ export class DocumentListingComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
             );
             this.coreService.showSuccessToast(message);
           } else {
@@ -483,8 +453,8 @@ export class DocumentListingComponent implements OnInit {
   }
 
   cloneDoc(data: any) {
-    this.documentService.applicationName = this.appCtrl.value.name;
-    this.documentService.moduleName = this.moduleCtrl.value.name;
+    this.documentService.applicationName = this.appCtrl.value.code;
+    this.documentService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "document-settings",

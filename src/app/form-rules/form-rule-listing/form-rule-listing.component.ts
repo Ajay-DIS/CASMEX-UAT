@@ -91,6 +91,43 @@ export class FormRuleListingComponent implements OnInit {
     this.userData = JSON.parse(localStorage.getItem("userData"));
     this.setSelectAppModule();
 
+    // !
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let currAppMod = JSON.parse(sessionStorage.getItem("form"));
+
+    let defApp = null;
+    let defMod = null;
+
+    if (currAppMod) {
+      console.log(currAppMod);
+      defApp = this.searchApplicationOptions.filter(
+        (opt) => opt.code == currAppMod.applicationName.code
+      )[0];
+      defMod = this.searchModuleOptions.filter(
+        (opt) => opt.code == currAppMod.moduleName.code
+      )[0];
+    } else {
+      if (defAppMod) {
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
+      }
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+    }
+
+    if (this.appCtrl.value && this.moduleCtrl.value) {
+      this.formCtrl.enable();
+    }
+
     this.formRuleService.getFormRulesAppModuleList().subscribe(
       (res) => {
         this.coreService.removeLoadingScreen();
@@ -106,46 +143,6 @@ export class FormRuleListingComponent implements OnInit {
           }
         } else {
           if (!res["msg"]) {
-            this.searchApplicationOptions = JSON.parse(
-              localStorage.getItem("appAccess")
-            );
-            this.searchModuleOptions = JSON.parse(
-              localStorage.getItem("modAccess")
-            );
-            let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
-            let currAppMod = JSON.parse(sessionStorage.getItem("form"));
-
-            let defApp = null;
-            let defMod = null;
-
-            if (currAppMod) {
-              defApp = this.searchApplicationOptions.filter(
-                (opt) => opt.code == currAppMod.applicationName.code
-              )[0];
-              defMod = this.searchModuleOptions.filter(
-                (opt) => opt.code == currAppMod.moduleName.code
-              )[0];
-            } else {
-              if (defAppMod) {
-                defApp = this.searchApplicationOptions.filter(
-                  (opt) => opt.code == defAppMod.applicationName.code
-                )[0];
-                defMod = this.searchModuleOptions.filter(
-                  (opt) => opt.code == defAppMod.moduleName.code
-                )[0];
-              }
-            }
-
-            if (defApp) {
-              this.appCtrl.patchValue(defApp);
-            }
-            if (defMod) {
-              this.moduleCtrl.patchValue(defMod);
-            }
-
-            if (this.appCtrl.value && this.moduleCtrl.value) {
-              this.formCtrl.enable();
-            }
             this.searchFormOptions = res["data"]["cmCriteriaFormsMaster"]
               .filter((form) => {
                 return form.criteriaForms.includes("_Form Rules");
@@ -197,9 +194,9 @@ export class FormRuleListingComponent implements OnInit {
     sessionStorage.setItem("form", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name,
-      this.formCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code,
+      this.formCtrl.value.code
     );
   }
 
@@ -385,9 +382,9 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   viewFormRules(data: any) {
-    this.formRuleService.applicationName = this.appCtrl.value.name;
-    this.formRuleService.moduleName = this.moduleCtrl.value.name;
-    this.formRuleService.formName = this.formCtrl.value.name;
+    this.formRuleService.applicationName = this.appCtrl.value.code;
+    this.formRuleService.moduleName = this.moduleCtrl.value.code;
+    this.formRuleService.formName = this.formCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",
@@ -467,9 +464,9 @@ export class FormRuleListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("formRuleCode", data["formRuleCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
-    formData.append("form", this.formCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
+    formData.append("form", this.formCtrl.value.code);
     this.updateFormRuleStatus(formData, e.target, data);
   }
 
@@ -487,9 +484,9 @@ export class FormRuleListingComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name,
-              this.formCtrl.value.name
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code,
+              this.formCtrl.value.code
             );
             this.coreService.showSuccessToast(message);
           } else {
@@ -507,9 +504,9 @@ export class FormRuleListingComponent implements OnInit {
   }
 
   cloneFormRule(data: any) {
-    this.formRuleService.applicationName = this.appCtrl.value.name;
-    this.formRuleService.moduleName = this.moduleCtrl.value.name;
-    this.formRuleService.formName = this.formCtrl.value.name;
+    this.formRuleService.applicationName = this.appCtrl.value.code;
+    this.formRuleService.moduleName = this.moduleCtrl.value.code;
+    this.formRuleService.formName = this.formCtrl.value.code;
     this.router.navigate([
       "navbar",
       "form-rules",

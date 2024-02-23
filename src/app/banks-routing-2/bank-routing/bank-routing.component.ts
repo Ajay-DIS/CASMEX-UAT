@@ -141,12 +141,8 @@ export class BankRoutingComponent2 implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -162,32 +158,6 @@ export class BankRoutingComponent2 implements OnInit {
       this.coreService.removeLoadingScreen();
     }
     //
-
-    this.bankRoutingService.getBanksRoutingAppModuleList().subscribe(
-      (res) => {
-        // this.coreService.removeLoadingScreen();
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-          } else {
-            // this.coreService.removeLoadingScreen();
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
   }
 
   setSelectAppModule() {
@@ -216,8 +186,8 @@ export class BankRoutingComponent2 implements OnInit {
     sessionStorage.setItem("bankRoute", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
     );
   }
 
@@ -388,8 +358,8 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   viewBankRouting(data: any) {
-    this.bankRoutingService.applicationName = this.appCtrl.value.name;
-    this.bankRoutingService.moduleName = this.moduleCtrl.value.name;
+    this.bankRoutingService.applicationName = this.appCtrl.value.code;
+    this.bankRoutingService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "bank-routing",
@@ -401,8 +371,8 @@ export class BankRoutingComponent2 implements OnInit {
   }
 
   cloneRoute(data: any) {
-    this.bankRoutingService.applicationName = this.appCtrl.value.name;
-    this.bankRoutingService.moduleName = this.moduleCtrl.value.name;
+    this.bankRoutingService.applicationName = this.appCtrl.value.code;
+    this.bankRoutingService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "bank-routing",
@@ -478,8 +448,8 @@ export class BankRoutingComponent2 implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("routeCode", data["routeCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateBankRouteStatus(formData, e.target, data);
   }
@@ -509,8 +479,8 @@ export class BankRoutingComponent2 implements OnInit {
               sliderElm.checked = sliderElm!.checked;
               this.getDecodedDataForListing(
                 this.userData.userId,
-                this.appCtrl.value.name,
-                this.moduleCtrl.value.name
+                this.appCtrl.value.code,
+                this.moduleCtrl.value.code
               );
               this.coreService.showSuccessToast(message);
             } else {

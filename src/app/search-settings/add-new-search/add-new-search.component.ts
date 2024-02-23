@@ -101,6 +101,30 @@ export class AddNewSearchComponent implements OnInit {
     this.setSelectAppForm();
     this.mode == "edit" && this.appCtrl.disable() && this.formCtrl.disable();
     this.mode == "clone" && this.formCtrl.enable();
+
+    // !
+    this.searchApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let defApp = null;
+    let defMod = null;
+    if (defAppMod) {
+      defApp = JSON.parse(localStorage.getItem("applicationName"));
+      defMod = JSON.parse(localStorage.getItem("moduleName"));
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+      this.moduleCtrl.enable();
+      this.formCtrl.enable();
+    }
+    // !
+
     this.searchSettingsService
       .getSearchAppFormsList()
       .pipe(take(1))
@@ -118,12 +142,6 @@ export class AddNewSearchComponent implements OnInit {
             }
           } else {
             if (res["data"]) {
-              this.searchApplicationOptions = JSON.parse(
-                localStorage.getItem("appAccess")
-              );
-              this.searchModuleOptions = JSON.parse(
-                localStorage.getItem("modAccess")
-              );
               this.searchFormsOptions = res["data"][
                 "cmSearchSettingFormMasters"
               ].map((app) => {
@@ -147,29 +165,6 @@ export class AddNewSearchComponent implements OnInit {
                     this.router.navigateByUrl(`navbar/search-settings`);
                   }
                 });
-              } else {
-                let defAppMod = JSON.parse(
-                  localStorage.getItem("defAppModule")
-                );
-                let defApp = null;
-                let defMod = null;
-                if (defAppMod) {
-                  defApp = this.searchApplicationOptions.filter(
-                    (opt) => opt.code == defAppMod.applicationName.code
-                  )[0];
-                  defMod = this.searchModuleOptions.filter(
-                    (opt) => opt.code == defAppMod.moduleName.code
-                  )[0];
-                }
-
-                if (defApp) {
-                  this.appCtrl.patchValue(defApp);
-                }
-                if (defMod) {
-                  this.moduleCtrl.patchValue(defMod);
-                  this.moduleCtrl.enable();
-                  this.formCtrl.enable();
-                }
               }
             } else if (res["msg"]) {
               this.coreService.showWarningToast(res["msg"]);
@@ -182,7 +177,6 @@ export class AddNewSearchComponent implements OnInit {
           this.appCtrl.disable();
           this.formCtrl.disable();
           console.log("Error in Criteria App Form List", err);
-          this.coreService.showWarningToast("Some error in fetching data");
         }
       )
       .add(() => {
@@ -244,9 +238,9 @@ export class AddNewSearchComponent implements OnInit {
   executeQueries() {
     this.coreService.displayLoadingScreen();
     let data = {
-      formName: this.formCtrl.value.name,
-      moduleName: this.moduleCtrl.value.name,
-      applicationName: this.appCtrl.value.name,
+      formName: this.formCtrl.value.code,
+      moduleName: this.moduleCtrl.value.code,
+      applicationName: this.appCtrl.value.code,
     };
 
     if (this.mode == "add") {
@@ -374,9 +368,9 @@ export class AddNewSearchComponent implements OnInit {
                 let form = appForm.split(":")[1];
                 let module = appForm.split(":")[2];
                 if (
-                  this.appCtrl.value.name == app &&
-                  this.formCtrl.value.name == form &&
-                  this.moduleCtrl.value.name == module &&
+                  this.appCtrl.value.code == app &&
+                  this.formCtrl.value.code == form &&
+                  this.moduleCtrl.value.code == module &&
                   !this.duplicateCriteria
                 ) {
                   this.coreService.setSidebarBtnFixedStyle(false);
@@ -434,9 +428,9 @@ export class AddNewSearchComponent implements OnInit {
   saveCriteriaFields(action: any) {
     this.coreService.displayLoadingScreen();
     let data = {
-      formName: this.formCtrl.value.name,
-      applicationName: this.appCtrl.value.name,
-      moduleName: this.moduleCtrl.value.name,
+      formName: this.formCtrl.value.code,
+      applicationName: this.appCtrl.value.code,
+      moduleName: this.moduleCtrl.value.code,
       createdBy: null,
       createdByID: this.userData.userId,
       status: "A",
@@ -620,81 +614,88 @@ export class AddNewSearchComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          if (response.cloneCriteriaData["msg"]) {
-            this.coreService.showWarningToast(
-              response.cloneCriteriaData["msg"]
-            );
-            return;
-          }
-
-          const cloneCriteriaData =
-            response.cloneCriteriaData["data"]["cloneCriteria"];
-          const criteriaFieldsData =
-            response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
-          cloneCriteriaData["settingSearchQueryCriteria"].forEach(
-            (cloneD: any) => {
-              this.orderIDArray.push(cloneD.orderID);
-              cloneD["operationOption"] = this.searchOperatorsOptions.map(
-                (x) => {
-                  return { label: x.name, code: x.name };
-                }
-              );
-              let selectedOpt = cloneD["operators"].split(",");
-              cloneD["operators"] = selectedOpt.map((opt) => {
-                return { label: opt, code: opt };
-              });
-              let data = criteriaFieldsData.find(
-                (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
-              );
-            }
-          );
-          this.isFieldsQueriesData = true;
-          this.fieldsQueriesData = [...criteriaFieldsData];
-
-          this.selectedFields = criteriaFieldsData.filter((crit) => {
-            return cloneCriteriaData["settingSearchQueryCriteria"].find(
-              (cloneCrit) => {
-                return cloneCrit["fieldName"] == crit["fieldName"];
+          if (
+            response.cloneCriteriaData["data"] &&
+            response.cloneCriteriaData["data"]["cloneCriteria"]
+          ) {
+            const cloneCriteriaData =
+              response.cloneCriteriaData["data"]["cloneCriteria"];
+            const criteriaFieldsData =
+              response.criteriaFieldsData["data"][
+                "cmCriteriaOperationsMasters"
+              ];
+            cloneCriteriaData["settingSearchQueryCriteria"].forEach(
+              (cloneD: any) => {
+                this.orderIDArray.push(cloneD.orderID);
+                cloneD["operationOption"] = this.searchOperatorsOptions.map(
+                  (x) => {
+                    return { label: x.name, code: x.name };
+                  }
+                );
+                let selectedOpt = cloneD["operators"].split(",");
+                cloneD["operators"] = selectedOpt.map((opt) => {
+                  return { label: opt, code: opt };
+                });
+                let data = criteriaFieldsData.find(
+                  (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
+                );
               }
             );
-          });
-          this.selectFields = criteriaFieldsData.filter(
-            (el) => !this.selectedFields.includes(el)
-          );
-          return cloneCriteriaData;
+            this.isFieldsQueriesData = true;
+            this.fieldsQueriesData = [...criteriaFieldsData];
+
+            this.selectedFields = criteriaFieldsData.filter((crit) => {
+              return cloneCriteriaData["settingSearchQueryCriteria"].find(
+                (cloneCrit) => {
+                  return cloneCrit["fieldName"] == crit["fieldName"];
+                }
+              );
+            });
+            this.selectFields = criteriaFieldsData.filter(
+              (el) => !this.selectedFields.includes(el)
+            );
+            return cloneCriteriaData;
+          } else {
+            return response.cloneCriteriaData;
+          }
         })
       )
-      .subscribe((data) => {
-        if (
-          data["status"] &&
-          typeof data["status"] == "string" &&
-          (data["status"] == "400" || data["status"] == "500")
-        ) {
-          if (data["error"]) {
-            this.coreService.showWarningToast(data["error"]);
+      .subscribe((res) => {
+        console.log(":::", res);
+        if (res["status"]) {
+          if (
+            typeof res["status"] == "string" &&
+            (res["status"] == "400" || res["status"] == "500")
+          ) {
+            if (res["error"]) {
+              this.coreService.showWarningToast(res["error"]);
+            } else {
+              this.coreService.showWarningToast("Some error in fetching data");
+            }
           } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (data) {
-            this.searchSettingtable = data["settingSearchQueryCriteria"];
-            this.searchSettingtable.forEach((item, i) => {
-              item["operations"] = this.searchSettingtable[i]["operators"];
-            });
+            if (res) {
+              this.searchSettingtable = res["settingSearchQueryCriteria"];
+              this.searchSettingtable.forEach((item, i) => {
+                item["operations"] = this.searchSettingtable[i]["operators"];
+              });
 
-            const appValue = this.searchApplicationOptions.find(
-              (value) => value.name === data["applicationName"]
-            );
-            this.appCtrl.setValue(appValue);
-            const formValue = this.searchFormsOptions.find(
-              (value) => value.name === data["formName"]
-            );
-            this.formCtrl.setValue(formValue);
-            const moduleValue = this.searchModuleOptions.find(
-              (value) => value.name === data["moduleName"]
-            );
-            this.moduleCtrl.setValue(moduleValue);
+              const appValue = this.searchApplicationOptions.find(
+                (value) => value.code === res["applicationName"]
+              );
+              this.appCtrl.setValue(appValue);
+              const formValue = this.searchFormsOptions.find(
+                (value) => value.code === res["formName"]
+              );
+              this.formCtrl.setValue(formValue);
+              const moduleValue = this.searchModuleOptions.find(
+                (value) => value.code === res["moduleName"]
+              );
+              this.moduleCtrl.setValue(moduleValue);
+            }
           }
+        } else if (res["msg"]) {
+          this.coreService.showWarningToast(res["msg"]);
+          return;
         }
       })
       .add(() => {

@@ -71,12 +71,8 @@ export class GetDocSettingsComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -110,12 +106,12 @@ export class GetDocSettingsComponent implements OnInit {
 
   getMasterData() {
     return this.http
-      .get(`remittance/formRulesController/getCriteriaMasterData`, {
+      .get(`appControl/formRulesController/getCriteriaMasterData`, {
         headers: new HttpHeaders()
           .set("userId", String(this.userData.userId))
           .set("form", "Document Settings")
-          .set("applications", this.appCtrl.value.name)
-          .set("moduleName", this.moduleCtrl.value.name),
+          .set("applications", this.appCtrl.value.code)
+          .set("moduleName", this.moduleCtrl.value.code),
       })
       .subscribe((res: any) => {
         console.log("masterdata", res);
@@ -181,12 +177,12 @@ export class GetDocSettingsComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.http;
     this.http
-      .get(`remittance/documentSettingsController/getDocumentSetting`, {
+      .get(`appControl/documentSettingsController/getDocumentSetting`, {
         headers: new HttpHeaders()
           .set("criteriaMap", this.newcriteriaMapCode)
           .set("form", "Document Settings")
-          .set("applications", this.appCtrl.value.name)
-          .set("moduleName", this.moduleCtrl.value.name),
+          .set("applications", this.appCtrl.value.code)
+          .set("moduleName", this.moduleCtrl.value.code),
       })
       .subscribe(
         (res: any) => {

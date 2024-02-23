@@ -39,7 +39,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   invalidForSave = false;
 
   userData: any;
-  appFormModuleDataForEdit: any = {};
 
   criteriaId = "";
   criteriaSettingtable = [];
@@ -112,11 +111,38 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       this.coreService.setBreadCrumbMenu(Object.values(data));
     });
     this.setSelectAppForm();
+
     this.mode == "edit" && this.appCtrl.disable() && this.formCtrl.disable();
     if (this.mode == "clone") {
       this.formCtrl.enable();
       this.moduleCtrl.enable();
     }
+
+    // !
+    this.criteriaApplicationOptions = JSON.parse(
+      localStorage.getItem("appAccess")
+    );
+    this.criteriaModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
+
+    let defAppMod = JSON.parse(localStorage.getItem("defAppModule"));
+    let defApp = null;
+    let defMod = null;
+    if (defAppMod) {
+      defApp = JSON.parse(localStorage.getItem("applicationName"));
+      defMod = JSON.parse(localStorage.getItem("moduleName"));
+    }
+
+    if (defApp) {
+      this.appCtrl.patchValue(defApp);
+    }
+    if (defMod) {
+      this.moduleCtrl.patchValue(defMod);
+      this.moduleCtrl.enable();
+      this.formCtrl.enable();
+    }
+
+    // !
+
     this.criteriaSettingsService
       .getCriteriaAppFormsList()
       .pipe(take(1))
@@ -134,12 +160,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
             }
           } else {
             if (res["data"]) {
-              this.criteriaApplicationOptions = JSON.parse(
-                localStorage.getItem("appAccess")
-              );
-              this.criteriaModuleOptions = JSON.parse(
-                localStorage.getItem("modAccess")
-              );
               this.criteriaFormsOptions = res["data"][
                 "cmCriteriaFormsMaster"
               ].map((app) => {
@@ -155,29 +175,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 this.isCloneMode = true;
                 this.setCloneCriteriaData(params.id);
                 this.criteriaId = params.id;
-              } else {
-                let defAppMod = JSON.parse(
-                  localStorage.getItem("defAppModule")
-                );
-                let defApp = null;
-                let defMod = null;
-                if (defAppMod) {
-                  defApp = this.criteriaApplicationOptions.filter(
-                    (opt) => opt.code == defAppMod.applicationName.code
-                  )[0];
-                  defMod = this.criteriaModuleOptions.filter(
-                    (opt) => opt.code == defAppMod.moduleName.code
-                  )[0];
-                }
-
-                if (defApp) {
-                  this.appCtrl.patchValue(defApp);
-                }
-                if (defMod) {
-                  this.moduleCtrl.patchValue(defMod);
-                  this.moduleCtrl.enable();
-                  this.formCtrl.enable();
-                }
               }
             } else if (res["msg"]) {
               this.coreService.showWarningToast(res["msg"]);
@@ -249,12 +246,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   executeQueries() {
-    let data = {
-      formName: this.formCtrl.value.name,
-      moduleName: this.moduleCtrl.value.name,
-      applicationName: this.appCtrl.value.name,
-    };
-
     if (this.mode == "add") {
       this.coreService.displayLoadingScreen();
       this.selectFields = [];
@@ -394,9 +385,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
                 let form = appForm.split(":")[1];
                 let module = appForm.split(":")[2];
                 if (
-                  this.appCtrl.value.name == app &&
-                  this.formCtrl.value.name == form &&
-                  this.moduleCtrl.value.name == module &&
+                  this.appCtrl.value.code == app &&
+                  this.formCtrl.value.code == form &&
+                  this.moduleCtrl.value.code == module &&
                   !this.duplicateCriteria
                 ) {
                   this.duplicateCriteria = true;
@@ -436,9 +427,9 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   saveCriteriaFields(action: any) {
     this.coreService.displayLoadingScreen();
     let data = {
-      form: this.formCtrl.value.name,
-      applications: this.appCtrl.value.name,
-      moduleName: this.moduleCtrl.value.name,
+      form: this.formCtrl.value.code,
+      applications: this.appCtrl.value.code,
+      moduleName: this.moduleCtrl.value.code,
       createdBy: null,
       createdByID: this.userData.userId,
       status: "A",
@@ -608,11 +599,6 @@ export class CriteriaSettingsDetailComponent implements OnInit {
   }
 
   setCloneCriteriaData(criteriaId: any) {
-    let data = {
-      formName: this.appFormModuleDataForEdit["formName"],
-      moduleName: this.appFormModuleDataForEdit["moduleName"],
-      applicationName: this.appFormModuleDataForEdit["appName"],
-    };
     forkJoin({
       cloneCriteriaData:
         this.criteriaSettingsService.getCriteriaCloneData(criteriaId),
@@ -622,93 +608,116 @@ export class CriteriaSettingsDetailComponent implements OnInit {
       .pipe(
         take(1),
         map((response) => {
-          const cloneCriteriaData =
-            response.cloneCriteriaData["data"]["cloneCriteria"];
-          const criteriaFieldsData =
-            response.criteriaFieldsData["data"]["cmCriteriaOperationsMasters"];
-          cloneCriteriaData["cmCriteriaDataDetails"].forEach((cloneD: any) => {
-            this.orderIDArray.push(cloneD.orderID);
-            cloneD["operationOption"] = this.criteriaOperatorsOptions.map(
-              (x) => {
-                return { label: x.name, code: x.name };
+          if (
+            response.cloneCriteriaData["data"] &&
+            response.cloneCriteriaData["data"]["cloneCriteria"]
+          ) {
+            const cloneCriteriaData =
+              response.cloneCriteriaData["data"]["cloneCriteria"];
+            const criteriaFieldsData =
+              response.criteriaFieldsData["data"][
+                "cmCriteriaOperationsMasters"
+              ];
+            cloneCriteriaData["cmCriteriaDataDetails"].forEach(
+              (cloneD: any) => {
+                this.orderIDArray.push(cloneD.orderID);
+                cloneD["operationOption"] = this.criteriaOperatorsOptions.map(
+                  (x) => {
+                    return { label: x.name, code: x.name };
+                  }
+                );
+                let selectedOpt = cloneD["operations"].split(",");
+                cloneD["operations"] = selectedOpt.map((opt) => {
+                  return { label: opt, code: opt };
+                });
+                cloneD["iSMandatory"] =
+                  cloneD["iSMandatory"] == "yes" ? true : false;
+                cloneD["dependencyOptions"] = [];
+                let data = criteriaFieldsData.find(
+                  (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
+                );
+                if (data && data["dependency"]) {
+                  cloneD["dependencyOptions"] = /[,]/.test(data["dependency"])
+                    ? data["dependency"].split(",").map((x) => {
+                        return { label: x, value: x };
+                      })
+                    : [
+                        {
+                          label: data["dependency"],
+                          value: data["dependency"],
+                        },
+                      ];
+                }
+
+                if (cloneD.dependency) {
+                  let selectedDep = /[,]/.test(data["dependency"])
+                    ? cloneD["dependency"].split(",")
+                    : [cloneD["dependency"]];
+                  cloneD["dependency"] = selectedDep.map((opt) => {
+                    return { label: opt, value: opt };
+                  });
+                }
               }
             );
-            let selectedOpt = cloneD["operations"].split(",");
-            cloneD["operations"] = selectedOpt.map((opt) => {
-              return { label: opt, code: opt };
+            this.isFieldsQueriesData = true;
+            this.fieldsQueriesData = [...criteriaFieldsData];
+
+            this.selectedFields = criteriaFieldsData.filter((crit) => {
+              return cloneCriteriaData["cmCriteriaDataDetails"].find(
+                (cloneCrit) => {
+                  return cloneCrit["fieldName"] == crit["fieldName"];
+                }
+              );
             });
-            cloneD["iSMandatory"] =
-              cloneD["iSMandatory"] == "yes" ? true : false;
-            cloneD["dependencyOptions"] = [];
-            let data = criteriaFieldsData.find(
-              (fieldD) => fieldD["fieldName"] == cloneD["fieldName"]
+            this.selectFields = criteriaFieldsData.filter(
+              (el) => !this.selectedFields.includes(el)
             );
-            if (data && data["dependency"]) {
-              cloneD["dependencyOptions"] = /[,]/.test(data["dependency"])
-                ? data["dependency"].split(",").map((x) => {
-                    return { label: x, value: x };
-                  })
-                : [{ label: data["dependency"], value: data["dependency"] }];
+            return cloneCriteriaData;
+          } else {
+            if (response.cloneCriteriaData["msg"]) {
+              return response.cloneCriteriaData;
             }
-
-            if (cloneD.dependency) {
-              let selectedDep = /[,]/.test(data["dependency"])
-                ? cloneD["dependency"].split(",")
-                : [cloneD["dependency"]];
-              cloneD["dependency"] = selectedDep.map((opt) => {
-                return { label: opt, value: opt };
-              });
-            }
-          });
-          this.isFieldsQueriesData = true;
-          this.fieldsQueriesData = [...criteriaFieldsData];
-
-          this.selectedFields = criteriaFieldsData.filter((crit) => {
-            return cloneCriteriaData["cmCriteriaDataDetails"].find(
-              (cloneCrit) => {
-                return cloneCrit["fieldName"] == crit["fieldName"];
-              }
-            );
-          });
-          this.selectFields = criteriaFieldsData.filter(
-            (el) => !this.selectedFields.includes(el)
-          );
-          return cloneCriteriaData;
+          }
         })
       )
       .subscribe(
         (res) => {
-          if (
-            res["status"] &&
-            typeof res["status"] == "string" &&
-            (res["status"] == "400" || res["status"] == "500")
-          ) {
-            console.log("df", res);
-            if (res["error"]) {
-              this.coreService.showWarningToast(res["error"]);
+          if (res["status"]) {
+            if (
+              typeof res["status"] == "string" &&
+              (res["status"] == "400" || res["status"] == "500")
+            ) {
+              console.log("df", res);
+              if (res["error"]) {
+                this.coreService.showWarningToast(res["error"]);
+              } else {
+                this.coreService.showWarningToast(res["msg"]);
+              }
             } else {
-              this.coreService.showWarningToast(res["msg"]);
-            }
-          } else {
-            this.criteriaSettingtable = res["cmCriteriaDataDetails"];
-            this.criteriaSettingtable.forEach((item, i) => {
-              item["operations"] = this.criteriaSettingtable[i]["operations"];
-              item["dependency"] = this.criteriaSettingtable[i]["dependency"];
-              item["iSMandatory"] = this.criteriaSettingtable[i]["iSMandatory"];
-            });
+              this.criteriaSettingtable = res["cmCriteriaDataDetails"];
+              this.criteriaSettingtable.forEach((item, i) => {
+                item["operations"] = this.criteriaSettingtable[i]["operations"];
+                item["dependency"] = this.criteriaSettingtable[i]["dependency"];
+                item["iSMandatory"] =
+                  this.criteriaSettingtable[i]["iSMandatory"];
+              });
 
-            const appValue = this.criteriaApplicationOptions.find(
-              (value) => value.name === res["applications"]
-            );
-            this.appCtrl.setValue(appValue);
-            const formValue = this.criteriaFormsOptions.find(
-              (value) => value.name === res["form"]
-            );
-            this.formCtrl.setValue(formValue);
-            const moduleValue = this.criteriaModuleOptions.find(
-              (value) => value.name === res["moduleName"]
-            );
-            this.moduleCtrl.setValue(moduleValue);
+              const appValue = this.criteriaApplicationOptions.find(
+                (value) => value.code === res["applications"]
+              );
+              this.appCtrl.setValue(appValue);
+              const formValue = this.criteriaFormsOptions.find(
+                (value) => value.code === res["form"]
+              );
+              this.formCtrl.setValue(formValue);
+              const moduleValue = this.criteriaModuleOptions.find(
+                (value) => value.code === res["moduleName"]
+              );
+              this.moduleCtrl.setValue(moduleValue);
+            }
+          } else if (res["msg"]) {
+            this.coreService.showWarningToast(res["msg"]);
+            return;
           }
         },
         (err) => {

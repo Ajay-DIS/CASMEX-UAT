@@ -56,8 +56,8 @@ export class CustomerProfileComponent implements OnInit {
   showNoDataFound: boolean = false;
 
   formName = null;
-  applicationName = "Casmex Core";
-  moduleName = "Remittance";
+  applicationName = JSON.parse(localStorage.getItem("applicationName"));
+  moduleName = JSON.parse(localStorage.getItem("moduleName"));
   pageNumber = 1;
   pageSize = 10;
   totalPages = 5;
@@ -221,7 +221,7 @@ export class CustomerProfileComponent implements OnInit {
 
   getDocSettingData() {
     this.http
-      .get(`remittance/documentSettingsController/getDocumentSetting`, {
+      .get(`appControl/documentSettingsController/getDocumentSetting`, {
         headers: new HttpHeaders()
           .set("criteriaMap", "Country = IN;Form = Customer Profile")
           .set("form", "Document Settings")
@@ -474,8 +474,8 @@ export class CustomerProfileComponent implements OnInit {
     this.customerService
       .getDataForsearchCriteria(
         this.userData["userId"],
-        this.applicationName,
-        this.moduleName,
+        this.applicationName["code"],
+        this.moduleName["code"],
         this.formName
       )
       .subscribe(
@@ -962,7 +962,7 @@ export class CustomerProfileComponent implements OnInit {
     if (expanded == false) {
       this.http
         .get(
-          `/remittance/beneficiaryProfileController/getBeneficiaryProfileList`,
+          `/appControl/beneficiaryProfileController/getBeneficiaryProfileList`,
           {
             headers: new HttpHeaders()
               .set("customerType", customerType)

@@ -125,7 +125,8 @@ export class AddBeneficiaryComponent implements OnInit {
     modName: any,
     formName: any
   ) {
-    this.getBeneficiaryMasterData();
+    // this.getBeneficiaryMasterData();
+    this.getCustomerMasterDataFromAppControlAndRemittance();
     this.customerService
       .getCausingCriteriaFields(userId, appName, modName, formName)
       .subscribe((res) => {
@@ -194,7 +195,7 @@ export class AddBeneficiaryComponent implements OnInit {
       ? causingCriteriaFieldValueArr.join(";")
       : "NA";
     this.http
-      .get(`/remittance/formRulesController/getFormRulesSetting`, {
+      .get(`/appControl/formRulesController/getFormRulesSetting`, {
         headers: new HttpHeaders()
           .set("criteriaMap", causingCriteriaMap)
           .set("form", "Customer Profile Beneficiary_Form Rules")
@@ -231,25 +232,47 @@ export class AddBeneficiaryComponent implements OnInit {
       );
   }
 
-  getBeneficiaryMasterData() {
-    this.http
-      .get(
-        `/remittance/beneficiaryProfileController/getBeneficiaryProfileMaster`,
-        {
-          headers: new HttpHeaders().set("userId", this.userId),
-        }
-      )
+  // getBeneficiaryMasterData() {
+  //   this.http
+  //     .get(
+  //       `/appControl/beneficiaryProfileController/getBeneficiaryProfileMaster`,
+  //       {
+  //         headers: new HttpHeaders().set("userId", this.userId),
+  //       }
+  //     )
+  //     .subscribe(
+  //       (res) => {
+  //         if (res["status"] == "200") {
+  //           this.masterData = res["data"];
+  //           console.log("masterdatatype", this.masterData);
+  //         }
+  //       },
+  //       (err) => {
+  //         this.coreService.showWarningToast(
+  //           "Some error while fetching data, Try again in sometime"
+  //         );
+  //       }
+  //     );
+  // }
+
+  getCustomerMasterDataFromAppControlAndRemittance() {
+    this.masterData = {};
+    this.customerService
+      .getCustomerMasterDataFromAppControlAndRemittance()
       .subscribe(
-        (res) => {
-          if (res["status"] == "200") {
-            this.masterData = res["data"];
-            console.log("masterdatatype", this.masterData);
-          }
+        (responses: any[]) => {
+          // Handle successful responses
+          console.log("Response from API 1:", responses[0]);
+          console.log("Response from API 2:", responses[1]);
+          this.masterData = {
+            ...responses[0]["data"],
+            ...responses[1]["data"],
+          };
         },
-        (err) => {
-          this.coreService.showWarningToast(
-            "Some error while fetching data, Try again in sometime"
-          );
+        (error) => {
+          // Handle error if any API request fails
+          console.error("Error:", error);
+          // You can show an error message to the user or handle it in any other way
         }
       );
   }
@@ -258,7 +281,7 @@ export class AddBeneficiaryComponent implements OnInit {
     this.coreService.displayLoadingScreen();
     this.http
       .get(
-        `/remittance/beneficiaryProfileController/getBeneficiaryProfile/${custId}`,
+        `/appControl/beneficiaryProfileController/getBeneficiaryProfile/${custId}`,
         {
           headers: new HttpHeaders().set("userId", this.userId),
         }
@@ -316,7 +339,7 @@ export class AddBeneficiaryComponent implements OnInit {
   saveBeneficiaryForEdit(payload: any) {
     this.http
       .put(
-        `/remittance/beneficiaryProfileController/updateBeneficiaryProfile`,
+        `/appControl/beneficiaryProfileController/updateBeneficiaryProfile`,
         payload,
         {
           headers: new HttpHeaders()
@@ -362,7 +385,7 @@ export class AddBeneficiaryComponent implements OnInit {
     console.log(this.custType);
     this.http
       .post(
-        `/remittance/beneficiaryProfileController/saveBeneficiaryProfile`,
+        `/appControl/beneficiaryProfileController/saveBeneficiaryProfile`,
         payload,
         {
           headers: new HttpHeaders()
@@ -407,7 +430,7 @@ export class AddBeneficiaryComponent implements OnInit {
   updateBeneficiaryCustomer(payload: any) {
     this.http
       .put(
-        `/remittance/corporateCustomerController/updateCorporateCustomer`,
+        `/appControl/corporateCustomerController/updateCorporateCustomer`,
         payload,
         {
           headers: new HttpHeaders()

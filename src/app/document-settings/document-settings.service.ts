@@ -21,7 +21,9 @@ export class DocumentSettingsService {
   }
   // COMMON SERVICES
   getAppModuleList() {
-    return this.http.get(`/remittance/banksRoutingController/criteriaTypes`);
+    return this.http.get(
+      `/appControl/applicationSettingsController/criteriaTypes`
+    );
   }
 
   getCriteriaMasterData(
@@ -31,13 +33,13 @@ export class DocumentSettingsService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/formRulesController/getCriteriaMasterData`,
+      `/appControl/formRulesController/getCriteriaMasterData`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
           .set("form", formName)
-          .set("applications", appName)
-          .set("moduleName", moduleName),
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName)),
       }
     );
   }
@@ -50,20 +52,20 @@ export class DocumentSettingsService {
     displayName: any,
     moduleName: any
   ) {
-    return this.http.get(`/remittance/formRulesController/getCriteriaData`, {
+    return this.http.get(`/appControl/formRulesController/getCriteriaData`, {
       headers: new HttpHeaders()
         .set("form", formName)
-        .set("applications", appName)
+        .set("applications", String(appName))
         .set("criteriaMap", criteriaMap)
         .set("fieldName", fieldName)
         .set("displayName", displayName)
-        .set("moduleName", moduleName),
+        .set("moduleName", String(moduleName)),
     });
   }
 
   currentCriteriaSaveAsTemplate(data: any): Observable<any> {
     return this.http.post(
-      `remittance/formRulesController/saveFormRuleCriteria`,
+      `appControl/formRulesController/saveFormRuleCriteria`,
       data
     );
   }
@@ -75,13 +77,13 @@ export class DocumentSettingsService {
     formName: any
   ): Observable<any> {
     return this.http.get(
-      `remittance/formRulesController/getExistingFormRuleList
+      `appControl/formRulesController/getExistingFormRuleList
       `,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -96,12 +98,12 @@ export class DocumentSettingsService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/documentSettingsController/getDocumentSettingsList`,
+      `/appControl/documentSettingsController/getDocumentSettingsList`,
       {
         headers: new HttpHeaders()
           .set("userId", id)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -114,12 +116,12 @@ export class DocumentSettingsService {
     moduleName: any
   ) {
     return this.http.get(
-      `/remittance/documentSettingsController/addDocSettings`,
+      `/appControl/documentSettingsController/addDocSettings`,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -127,7 +129,7 @@ export class DocumentSettingsService {
 
   applyCriteriaSearch(data: any) {
     return this.http.post(
-      `/remittance/documentSettingsController/applyCriteriaSearch`,
+      `/appControl/documentSettingsController/applyCriteriaSearch`,
       data
     );
   }
@@ -140,13 +142,13 @@ export class DocumentSettingsService {
     formName: any
   ) {
     return this.http.get(
-      `remittance/documentSettingsController/getDocumentSettingsForEdit`,
+      `appControl/documentSettingsController/getDocumentSettingsForEdit`,
       {
         headers: new HttpHeaders()
           .set("documentSettingsCode", docCode)
           .set("operation", operation)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName),
       }
     );
@@ -154,7 +156,7 @@ export class DocumentSettingsService {
 
   updateDocumentStatus(data: any) {
     return this.http.post(
-      `remittance/documentSettingsController/updateDocumentSettingsStatus`,
+      `appControl/documentSettingsController/updateDocumentSettingsStatus`,
       data
     );
   }
@@ -168,13 +170,13 @@ export class DocumentSettingsService {
     operation: any
   ): Observable<any> {
     return this.http.post(
-      `/remittance/documentSettingsController/saveDocumentSetting`,
+      `/appControl/documentSettingsController/saveDocumentSetting`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName)
           .set("operation", operation),
       }
@@ -190,13 +192,13 @@ export class DocumentSettingsService {
     operation: any
   ): Observable<any> {
     return this.http.post(
-      `remittance/documentSettingsController/updateDocumentSetting`,
+      `appControl/documentSettingsController/updateDocumentSetting`,
       data,
       {
         headers: new HttpHeaders()
           .set("userId", userId)
-          .set("applications", appName)
-          .set("moduleName", moduleName)
+          .set("applications", String(appName))
+          .set("moduleName", String(moduleName))
           .set("form", formName)
           .set("operation", operation),
       }

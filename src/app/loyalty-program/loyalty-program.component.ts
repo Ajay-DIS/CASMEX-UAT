@@ -133,9 +133,7 @@ export class LoyaltyProgramComponent implements OnInit {
     );
     this.searchModuleOptions = JSON.parse(localStorage.getItem("modAccess"));
     if (localStorage.getItem("applicationName")) {
-      let defApplication = this.searchApplicationOptions.filter(
-        (opt) => opt.code == localStorage.getItem("applicationName")
-      )[0];
+      let defApplication = JSON.parse(localStorage.getItem("applicationName"));
       console.log(defApplication);
       if (defApplication) {
         this.appCtrl.patchValue(defApplication);
@@ -143,7 +141,7 @@ export class LoyaltyProgramComponent implements OnInit {
     }
     if (localStorage.getItem("moduleName")) {
       let defModule = this.searchModuleOptions.filter(
-        (opt) => opt.code == "Loyalty Programs"
+        (opt) => opt.name == "Loyalty Programs"
       )[0];
       if (defModule) {
         this.moduleCtrl.patchValue(defModule);
@@ -153,36 +151,10 @@ export class LoyaltyProgramComponent implements OnInit {
     if (this.appCtrl.value && this.moduleCtrl.value) {
       this.searchAppModule();
     } else {
+      this.coreService.showWarningToast("No Access to Loyalty Module");
       this.coreService.removeLoadingScreen();
     }
     //
-
-    this.loyaltyService.getAppModuleList().subscribe(
-      (res) => {
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-
-          // this.coreService.removeLoadingScreen();
-        } else {
-          if (!res["msg"]) {
-          } else {
-            this.coreService.removeLoadingScreen();
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
   }
 
   setSelectAppModule() {
@@ -215,8 +187,8 @@ export class LoyaltyProgramComponent implements OnInit {
     );
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
     );
   }
 
@@ -426,8 +398,8 @@ export class LoyaltyProgramComponent implements OnInit {
   }
 
   viewLoyaltyProgram(data: any) {
-    this.loyaltyService.applicationName = this.appCtrl.value.name;
-    this.loyaltyService.moduleName = this.moduleCtrl.value.name;
+    this.loyaltyService.applicationName = this.appCtrl.value.code;
+    this.loyaltyService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "loyalty-programs",
@@ -468,7 +440,7 @@ export class LoyaltyProgramComponent implements OnInit {
   viewDoc(dbFileName: any) {
     this.coreService.displayLoadingScreen();
     let service;
-    service = this.http.get(`/remittance/kycUpload/view/${dbFileName}`, {
+    service = this.http.get(`/appControl/kycUpload/view/${dbFileName}`, {
       headers: new HttpHeaders().set("userId", this.userData.userId),
       responseType: "blob",
     });
@@ -497,7 +469,7 @@ export class LoyaltyProgramComponent implements OnInit {
   downloadDoc(dbFileName: any) {
     this.coreService.displayLoadingScreen();
     let services = this.http.get(
-      `/remittance/kycUpload/fileDownload/${dbFileName}`,
+      `/appControl/kycUpload/fileDownload/${dbFileName}`,
       {
         headers: new HttpHeaders().set("userId", this.userData.userId),
         observe: "response",
@@ -596,8 +568,8 @@ export class LoyaltyProgramComponent implements OnInit {
         data["programCode"],
         "edit",
         this.userData.userId,
-        this.appCtrl.value.name,
-        this.moduleCtrl.value.name,
+        this.appCtrl.value.code,
+        this.moduleCtrl.value.code,
         this.formName
       )
       .subscribe(
@@ -671,8 +643,8 @@ export class LoyaltyProgramComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("programCode", data["programCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateCodeStatus(formData, e.target, data);
   }
@@ -691,8 +663,8 @@ export class LoyaltyProgramComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
             );
             this.coreService.showSuccessToast(message);
           } else {

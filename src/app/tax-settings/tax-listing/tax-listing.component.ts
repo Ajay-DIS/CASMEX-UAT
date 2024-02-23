@@ -123,12 +123,8 @@ export class TaxListingComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -143,33 +139,6 @@ export class TaxListingComponent implements OnInit {
     }
 
     // getting app-mod from localstorage ends
-
-    this.taxSettingsService.getTaxSettingAppModuleList().subscribe(
-      (res) => {
-        // this.coreService.removeLoadingScreen();
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-            // this.coreService.removeLoadingScreen();
-          } else {
-            // this.coreService.removeLoadingScreen();
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
   }
 
   setSelectAppModule() {
@@ -198,8 +167,8 @@ export class TaxListingComponent implements OnInit {
     sessionStorage.setItem("tax", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
     );
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
@@ -356,8 +325,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   viewTaxSetting(data: any) {
-    this.taxSettingsService.applicationName = this.appCtrl.value.name;
-    this.taxSettingsService.moduleName = this.moduleCtrl.value.name;
+    this.taxSettingsService.applicationName = this.appCtrl.value.code;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "tax-settings",
@@ -438,8 +407,8 @@ export class TaxListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("taxCode", data["taxCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateTaxCodeStatus(formData, e.target, data);
   }
@@ -458,8 +427,8 @@ export class TaxListingComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
             );
             this.coreService.showSuccessToast(message);
           } else {
@@ -477,8 +446,8 @@ export class TaxListingComponent implements OnInit {
   }
 
   cloneTax(data: any) {
-    this.taxSettingsService.applicationName = this.appCtrl.value.name;
-    this.taxSettingsService.moduleName = this.moduleCtrl.value.name;
+    this.taxSettingsService.applicationName = this.appCtrl.value.code;
+    this.taxSettingsService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "tax-settings",

@@ -123,12 +123,8 @@ export class ChargeListingComponent implements OnInit {
       )[0];
     } else {
       if (defAppMod) {
-        defApp = this.searchApplicationOptions.filter(
-          (opt) => opt.code == defAppMod.applicationName.code
-        )[0];
-        defMod = this.searchModuleOptions.filter(
-          (opt) => opt.code == defAppMod.moduleName.code
-        )[0];
+        defApp = JSON.parse(localStorage.getItem("applicationName"));
+        defMod = JSON.parse(localStorage.getItem("moduleName"));
       }
     }
 
@@ -143,33 +139,6 @@ export class ChargeListingComponent implements OnInit {
     }
 
     // getting app-mod from localstorage ends
-
-    this.chargeService.getChargeSettingAppModuleList().subscribe(
-      (res) => {
-        // this.coreService.removeLoadingScreen();
-        if (
-          res["status"] &&
-          typeof res["status"] == "string" &&
-          (res["status"] == "400" || res["status"] == "500")
-        ) {
-          if (res["error"]) {
-            this.coreService.showWarningToast(res["error"]);
-          } else {
-            this.coreService.showWarningToast("Some error in fetching data");
-          }
-        } else {
-          if (!res["msg"]) {
-            // this.coreService.removeLoadingScreen();
-          } else {
-            // this.coreService.removeLoadingScreen();
-          }
-        }
-      },
-      (err) => {
-        this.coreService.removeLoadingScreen();
-        this.coreService.showWarningToast("Some error in fetching data");
-      }
-    );
   }
 
   setSelectAppModule() {
@@ -198,8 +167,8 @@ export class ChargeListingComponent implements OnInit {
     sessionStorage.setItem("charge", JSON.stringify(currAppMod));
     this.getDecodedDataForListing(
       this.userData.userId,
-      this.appCtrl.value.name,
-      this.moduleCtrl.value.name
+      this.appCtrl.value.code,
+      this.moduleCtrl.value.code
     );
   }
   getDecodedDataForListing(userId: any, appValue: any, moduleValue: any) {
@@ -362,8 +331,8 @@ export class ChargeListingComponent implements OnInit {
   }
 
   viewChargeSetting(data: any) {
-    this.chargeService.applicationName = this.appCtrl.value.name;
-    this.chargeService.moduleName = this.moduleCtrl.value.name;
+    this.chargeService.applicationName = this.appCtrl.value.code;
+    this.chargeService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "charge-settings",
@@ -444,8 +413,8 @@ export class ChargeListingComponent implements OnInit {
     formData.append("userId", this.userData.userId);
     formData.append("chargeCode", data["chargeCode"]);
     formData.append("status", reqStatus);
-    formData.append("applications", this.appCtrl.value.name);
-    formData.append("moduleName", this.moduleCtrl.value.name);
+    formData.append("applications", this.appCtrl.value.code);
+    formData.append("moduleName", this.moduleCtrl.value.code);
     formData.append("form", this.formName);
     this.updateChargeCodeStatus(formData, e.target, data);
   }
@@ -464,8 +433,8 @@ export class ChargeListingComponent implements OnInit {
             sliderElm.checked = sliderElm!.checked;
             this.getDecodedDataForListing(
               this.userData.userId,
-              this.appCtrl.value.name,
-              this.moduleCtrl.value.name
+              this.appCtrl.value.code,
+              this.moduleCtrl.value.code
             );
             this.coreService.showSuccessToast(message);
           } else {
@@ -483,8 +452,8 @@ export class ChargeListingComponent implements OnInit {
   }
 
   cloneCharge(data: any) {
-    this.chargeService.applicationName = this.appCtrl.value.name;
-    this.chargeService.moduleName = this.moduleCtrl.value.name;
+    this.chargeService.applicationName = this.appCtrl.value.code;
+    this.chargeService.moduleName = this.moduleCtrl.value.code;
     this.router.navigate([
       "navbar",
       "charge-settings",
