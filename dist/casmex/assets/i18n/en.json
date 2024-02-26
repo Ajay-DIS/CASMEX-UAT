@@ -1,0 +1,36 @@
+{"Home": {
+    "h3":"Head Office Admin ",
+    "Dashboard":"Dashboard" ,
+    "Rate Setup":"Rate Setup",
+    "Customer":"Customer",
+    "Application Settings":"Application Settings",
+    "Beneficiary Details":"Beneficiary Details",
+    "Remittance":"Remittance",
+    "Forex":"Forex",
+    "Incoming":"Incoming",
+    "Transaction Search":"Transaction Search",
+    "Accounts":"Accounts",
+    "Reports":"Reports",
+    "Settings":"Settings",
+    "Module Settings":"Module Settings",
+    "home":"Home",
+    "Payment Mode Settings":"Payment Mode Settings",
+    "Payment mode description":"Payment mode description",
+    "Criteria":"Criteria",
+    "Applicable on":"Applicable on",
+    "Status":"Status",
+    "Add New":"Add New"
+ },
+ "Bank-Routing":{
+    "Bank Routing": "Bank Routing",
+    "Add New Route": "Add New Route",
+    "Route Code": "Route Code",
+    "Country": "Country",
+    "Route Bank Name": "Route Bank Name",
+    "Service Category": "Service Category",
+    "Service Type": "Service Type",
+    "Is Correspondent": "Is Correspondent",
+    "Route To": "Route To",
+    "Status": "Status"
+ }
+}
