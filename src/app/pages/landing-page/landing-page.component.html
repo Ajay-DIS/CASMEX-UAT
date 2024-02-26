@@ -1,5 +1,5 @@
-<div class="session-timeout-container">
-  <div class="session-timeout-header">
+<div class="dashboard-container">
+  <div class="dashboard-header">
     <div class="sidebar-header">
       <a routerLink="/navbar" class="logo d-flex align-items-center">
         <svg
@@ -86,6 +86,98 @@
 
       <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
+          <li class="nav-item">
+            <p-dropdown
+              #themeOpt
+              class="theme-dropdown"
+              [options]="themeOptions"
+              optionLabel="name"
+              (onChange)="selectTheme(themeOpt.value)"
+              [(ngModel)]="selectedTheme"
+            >
+              <ng-template pTemplate="selectedItem">
+                <div
+                  class="theme-item"
+                  style="display: flex; align-items: center; gap: 8px"
+                  pTooltip="Select Theme Color."
+                >
+                  <div
+                    [ngStyle]="{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: selectedTheme.color
+                    }"
+                  ></div>
+                  <div>{{ selectedTheme.name }}</div>
+                </div>
+              </ng-template>
+
+              <ng-template let-theme pTemplate="item">
+                <div
+                  class="theme-item"
+                  style="display: flex; align-items: center; gap: 8px"
+                >
+                  <div
+                    [ngStyle]="{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: theme.color
+                    }"
+                  ></div>
+                  <div>{{ theme.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </li>
+          <!-- <li class="nav-item">
+                  <p-dropdown
+                    [options]="languages"
+                    [(ngModel)]="selectedLanguage"
+                    (onChange)="switchLanguage(selectedLanguage)"
+                  ></p-dropdown>
+                </li> -->
+          <li class="nav-item">
+            <p-dropdown
+              #appDropdown
+              class="theme-dropdown app-switcher"
+              [options]="eligibleApplications"
+              optionLabel="codeName"
+              (onChange)="goIntoApplication(appDropdown.value)"
+              [(ngModel)]="selectedEligibleApp"
+            >
+              <ng-template pTemplate="selectedItem">
+                <div
+                  class="theme-item"
+                  style="display: flex; align-items: center; gap: 8px"
+                  pTooltip="Select App."
+                >
+                  <a class="nav-link nav-icon">
+                    <img src="../assets/icon/app-switcher.svg" alt="" />
+                  </a>
+                </div>
+              </ng-template>
+
+              <ng-template let-theme pTemplate="item">
+                <div
+                  class="theme-item"
+                  style="display: flex; align-items: center; gap: 8px"
+                >
+                  <!-- <div
+                    [ngStyle]="{
+                      width: '20px',
+                      height: '20px',
+                      borderRadius: '50%',
+                      background: theme.color
+                    }"
+                  ></div> -->
+                  <div>{{ theme.codeName }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </li>
+          <!-- End app-switcher -->
           <li class="nav-item notification-alert">
             <a class="nav-link nav-icon" data-bs-toggle="dropdown">
               <img
@@ -96,7 +188,24 @@
             ><!-- End Notification Icon -->
           </li>
           <li class="nav-item profile-icon-name d-flex">
-            <div (click)="goToLoginPage()" class="operation">LOGIN</div>
+            <img
+              src="../assets/icon/profile icon.svg"
+              alt="Profile"
+              class="rounded-circle"
+            />
+            <div class="profile-content">
+              <p-dropdown
+                #profileOpt
+                class="profile-dropdown"
+                [options]="profileOptions"
+                [placeholder]="loggedInUserName"
+                optionLabel="name"
+                (onClick)="selectProfileOption(profileOpt.value)"
+                [showClear]="false"
+              >
+              </p-dropdown>
+              <span style="padding-left: 0.75rem"> ADMIN </span>
+            </div>
           </li>
           <!-- End Profile Nav -->
         </ul>
@@ -104,29 +213,33 @@
       <!-- End Icons Navigation -->
     </header>
   </div>
-
-  <div class="session-timeout-body">
-    <div class="sessionTimeout">
-      <div>
-        <div><img src="assets/sessiontimeout.jpg" /></div>
-      </div>
-      <div>
-        <div>
-          <h3>Session TimeOut</h3>
-          <p>
-            Your session has limited out due to inactivity.Please login again to
-            continue
-          </p>
-          <button
-            pButton
-            pRipple
-            type="button"
-            label="Login"
-            class="p-button-raised"
-            (click)="onSubmit()"
-          ></button>
-        </div>
-      </div>
+  <div class="dashboard-body">
+    <div class="landing-text">
+      <p class="greet-text">Welcome to CASMEX.</p>
+      <!-- <p class="instruction-text">Select Application to continue...</p> -->
     </div>
+    <!-- <div class="application-tiles">
+      <div
+        *ngFor="let app of allApplicationsTilesData"
+        class="app-tile"
+        [pTooltip]="app.eligibleApp ? '' : 'Not Subscribed'"
+        tooltipPosition="top"
+      >
+        <p-card
+          [ngClass]="{ eligibleApp: app.eligibleApp }"
+          (click)="goIntoApplication(app)"
+        >
+          {{ app["codeName"] }}
+        </p-card>
+      </div>
+      <div
+        *ngIf="!allApplicationsTilesData || !allApplicationsTilesData.length"
+        class="no-application-available"
+      >
+        <p class="no-application-text">
+          😥 Currently No Application Available. Please try again later!
+        </p>
+      </div>
+    </div> -->
   </div>
 </div>

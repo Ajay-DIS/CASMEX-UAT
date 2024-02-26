@@ -46,10 +46,12 @@ export class AuthService {
     localStorage.removeItem("token");
     localStorage.removeItem("userData");
     localStorage.removeItem("licenseCountry");
+    localStorage.removeItem("selectedApplication");
+    localStorage.clear();
     this.coreService.showWarningToast(
       "Your session has timed out. Please log in again to continue."
     );
-    this.router.navigate(["navbar/session-time-out"]);
+    this.router.navigate(["session-time-out"]);
   }
 
   autoLogout(expiryTimer: any) {
@@ -105,7 +107,8 @@ export class AuthService {
       userData["userId"],
       userData["userName"],
       userData["_token"],
-      userData["expirationDate"]
+      userData["expirationDate"],
+      userData["userCode"]
     );
 
     if (userData["expirationDate"] - new Date().getTime() <= 0) {
@@ -145,7 +148,8 @@ export class AuthService {
       user["userId"],
       user["userName"],
       token,
-      new Date(expiry * 1000).getTime()
+      new Date(expiry * 1000).getTime(),
+      user["userCode"]
     );
 
     this.userDataSub.next(loggedUser);

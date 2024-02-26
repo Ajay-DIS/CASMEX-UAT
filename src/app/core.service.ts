@@ -127,4 +127,13 @@ export class CoreService {
   onLangChange() {
     return this.translateService.onLangChange;
   }
+
+  $sidebarMenu = new BehaviorSubject<any[]>([]);
+
+  getsidebarMenu() {
+    return this.$sidebarMenu;
+  }
+  setsidebarMenu(val: any) {
+    this.$sidebarMenu.next(val);
+  }
 }

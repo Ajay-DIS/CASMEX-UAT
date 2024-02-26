@@ -166,12 +166,28 @@
 }
 .theme-dropdown::ng-deep .p-dropdown {
   width: 115px;
-  margin-top: 5px;
+  margin-top: 10px;
+}
+
+.theme-dropdown.app-switcher::ng-deep .p-dropdown {
+  width: 60px;
+  margin-top: 0;
+}
+.theme-dropdown.app-switcher::ng-deep
+  .p-dropdown
+  .p-dropdown-panel
+  .p-dropdown-items
+  p-dropdownitem:nth-child(1) {
+  display: none;
 }
 
 .profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger,
 .theme-dropdown::ng-deep .p-dropdown .p-dropdown-trigger {
   display: none;
+}
+
+.profile-dropdown::ng-deep .p-dropdown .p-overlay.p-component {
+  left: -10px !important;
 }
 
 .profile-dropdown::ng-deep .p-dropdown .p-dropdown-label,

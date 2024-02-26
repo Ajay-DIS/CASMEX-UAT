@@ -56,6 +56,16 @@ body.minified-sidebar .toggle-sidebar {
   width: 20px;
 }
 
+// ! Header Navs START
+.header-nav .nav-item .nav-link {
+  cursor: pointer;
+}
+.header-nav .nav-item .nav-link img:hover {
+  border-radius: 50%;
+  background: var(--surface-200);
+}
+// ! Header Navs ENDS
+
 // NEW STYLES
 
 .p-dialog-mask.p-component-overlay.p-dialog-mask-scrollblocker {

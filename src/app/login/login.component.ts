@@ -57,7 +57,8 @@ export class LoginComponent implements OnInit {
           (data: any) => {
             if (data && data.jwt && !data["msg"]) {
               this.loginService.saveLoggedUserInfo(data);
-              this.router.navigate(["/navbar"]);
+              this.router.navigate(["/dashboard"]);
+              // this.router.navigate(["/navbar"]);
               this.coreService.showSuccessToast("Login Successfull");
             } else {
               data["msg"] && this.coreService.showWarningToast(data["msg"]);

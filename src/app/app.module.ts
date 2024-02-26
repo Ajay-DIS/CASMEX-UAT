@@ -105,6 +105,7 @@ import { UsersPermisionsComponent } from "./users-permisions/users-permisions.co
 import { SystemUsersDetailsComponent } from "./users-permisions/system-users/system-users-details/system-users-details.component";
 import { SystemUsersListingComponent } from "./users-permisions/system-users/system-users-listing/system-users-listing.component";
 import { UserGroupComponent } from "./users-permisions/user-group/user-group/user-group.component";
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(httpClient: HttpClient) {
@@ -162,6 +163,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
     SystemUsersDetailsComponent,
     SystemUsersListingComponent,
     UserGroupComponent,
+    LandingPageComponent,
   ],
   imports: [
     BrowserModule,
