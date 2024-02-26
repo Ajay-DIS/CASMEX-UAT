@@ -5,7 +5,8 @@ export class User {
     private userId: string,
     private userName: string,
     private _token: string,
-    private expirationDate: number
+    private expirationDate: number,
+    private userCode: number
   ) {}
 
   get token() {

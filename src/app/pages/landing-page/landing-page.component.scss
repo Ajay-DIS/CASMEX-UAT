@@ -1,0 +1,197 @@
+.dashboard-container {
+  height: 100vh;
+  width: 100vw;
+}
+.dashboard-header {
+  display: flex;
+}
+.header {
+  width: calc(100% - 270px);
+  height: 80px;
+  transition: all 0.3s;
+  z-index: 998;
+  box-shadow: 0px 3px 10px rgba(1, 41, 112, 0.1);
+  background-color: #fff;
+  padding-left: 20px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+}
+
+.notFixed {
+  position: static !important;
+}
+
+@media (max-width: 815px) {
+  .profile-icon-name {
+    padding-right: 0 !important;
+  }
+}
+
+.notification-alert {
+  border-right: 1.5px solid var(--surface-500);
+  margin-right: 15px;
+}
+.notification-alert .badge {
+  height: 15px;
+  width: 15px;
+  right: 9px;
+  top: 5px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  padding: 0.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(247 68 64);
+}
+
+.header-nav ul {
+  list-style: none;
+}
+
+.header-nav > ul {
+  margin: 0;
+  padding: 0;
+}
+
+.header-nav .nav-icon {
+  font-size: 22px;
+  position: relative;
+}
+
+.header-nav .badge-number {
+  position: absolute;
+  inset: 10px 10px auto auto;
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
+.header-nav .page-heading {
+  margin-bottom: 0 !important;
+}
+
+.profile-dropdown::ng-deep .p-dropdown,
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon,
+.theme-dropdown::ng-deep .p-dropdown,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-trigger-icon {
+  border: none;
+}
+.theme-dropdown::ng-deep .p-dropdown {
+  width: 115px;
+  margin-top: 10px;
+}
+.theme-dropdown.app-switcher::ng-deep .p-dropdown {
+  width: 60px;
+  margin-top: 0;
+}
+.theme-dropdown.app-switcher::ng-deep
+  .p-dropdown
+  .p-dropdown-panel
+  .p-dropdown-items
+  p-dropdownitem:nth-child(1) {
+  display: none;
+}
+
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-trigger,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-trigger {
+  display: none;
+}
+
+.profile-dropdown::ng-deep .p-dropdown .p-dropdown-label,
+.theme-dropdown::ng-deep .p-dropdown .p-dropdown-label {
+  padding-bottom: 0;
+  padding-top: 0;
+  font-weight: 500;
+  color: black;
+}
+
+.profile-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus,
+.theme-dropdown::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  box-shadow: none;
+}
+.profile-content {
+  display: flex;
+  flex-direction: column;
+}
+.profile-content span {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px;
+  width: 270px;
+  background-color: var(--primary-color);
+  box-shadow: 0px 3px 10px rgba(1, 41, 112, 0.1);
+}
+
+// dashboard-body
+
+.dashboard-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: calc(100vh - 80px);
+}
+
+.landing-text .greet-text {
+  font-size: 40px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+.landing-text .instruction-text {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+.application-tiles {
+  width: calc(100vw - 300px);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.app-tile {
+  width: calc(94% / 4);
+}
+
+.app-tile p-card {
+  cursor: not-allowed;
+}
+.app-tile ::ng-deep .p-card {
+  pointer-events: none;
+  background-color: lightgray;
+}
+.app-tile ::ng-deep .p-card .p-card-content {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.app-tile p-card.eligibleApp {
+  cursor: pointer;
+}
+.app-tile ::ng-deep .eligibleApp .p-card {
+  pointer-events: all;
+  background-color: #fff;
+}
+.app-tile ::ng-deep .eligibleApp .p-card .p-card-content {
+  color: var(--primary-color);
+  opacity: 1;
+}
+
+.no-application-available .no-application-text {
+  font-size: 20px;
+  text-align: center;
+}

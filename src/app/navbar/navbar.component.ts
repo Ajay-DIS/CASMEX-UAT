@@ -1,5 +1,3 @@
-import { Location } from "@angular/common";
-import { HttpClient } from "@angular/common/http";
 import {
   AfterViewInit,
   Component,
@@ -14,8 +12,8 @@ import { MenuItem } from "primeng/api";
 import { take } from "rxjs/operators";
 import { AuthService } from "../auth/auth.service";
 import { CoreService } from "../core.service";
-import { BnNgIdleService } from "bn-ng-idle";
 import { Subscription } from "rxjs";
+import { LoginService } from "../login/login.service";
 
 @Component({
   selector: "app-navbar",
@@ -72,13 +70,21 @@ export class NavbarComponent implements OnInit, AfterViewInit {
 
   isStickyHeader = false;
 
+  loggedInUserName = "User";
+
+  loggedInUserCode = null;
+
+  eligibleApplications: any = [];
+  selectedEligibleApp: any = { code: "def", codeName: "def" };
+
   constructor(
     public translate: TranslateService,
     private el: ElementRef,
     private router: Router,
     private coreService: CoreService,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private loginService: LoginService
   ) {
     this.subscription = this.coreService.pageTitle$.subscribe((title) => {
       this.pageTitle = title;
@@ -87,7 +93,7 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.currRoute = event["urlAfterRedirects"];
-        this.setSidebarMenu();
+        // this.setSidebarMenu();
       }
     });
   }
@@ -95,6 +101,28 @@ export class NavbarComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.switchLanguage(this.selectedLanguage);
     this.selectTheme({ name: "Blue", color: "#4759e4" });
+    this.coreService.setsidebarMenu(
+      JSON.parse(localStorage.getItem("menuItems"))
+    );
+    this.coreService.getsidebarMenu().subscribe((sideMenu) => {
+      console.log(":::sideMenu", sideMenu);
+      this.setSidebarMenu(sideMenu);
+    });
+
+    this.loggedInUserName =
+      (localStorage.getItem("userData") &&
+        JSON.parse(localStorage.getItem("userData"))["userName"]) ||
+      "User";
+    this.loggedInUserCode =
+      localStorage.getItem("userData") &&
+      JSON.parse(localStorage.getItem("userData"))["userCode"];
+    this.eligibleApplications = JSON.parse(
+      localStorage.getItem("eligibleApplicationsForUser")
+    );
+    const selectedApplication = JSON.parse(
+      localStorage.getItem("selectedApplication")
+    );
+    if (selectedApplication) this.selectedEligibleApp = selectedApplication;
     this.coreService.getBreadCrumbMenu().subscribe((menu) => {
       console.log(":::mainBCrumbs", menu);
       this.breadcrumbsItems = menu;
@@ -155,19 +183,48 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       });
   }
 
-  createPanelMenuData(apiData: any) {
-    // Create a map to efficiently look up items by their IDs
-    const itemsMap = {};
+  goIntoApplication(app: any) {
+    console.log(this.selectedEligibleApp, app);
+    if (app && app.eligibleApp) {
+      if (this.selectedEligibleApp.code != app.code) {
+        localStorage.setItem("selectedApplication", JSON.stringify(app));
+        this.coreService.displayLoadingScreen();
+        console.log(":::app", app);
+        this.loginService
+          .getAppModuleData(this.loggedInUserCode, app.code)
+          .subscribe(
+            (res) => {
+              if (
+                !(res["application"] || res["module"] || res["menuItemTree"])
+              ) {
+                this.coreService.removeLoadingScreen();
+                this.coreService.showWarningToast(
+                  "Data Not Available for Selected Application"
+                );
+              } else {
+                this.loginService.saveUserSelectedApplicationData(res);
+                this.router.navigate(["/navbar"]);
+              }
+            },
+            (err) => {
+              this.coreService.removeLoadingScreen();
+              console.log("Error in getting App Module", err);
+            }
+          );
+      } else {
+        this.coreService.showSuccessToast("Already in this Application.");
+      }
+    }
+  }
 
-    // Initialize an array to store the root items (items with parentId 0)
+  createPanelMenuData(apiData: any) {
+    const itemsMap = {};
     const rootItems = [];
 
-    // Iterate over the API data to create items and populate the itemsMap
     apiData.forEach((item) => {
       const newItem = {
         id: String(item.id),
         label: item.menuName,
-        // Assuming you want to assign some default icon for each item
         icon: this.getIcons(item.id).icon,
         items: [],
         expanded:
@@ -177,21 +234,16 @@ export class NavbarComponent implements OnInit, AfterViewInit {
           ),
       };
 
-      // Store the item in the itemsMap using its ID as the key
       itemsMap[item.id] = newItem;
-
-      // Check if the item is a root item (parentId is 0)
       if (item.parentId === 0) {
         rootItems.push(newItem);
       } else {
-        // If not a root item, find its parent in the itemsMap and add it as a child
         const parentItem = itemsMap[item.parentId];
         if (parentItem) {
           newItem["icon"] = null;
           newItem["items"] = null;
           parentItem.items.push(this.getSubMenus(newItem));
         } else {
-          // Handle the case where the parent item is not found (optional)
           console.error(
             `Parent item with ID ${item.parentId} not found for item ${item.id}`
           );
@@ -201,41 +253,13 @@ export class NavbarComponent implements OnInit, AfterViewInit {
     return rootItems;
   }
 
-  setSidebarMenu() {
-    if (!!localStorage.getItem("menuItems")) {
-      const menuItems = localStorage.getItem("menuItems");
-      this.menuItemTree = JSON.parse(menuItems);
+  setSidebarMenu(sideMenu: any) {
+    console.log(":::sidemenudata", sideMenu);
+    if (sideMenu) {
+      // const menuItems = sideMenu;
+      this.menuItemTree = sideMenu;
     }
     this.menuItems = [];
-
-    // Object.keys(this.menuItemTree).map((menu) => {
-    //   if (this.menuItemTree[menu].length > 0) {
-    //     const submenus = [];
-    //     this.menuItemTree[menu].map((sub) => {
-    //       submenus.push({
-    //         label: sub,
-    //       });
-    //     });
-    //     this.menuItems.push({
-    //       label: menu,
-    //       icon: this.getIcons(menu).icon,
-    //       items: this.getSubMenus(submenus),
-    //       expanded:
-    //         this.getIcons(menu).matchUrls &&
-    //         this.getIcons(menu).matchUrls.some((v) =>
-    //           this.currRoute.includes(v)
-    //         ),
-    //     });
-    //   } else {
-    //     this.menuItems.push({
-    //       label: menu,
-    //       icon: this.getIcons(menu).icon,
-    //       routerLink: this.getIcons(menu).routerLink,
-    //       routerLinkActiveOptions: { subset: true },
-    //       expanded: true,
-    //     });
-    //   }
-    // });
 
     // !
     console.log(":::apimenudata", this.menuItemTree);
@@ -482,6 +506,8 @@ export class NavbarComponent implements OnInit, AfterViewInit {
       localStorage.removeItem("token");
       localStorage.removeItem("userData");
       localStorage.removeItem("licenseCountry");
+      localStorage.removeItem("selectedApplication");
+      localStorage.clear();
       if (data.name == "Logout") {
         this.coreService.showSuccessToast("Logged Out Successfully.");
       }

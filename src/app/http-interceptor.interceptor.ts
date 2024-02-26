@@ -35,7 +35,7 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
       this.coreService.showWarningToast(
         "Your session has timed out. Please log in again to continue."
       );
-      this.router.navigate(["navbar/session-time-out"]);
+      this.router.navigate(["session-time-out"]);
       return EMPTY;
     } else {
       const token = localStorage.getItem("token");

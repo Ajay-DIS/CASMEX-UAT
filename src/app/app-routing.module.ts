@@ -35,22 +35,32 @@ import { CustomisedDetailsComponent } from "./customised-messages/customised-det
 import { CompanyDetailsComponent } from "./company-settings/company-details/company-details.component";
 import { RateListingComponent } from "./rate-settings/rate-listing/rate-listing.component";
 import { UsersPermisionsComponent } from "./users-permisions/users-permisions.component";
+import { LandingPageComponent } from "./pages/landing-page/landing-page.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "login", pathMatch: "full" },
   { path: "login", component: LoginComponent, canActivate: [AuthGuard] },
   {
+    path: "dashboard",
+    component: LandingPageComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "session-time-out",
+    component: SessionTimeOutComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: "navbar",
     component: NavbarComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: "", redirectTo: "bank-routing", pathMatch: "full" },
-      { path: "session-time-out", component: SessionTimeOutComponent },
+      { path: "", redirectTo: "tax-settings", pathMatch: "full" },
       {
         path: "criteria-settings",
         component: CriteriaListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Application Settings", routerLink: "criteria-settings" },
           { label: "Criteria", routerLink: "" },
         ],
@@ -60,7 +70,7 @@ const routes: Routes = [
         path: "criteria-settings/add-criteria-settings/add",
         component: CriteriaSettingsDetailComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Application Settings",
             routerLink: "../navbar/criteria-settings",
@@ -74,7 +84,7 @@ const routes: Routes = [
         path: "criteria-settings/add-criteria-settings/:id/clone",
         component: CriteriaSettingsDetailComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Application Settings",
             routerLink: "../navbar/criteria-settings",
@@ -88,7 +98,7 @@ const routes: Routes = [
         path: "criteria-settings/add-criteria-settings/:id/edit",
         component: CriteriaSettingsDetailComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Application Settings",
             routerLink: "../navbar/criteria-settings",
@@ -129,7 +139,7 @@ const routes: Routes = [
         path: "search-settings",
         component: SearchListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Application Settings", routerLink: "search-settings" },
           { label: "Search settings", routerLink: "" },
         ],
@@ -139,7 +149,7 @@ const routes: Routes = [
         path: "search-settings/add-search-settings/add",
         component: AddNewSearchComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Application Settings",
             routerLink: "../navbar/search-settings",
@@ -153,7 +163,7 @@ const routes: Routes = [
         path: "search-settings/add-search-settings/:id/edit",
         component: AddNewSearchComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Application Settings",
             routerLink: "../navbar/search-settings",
@@ -167,7 +177,7 @@ const routes: Routes = [
         path: "bank-routing",
         component: BankRoutingComponent2,
         data: [
-          { label: "Home", routerLink: "/navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "/navbar/bank-routing" },
           { label: "Bank Routing Settings", routerLink: "" },
         ],
@@ -177,7 +187,7 @@ const routes: Routes = [
         path: "bank-routing/addnewroute",
         component: AddnewrouteComponent2,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Add New Route", routerLink: "" },
@@ -188,7 +198,7 @@ const routes: Routes = [
         path: "bank-routing/addnewroute/:id/edit",
         component: AddnewrouteComponent2,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Edit Route", routerLink: "" },
@@ -199,7 +209,7 @@ const routes: Routes = [
         path: "bank-routing/addnewroute/:id/clone",
         component: AddnewrouteComponent2,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/bank-routing" },
           { label: "Bank Routing Settings", routerLink: "bank-routing" },
           { label: "Clone Route", routerLink: "" },
@@ -210,8 +220,8 @@ const routes: Routes = [
         path: "tax-settings",
         component: TaxListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
-          { label: "Settings", routerLink: "../navbar/tax-settings" },
+          { label: "Home", routerLink: "/navbar/tax-settings" },
+          { label: "Settings", routerLink: "/navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "" },
         ],
         canActivate: [AuthGuard],
@@ -220,7 +230,7 @@ const routes: Routes = [
         path: "tax-settings/add-tax",
         component: AddNewTaxComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "tax-settings" },
           { label: "Add New Tax", routerLink: "" },
@@ -231,7 +241,7 @@ const routes: Routes = [
         path: "tax-settings/add-tax/:id/edit",
         component: AddNewTaxComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "tax-settings" },
           { label: "Edit Tax", routerLink: "" },
@@ -242,7 +252,7 @@ const routes: Routes = [
         path: "tax-settings/add-tax/:id/clone",
         component: AddNewTaxComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/tax-settings" },
           { label: "Tax Settings", routerLink: "tax-settings" },
           { label: "Clone Tax", routerLink: "" },
@@ -253,7 +263,7 @@ const routes: Routes = [
         path: "charge-settings",
         component: ChargeListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },
           { label: "Charge Settings", routerLink: "" },
         ],
@@ -263,7 +273,7 @@ const routes: Routes = [
         path: "charge-settings/add-charge",
         component: ChargeDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },
           { label: "Charge Settings", routerLink: "charge-settings" },
           { label: "Add New Charge", routerLink: "" },
@@ -274,7 +284,7 @@ const routes: Routes = [
         path: "charge-settings/add-charge/:id/edit",
         component: ChargeDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },
           { label: "Charge Settings", routerLink: "charge-settings" },
           { label: "Edit Charge", routerLink: "" },
@@ -285,7 +295,7 @@ const routes: Routes = [
         path: "charge-settings/add-charge/:id/clone",
         component: ChargeDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/charge-settings" },
           { label: "Charge Settings", routerLink: "charge-settings" },
           { label: "Clone Charge", routerLink: "" },
@@ -296,7 +306,7 @@ const routes: Routes = [
         path: "company-settings",
         component: CompanyDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/company-settings" },
           { label: "Company Settings", routerLink: "" },
         ],
@@ -306,7 +316,7 @@ const routes: Routes = [
         path: "rate-settings",
         component: RateListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/rate-settings" },
           { label: "Rate Settings", routerLink: "" },
         ],
@@ -316,7 +326,7 @@ const routes: Routes = [
         path: "users-permissions",
         component: UsersPermisionsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/users-permissions" },
           { label: "Users & Permissions", routerLink: "" },
         ],
@@ -326,7 +336,7 @@ const routes: Routes = [
         path: "users-permissions/system-user",
         component: UsersPermisionsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/users-permissions" },
           {
             label: "Users & Permissions",
@@ -343,7 +353,7 @@ const routes: Routes = [
         path: "users-permissions/user-group",
         component: UsersPermisionsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/users-permissions" },
           {
             label: "Users & Permissions",
@@ -360,7 +370,7 @@ const routes: Routes = [
       //   path: "users-permissions/system-user/addNew",
       //   component: UsersPermisionsComponent,
       //   data: [
-      //     { label: "Home", routerLink: "../navbar/bank-routing" },
+      //     { label: "Home", routerLink: "../navbar/tax-settings" },
       //     { label: "Settings", routerLink: "../navbar/users-permissions" },
       //     {
       //       label: "Users & Permissions",
@@ -381,7 +391,7 @@ const routes: Routes = [
         path: "customised-messages",
         component: CustomisedListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/customised-messages" },
           { label: "Customised Messages", routerLink: "" },
         ],
@@ -391,7 +401,7 @@ const routes: Routes = [
         path: "customised-messages/add-messages",
         component: CustomisedDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/customised-messages" },
           { label: "Customised Messages", routerLink: "customised-messages" },
           { label: "Add New Customised Message", routerLink: "" },
@@ -402,7 +412,7 @@ const routes: Routes = [
         path: "customised-messages/add-messages/:id/edit",
         component: CustomisedDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/customised-messages" },
           { label: "Customised Messages", routerLink: "customised-messages" },
           { label: "Edit Customised  Message", routerLink: "" },
@@ -413,7 +423,7 @@ const routes: Routes = [
         path: "form-rules",
         component: FormRuleListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/form-rules" },
           { label: "Form Rules", routerLink: "" },
         ],
@@ -423,7 +433,7 @@ const routes: Routes = [
         path: "form-rules/addnewformrule",
         component: AddNewFormRuleComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/form-rules" },
           { label: "Form Rules", routerLink: "form-rules" },
           { label: "Add New Form Rule", routerLink: "" },
@@ -434,7 +444,7 @@ const routes: Routes = [
         path: "form-rules/addnewformrule/:id/edit",
         component: AddNewFormRuleComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/form-rules" },
           { label: "Form Rules", routerLink: "form-rules" },
           { label: "Edit Form Rule", routerLink: "" },
@@ -445,7 +455,7 @@ const routes: Routes = [
         path: "form-rules/addnewformrule/:id/clone",
         component: AddNewFormRuleComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/form-rules" },
           { label: "Form Rules", routerLink: "form-rules" },
           { label: "Clone Form Rule", routerLink: "" },
@@ -554,7 +564,7 @@ const routes: Routes = [
         path: "document-settings",
         component: DocumentListingComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/document-settings" },
           { label: "Document Settings", routerLink: "" },
         ],
@@ -564,7 +574,7 @@ const routes: Routes = [
         path: "document-settings/add-document",
         component: DocumentDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/document-settings" },
           { label: "Document Settings", routerLink: "document-settings" },
           { label: "Add Document Settings", routerLink: "" },
@@ -575,7 +585,7 @@ const routes: Routes = [
         path: "document-settings/add-document/:id/edit",
         component: DocumentDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/document-settings" },
           { label: "Document Settings", routerLink: "document-settings" },
           { label: "Edit Document Settings", routerLink: "" },
@@ -586,7 +596,7 @@ const routes: Routes = [
         path: "document-settings/add-document/:id/clone",
         component: DocumentDetailsComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           { label: "Settings", routerLink: "../navbar/document-settings" },
           { label: "Document Settings", routerLink: "document-settings" },
           { label: "Clone Document Settings", routerLink: "" },
@@ -597,7 +607,7 @@ const routes: Routes = [
         path: "loyalty-programs",
         component: LoyaltyProgramComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Loyalty-Programs",
             routerLink: "../navbar/loyalty-programs",
@@ -609,7 +619,7 @@ const routes: Routes = [
         path: "loyalty-programs-details",
         component: LoyaltyDetailsListComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Customer Loyalty Programs",
             routerLink: "../navbar/loyalty-programs-details",
@@ -621,7 +631,7 @@ const routes: Routes = [
         path: "loyalty-programs/add-loyalty",
         component: AddLoyaltyComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Loyalty-Programs",
             routerLink: "../navbar/loyalty-programs",
@@ -634,7 +644,7 @@ const routes: Routes = [
         path: "loyalty-programs/add-loyalty/:id/edit",
         component: AddLoyaltyComponent,
         data: [
-          { label: "Home", routerLink: "../navbar/bank-routing" },
+          { label: "Home", routerLink: "../navbar/tax-settings" },
           {
             label: "Loyalty-Programs",
             routerLink: "../navbar/loyalty-programs",
